@@ -5,12 +5,15 @@ const defaultDescription = ''
 const defaultOGURL = ''
 const defaultOGImage = ''
 
-const Head = (props) => (
+export const Head = (props) => (
   <NextHead>
     <meta charset="UTF-8" />
     <title>{props.title || ''}</title>
     <meta name="description" content={props.description || defaultDescription} />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width,height=device-height,inital-scale=1.0,maximum-scale=1.0,user-scalable=no;"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <meta name="format-detection" content="telephone=no"/>
     <link rel="icon" sizes="192x192" href="/static/touch-icon.png" />
     <link rel="apple-touch-icon" href="/static/touch-icon.png" />
     <link rel="mask-icon" href="/static/favicon-mask.svg" color="#49B882" />
