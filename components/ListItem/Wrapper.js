@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from 'styled-components'
 
 const Wrapper = styled.li`
   width: 100%;
@@ -12,6 +12,6 @@ const Wrapper = styled.li`
     border-top: none;
   }
   margin-top:8px;
-`;
+`
 
-export default Wrapper;
+export default Wrapper

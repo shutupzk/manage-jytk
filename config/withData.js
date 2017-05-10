@@ -6,7 +6,6 @@ import { initClient, initStore } from './store'
 export default (Component) => (
   class extends React.Component {
     static async getInitialProps (ctx) {
-      
       const headers = ctx.req ? ctx.req.headers : {}
       const client = initClient(headers)
       const store = initStore(client, client.initialState)
@@ -54,7 +53,7 @@ export default (Component) => (
   }
 )
 
-/*import React, { Component } from 'react'
+/* import React, { Component } from 'react'
 import Expo from 'expo'
 import { ApolloProvider } from 'react-apollo'
 
@@ -69,5 +68,5 @@ class App extends Component {
   }
 }
 
-Expo.registerRootComponent(App)*/
+Expo.registerRootComponent(App) */
 

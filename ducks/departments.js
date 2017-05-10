@@ -34,34 +34,34 @@ export function departments (state = initState, action = {}) {
   }
 }
 
-const QUERYDEPARTMENTS = gql`
-  query {
-    departments {
-      id
-      deptSn
-      deptName
-    }
-  }
-`
+// const QUERYDEPARTMENTS = gql`
+//   query {
+//     departments {
+//       id
+//       deptSn
+//       deptName
+//     }
+//   }
+// `
 
 export const queryDepartments = (client) => async dispatch => {
   dispatch({
     type: HOSPITAL_DEPARTMENTS_QUERY
   })
   return dispatch({
-      type: HOSPITAL_DEPARTMENTS_SUCCESS,
-      data: {
-          'dep1':{
-              id:'dep1',
-              depSn:'001',
-              deptName:'内科'
-          },
-          'dep2':{
-              id:'dep2',
-              depSn:'002',
-              deptName:'外科'
-          }
+    type: HOSPITAL_DEPARTMENTS_SUCCESS,
+    data: {
+      'dep1': {
+        id: 'dep1',
+        depSn: '001',
+        deptName: '内科'
+      },
+      'dep2': {
+        id: 'dep2',
+        depSn: '002',
+        deptName: '外科'
       }
+    }
   })
 }
 /**

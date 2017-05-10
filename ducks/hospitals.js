@@ -11,7 +11,7 @@ const initState = {
   error: null
 }
 
-export function hospitals (state = initState, action = {}) {
+export function hospitals(state = initState, action = {}) {
   switch (action.type) {
     case REHYDRATE:
       console.log('----REHYDRATE----', 'REHYDRATE_HOSPITALS')
@@ -27,48 +27,49 @@ export function hospitals (state = initState, action = {}) {
   }
 }
 
-const QUERYHOSPITALS = gql`
-  query {
-    hospitals {
-      id
-      hospitalCode
-      hospitalName
-      phone
-      logo
-      image
-      description
-      website
-    }
-  }
-`
+// const QUERYHOSPITALS = gql`
+//   query {
+//     hospitals {
+//       id
+//       hospitalCode
+//       hospitalName
+//       phone
+//       logo
+//       image
+//       description
+//       website
+//     }
+//   }
+// `
+
 export const queryHospitals = (client) => async dispatch => {
   dispatch({
     type: HOSPITAL_HOSPITALS_QUERY
   })
   return dispatch({
-     type: HOSPITAL_HOSPITALS_SUCCESS,
-     data: {
-       'hospital1':{
-          id:'hospital1',
-          hospitalCode:'h01',
-          hospitalName:'海淀医院',
-          phone:'010-9870987',
-          logo:'',
-          image:'',
-          description:'包治百病',
-          website:'https//www.haidianhospital.com'
-       },
-       'hospital2':{
-          id: 'hospital2',
-          hospitalCode:'h02',
-          hospitalName:'北大附属医院',
-          phone:'010-45678222',
-          logo:'',
-          image:'',
-          description:'药到病除',
-          website:'https//www.beijinghospital.com'
-       }
-     }
+    type: HOSPITAL_HOSPITALS_SUCCESS,
+    data: {
+      'hospital1': {
+        id: 'hospital1',
+        hospitalCode: 'h01',
+        hospitalName: '海淀医院',
+        phone: '010-9870987',
+        logo: '',
+        image: '',
+        description: '包治百病',
+        website: 'https//www.haidianhospital.com'
+      },
+      'hospital2': {
+        id: 'hospital2',
+        hospitalCode: 'h02',
+        hospitalName: '北大附属医院',
+        phone: '010-45678222',
+        logo: '',
+        image: '',
+        description: '药到病除',
+        website: 'https//www.beijinghospital.com'
+      }
+    }
   })
 }
 // export const queryHospitals = (client) => async dispatch => {

@@ -1,7 +1,6 @@
-import localforage from 'localforage'
 import ApolloClient, { createNetworkInterface } from 'apollo-client'
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux'
-import { persistStore, autoRehydrate } from 'redux-persist'
+import { autoRehydrate } from 'redux-persist'
 import thunk from 'redux-thunk'
 
 import {
@@ -42,7 +41,7 @@ export const initClient = (headers, initialState = {}) => {
 
 // middleware
 function createMiddleware (clientMiddleware) {
-  const middleware = applyMiddleware(clientMiddleware)
+  // const middleware = applyMiddleware(clientMiddleware)
   if (process.browser && window.devToolsExtension) {
     return compose(
         applyMiddleware(thunk),

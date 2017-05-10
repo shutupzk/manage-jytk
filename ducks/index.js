@@ -2,14 +2,14 @@ import { hospitals, queryHospitals } from './hospitals'
 import { departments, queryDepartments, queryDepartmentDetail } from './departments'
 import { doctors, queryDoctors } from './doctors'
 
-//key
+// key
 export {
     hospitals,
     departments,
     doctors
 }
 
-//action
+// action
 export {
     queryHospitals,
     queryDepartments,

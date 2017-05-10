@@ -1,31 +1,29 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import styled from 'styled-components'
+import React from 'react'
 import { connect } from 'react-redux'
 import { HospitalFunctionList } from '../components'
 import { HOSPITAL_FUNCTION_LIST } from '../../../config'
-import { List, ListItem} from '../../../components'
+import { List } from '../../../components'
 import * as actions from '../../../ducks'
 
 
-function  HospitalScreen (props) {
+function HospitalScreen (props) {
   console.log(props)
   return (
-  <div style={styles.container}>
-        <div style={styles.containerStyle}>
-          <img style={styles.bgImage} src="../../../static/icons/hospital_bg_image.png"/>
-        </div>
-        <div style={styles.scrollContainer}>
-          <List component={HospitalFunctionList} items={HOSPITAL_FUNCTION_LIST} />
-        </div>
-        <style jsx>{`
-            .ScrollDiv {
+    <div style={styles.container}>
+      <div style={styles.containerStyle}>
+        <img style={styles.bgImage} src='../../../static/icons/hospital_bg_image.png' />
+      </div>
+      <div style={styles.scrollContainer}>
+        <List component={HospitalFunctionList} items={HOSPITAL_FUNCTION_LIST} />
+      </div>   
+      <style jsx>{`
+        .ScrollDiv {
               height:'';
               overflow-y:auto;
             }
-        `}</style>
-      </div>
-)
+      `}</style>
+    </div>
+  )
 }
 
 
@@ -36,7 +34,7 @@ const styles = {
   containerStyle: {
     flexDirection: 'column'
   },
-  scrollContainer:{
+  scrollContainer: {
     display: 'flex',
     flexDirection: 'column'
   },
@@ -52,5 +50,5 @@ function mapStateToProps (state) {
   }
 }
 export default connect(
-  mapStateToProps,actions
+  mapStateToProps, actions
 )(HospitalScreen)
