@@ -1,9 +1,13 @@
-import { HospitalScreen } from '../modules/hospital'
+import { HomeScreen } from '../modules/home'
+import { Layout } from '../modules/common'
 import withData from '../config/withData'
-import App from '../config/App'
+// import App from '../config/App'
 
-export default withData((props) => (
-  <App>
-     <HospitalScreen />
-  </App>
-))
+export default withData((props) => {
+  return (
+    <Layout title='省医通'>
+      <HomeScreen />
+    </Layout>
+  )
+})
+

@@ -11,7 +11,7 @@ const initState = {
   error: null
 }
 
-export function hospitals(state = initState, action = {}) {
+export function hospitals (state = initState, action = {}) {
   switch (action.type) {
     case REHYDRATE:
       console.log('----REHYDRATE----', 'REHYDRATE_HOSPITALS')

@@ -12,6 +12,11 @@ const Wrapper = styled.li`
     border-top: none;
   }
   margin-top:8px;
+  
+  &:first-child {
+    margin-top: 0px;
+  }
+  // margin-bottom:4px;
 `
 
 export default Wrapper

@@ -1,5 +1,6 @@
 import gql from 'graphql-tag'
 import { REHYDRATE } from 'redux-persist/constants'
+import { initClient } from '../config'
 
 const HOSPITAL_DEPARTMENTS_QUERY = 'hospital/departments/query'
 const HOSPITAL_DEPARTMENTS_SUCCESS = 'hospital/departments/success'
@@ -34,69 +35,71 @@ export function departments (state = initState, action = {}) {
   }
 }
 
-// const QUERYDEPARTMENTS = gql`
-//   query {
-//     departments {
-//       id
-//       deptSn
-//       deptName
-//     }
-//   }
-// `
 
-export const queryDepartments = (client) => async dispatch => {
-  dispatch({
-    type: HOSPITAL_DEPARTMENTS_QUERY
-  })
-  return dispatch({
-    type: HOSPITAL_DEPARTMENTS_SUCCESS,
-    data: {
-      'dep1': {
-        id: 'dep1',
-        depSn: '001',
-        deptName: '内科'
-      },
-      'dep2': {
-        id: 'dep2',
-        depSn: '002',
-        deptName: '外科'
-      }
+const QUERYDEPARTMENTS = gql`
+  query {
+    departments {
+      id
+      deptSn
+      deptName
     }
-  })
-}
-/**
- * 科室列表
- * @param {*} client
- */
+  }
+`
+
 // export const queryDepartments = (client) => async dispatch => {
 //   dispatch({
 //     type: HOSPITAL_DEPARTMENTS_QUERY
 //   })
-//   try {
-//     let data = await client.query({ query: QUERYDEPARTMENTS })
-//     if (data.error) {
-//       return dispatch({
-//         type: HOSPITAL_DEPARTMENTS_FAIL,
-//         error: data.error.message
-//       })
+//   return dispatch({
+//     type: HOSPITAL_DEPARTMENTS_SUCCESS,
+//     data: {
+//       'dep1': {
+//         id: 'dep1',
+//         depSn: '001',
+//         deptName: '内科'
+//       },
+//       'dep2': {
+//         id: 'dep2',
+//         depSn: '002',
+//         deptName: '外科'
+//       }
 //     }
-//     let departments = data.data.departments
-//     let json = {}
-//     for (let department of departments) {
-//       json[department.id] = department
-//     }
-//     return dispatch({
-//       type: HOSPITAL_DEPARTMENTS_SUCCESS,
-//       data: json
-//     })
-//   } catch (e) {
-//     console.log(e)
-//     return dispatch({
-//       type: HOSPITAL_DEPARTMENTS_FAIL,
-//       error: '获取科室列表失败！'
-//     })
-//   }
+//   })
 // }
+/**
+ * 科室列表
+ * @param {*} client
+ */
+var headers = {host: 'localhost:3000'}
+export const queryDepartments = (client) => async dispatch => {
+  dispatch({
+    type: HOSPITAL_DEPARTMENTS_QUERY
+  })
+  try {
+    let data = await initClient().query({ query: QUERYDEPARTMENTS })
+    if (data.error) {
+      return dispatch({
+        type: HOSPITAL_DEPARTMENTS_FAIL,
+        error: data.error.message
+      })
+    }
+    let departments = data.data.departments
+    let json = {}
+    for (let department of departments) {
+      json[department.id] = department
+    }
+    return dispatch({
+      type: HOSPITAL_DEPARTMENTS_SUCCESS,
+      data: json
+    })
+  } catch (e) {
+    console.log(e)
+    return dispatch({
+      type: HOSPITAL_DEPARTMENTS_FAIL,
+      error: '获取科室列表失败！'
+    })
+  }
+}
 
 const QUERYDEPARTMENT = gql`
    query ($id: ObjID!){
@@ -121,7 +124,7 @@ export const queryDepartmentDetail = (client, {departmentId, departments}) => as
     type: HOSPITAL_DEPARTMENTS_DEPARTMENT_QUERY
   })
   try {
-    let data = await client.query({ query: QUERYDEPARTMENT, variables: {id: departmentId} })
+    let data = await initClient(headers, {}).query({ query: QUERYDEPARTMENT, variables: {id: departmentId} })
     if (data.error) {
       return dispatch({
         type: HOSPITAL_DEPARTMENTS_DEPARTMENT_FAIL,

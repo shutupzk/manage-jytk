@@ -19,7 +19,7 @@ function _initClient (headers, initialState) {
     ssrMode: !process.browser,
     dataIdFromObject: result => result.id || null,
     networkInterface: createNetworkInterface({
-      uri: 'http://'+headers.host+'/graphql?',
+      uri: 'http://' + API_SERVER + '/graphql?',
       // uri: 'https://api.graph.cool/simple/v1/cixmkt2ul01q00122mksg82pn',
       opts: {
         credentials: 'same-origin'
@@ -60,7 +60,7 @@ function createMiddleware (clientMiddleware) {
 // reducer
 function getReducer (client) {
   return combineReducers({
-    apollo: client.reducer(),
+    // apollo: client.reducer(),
     hospitals,
     departments,
     doctors

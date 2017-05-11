@@ -6,6 +6,8 @@ const Item = styled.div`
   width: 100%;
   height: 100%;
   align-items: center;
+  // margin-top: 12px;
+  margin-bottom: 8px;
 `
 
 export default Item

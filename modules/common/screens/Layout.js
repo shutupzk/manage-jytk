@@ -1,8 +1,16 @@
 import Head from './head'
-export default ({ children }) => (
+import Navigation from './foot_navigation'
+import Header from './header'
+// var innerHeight = document.body.clientHeight
+
+const Layout = (props) => (
   <main>
-    <Head/>
-    {children}
+    <Head title={props.title}/>
+    <div>
+      <Header title={props.title} />
+      <div style={{overflow: 'auto'}}> {props.children}</div>
+      <Navigation />
+    </div>
     <style jsx global>{`
       * {
         font-family: Menlo, Monaco, "Lucida Console", "Liberation Mono", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Courier New", monospace, serif;
@@ -33,6 +41,19 @@ export default ({ children }) => (
       button:focus {
         outline: none;
       }
+      .container {
+        margin: 10px;
+        padding: 20px;
+      }
+      .clearfix {
+        content: ".";
+        height: 0;
+        display: block;
+        visibility: hidden;
+        clear: both
+      }
     `}</style>
   </main>
 )
+
+export default Layout

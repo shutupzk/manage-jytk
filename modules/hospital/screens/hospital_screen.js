@@ -15,7 +15,7 @@ function HospitalScreen (props) {
       </div>
       <div style={styles.scrollContainer}>
         <List component={HospitalFunctionList} items={HOSPITAL_FUNCTION_LIST} />
-      </div>   
+      </div>
       <style jsx>{`
         .ScrollDiv {
               height:'';

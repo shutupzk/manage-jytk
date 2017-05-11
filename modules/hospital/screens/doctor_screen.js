@@ -3,9 +3,9 @@ import { connect } from 'react-redux'
 import * as actions from '../../../ducks'
 
 class DoctorScreen extends Component {
-  constructor (props) {
-    super(props)
-  }
+  // constructor (props) {
+  //   super(props)
+  // }
   componentWillMount () {
     this.queryData()
   }

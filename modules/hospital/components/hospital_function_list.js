@@ -1,12 +1,13 @@
 import React, { Component } from 'react'
 import { ListItem } from '../../../components'
+import Link from 'next/link'
 
 export default class HospitalFunctionList extends Component {
-
   renderItem () {
     let item = this.props.item
+    let href = '/hospital/' + item.navigateName
     return (
-      <div style={styles.itemDiv}>
+      <Link href={href}><div style={styles.itemDiv}>
         <div style={styles.left}>
           <img src={item.avatar} style={styles.img} />
         </div>
@@ -19,8 +20,7 @@ export default class HospitalFunctionList extends Component {
 
           <img src='../../../static/icons/arrow_right.png' style={styles.rightImg} />
         </div>
-        <div style={{ clear: 'both' }}>&nbsp;</div>
-      </div>
+      </div></Link>
     )
   }
 
@@ -40,16 +40,18 @@ export default class HospitalFunctionList extends Component {
 export { HospitalFunctionList }
 const styles = {
   itemDiv: {
-    marginTop: '5px',
+    marginTop: '30px',
     width: '100%'
   },
   left: {
+    marginTop: '5px',
     float: 'left',
     width: '10%',
     height: '46px',
     verticalAlign: 'middle'
   },
   right: {
+    marginTop: '10px',
     width: '88%',
     height: '100%'
   },

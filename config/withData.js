@@ -13,7 +13,6 @@ export default (Component) => (
         url: { query: ctx.query, pathname: ctx.pathname },
         ...await (Component.getInitialProps ? Component.getInitialProps(ctx) : {})
       }
-
       if (!process.browser) {
         const app = (
           <ApolloProvider client={client} store={store}>
@@ -27,10 +26,7 @@ export default (Component) => (
 
       return {
         initialState: {
-          ...state,
-          apollo: {
-            data: client.getInitialState().data
-          }
+          ...state
         },
         headers,
         ...props
@@ -53,20 +49,4 @@ export default (Component) => (
   }
 )
 
-/* import React, { Component } from 'react'
-import Expo from 'expo'
-import { ApolloProvider } from 'react-apollo'
-
-import { client, store } from './store'
-
-class App extends Component {
-  render () {
-    return (
-      <ApolloProvider store={store} client={client}>
-      </ApolloProvider>
-    )
-  }
-}
-
-Expo.registerRootComponent(App) */
 
