@@ -5,6 +5,6 @@ import { BlankLayout } from '../../../modules/common'
 
 export default withData((props) => (
   <BlankLayout title='科室列表'>
-    <DepartmentScreen />
+    <DepartmentScreen {...props} />
   </BlankLayout>
 ))

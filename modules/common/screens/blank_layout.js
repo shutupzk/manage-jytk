@@ -1,12 +1,12 @@
 import Head from './head'
-import Header from './header'
+// import Header from './header'
 
 export default (props) => (
   <main>
-    <Head title={props.title}/>
+    <Head title={props.title} />
     <div>
-      <Header title={props.title} />
-        {props.children}
+      {/*<Header title={props.title} />*/}
+      { props.children }
     </div>
     <style jsx global>{`
       * {
@@ -39,7 +39,8 @@ export default (props) => (
         outline: none;
       }
       .container {
-        margin: 0px 10px;
+        margin: 20px 20px;
+        {/*padding: 20px;*/}
       }
       .clearfix {
         content: ".";
@@ -48,6 +49,8 @@ export default (props) => (
         visibility: hidden;
         clear: both
       }
+      a {text-decoration:none}
+      li {list-style: none}
     `}</style>
   </main>
 )

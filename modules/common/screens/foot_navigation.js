@@ -4,17 +4,17 @@ const Navigation = () => (
   <div className='footer'>
     <div>
       <div style={{float: 'left', width: '33.3%', textAlign: 'center'}}>
-        <Link href="/" prefetch>
+        <Link href='/' prefetch>
           <span>首页</span>
         </Link>
       </div>
       <div style={{float: 'left', width: '33.3%', textAlign: 'center'}}>
-        <Link href="/orders" prefetch>
+        <Link href='/orders' prefetch>
           <span>挂号订单</span>
         </Link>
       </div>
       <div style={{float: 'left', width: '33.3%', textAlign: 'center'}}>
-        <Link href="/profile" prefetch>
+        <Link href='/profile' prefetch>
           <span>我的</span>
         </Link>
       </div>

@@ -17,9 +17,9 @@ export default () => (
             <Link><a>查询报告</a></Link>
             <Link><a>住院跟踪</a></Link>
           </div>
-          <div className='clearfix'></div>
+          <div className='clearfix'>&nbsp;</div>
         </div>
-        <div className='clearfix'></div>
+        <div className='clearfix'>&nbsp;</div>
       </div>
       <div style={{height: '100px', width: '100%'}}>
         <Link href='/hospital'>医院中心</Link>
@@ -27,9 +27,7 @@ export default () => (
       <div>
         <h3>健康咨询</h3>
       </div>
-      <div className='clearfix'></div>
     </div>
-    <div className='clearfix'></div>
     <style jsx>{`
       .container {
         flex: 1;

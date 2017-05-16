@@ -17,9 +17,9 @@ export function hospitals (state = initState, action = {}) {
       console.log('----REHYDRATE----', 'REHYDRATE_HOSPITALS')
       return Object.assign({}, state, action.payload.hospitals, { loading: false, error: null })
     case HOSPITAL_HOSPITALS_QUERY:
-      return Object.assign({}, state, { loading: true })
+      return Object.assign({}, state, { loading: true, error: null })
     case HOSPITAL_HOSPITALS_SUCCESS:
-      return Object.assign({}, state, { data: action.data, loading: false, error: null })
+      return Object.assign({}, state, { data: action.hospitals, loading: false, error: null })
     case HOSPITAL_HOSPITALS_FAIL:
       return Object.assign({}, state, { loading: false, error: action.error })
     default:
@@ -27,77 +27,47 @@ export function hospitals (state = initState, action = {}) {
   }
 }
 
-// const QUERYHOSPITALS = gql`
-//   query {
-//     hospitals {
-//       id
-//       hospitalCode
-//       hospitalName
-//       phone
-//       logo
-//       image
-//       description
-//       website
-//     }
-//   }
-// `
+const QUERY_HOSPITALS = gql`
+  query {
+    hospitals {
+      id
+      hospitalCode
+      hospitalName
+      phone
+      logo
+      image
+      description
+      website
+    }
+  }
+`
 
 export const queryHospitals = (client) => async dispatch => {
   dispatch({
     type: HOSPITAL_HOSPITALS_QUERY
   })
-  return dispatch({
-    type: HOSPITAL_HOSPITALS_SUCCESS,
-    data: {
-      'hospital1': {
-        id: 'hospital1',
-        hospitalCode: 'h01',
-        hospitalName: '海淀医院',
-        phone: '010-9870987',
-        logo: '',
-        image: '',
-        description: '包治百病',
-        website: 'https//www.haidianhospital.com'
-      },
-      'hospital2': {
-        id: 'hospital2',
-        hospitalCode: 'h02',
-        hospitalName: '北大附属医院',
-        phone: '010-45678222',
-        logo: '',
-        image: '',
-        description: '药到病除',
-        website: 'https//www.beijinghospital.com'
-      }
+  try {
+    let data = await client.query({ query: QUERY_HOSPITALS })
+    if (data.error) {
+      return dispatch({
+        type: HOSPITAL_HOSPITALS_FAIL,
+        error: data.error.message
+      })
     }
-  })
+    let hospitals = data.data.hospitals
+    let json = {}
+    for (let hospital of hospitals) {
+      json[hospital.id] = hospital
+    }
+    return dispatch({
+      type: HOSPITAL_HOSPITALS_SUCCESS,
+      hospitals: json
+    })
+  } catch (e) {
+    console.log(e)
+    return dispatch({
+      type: HOSPITAL_HOSPITALS_FAIL,
+      error: '数据请求失败！'
+    })
+  }
 }
-// export const queryHospitals = (client) => async dispatch => {
-//   dispatch({
-//     type: HOSPITAL_HOSPITALS_QUERY
-//   })
-//   try {
-//     let data = await client.query({ query: QUERYHOSPITALS })
-//     if (data.error) {
-//       return dispatch({
-//         type: HOSPITAL_HOSPITALS_FAIL,
-//         error: data.error.message
-//       })
-//     }
-//     let hospitals = data.data.hospitals
-//     let json = {}
-//     for (let hospital of hospitals) {
-//       json[hospital.id] = hospital
-//     }
-//     return dispatch({
-//       type: HOSPITAL_HOSPITALS_SUCCESS,
-//       data: json
-//     })
-//   } catch (e) {
-//     console.log(e)
-//     return dispatch({
-//       type: HOSPITAL_HOSPITALS_FAIL,
-//       error: '数据请求失败！'
-//     })
-//   }
-// }

@@ -6,7 +6,8 @@ import thunk from 'redux-thunk'
 import {
   hospitals,
   departments,
-  doctors
+  doctors,
+  user
 } from '../ducks'
 // 服务地址
 export const API_SERVER = 'localhost:3000'
@@ -20,7 +21,7 @@ function _initClient (headers, initialState) {
     dataIdFromObject: result => result.id || null,
     networkInterface: createNetworkInterface({
       uri: 'http://' + API_SERVER + '/graphql?',
-      // uri: 'https://api.graph.cool/simple/v1/cixmkt2ul01q00122mksg82pn',
+      // uri: 'https://agent.rmyy.wechat.uthealth.com.cn/graphiql?',
       opts: {
         credentials: 'same-origin'
         // Pass headers here if your graphql server requires them
@@ -63,7 +64,8 @@ function getReducer (client) {
     // apollo: client.reducer(),
     hospitals,
     departments,
-    doctors
+    doctors,
+    user
   })
 }
 

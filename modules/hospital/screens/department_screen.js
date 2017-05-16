@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import _ from 'lodash'
+// import { withApollo } from 'react-apollo'
 import Link from 'next/link'
 import * as actions from '../../../ducks'
+import DepartmentList from '../components/department_list'
 // import Link from 'next/link'
 
 class DepartmentScreen extends Component {
@@ -12,16 +14,20 @@ class DepartmentScreen extends Component {
   }
 
   componentWillMount () {
-    if (isEmptyObject(this.props.data)) {
-      this.getDepartments()
-    }
+    this.getDepartments()
   }
 
   getDepartments () {
-    this.props.queryDepartments()
+    this.props.queryDepartments(this.props.client)
+  }
+
+  selectDepartment (depId) {
+    console.log(depId)
+    this.props.selectDepartment(depId)
   }
 
   render () {
+    console.log(this.props)
     let department = this.props.department
     if (department.loading && !this.toDetail) {
       return (
@@ -44,15 +50,7 @@ class DepartmentScreen extends Component {
       })
       return (
         <div className='container'>
-          {
-            deps.map((dep) => {
-              return (
-                <Link key={dep.id} href={`/hospital/departments/department_detail?id=${dep.id}`} prefetch>
-                  <div style={{ verticalAlign: 'center', height: '2em', fontSize: '14px', borderBottom: '1px solid #ccc' }}>{dep.deptName}</div>
-                </Link>
-              )
-            })
-          }
+          <DepartmentList deps={deps} params={this.props.url.query} selectDepartment={(depId) => { this.selectDepartment(depId) }} client={this.props.client} />
         </div>
       )
     } else {
@@ -62,7 +60,6 @@ class DepartmentScreen extends Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {
     department: state.departments
   }

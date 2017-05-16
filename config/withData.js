@@ -42,11 +42,9 @@ export default (Component) => (
     render () {
       return (
         <ApolloProvider client={this.client} store={this.store}>
-          <Component {...this.props} />
+          <Component client={this.client} url={this.props.url} />
         </ApolloProvider>
       )
     }
   }
 )
-
-

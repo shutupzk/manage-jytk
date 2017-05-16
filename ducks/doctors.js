@@ -1,45 +1,63 @@
 import gql from 'graphql-tag'
 import { REHYDRATE } from 'redux-persist/constants'
 
-import { initClient } from '../config'
 const HOSPITAL_DOCTORS_QUERY = 'hospital/doctors/query'
 const HOSPITAL_DOCTORS_SUCCESS = 'hospital/doctors/success'
 const HOSPITAL_DOCTORS_FAIL = 'hospital/doctors/fail'
+const HOSPITAL_DOCTORS_SELECT = 'hospital/doctors/select'
+const HOSPITAL_DOCTORS_REMOVE_SELECT = 'hospital/doctors/remove/select'
 
 const initState = {
   data: {},
   loading: false,
-  error: null
+  error: null,
+  selectId: null
 }
 
 export function doctors (state = initState, action = {}) {
   switch (action.type) {
     case REHYDRATE:
-      console.log('----REHYDRATE----', 'REHYDRATE_DOCTOR')
+      console.log('----REHYDRATE----', 'REHYDRATE_DOCTORS')
       return Object.assign({}, state, action.payload.doctors, { loading: false, error: null })
     case HOSPITAL_DOCTORS_QUERY:
-      return Object.assign({}, state, { loading: true })
+      return Object.assign({}, state, { loading: true, error: null })
     case HOSPITAL_DOCTORS_SUCCESS:
-      return Object.assign({}, state, { data: action.data, loading: false, error: null })
+      let doctors = getDoctors(state, action.doctors)
+      return Object.assign({}, state, { data: doctors, loading: false, error: null })
     case HOSPITAL_DOCTORS_FAIL:
       return Object.assign({}, state, { loading: false, error: action.error })
+    case HOSPITAL_DOCTORS_SELECT:
+      return Object.assign({}, state, { selectId: action.selectId, loading: false, error: null })
+    case HOSPITAL_DOCTORS_REMOVE_SELECT:
+      return Object.assign({}, state, { selectId: null, loading: false, error: null })
     default:
       return state
   }
 }
 
-const QUERYDOCTORS = gql`
-  query {
-    departments {
+const getDoctors = (state, actionDoctors) => {
+  let doctors = state.data
+  for (let doc in actionDoctors) {
+    if (doctors[doc]) {
+      let departmentIds = doctors[doc].departmentIds
+      if (!(departmentIds.indexOf(actionDoctors[doc].departmentId) > -1)) {
+        departmentIds.push(actionDoctors[doc].departmentId)
+      }
+      delete actionDoctors[doc].departmentId
+      doctors[doc] = Object.assign({}, doctors[doc], {departmentIds})
+    } else {
+      let departmentId = actionDoctors[doc].departmentId
+      delete actionDoctors[doc].departmentId
+      doctors[doc] = Object.assign({}, actionDoctors[doc], {departmentIds: [departmentId]})
+    }
+  }
+  return doctors
+}
+
+const QUERY_DOCTORS = gql`
+  query ($id: ObjID!){
+    department(id: $id) {
       id,
-      deptSn,
-      deptName,
-      description,
-      features,
-      position,
-      hot,
-      isAppointment,
-      level,
       departmentHasDoctors {
         id,
         doctor {
@@ -56,111 +74,31 @@ const QUERYDOCTORS = gql`
       }
     }
   }
-
 `
 
-// export const queryDoctors = (client) => async dispatch => {
-//   dispatch({
-//     type: HOSPITAL_DOCTORS_QUERY
-//   })
-//   return dispatch({
-//     type: HOSPITAL_DOCTORS_SUCCESS,
-//     data: {
-//       'dep1': {
-//         id: 'dep1',
-//         deptSn: '001',
-//         deptName: '内科',
-//         description: '内科',
-//         features: '',
-//         position: 'lalal',
-//         hot: 'yes',
-//         isAppointment: true,
-//         level: '2',
-//         departmentHasDoctors: {
-//           'doctor1': {
-//             id: 'doctor1',
-//             doctorName: '张医生',
-//             title: '主任医师',
-//             major: '',
-//             description: '明天',
-//             remark: '',
-//             recommend: '',
-//             hot: 'yes',
-//             isAppointment: true
-//           },
-//           'doctor2': {
-//             id: 'doctor2',
-//             doctorName: '王医生',
-//             title: '主治医师',
-//             major: '',
-//             description: '主治医师',
-//             remark: '',
-//             recommend: '',
-//             hot: 'yes',
-//             isAppointment: true
-//           }
-//         }
-//       },
-//       'dep2': {
-//         id: 'dep2',
-//         deptSn: '002',
-//         deptName: '外科',
-//         description: '外科',
-//         features: '',
-//         position: 'haha',
-//         hot: 'yes',
-//         isAppointment: true,
-//         level: '2',
-//         departmentHasDoctors: {
-//           'doctor3': {
-//             id: 'doctor3',
-//             doctorName: '董医生',
-//             title: '主治医师',
-//             major: '',
-//             description: '名医啊',
-//             remark: '',
-//             recommend: '',
-//             hot: 'no',
-//             isAppointment: true
-//           },
-//           'doctor4': {
-//             id: 'doctor4',
-//             doctorName: '李医生',
-//             title: '副主任医师',
-//             major: '',
-//             description: '神医就是我！',
-//             remark: '',
-//             recommend: '',
-//             hot: 'yes',
-//             isAppointment: false
-//           }
-//         }
-//       }
-//     }
-//   })
-// }
-
-
-export const queryDoctors = (client) => async dispatch => {
+// 获取医生列表
+export const queryDoctors = (client, {departmentId}) => async dispatch => {
   dispatch({
     type: HOSPITAL_DOCTORS_QUERY
   })
   try {
-    let data = await initClient({}).query({ query: QUERYDOCTORS })
+    console.log(departmentId)
+    let data = await client.query({ query: QUERY_DOCTORS, variables: {id: departmentId} })
     if (data.error) {
       return dispatch({
         type: HOSPITAL_DOCTORS_FAIL,
         error: data.error.message
       })
     }
-    let departments = data.data.departments
-    let json = {}
-    for (let department of departments) {
-      json[department.id] = department
+    let department = data.data.department
+    let doctors = {}
+    for (let doc of department.departmentHasDoctors) {
+      console.log(doc)
+      doctors[doc.doctor.id] = Object.assign({}, doc.doctor, { departmentId: department.id })
     }
     return dispatch({
       type: HOSPITAL_DOCTORS_SUCCESS,
-      doctors: json
+      doctors
     })
   } catch (e) {
     console.log(e)
@@ -169,4 +107,19 @@ export const queryDoctors = (client) => async dispatch => {
       error: '数据请求失败！'
     })
   }
+}
+
+// 选择医生
+export const selectDoctor = ({ doctorId }) => dispatch => {
+  dispatch({
+    type: HOSPITAL_DOCTORS_SELECT,
+    selectId: doctorId
+  })
+}
+
+// 取消选择医生
+export const removeSelectDoctor = () => dispatch => {
+  dispatch({
+    type: HOSPITAL_DOCTORS_SELECT
+  })
 }

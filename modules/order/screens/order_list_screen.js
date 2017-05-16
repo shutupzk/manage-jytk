@@ -1,3 +1,3 @@
 export default () => (
-  <div>Order List</div>
+  <div className='container'>Order List</div>
 )

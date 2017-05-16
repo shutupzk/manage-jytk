@@ -5,7 +5,8 @@ import Link from 'next/link'
 export default class HospitalFunctionList extends Component {
   renderItem () {
     let item = this.props.item
-    let href = '/hospital/' + item.navigateName
+    let href = {pathname: '/hospital/' + item.navigateName, query: item.params}
+    // '/hospital/' + item.navigateName + '?toScreenKey=' + item.params ? item.params.toScreenKey : ''
     return (
       <Link href={href}><div style={styles.itemDiv}>
         <div style={styles.left}>
@@ -30,7 +31,6 @@ export default class HospitalFunctionList extends Component {
     )
   }
 }
-
 
 // HospitalFunctionList.propTypes = {
 //   list: PropTypes.array,

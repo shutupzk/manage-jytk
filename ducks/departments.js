@@ -1,6 +1,5 @@
 import gql from 'graphql-tag'
-import { REHYDRATE } from 'redux-persist/constants'
-import { initClient } from '../config'
+// import { REHYDRATE } from 'redux-persist/constants'
 
 const HOSPITAL_DEPARTMENTS_QUERY = 'hospital/departments/query'
 const HOSPITAL_DEPARTMENTS_SUCCESS = 'hospital/departments/success'
@@ -10,17 +9,20 @@ const HOSPITAL_DEPARTMENTS_DEPARTMENT_QUERY = 'hospital/departments/department/q
 const HOSPITAL_DEPARTMENTS_DEPARTMENT_DETAIL = 'hospital/departments/department/detail'
 const HOSPITAL_DEPARTMENTS_DEPARTMENT_FAIL = 'hospital/departments/department/fail'
 
+const HOSPITAL_DEPARTMENTS_SELECT = 'hospital/departments/select'
+
 const initState = {
   data: {},
-  loading: false,
-  error: null
+  loading: true,
+  error: null,
+  selectId: null
 }
 
 export function departments (state = initState, action = {}) {
   switch (action.type) {
-    case REHYDRATE:
-      console.log('----REHYDRATE----', action.payload.departments)
-      return Object.assign({}, state, action.payload.departments, { loading: false, error: null })
+    // case REHYDRATE:
+    //   console.log('----REHYDRATE----', '----REHYDRATE_DEPARTMENTS----')
+    //   return Object.assign({}, state, action.payload.departments, { loading: false, error: null })
     case HOSPITAL_DEPARTMENTS_QUERY:
     case HOSPITAL_DEPARTMENTS_DEPARTMENT_QUERY:
       return Object.assign({}, state, { loading: true, error: null })
@@ -30,13 +32,14 @@ export function departments (state = initState, action = {}) {
     case HOSPITAL_DEPARTMENTS_FAIL:
     case HOSPITAL_DEPARTMENTS_DEPARTMENT_FAIL:
       return Object.assign({}, state, { loading: false, error: action.error })
+    case HOSPITAL_DEPARTMENTS_SELECT:
+      return Object.assign({}, state, {selectId: action.selectId, loading: false, error: null})
     default:
       return state
   }
 }
 
-
-const QUERYDEPARTMENTS = gql`
+const QUERY_DEPARTMENTS = gql`
   query {
     departments {
       id
@@ -46,37 +49,16 @@ const QUERYDEPARTMENTS = gql`
   }
 `
 
-// export const queryDepartments = (client) => async dispatch => {
-//   dispatch({
-//     type: HOSPITAL_DEPARTMENTS_QUERY
-//   })
-//   return dispatch({
-//     type: HOSPITAL_DEPARTMENTS_SUCCESS,
-//     data: {
-//       'dep1': {
-//         id: 'dep1',
-//         depSn: '001',
-//         deptName: '内科'
-//       },
-//       'dep2': {
-//         id: 'dep2',
-//         depSn: '002',
-//         deptName: '外科'
-//       }
-//     }
-//   })
-// }
 /**
  * 科室列表
  * @param {*} client
  */
-var headers = {host: 'localhost:3000'}
 export const queryDepartments = (client) => async dispatch => {
   dispatch({
     type: HOSPITAL_DEPARTMENTS_QUERY
   })
   try {
-    let data = await initClient().query({ query: QUERYDEPARTMENTS })
+    let data = await client.query({ query: QUERY_DEPARTMENTS })
     if (data.error) {
       return dispatch({
         type: HOSPITAL_DEPARTMENTS_FAIL,
@@ -101,7 +83,7 @@ export const queryDepartments = (client) => async dispatch => {
   }
 }
 
-const QUERYDEPARTMENT = gql`
+const QUERY_DEPARTMENT = gql`
    query ($id: ObjID!){
     department(id: $id) {
       id
@@ -124,7 +106,7 @@ export const queryDepartmentDetail = (client, {departmentId, departments}) => as
     type: HOSPITAL_DEPARTMENTS_DEPARTMENT_QUERY
   })
   try {
-    let data = await initClient(headers, {}).query({ query: QUERYDEPARTMENT, variables: {id: departmentId} })
+    let data = await client.query({ query: QUERY_DEPARTMENT, variables: {id: departmentId} })
     if (data.error) {
       return dispatch({
         type: HOSPITAL_DEPARTMENTS_DEPARTMENT_FAIL,
@@ -143,4 +125,12 @@ export const queryDepartmentDetail = (client, {departmentId, departments}) => as
       error: '获取科室详情失败！'
     })
   }
+}
+
+// 选择科室
+export const selectDepartment = ({ departmentId }) => dispatch => {
+  return dispatch({
+    type: HOSPITAL_DEPARTMENTS_SELECT,
+    selectId: departmentId
+  })
 }

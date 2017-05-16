@@ -1,10 +1,7 @@
 import React from 'react'
-import { connect } from 'react-redux'
 import { HospitalFunctionList } from '../components'
 import { HOSPITAL_FUNCTION_LIST } from '../../../config'
 import { List } from '../../../components'
-import * as actions from '../../../ducks'
-
 
 function HospitalScreen (props) {
   console.log(props)
@@ -26,7 +23,6 @@ function HospitalScreen (props) {
   )
 }
 
-
 const styles = {
   container: {
     flex: 1
@@ -44,11 +40,5 @@ const styles = {
     resizeMode: 'stretch'
   }
 }
-function mapStateToProps (state) {
-  return {
-    hospital: state.hospitals
-  }
-}
-export default connect(
-  mapStateToProps, actions
-)(HospitalScreen)
+
+export default HospitalScreen
