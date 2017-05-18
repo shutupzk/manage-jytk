@@ -28,7 +28,7 @@ class ProfileScreen extends Component {
   async doSignout () {
     await this.props.signout()
     this.props.clearPateints()
-    this.props.navigation.goBack(null)
+    // this.props.navigation.goBack(null)
   }
   birthdayView (user) {
     if (!user.birthday) return null
@@ -118,7 +118,7 @@ class ProfileScreen extends Component {
                     onClick={() => { this.doSignout() }}
                   >
                     <a>
-                      <div style={{fontSize: 15}}>{item.title}</div>
+                      <div style={{fontSize: 15}}>{token ? item.title : '未登录'}</div>
                       <img src={item.icon} type={item.type} height='16' width='16' style={{color: '#505050'}} />
                     </a>
                   </div>
@@ -146,6 +146,12 @@ class ProfileScreen extends Component {
   render () {
     const token = this.props.token
     const user = this.props.user
+    if (this.props.error) {
+      return <div className='container'>error...</div>
+    }
+    if (this.props.loading) {
+      return <div className='container'>loading...</div>
+    }
     return (
       <div className='container'>
         { this.topView(user) }

@@ -11,7 +11,8 @@ import {
   patients
 } from '../ducks'
 // 服务地址
-export const API_SERVER = 'localhost:3000'
+// export const API_SERVER = 'localhost:3000'
+export const API_SERVER = '120.92.57.18:9200'
 
 let apolloClient = null
 
@@ -22,7 +23,6 @@ function _initClient (headers, initialState) {
     dataIdFromObject: result => result.id || null,
     networkInterface: createNetworkInterface({
       uri: 'http://' + API_SERVER + '/graphql?',
-      // uri: 'https://agent.rmyy.wechat.uthealth.com.cn/graphiql?',
       opts: {
         credentials: 'same-origin'
         // Pass headers here if your graphql server requires them
