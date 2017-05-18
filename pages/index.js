@@ -7,7 +7,7 @@ import withData from '../config/withData'
 export default withData((props) => {
   return (
     <Layout title='省医通' {...props}>
-      <HomeScreen />
+      <HomeScreen {...props} />
     </Layout>
   )
 })

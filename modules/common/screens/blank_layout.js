@@ -51,6 +51,23 @@ export default (props) => (
       }
       a {text-decoration:none}
       li {list-style: none}
+      .textInput {
+        flex: 3;
+        border-bottom: 0px;
+        line-height: 30px;
+        height: 30px;
+        border-radius: 5px;
+        margin-right: 15;
+      }
+      .blockPrimaryBtn {
+        {/*width: 90%;*/}
+        display: block !important;
+        background-color: #3CA0FF;
+        height: 40px;
+        text-align: center;
+        border-radius: 10px;
+        font-size: 16px;
+      }
     `}</style>
   </main>
 )

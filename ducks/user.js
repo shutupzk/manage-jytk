@@ -283,6 +283,8 @@ export const updatePassword = (client, {userId, password}) => async dispatch => 
 }
 
 export const savePhone = ({phone, password}) => dispatch => {
+  console.log(phone)
+  console.log(password)
   dispatch({
     type: PROFILE_USER_SAVEPHONE,
     phone,
