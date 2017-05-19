@@ -61,8 +61,8 @@ class ProfileScreen extends Component {
 
   buttomList (token) {
     const array = [
-      { title: '就诊人管理', icon: 'people', type: 'simple-line-icon', navigateUrl: 'patient_list' },
-      { title: '我的医生', icon: 'star', type: 'simple-line-icon', navigateUrl: 'doctor_list' },
+      { title: '就诊人管理', icon: 'people', type: 'simple-line-icon', navigateUrl: 'profile/patient_list' },
+      { title: '我的医生', icon: 'star', type: 'simple-line-icon', navigateUrl: 'profile/my_doctors' },
       { title: '缴费记录', icon: 'star', type: 'simple-line-icon', navigateUrl: 'payment_list' },
       // { title: '我的随访', icon: 'pencil-square-o', type: 'font-awesome', navigateUrl: 'ehr' },
       { title: '满意度评价', icon: 'like', type: 'simple-line-icon', navigateUrl: 'evaluation' }
@@ -81,7 +81,7 @@ class ProfileScreen extends Component {
         <div style={{marginBottom: 20, display: 'flex'}}>
           {
             array.map((item, i) => {
-              var href = 'sigin'
+              var href = 'signin'
               if (token) {
                 href = '/' + item.navigateUrl
               }
@@ -107,7 +107,7 @@ class ProfileScreen extends Component {
         <div>
           {
             array2.map((item, i) => {
-              var href = '/sigin'
+              var href = '/signin'
               if (token) {
                 href = '/' + item.navigateUrl
               }

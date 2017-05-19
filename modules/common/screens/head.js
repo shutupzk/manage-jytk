@@ -18,6 +18,7 @@ export const Head = (props) => (
     <meta property='og:url' content={props.url || defaultOGURL} />
     <meta property='og:title' content={props.title || ''} />
     <meta property='og:description' content={props.description || defaultDescription} />
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
   </NextHead>
 )
 

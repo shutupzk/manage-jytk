@@ -89,11 +89,7 @@ function mapStateToProps (state) {
     loading: state.departments.loading
   }
 }
-// DepartmentDetail.getInitialProps = async function (context) {
-//   console.log(context)
-//   console.log('aaa')
-//   return {}
-// }
+
 const styles = {
   containerStyle: {
     margin: 0

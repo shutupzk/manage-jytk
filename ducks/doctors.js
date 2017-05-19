@@ -1,11 +1,15 @@
 import gql from 'graphql-tag'
-import { REHYDRATE } from 'redux-persist/constants'
+// import { REHYDRATE } from 'redux-persist/constants'
 
 const HOSPITAL_DOCTORS_QUERY = 'hospital/doctors/query'
 const HOSPITAL_DOCTORS_SUCCESS = 'hospital/doctors/success'
 const HOSPITAL_DOCTORS_FAIL = 'hospital/doctors/fail'
 const HOSPITAL_DOCTORS_SELECT = 'hospital/doctors/select'
 const HOSPITAL_DOCTORS_REMOVE_SELECT = 'hospital/doctors/remove/select'
+
+const PROFILE_MY_DOCTORS_QUERY = 'profile/mydoctors/query'
+const PROFILE_MY_DOCTORS_SUCCESS = 'profile/mydoctors/success'
+const PROFILE_MY_DOCTORS_FAIL = 'profile/mydoctors/success'
 
 const initState = {
   data: {},
@@ -16,15 +20,20 @@ const initState = {
 
 export function doctors (state = initState, action = {}) {
   switch (action.type) {
-    case REHYDRATE:
-      console.log('----REHYDRATE----', 'REHYDRATE_DOCTORS')
-      return Object.assign({}, state, action.payload.doctors, { loading: false, error: null })
+    // case REHYDRATE:
+    //   console.log('----REHYDRATE----', 'REHYDRATE_DOCTORS')
+    //   return Object.assign({}, state, action.payload.doctors, { loading: false, error: null })
     case HOSPITAL_DOCTORS_QUERY:
+    case PROFILE_MY_DOCTORS_QUERY:
       return Object.assign({}, state, { loading: true, error: null })
+    case PROFILE_MY_DOCTORS_SUCCESS:
     case HOSPITAL_DOCTORS_SUCCESS:
       let doctors = getDoctors(state, action.doctors)
       return Object.assign({}, state, { data: doctors, loading: false, error: null })
+    // case PROFILE_MY_DOCTORS_SUCCESS:
+    //   return Object.assign({}, state, { data: action.doctors, loading: false, error: null })
     case HOSPITAL_DOCTORS_FAIL:
+    case PROFILE_MY_DOCTORS_FAIL:
       return Object.assign({}, state, { loading: false, error: action.error })
     case HOSPITAL_DOCTORS_SELECT:
       return Object.assign({}, state, { selectId: action.selectId, loading: false, error: null })
@@ -122,4 +131,67 @@ export const removeSelectDoctor = () => dispatch => {
   dispatch({
     type: HOSPITAL_DOCTORS_SELECT
   })
+}
+
+// 获取我的医生列表
+var QUERY_MY_DOCTORS = gql`
+  query ($id: ObjID!){
+    user(id: $id) {
+      id,
+      userHasDoctors {
+        id,
+        doctor {
+          id,
+          departmentHasDoctors{
+            department{
+              id
+            }
+          }
+          doctorName,
+          title,
+          major,
+          description,
+          remark,
+          recommend,
+          hot,
+          isAppointment
+        }
+      }
+    }
+  }
+`
+// 获取我的医生列表
+export const queryMyDoctors = (client, {userId}) => async dispatch => {
+  dispatch({
+    type: PROFILE_MY_DOCTORS_QUERY
+  })
+  try {
+    console.log(userId)
+    let data = await client.query({ query: QUERY_MY_DOCTORS, variables: {id: userId} })
+    if (data.error) {
+      return dispatch({
+        type: PROFILE_MY_DOCTORS_FAIL,
+        error: data.error.message
+      })
+    }
+    let user = data.data.user
+    let doctors = {}
+    for (let doc of user.userHasDoctors) {
+      let depIds = []
+      for (let det of doc.doctor.departmentHasDoctors) {
+        depIds.push(det.department.id)
+      }
+      doctors[doc.doctor.id] = Object.assign({}, doc.doctor, { userId: user.id }, {departmentIds: depIds})
+    }
+    return dispatch({
+      type: PROFILE_MY_DOCTORS_SUCCESS,
+      doctors
+    })
+  } catch (e) {
+    console.log(e)
+    return dispatch({
+      type: PROFILE_MY_DOCTORS_FAIL,
+      error: '数据请求失败！'
+    })
+  }
 }

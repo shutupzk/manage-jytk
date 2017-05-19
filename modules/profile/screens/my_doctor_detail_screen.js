@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 // import Link from 'next/link'
 // import * as actions from '../../../ducks'
-import DoctorDetail from '../components/doctor_detail'
+import DoctorDetail from '../../hospital/components/doctor_detail'
 class DoctorDetailScreen extends Component {
   constructor (props) {
     super(props)
@@ -13,7 +13,8 @@ class DoctorDetailScreen extends Component {
     console.log(this.props)
     let doctorId = this.props.url.query.doctorId
     console.log(doctorId)
-    var doctor = this.props.doctor[doctorId]
+    var doctor = this.props.doctors[doctorId]
+    console.log(doctor)
     if (this.props.error) {
       return (
         <div className='container'>error...</div>
@@ -32,7 +33,7 @@ class DoctorDetailScreen extends Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
-    doctor: state.doctors.data,
+    doctors: state.doctors.data,
     error: state.doctors.error,
     loading: state.doctors.loading
   }

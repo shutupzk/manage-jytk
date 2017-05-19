@@ -14,6 +14,9 @@ const PROFILE_PATIENTS_UPDATE_SUCCESS = 'profile/pateints/update/suceess'
 const PROFILE_PATIENTS_UPDATE_FAILE = 'profile/pateints/update/fail'
 const PROFILE_PATIENTS_SELECT = 'profile/pateints/select'
 const PROFILE_PATIENTS_CLEAR = 'profile/pateints/clear'
+const PROFILE_PATIENTS_UPDATE_DEFAULT = 'profile/patient/update_default'
+const PROFILE_PATIENTS_UPDATE_DEFAULT_SUCCESS = 'profile/patient/update_default/success'
+const PROFILE_PATIENTS_UPDATE_DEFAULT_FAIL = 'profile/patient/update_default/fail'
 
 const initState = {
   data: {},
@@ -29,11 +32,13 @@ export function patients (state = initState, action = {}) {
     case PROFILE_PATIENTS_ADD:
     case PROFILE_PATIENTS_UPDATE:
     case PROFILE_PATIENTS_REMOVE:
+    case PROFILE_PATIENTS_UPDATE_DEFAULT:
       return Object.assign({}, state, { loading: true, error: null })
     case PROFILE_PATIENTS_QUERY_FAIL:
     case PROFILE_PATIENTS_ADD_FAIL:
     case PROFILE_PATIENTS_UPDATE_FAILE:
     case PROFILE_PATIENTS_REMOVE_FAIL:
+    case PROFILE_PATIENTS_UPDATE_DEFAULT_FAIL:
       return Object.assign({}, state, { loading: false, error: action.error })
     case PROFILE_PATIENTS_REMOVE_SUCCESS:
       let newData = Object.assign({}, state.data)
@@ -42,6 +47,7 @@ export function patients (state = initState, action = {}) {
     case PROFILE_PATIENTS_QUERY_SUCCESS:
     case PROFILE_PATIENTS_UPDATE_SUCCESS:
     case PROFILE_PATIENTS_ADD_SUCCESS:
+    case PROFILE_PATIENTS_UPDATE_DEFAULT_SUCCESS:
       return Object.assign({}, state, { loading: false, error: null }, { data: Object.assign({}, state.data, action.patients) })
     case PROFILE_PATIENTS_SELECT:
       return Object.assign({}, state, {selectId: action.selectId})
@@ -61,6 +67,7 @@ const QUERY_PATIENTS = gql`
         name
         phone
         certificateNo
+        default
         sex
         birthday
         relationship
@@ -109,13 +116,14 @@ export const queryPatients = (client, { userId }) => async dispatch => {
 }
 
 const ADD_PATIENT = gql`
-  mutation ($userId: ObjID!,$name: String!, $phone: String!, $certificateNo: String!, $relationship: String!, $carteVital: String ){
-    createPatient(input: {userId: $userId, name: $name phone: $phone, certificateNo: $certificateNo, relationship: $relationship, carteVital: $carteVital}) {
+  mutation ($userId: ObjID!,$name: String!, $phone: String!, $certificateNo: String!, $relationship: String!, $carteVital: String, $default: Boolean ){
+    createPatient(input: {userId: $userId, name: $name phone: $phone, certificateNo: $certificateNo, relationship: $relationship, carteVital: $carteVital, default: $default}) {
       id
       name
       phone
       certificateNo
       sex
+      default
       birthday
       relationship
       carteVital
@@ -131,22 +139,24 @@ const ADD_PATIENT = gql`
   }
 `
 
-export const addPatient = (client, { userId, name, phone, certificateNo, relationship, carteVital }) => async dispatch => {
-  console.log('传入参数：', userId, name, phone, certificateNo, relationship, carteVital)
+export const addPatient = (client, { userId, name, phone, certificateNo, relationship, carteVital, isDefault }) => async dispatch => {
+  console.log('传入参数：', userId, name, phone, certificateNo, relationship, carteVital, isDefault)
   dispatch({
     type: PROFILE_PATIENTS_ADD
   })
   try {
     let data = await client.mutate({
       mutation: ADD_PATIENT,
-      variables: { userId, name, phone, certificateNo, relationship, carteVital }
+      variables: { userId, name, phone, certificateNo, relationship, carteVital, default: isDefault }
     })
     if (data.error) {
       dispatch({
         type: PROFILE_PATIENTS_ADD_FAIL,
         error: data.error.message
       })
-      return data.error.error
+      return {
+        error: data.error.error
+      }
     }
     const doc = data.data.createPatient
     let patients = {[doc.id]: doc}
@@ -154,14 +164,18 @@ export const addPatient = (client, { userId, name, phone, certificateNo, relatio
       type: PROFILE_PATIENTS_ADD_SUCCESS,
       patients
     })
-    return null
+    return {
+      data: doc.id
+    }
   } catch (e) {
     console.log(e)
     dispatch({
       type: PROFILE_PATIENTS_ADD_FAIL,
       error: e.message
     })
-    return e.message
+    return {
+      error: e.message
+    }
   }
 }
 
@@ -204,13 +218,14 @@ export const removePatient = (client, { patientId }) => async dispatch => {
 }
 
 const UPDATE_PATIENT = gql`
-  mutation ($patientId: ObjID!, $phone: String, $relationship: String, $carteVital: String) {
-    updatePatient(id: $patientId, input: {phone: $phone, relationship: $relationship, carteVital: $carteVital}) {
+  mutation ($patientId: ObjID!, $phone: String, $relationship: String, $carteVital: String, $default: Boolean) {
+    updatePatient(id: $patientId, input: {phone: $phone, relationship: $relationship, carteVital: $carteVital, default: $default}) {
       id
       name
       phone
       certificateNo
       sex
+      default
       birthday
       relationship
       carteVital
@@ -226,14 +241,14 @@ const UPDATE_PATIENT = gql`
   }
 `
 // 修改就诊人
-export const updatePatient = (client, { patientId, phone, relationship, carteVital }) => async dispatch => {
+export const updatePatient = (client, { patientId, phone, relationship, carteVital, isDefault }) => async dispatch => {
   dispatch({
     type: PROFILE_PATIENTS_UPDATE
   })
   try {
     let data = await client.mutate({
       mutation: UPDATE_PATIENT,
-      variables: { patientId, phone, relationship, carteVital }
+      variables: { patientId, phone, relationship, carteVital, default: isDefault }
     })
     if (data.error) {
       dispatch({
@@ -256,6 +271,64 @@ export const updatePatient = (client, { patientId, phone, relationship, carteVit
       error: e.message
     })
     return (e.message)
+  }
+}
+// 更新默认就诊人
+const UPDATE_DEFAULT_PATIENT = gql`
+  mutation ($patientId: ObjID!, $default: Boolean) {
+    updatePatient(id: $patientId, input: {default: $default}) {
+      id
+      name
+      phone
+      certificateNo
+      sex
+      default
+      birthday
+      relationship
+      carteVital
+      patientCards {
+        id
+        patientIdNo
+      }
+      inpatientCards {
+        id
+        inpatientNo
+      }
+    }
+  }
+`
+
+export const updatePatientDefault = (client, { patientId, isDefault }) => async dispatch => {
+  dispatch({
+    type: PROFILE_PATIENTS_UPDATE_DEFAULT
+  })
+  try {
+    let data = await client.mutate({
+      mutation: UPDATE_DEFAULT_PATIENT,
+      variables: { patientId, default: isDefault }
+    })
+    if (data.error) {
+      dispatch({
+        type: PROFILE_PATIENTS_UPDATE_DEFAULT_FAIL,
+        error: data.error.message
+      })
+      return data.error.error
+    }
+    const doc = data.data.updatePatient
+    let patients = {[doc.id]: doc}
+    dispatch({
+      type: PROFILE_PATIENTS_UPDATE_DEFAULT_SUCCESS,
+      patients
+    })
+    return null
+  } catch (e) {
+    console.log(e)
+    console.log(e)
+    dispatch({
+      type: PROFILE_PATIENTS_UPDATE_DEFAULT_FAIL,
+      error: e.message
+    })
+    return e.message
   }
 }
 

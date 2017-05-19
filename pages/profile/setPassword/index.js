@@ -5,7 +5,7 @@ import { BlankLayout } from '../../../modules/common'
 
 export default withData((props) => {
   return (
-    <BlankLayout title='登录'>
+    <BlankLayout title='修改密码'>
       <UpdatePasswordScreen {...props} />
     </BlankLayout>
   )

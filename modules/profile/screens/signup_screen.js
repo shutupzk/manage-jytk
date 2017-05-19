@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 // import { Router } from '../../../routes'
-import Router from 'next-route/router'
+import Router from 'next/router'
 
 import { savePhone } from '../../../ducks'
 import { connect } from 'react-redux'
@@ -73,7 +73,7 @@ class SignupScreen extends Component {
     // const { navigate } = props.navigation
     // window.location.href = '/signup_compelete'
     // Router.pushRoute('signup_compelete')
-    Router.push('/signup_compelete')
+    Router.push('/signup/signup_compelete')
   }
 
   render () {

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import Router from 'next-route/router'
+import Router from 'next/router'
 
 import { signup } from '../../../ducks'
 import { connect } from 'react-redux'

@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import Router from 'next/router'
 import { updatePassword } from '../../../ducks'
 import { connect } from 'react-redux'
 
@@ -32,25 +33,25 @@ class UpdatePasswordScreen extends Component {
     const userId = props.userId
     const error = await props.updatePassword(props.client, { userId, password: newpassword })
     if (error) return this.popup.alert(error)
-    return props.navigation.goBack(null)
+    return Router.push('/profile')
   }
   render () {
     return (<div className='container'>
       <div style={styles.list}>
         <div style={styles.item} key={'oldpassword'}>
           <span style={styles.textLeft}>&nbsp;原密码 </span>
-          <input placeholder={'输入现有密码'} className='textInput' style={{width: '60%'}}
-            onChangeText={(e) => this.setState({ oldpassword: e.target.value })} />
+          <input placeholder={'输入现有密码'} className='textInput' style={{width: '60%'}} type='password'
+            onChange={(e) => this.setState({ oldpassword: e.target.value })} />
         </div>
         <div style={styles.item} key={'newpassword'}>
           <span style={styles.textLeft}> &nbsp;新密码 </span>
-          <input placeholder={'设置新密码，不少于六位'} className='textInput' style={{width: '60%'}}
+          <input placeholder={'设置新密码，不少于六位'} className='textInput' style={{width: '60%'}} type='password'
             onChange={(e) => this.setState({ newpassword: e.target.value })} />
         </div>
         <div style={styles.item} key={'repassword'}>
           <span style={styles.textLeft}>{'再次输入'}</span>
-          <input placeholder={'再次输入新密码'} className='textInput' style={{width: '60%'}}
-            onChangeText={(e) => this.setState({ repassword: e.target.value })} />
+          <input placeholder={'再次输入新密码'} className='textInput' style={{width: '60%'}} type='password'
+            onChange={(e) => this.setState({ repassword: e.target.value })} />
         </div>
       </div>
       <button

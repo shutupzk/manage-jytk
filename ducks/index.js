@@ -1,8 +1,8 @@
 import { hospitals, queryHospitals } from './hospitals'
 import { departments, queryDepartments, queryDepartmentDetail } from './departments'
-import { doctors, queryDoctors, selectDoctor, removeSelectDoctor } from './doctors'
+import { doctors, queryDoctors, selectDoctor, removeSelectDoctor, queryMyDoctors } from './doctors'
 import { user, signup, signin, signout, queryUser, updatePassword, savePhone } from './user'
-import { patients, queryPatients, addPatient, removePatient, updatePatient, selectPatient, clearPateints } from './patients'
+import { patients, queryPatients, addPatient, removePatient, updatePatient, selectPatient, clearPateints, updatePatientDefault } from './patients'
 
 // key
 export {
@@ -21,6 +21,7 @@ export {
     queryDoctors,
     selectDoctor,
     removeSelectDoctor,
+    queryMyDoctors,
     signup,
     signin,
     signout,
@@ -32,5 +33,6 @@ export {
     removePatient,
     updatePatient,
     selectPatient,
-    clearPateints
+    clearPateints,
+    updatePatientDefault
 }

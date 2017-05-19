@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 // import _ from 'lodash'
-import Link from 'next/link'
 
+import DoctorList from '../components/doctor_list'
 import { queryDoctors, selectDoctor } from '../../../ducks'
 
 const filterDepartments = (departmentIds, departmentId) => {
@@ -66,29 +66,7 @@ class DoctorScreen extends Component {
     // })
     return (
       <div className='container'>
-        <ul style={{padding: 0}}>
-          {
-            selectDoctors.length > 0 ? selectDoctors.map((doc) => {
-              return (
-                <li key={doc.id} style={{margin: 10}}>
-                  <Link href={`/hospital/departments/doctor_introduce_list/doctor_detail?doctorId=${doc.id}`}>
-                    <a>
-                      <div style={{float: 'left', width: '22%'}}>
-                        <img width='60' height='60' src='/static/icons/doctor_head.png' />
-                      </div>
-                      <div style={{width: '78%'}}>
-                        <h3 style={{margin: 0}}>姓名：{doc.doctorName}</h3>
-                        <div>{doc.major}|主治医师</div>
-                        <div>擅长领域{doc.description}</div>
-                      </div>
-                      <div className='clearfix'>&nbsp;</div>
-                    </a>
-                  </Link>
-                </li>
-              )
-            }) : <div>暂时还没有医生</div>
-          }
-        </ul>
+        <DoctorList doctors={selectDoctors} toUrl='/hospital/departments/doctor_introduce_list/doctor_detail' />
         {/* {tab(selectDoctors)} */}
       </div>
     )
@@ -104,7 +82,7 @@ function mapStateToProps (state) {
   }
 }
 
-function tab (selectDoctors) {
+/* function tab (selectDoctors) {
   return (
     <div>
       <ul id='tab_nav' style={styles.tab_nav}>
@@ -167,14 +145,8 @@ var styles = {
     width: '100%',
     height: 273
   }
-}
+} */
 
 export default connect(
   mapStateToProps, {queryDoctors, selectDoctor}
 )(DoctorScreen)
-
-function getQueryString (name) {
-  var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i')
-  var r = window.location.search.substr(1).match(reg)
-  if (r != null) return unescape(r[2]); return null
-}
