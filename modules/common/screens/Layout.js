@@ -14,7 +14,7 @@ const Layout = (props) => {
       </div>
       <style jsx global>{`
         * {
-          font-family: Menlo, Monaco, "Lucida Console", "Liberation Mono", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Courier New", monospace, serif;
+          {/*font-family: Menlo, Monaco, "Lucida Console", "Liberation Mono", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Courier New", monospace, serif;*/}
         }
         body {
           margin: 0;
@@ -23,6 +23,45 @@ const Layout = (props) => {
         a {
           color: #22BAD9;
         }
+
+        {/*lvyinlei ---start*/}
+        html{
+          font-size: 100px;
+        }
+        @media(max-width: 370px){
+          html{
+            font-size: 90px;
+          }
+        }
+        body{
+          {/*font-family: Menlo, Monaco, "Lucida Console", "Liberation Mono", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Courier New", monospace, serif;*/}
+          font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+          font-size: .15rem;
+          background-color: #f2f2f2;
+          color: #797979;
+          font-weight: 300;
+        }
+        .flex{
+          display: -webkit-box;  /* 老版本语法: Safari, iOS, Android browser, older WebKit browsers. */
+          display: -moz-box;     /* 老版本语法: Firefox (buggy) */
+          display: -ms-flexbox;  /* 混合版本语法: IE 10 */
+          display: -webkit-flex; /* 新版本语法: Chrome 21+ */
+          display: flex;
+        }
+        .lr-flex{
+          -webkit-justify-content: center;
+          -moz-justify-content: center;
+          -ms-justify-content: center;
+          justify-content: center;
+        }
+        .tb-flex{
+          -webkit-align-items: center;
+          -moz-align-items: center;
+          -ms-justify-content: center;
+          align-items: center;
+        }
+        {/*lvyinlei ---end*/}
+
         p {
           font-size: 14px;
           line-height: 24px;
