@@ -9,7 +9,7 @@ const Navigation = () => (
         </Link>
       </div>
       <div style={{float: 'left', width: '33.3%', textAlign: 'center'}}>
-        <Link href='/orders' prefetch>
+        <Link href='/appointment/appointment_list' prefetch>
           <span>挂号订单</span>
         </Link>
       </div>

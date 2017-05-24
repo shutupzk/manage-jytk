@@ -1,21 +1,20 @@
 import React, { Component } from 'react'
-import Link from 'next/link'
+import div from 'next/link'
 class DepartmentList extends Component {
   render () {
     var deps = this.props.deps
-    var params = this.props.params
-    console.log(params)
     return (
-      <div>
+      <div style={{backgroundColor: '#ffffff'}}>
         {
           deps.map((dep) => {
-            var href = {pathname: '/hospital/departments/' + params.toScreenKey, query: {departmentId: dep.id}}
             return (
-              <Link key={dep.id} href={href} onClick={() => {
-                this.props.selectDepartment(dep.id)
-              }} prefetch>
+              <div
+                style={{marginLeft: 15}}
+                key={dep.id} onClick={(deps) => {
+                  this.props.selectDepartment(dep)
+                }}>
                 <div style={{ verticalAlign: 'center', height: '2em', fontSize: '14px', borderBottom: '1px solid #ccc' }}>{dep.deptName}</div>
-              </Link>
+              </div>
             )
           })
         }

@@ -3,13 +3,26 @@ import localforage from 'localforage'
 import { connect } from 'react-redux'
 import _ from 'lodash'
 import { queryMyDoctors } from '../../../ducks'
-import DoctorList from '../../hospital/components/doctor_list'
+import { DoctorList } from '../../hospital/components'
+
+const filterUsers = (userIds, userId) => {
+  let ids = userIds.filter((id) => {
+    if (userId === id) {
+      return true
+    }
+    return false
+  })
+  if (ids.length > 0) {
+    return true
+  }
+}
 
 class MyDoctorsScreen extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      query: false
+      query: false,
+      userId: this.props.userId
     }
   }
   componentWillMount () {
@@ -19,20 +32,21 @@ class MyDoctorsScreen extends Component {
   async getMyDoctors () {
     if (!this.state.query) {
       const userId = await localforage.getItem('userId')
-      this.setState({query: true})
+      this.setState({query: true, userId})
       this.props.queryMyDoctors(this.props.client, { userId })
     }
   }
 
   render () {
-    console.log(this.props.doctors)
+    const userId = this.state.userId
     var mydoctors = []
     _.mapValues(this.props.doctors, function (doc) {
-      console.log('doc', doc.userId)
-      mydoctors.push(doc)
+      if (filterUsers(doc.userIds, userId)) {
+        mydoctors.push(doc)
+      }
     })
     return (
-      <div>
+      <div className='container'>
         <DoctorList doctors={mydoctors} toUrl='doctor_detail' />
       </div>
     )

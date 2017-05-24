@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import _ from 'lodash'
-// import { withApollo } from 'react-apollo'
-import Link from 'next/link'
-import * as actions from '../../../ducks'
+import Router from 'next/router'
+
+import {queryDepartments, selectDepartment} from '../../../ducks'
 import DepartmentList from '../components/department_list'
 // import Link from 'next/link'
 
@@ -21,9 +21,10 @@ class DepartmentScreen extends Component {
     this.props.queryDepartments(this.props.client)
   }
 
-  selectDepartment (depId) {
-    console.log(depId)
-    this.props.selectDepartment(depId)
+  selectDepartment (dep) {
+    this.props.selectDepartment({departmentId: dep.id})
+    var href = {pathname: `/hospital/departments/${this.props.url.query.toScreenKey}`, query: {departmentId: dep.id}}
+    Router.push(href)
   }
 
   render () {
@@ -49,8 +50,8 @@ class DepartmentScreen extends Component {
         deps.push(dep)
       })
       return (
-        <div className='container'>
-          <DepartmentList deps={deps} params={this.props.url.query} selectDepartment={(depId) => { this.selectDepartment(depId) }} client={this.props.client} />
+        <div>
+          <DepartmentList deps={deps} selectDepartment={(dep) => { this.selectDepartment(dep) }} />
         </div>
       )
     } else {
@@ -65,7 +66,7 @@ function mapStateToProps (state) {
   }
 }
 export default connect(
-  mapStateToProps, actions
+  mapStateToProps, {queryDepartments, selectDepartment}
 )(DepartmentScreen)
 
 function isEmptyObject (obj) {

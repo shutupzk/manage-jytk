@@ -4,13 +4,15 @@ import {hosApmHomeIcon, patientPayHomeIcon, selfExamineHomeIcon, reportHomeIcon,
 
 export default () => (
   <div>
-    <img src='../../../static/icons/banner3.png' />
+    <img src='/static/icons/banner3.png' />
     <CardWhite classChild='nav'>
-      <section className='navLeft'>
-        <h3>预约挂号</h3>
-        <p>预约挂号</p>
-        <svg className='hosapmIcon' viewBox='62 541 146 131' version='1.1' xmlns="http://www.w3.org/2000/svg">{hosApmHomeIcon}</svg>
-      </section>
+      <Link href='/appointment/department_list'><a>
+        <section className='navLeft'>
+          <h3>预约挂号</h3>
+          <p>预约挂号</p>
+          <svg className='hosapmIcon' viewBox='62 541 146 131' version='1.1' xmlns="http://www.w3.org/2000/svg">{hosApmHomeIcon}</svg>
+        </section>
+      </a></Link>
       <section className="navRight">
         <article>
           <svg className='patientPayIcon' viewBox="48 -1 78 59" version="1.1" xmlns="http://www.w3.org/2000/svg">{patientPayHomeIcon}</svg>

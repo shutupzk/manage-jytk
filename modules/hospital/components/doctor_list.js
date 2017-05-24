@@ -7,7 +7,7 @@ export default (props) => {
       {
         doctors.length > 0 ? doctors.map((doc) => {
           return (
-            <li key={doc.id} style={{margin: 10}}>
+            <li key={doc.id} style={{marginBottom: 10, padding: 10, backgroundColor: '#ffffff'}}>
               <Link href={`${toUrl}?doctorId=${doc.id}`}>
                 <a>
                   <div style={{float: 'left', width: '22%'}}>

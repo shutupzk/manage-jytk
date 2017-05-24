@@ -47,17 +47,32 @@ export function doctors (state = initState, action = {}) {
 const getDoctors = (state, actionDoctors) => {
   let doctors = state.data
   for (let doc in actionDoctors) {
+    let departmentIds = []
+    let userIds = []
     if (doctors[doc]) {
-      let departmentIds = doctors[doc].departmentIds
-      if (!(departmentIds.indexOf(actionDoctors[doc].departmentId) > -1)) {
+      departmentIds = doctors[doc].departmentIds || []
+      if (actionDoctors[doc].departmentId && !(departmentIds.indexOf(actionDoctors[doc].departmentId) > -1)) {
         departmentIds.push(actionDoctors[doc].departmentId)
       }
       delete actionDoctors[doc].departmentId
-      doctors[doc] = Object.assign({}, doctors[doc], {departmentIds})
+      userIds = doctors[doc].userIds || []
+      if (actionDoctors[doc].userId && !(userIds.indexOf(actionDoctors[doc].userId) > -1)) {
+        userIds.push(actionDoctors[doc].userId)
+      }
+      delete actionDoctors[doc].userId
+      doctors[doc] = Object.assign({}, doctors[doc], {departmentIds}, {userIds})
     } else {
       let departmentId = actionDoctors[doc].departmentId
+      if (departmentId) {
+        departmentIds.push(departmentId)
+      }
       delete actionDoctors[doc].departmentId
-      doctors[doc] = Object.assign({}, actionDoctors[doc], {departmentIds: [departmentId]})
+      let userId = actionDoctors[doc].userId
+      if (userId) {
+        userIds.push(userId)
+      }
+      delete actionDoctors[doc].userId
+      doctors[doc] = Object.assign({}, actionDoctors[doc], {departmentIds}, {userIds})
     }
   }
   return doctors
@@ -142,11 +157,6 @@ var QUERY_MY_DOCTORS = gql`
         id,
         doctor {
           id,
-          departmentHasDoctors{
-            department{
-              id
-            }
-          }
           doctorName,
           title,
           major,
@@ -177,11 +187,11 @@ export const queryMyDoctors = (client, {userId}) => async dispatch => {
     let user = data.data.user
     let doctors = {}
     for (let doc of user.userHasDoctors) {
-      let depIds = []
-      for (let det of doc.doctor.departmentHasDoctors) {
-        depIds.push(det.department.id)
-      }
-      doctors[doc.doctor.id] = Object.assign({}, doc.doctor, { userId: user.id }, {departmentIds: depIds})
+      // let depIds = []
+      // for (let det of doc.doctor.departmentHasDoctors) {
+      //   depIds.push(det.department.id)
+      // }
+      doctors[doc.doctor.id] = Object.assign({}, doc.doctor, { userId: user.id })
     }
     return dispatch({
       type: PROFILE_MY_DOCTORS_SUCCESS,

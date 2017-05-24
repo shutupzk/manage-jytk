@@ -2,7 +2,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 // import Link from 'next/link'
-import * as actions from '../../../ducks'
+import {queryDepartmentDetail} from '../../../ducks'
 class DepartmentDetailScreen extends Component {
   constructor (props) {
     super(props)
@@ -107,4 +107,4 @@ const styles = {
     fontSize: 14
   }
 }
-export default connect(mapStateToProps, actions)(DepartmentDetailScreen)
+export default connect(mapStateToProps, {queryDepartmentDetail})(DepartmentDetailScreen)

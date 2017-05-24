@@ -1,4 +1,5 @@
 import Head from './head'
+// import auth from './auth'
 // import Header from './header'
 
 export default (props) => (
@@ -12,9 +13,14 @@ export default (props) => (
       * {
         font-family: Menlo, Monaco, "Lucida Console", "Liberation Mono", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Courier New", monospace, serif;
       }
-      body {
-        margin: 0;
-        padding: 0px;
+      body{
+        {/*font-family: Menlo, Monaco, "Lucida Console", "Liberation Mono", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Courier New", monospace, serif;*/}
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        font-size: .15rem;
+        background-color: #f2f2f2;
+        color: #797979;
+        font-weight: 300;
+        margin:0
       }
       a {
         color: #22BAD9;

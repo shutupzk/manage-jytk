@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 // import Link from 'next/link'
 // import * as actions from '../../../ducks'
-import DoctorDetail from '../../hospital/components/doctor_detail'
+import {DoctorDetail} from '../../hospital/components'
 class DoctorDetailScreen extends Component {
   constructor (props) {
     super(props)

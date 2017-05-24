@@ -1,14 +1,17 @@
 import ApolloClient, { createNetworkInterface } from 'apollo-client'
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux'
-import { autoRehydrate } from 'redux-persist'
+import { persistStore, autoRehydrate } from 'redux-persist'
 import thunk from 'redux-thunk'
+import localforage from 'localforage'
 
 import {
   hospitals,
   departments,
   doctors,
   user,
-  patients
+  patients,
+  schedules,
+  appointments
 } from '../ducks'
 // 服务地址
 // export const API_SERVER = 'localhost:3000'
@@ -67,7 +70,9 @@ function getReducer (client) {
     departments,
     doctors,
     user,
-    patients
+    patients,
+    schedules,
+    appointments
   })
 }
 
@@ -86,3 +91,5 @@ export const initStore = (client, initialState) => {
   }
   return reduxStore
 }
+
+// persistStore(initStore(initClient(), {}), { storage: localforage, whitelist: ['departments', 'doctors', 'hospitals', 'user', 'patients'] })

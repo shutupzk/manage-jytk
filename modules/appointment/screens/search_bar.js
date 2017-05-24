@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 
 class SearchBar extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state = { term: '' }
@@ -10,7 +10,8 @@ class SearchBar extends Component {
   render () {
     return (
       <div className='search-bar'>
-        <input
+        <input className='textInput'
+          style={{width: '100%'}}
           value={this.state.term}
           onChange={event => this.onInputChange(event.target.value)} />
       </div>
