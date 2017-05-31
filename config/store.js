@@ -11,7 +11,8 @@ import {
   user,
   patients,
   schedules,
-  appointments
+  appointments,
+  clinicStops
 } from '../ducks'
 // 服务地址
 // export const API_SERVER = 'localhost:3000'
@@ -72,7 +73,8 @@ function getReducer (client) {
     user,
     patients,
     schedules,
-    appointments
+    appointments,
+    clinicStops
   })
 }
 

@@ -4,7 +4,7 @@ import DoctorScreen from './screens/doctor_screen'
 import HospitalIntroductionScreen from './screens/hospital_introduction_screen'
 import DepartmentDetailScreen from './screens/department_detail_screen'
 import DoctorDetailScreen from './screens/doctor_detail_screen'
-import HospitalStopvisit from './screens/hospital_stopvisit_screen'
+import HospitalClinicStop from './screens/hospital_clinic_stop_screen'
 
 export {
     HospitalScreen,
@@ -13,5 +13,5 @@ export {
     HospitalIntroductionScreen,
     DepartmentDetailScreen,
     DoctorDetailScreen,
-    HospitalStopvisit
+    HospitalClinicStop
 }

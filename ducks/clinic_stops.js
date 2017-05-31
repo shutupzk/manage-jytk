@@ -41,6 +41,13 @@ const QUREYCLOSED = gql`
         doctor{
           id
           doctorName
+          avatar
+          major
+          title
+        }
+        department {
+          id
+          deptName
         }
       }
     }
