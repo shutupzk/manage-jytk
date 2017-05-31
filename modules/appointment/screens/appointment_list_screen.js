@@ -4,6 +4,7 @@ import Router from 'next/router'
 
 import {
   signin,
+  queryUser,
   queryAppointments,
   queryPatients,
   selectAppointment,
@@ -15,15 +16,19 @@ import {
 class AppointmentListScreen extends Component {
   constructor (props) {
     super(props)
-    this.state = {}
+    this.state = {
+      isInit: false
+    }
   }
 
   componentWillMount () {
-    this.autoSignin()
+    if (!this.props.userId) {
+      this.autoSignin()
+    }
   }
 
   async autoSignin () {
-    console.log('自动登录')
+    this.setState({isInit: true})
     const error = await this.props.signin({ username: null, password: null })
     if (error) return console.log(error)
     const userId = this.props.userId
@@ -32,6 +37,7 @@ class AppointmentListScreen extends Component {
       this.props.queryPatients(this.props.client, {userId})
       this.props.queryAppointments(this.props.client, { userId: this.props.userId })
     }
+    this.setState({isInit: false})
   }
 
     // 取消挂号
@@ -107,6 +113,12 @@ class AppointmentListScreen extends Component {
   }
 
   render () {
+    if (this.props.loading && this.state.isInit) {
+      return <div>loading...</div>
+    }
+    if (this.props.error) {
+      return <div>error...</div>
+    }
     const { appointments, selectAppointment } = this.props
     const dataList = getListData(appointments)
     return (
@@ -116,7 +128,7 @@ class AppointmentListScreen extends Component {
             return (
               <div key={item.id} onClick={() => {
                 selectAppointment({appointmentId: item.id})
-                Router.push('/appointment/appointment_detail')
+                Router.push('/appointment/appointment_detail?appointmentId=' + item.id)
               }}>
                 {this.ItemView(item)}
               </div>
@@ -212,13 +224,14 @@ function mapStateToProps (state) {
     userId: state.user.data.id,
     patients: state.patients.data,
     appointments: state.appointments.data,
-    loading: state.appointments.loading,
-    error: state.appointments.error
+    loading: state.patients.loading || state.appointments.loading,
+    error: state.patients.error || state.appointments.error
   }
 }
 
 export default connect(mapStateToProps, {
   signin,
+  queryUser,
   queryAppointments,
   queryPatients,
   selectAppointment,

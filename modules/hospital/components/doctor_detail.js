@@ -17,9 +17,7 @@ export default (props) => {
   let doctor = props.doctor
   // let schedules = props.schedules
   // let goDetail = props.goDetail
-  let height = window.innerHeight - 140
-  console.log(window.screen.height)
-  console.log(height)
+  let height = 600 // window.innerHeight - 140
   return (
     <div className='container' style={{height: height, overflow: 'auto'}}>
       <div>

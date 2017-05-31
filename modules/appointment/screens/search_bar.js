@@ -11,6 +11,7 @@ class SearchBar extends Component {
     return (
       <div className='search-bar'>
         <input className='textInput'
+          placeholder='全拼，首字母，汉字查询'
           style={{width: '100%'}}
           value={this.state.term}
           onChange={event => this.onInputChange(event.target.value)} />
@@ -20,9 +21,8 @@ class SearchBar extends Component {
 
   onInputChange (term) {
     this.setState({term})
-    this.props.onSearchTermChange(term)
+    this.props.searchDep(this.props.departments, term)
   }
 }
-
 
 export default SearchBar

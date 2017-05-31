@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import localforage from 'localforage'
 import { connect } from 'react-redux'
+import Router from 'next/router'
 import _ from 'lodash'
 import { queryMyDoctors } from '../../../ducks'
 import { DoctorList } from '../../hospital/components'
@@ -37,6 +38,10 @@ class MyDoctorsScreen extends Component {
     }
   }
 
+  toUrl (docId) {
+    Router.push('/profile/doctor_detail?doctorId=' + docId)
+  }
+
   render () {
     const userId = this.state.userId
     var mydoctors = []
@@ -47,7 +52,7 @@ class MyDoctorsScreen extends Component {
     })
     return (
       <div className='container'>
-        <DoctorList doctors={mydoctors} toUrl='doctor_detail' />
+        <DoctorList doctors={mydoctors} toUrl={(docId) => { this.toUrl(docId) }} />
       </div>
     )
   }

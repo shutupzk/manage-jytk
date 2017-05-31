@@ -1,5 +1,5 @@
 import gql from 'graphql-tag'
-// import { REHYDRATE } from 'redux-persist/constants'
+import { REHYDRATE } from 'redux-persist/constants'
 
 const HOSPITAL_DOCTORS_QUERY = 'hospital/doctors/query'
 const HOSPITAL_DOCTORS_SUCCESS = 'hospital/doctors/success'
@@ -19,10 +19,11 @@ const initState = {
 }
 
 export function doctors (state = initState, action = {}) {
+  console.log('action', action)
   switch (action.type) {
-    // case REHYDRATE:
-    //   console.log('----REHYDRATE----', 'REHYDRATE_DOCTORS')
-    //   return Object.assign({}, state, action.payload.doctors, { loading: false, error: null })
+    case REHYDRATE:
+      console.log('----REHYDRATE----', 'REHYDRATE_DOCTORS')
+      return Object.assign({}, state, action.payload.doctors, { loading: false, error: null })
     case HOSPITAL_DOCTORS_QUERY:
     case PROFILE_MY_DOCTORS_QUERY:
       return Object.assign({}, state, { loading: true, error: null })

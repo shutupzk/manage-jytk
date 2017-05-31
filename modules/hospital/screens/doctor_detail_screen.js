@@ -1,25 +1,36 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 // import Link from 'next/link'
-// import * as actions from '../../../ducks'
+import { isEmptyObject } from '../../../utils'
+import {queryDoctors} from '../../../ducks'
 import DoctorDetail from '../components/doctor_detail'
 class DoctorDetailScreen extends Component {
   constructor (props) {
     super(props)
-    this.toDetail = false
+    this.state = {toDetail: false}
+  }
+  componentWillMount () {
+    if (isEmptyObject(this.props.doctors)) {
+      this.setState({toDetail: true})
+      this.getMyDoctors()
+    }
+  }
+
+  async getMyDoctors () {
+    const departmentId = this.props.url.query.departmentId
+    await this.props.queryDoctors(this.props.client, { departmentId })
+    this.setState({toDetail: false})
   }
 
   render () {
-    console.log(this.props)
     let doctorId = this.props.url.query.doctorId
-    console.log(doctorId)
-    var doctor = this.props.doctor[doctorId]
+    var doctor = this.props.doctors[doctorId]
     if (this.props.error) {
       return (
         <div className='container'>error...</div>
       )
     }
-    if (this.props.loading) {
+    if (this.props.loading || this.state.toDetail) {
       return (
         <div className='container'>loading...</div>
       )
@@ -32,10 +43,10 @@ class DoctorDetailScreen extends Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
-    doctor: state.doctors.data,
+    doctors: state.doctors.data,
     error: state.doctors.error,
     loading: state.doctors.loading
   }
 }
 
-export default connect(mapStateToProps)(DoctorDetailScreen)
+export default connect(mapStateToProps, { queryDoctors })(DoctorDetailScreen)

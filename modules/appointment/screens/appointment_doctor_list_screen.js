@@ -1,9 +1,12 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import _ from 'lodash'
+import moment from 'moment'
+import Router from 'next/router'
 
 import DoctorDetail from '../components/doctor_detail'
 import { isEmptyObject } from '../../../utils'
-import { queryDoctors, selectDoctor, querySchedules, selectSchedule } from '../../../ducks'
+import { queryDoctors, selectDoctor, selectDepartment, removeSelectDoctor, querySchedules, selectSchedule } from '../../../ducks'
 
 const filterDepartments = (departmentIds, departmentId) => {
   let ids = departmentIds.filter((id) => {
@@ -17,10 +20,43 @@ const filterDepartments = (departmentIds, departmentId) => {
   }
 }
 
+const filterSchedules = (schedules, doctor, departmentId, selectedDate) => {
+  for (let key in schedules) {
+    if (schedules[key].doctorId === doctor.id && schedules[key].departmentId === departmentId) {
+      if (selectedDate && selectedDate !== '') {
+        if (schedules[key].visitDate === selectedDate) {
+          return true
+        }
+      } else {
+        return true
+      }
+    }
+  }
+  return false
+}
+
 const isExistDepartment = (doctors, departmentId) => {
+  console.log(doctors)
+  console.log(departmentId)
   let selectDoctors = []
   for (let key in doctors) {
     if (filterDepartments(doctors[key].departmentIds, departmentId)) {
+      selectDoctors.push(doctors[key])
+      // console.log('yes')
+      // var schedulesData = await querySchedules(client, { departmentId, doctorId: doctors[key].id })
+      // console.log(schedulesData)
+      // if (schedulesData && schedulesData.length > 0) {
+      //   selectDoctors.push(doctors[key])
+      // }
+    }
+  }
+  return selectDoctors
+}
+
+const isExistDepartment2 = (doctors, departmentId, schedules, selectedDate) => {
+  let selectDoctors = []
+  for (let key in doctors) {
+    if (filterSchedules(schedules, doctors[key], departmentId, selectedDate)) {
       selectDoctors.push(doctors[key])
     }
   }
@@ -28,31 +64,49 @@ const isExistDepartment = (doctors, departmentId) => {
 }
 
 class AppointmentDoctorListScreen extends Component {
+  constructor (props) {
+    super(props)
+    this.state = {toDetail: false, isDateTab: false, selectedDate: '', firstDate: moment().format('YYYY-MM-DD')}
+  }
   componentWillMount () {
     let doctors = this.props.doctorsData
     let departmentId = this.props.departmentId
-    let selectDoctors = isExistDepartment(doctors, departmentId)
+    if (!departmentId) {
+      this.props.selectDepartment({departmentId: this.props.url.query.departmentId})
+    }
+    let schedules = this.props.schedules
+    let selectDoctors = isExistDepartment(doctors, departmentId, schedules)
     if (isEmptyObject(doctors) || selectDoctors.length === 0) {
-      console.log('1')
-      this.queryData()
-      console.log('5')
+      this.queryData2()
     } else {
-      console.log('2')
       this.props.selectDoctor({doctorId: selectDoctors[0].id})
     }
   }
 
-  async queryData () {
-    let { client, doctors, departmentId, queryDoctors, selectDoctor, querySchedules } = this.props
+  // async queryData () {
+  //   let { client, doctors, departmentId, queryDoctors, selectDoctor, querySchedules } = this.props
+  //   this.setState({toDetail: true})
+  //   await queryDoctors(client, {departmentId})
+  //   if (!isEmptyObject(doctors)) {
+  //     let selectDoctors = isExistDepartment(doctors, departmentId)
+  //     await selectDoctor({ doctorId: selectDoctors[0] ? selectDoctors[0].id : null })
+  //     if (selectDoctors[0]) {
+  //       await querySchedules(client, { departmentId, doctorId: selectDoctors[0].id })
+  //     }
+  //   }
+  //   this.setState({toDetail: false})
+  // }
+
+  async queryData2 () {
+    let { client, doctors, departmentId, queryDoctors, selectDoctor, querySchedules, schedules } = this.props
+    this.setState({toDetail: true})
     await queryDoctors(client, {departmentId})
-    console.log('4')
     if (!isEmptyObject(doctors)) {
-      console.log('3')
-      let selectDoctors = isExistDepartment(doctors, departmentId)
-      console.log(selectDoctors[0].id)
-      await selectDoctor({ doctorId: selectDoctors[0].id })
-      await querySchedules(client, { departmentId, doctorId: selectDoctors[0].id })
+      await querySchedules(client, {departmentId})
+      let selectDoctors = isExistDepartment2(doctors, departmentId, schedules, this.state.selectedDate)
+      await selectDoctor({ doctorId: selectDoctors[0] ? selectDoctors[0].id : null })
     }
+    this.setState({toDetail: false})
   }
 
   tabRender (selectDoctors, doctor) {
@@ -81,10 +135,9 @@ class AppointmentDoctorListScreen extends Component {
         </div>
         <div id='tab_content' style={{width: '80%', float: 'right'}}>
           <div id={`tab_${doctorId}`} style={{overflow: 'hidden'}}>
-            {/*{doctor.doctorName}*/}
-            <DoctorDetail doctor={doctor} schedules={this.props.schedules} goDetail={(schedule) => {
+            <DoctorDetail doctor={doctor} schedules={this.props.schedules} departmentId={this.props.departmentId} goDetail={(schedule) => {
               this.props.selectSchedule(schedule.id)
-              this.props.url.push('/appointment/schedule_detail')
+              Router.push('/appointment/schedule_detail?scheduleId=' + schedule.id)
             }} />
           </div>
         </div>
@@ -92,9 +145,113 @@ class AppointmentDoctorListScreen extends Component {
       </div>
     )
   }
+
+  renderDate () {
+    let date = new Date(this.state.firstDate)
+    let dateList = [
+      {
+        date: new Date(date),
+        weekday: new Date(date).getDay(),
+        day: new Date(date).getDate()
+      },
+      {
+        date: new Date(moment(date).add(1, 'day')),
+        weekday: new Date(moment(date).add(1, 'day')).getDay(),
+        day: new Date(moment(date).add(1, 'day')).getDate()
+      },
+      {
+        date: new Date(moment(date).add(2, 'day')),
+        weekday: new Date(moment(date).add(2, 'day')).getDay(),
+        day: new Date(moment(date).add(2, 'day')).getDate()
+      },
+      {
+        date: new Date(moment(date).add(3, 'day')),
+        weekday: new Date(moment(date).add(3, 'day')).getDay(),
+        day: new Date(moment(date).add(3, 'day')).getDate()
+      },
+      {
+        date: new Date(moment(date).add(4, 'day')),
+        weekday: new Date(moment(date).add(4, 'day')).getDay(),
+        day: new Date(moment(date).add(4, 'day')).getDate()
+      },
+      {
+        date: new Date(moment(date).add(5, 'day')),
+        weekday: new Date(moment(date).add(5, 'day')).getDay(),
+        day: new Date(moment(date).add(5, 'day')).getDate()
+      }
+    ]
+    return (
+      <div style={{display: 'flex'}}>
+        <div key={date.date} style={{margin: '10px 5px 10px 10px', paddingTop: 15}} onClick={() => {
+          var oldDate = this.state.firstDate
+          this.setState({firstDate: moment(oldDate).add(-6, 'day').format('YYYY-MM-DD')})
+        }}>
+          {
+            new Date(this.state.firstDate) > new Date()
+              ? <img src='/static/icons/arrow_right.png' style={{width: 10, height: 10, marginTop: 4, transform: 'rotateY(180deg)'}} />
+              : ''
+          }
+        </div>
+        {
+          dateList.map((date) => {
+            let weekdayStr = ''
+            switch (date.weekday) {
+              case 0:
+                weekdayStr = '周日'
+                break
+              case 1:
+                weekdayStr = '周一'
+                break
+              case 2:
+                weekdayStr = '周二'
+                break
+              case 3:
+                weekdayStr = '周三'
+                break
+              case 4:
+                weekdayStr = '周四'
+                break
+              case 5:
+                weekdayStr = '周五'
+                break
+              case 6:
+                weekdayStr = '周六'
+                break
+              default:
+                break
+            }
+            let isToday = false
+            let todayClass = {
+              color: 'inherit',
+              margin: 14,
+              textAlign: 'center'
+            }
+            if (moment().format('YYYY-MM-DD') === moment(date.date).format('YYYY-MM-DD')) {
+              todayClass = {
+                color: 'blue',
+                margin: 14,
+                textAlign: 'center'
+              }
+              isToday = true
+            }
+            return <div key={date.date} style={todayClass} onClick={() => { this.setState({selectedDate: moment(date.date).format('YYYY-MM-DD')}) }}>
+              <div style={{marginBottom: 5}}>{isToday ? '今天' : weekdayStr}</div>
+              <div>{date.day}</div>
+            </div>
+          })
+        }
+        <div key={date.date} style={{margin: '10px 10px 10px 5px', paddingTop: 15}} onClick={() => {
+          var oldDate = this.state.firstDate
+          this.setState({firstDate: moment(oldDate).add(6, 'day').format('YYYY-MM-DD')})
+        }}>
+          <img src='/static/icons/arrow_right.png' style={{width: 10, height: 10, marginTop: 4}} />
+        </div>
+      </div>
+    )
+  }
   render () {
     console.log(this.props)
-    if (this.props.loading) {
+    if (this.state.toDetail || this.props.loading) {
       return <div>loading...</div>
     }
     // 多加判断防止状态为error时，所有的界面都是error
@@ -103,19 +260,29 @@ class AppointmentDoctorListScreen extends Component {
     }
     let departmentId = this.props.departmentId
     let doctors = this.props.doctors
-    let selectDoctors = isExistDepartment(doctors, departmentId)
-    console.log(selectDoctors)
-    let doctorId = this.props.doctorId || selectDoctors[0].id
-    console.log('doctorId')
-    console.log(doctorId)
-    let doctor = doctors[doctorId]
+    let schedules = this.props.schedules
+    let selectDoctors = isExistDepartment2(doctors, departmentId, schedules, this.state.selectedDate)
+    let doctorId = this.props.doctorId
+    let doctor = {}
+    if (selectDoctors.length > 0) {
+      doctorId = this.props.doctorId || selectDoctors[0].id
+      this.props.selectDoctor({ doctorId: selectDoctors[0] ? selectDoctors[0].id : null })
+      doctor = doctors[doctorId]
+    }
     return (
       <div className=''>
         <div style={{display: 'flex', textAlign: 'center', backgroundColor: '#ffffff', paddingTop: '10px', paddingBottom: '10px', marginBottom: 5, borderBottom: 'solid 0.2px #eeeeee'}}>
-          <li style={{textAlign: 'center', width: '50%', float: 'left', height: '25px', fontSize: '16px'}}>全部日期</li>
-          <li style={{textAlign: 'center', width: '50%', float: 'right', height: '25px', fontSize: '16px'}}>按日期挂号</li>
+          <li style={{textAlign: 'center', width: '50%', float: 'left', height: '25px', fontSize: '16px'}} onClick={() => { this.setState({isDateTab: false, selectedDate: '', firstDate: moment().format('YYYY-MM-DD')}) }}>全部日期</li>
+          <li style={{textAlign: 'center', width: '50%', float: 'right', height: '25px', fontSize: '16px'}} onClick={() => { this.setState({isDateTab: true}) }}>按日期挂号</li>
         </div>
-        {this.tabRender(selectDoctors, doctor)}
+        <div style={{padding: '0px 5px', backgroundColor: '#ffffff'}}>
+          {
+            this.state.isDateTab ? this.renderDate() : ''
+          }
+        </div>
+        {
+          selectDoctors.length > 0 ? this.tabRender(selectDoctors, doctor) : '没有可预约医生'
+        }
       </div>
     )
   }
@@ -126,6 +293,7 @@ function mapStateToProps (state) {
   return {
     loading: state.doctors.loading,
     error: state.doctors.error,
+    user: state.user.data,
     userId: state.user.data.id,
     doctors: state.doctors.data,
     doctorId: state.doctors.selectId,
@@ -170,4 +338,4 @@ var styles = {
   }
 }
 
-export default connect(mapStateToProps, { queryDoctors, selectDoctor, querySchedules, selectSchedule })(AppointmentDoctorListScreen)
+export default connect(mapStateToProps, { queryDoctors, selectDoctor, selectDepartment, removeSelectDoctor, querySchedules, selectSchedule })(AppointmentDoctorListScreen)

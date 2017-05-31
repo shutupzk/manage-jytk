@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import Router from 'next/router'
 // import _ from 'lodash'
 
 import DoctorList from '../components/doctor_list'
@@ -41,6 +42,10 @@ class DoctorScreen extends Component {
     // this.props.queryDoctors({departmentId: '58eb4faec77c0857c9dc5b0c'})
   }
 
+  toUrl (docId) {
+    Router.push('/hospital/departments/doctor_introduce_list/doctor_detail?departmentId=' + this.props.url.query.departmentId + '&doctorId=' + docId)
+  }
+
   render () {
     console.log(this.props)
     let departmentId = this.props.url.query.departmentId
@@ -66,7 +71,7 @@ class DoctorScreen extends Component {
     // })
     return (
       <div className='container'>
-        <DoctorList doctors={selectDoctors} toUrl='/hospital/departments/doctor_introduce_list/doctor_detail' />
+        <DoctorList doctors={selectDoctors} toUrl={(docId) => { this.toUrl(docId) }} />
         {/* {tab(selectDoctors)} */}
       </div>
     )

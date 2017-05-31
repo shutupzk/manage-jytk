@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { selectPatient, addAppointment, selectSchedule } from '../../../ducks'
+import { signin, queryUser, queryPatients, queryDoctors, selectPatient, addAppointment, selectSchedule } from '../../../ducks'
 import { connect } from 'react-redux'
 import Router from 'next/router'
 /**
@@ -9,15 +9,70 @@ class ScheduleDetailScreen extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      animating: false
+      animating: false,
+      beginTime: null,
+      endTime: null,
+      payType: '自费',
+      visitScheduleTimeId: undefined,
+      selectTimeRangeShow: false,
+      selectPayTypeShow: false
     }
   }
 
   componentWillMount () {
-    const array = getPatients(this.props.patients)
-    const patientId = array[0].id
+    if (!this.props.userId) {
+      console.log('1')
+      this.initState()
+    }
+    // this.props.selectSchedule(this.props.scheduleId)
+  }
+
+
+  async initState () {
+    console.log('2')
+    const error = await this.props.signin({ username: null, password: null })
+    if (error) return console.log(error)
+    const userId = this.props.userId
+    if (userId) {
+      await this.props.queryUser(this.props.client, { userId })
+      await this.props.queryPatients(this.props.client, {userId})
+      await this.props.queryAppointments(this.props.client, { userId: this.props.userId })
+    }
+    console.log(this.props)
+    console.log('3')
+    const array = getPatients(this.props.selectPatient, this.props.patients, this.props.patientId)
+    const patientId = this.props.patientId || array[0].id
     this.props.selectPatient({ patientId })
-    this.props.selectSchedule(this.props.scheduleId)
+    if (!this.props.scheduleId) {
+      this.props.selectSchedule(this.props.url.query.scheduleId)
+    }
+  }
+
+  selectTimeRangeRender (schedule) {
+    return (
+      <div style={{width: '100%', textAlign: 'center', backgroundColor: '#ffffff', paddingTop: 2}}>
+        {
+          schedule.visitScheduleTimes.map((scheduleTime) => {
+            return <option key={scheduleTime.beginTime} style={{height: 24, width: '100%', padding: 2, borderBottom: 'solid 1px #dddddd'}} onClick={() => {
+              this.setState({selectTimeRangeShow: false, beginTime: scheduleTime.beginTime, endTime: scheduleTime.endTime, visitScheduleTimeId: scheduleTime.id})
+            }}>{scheduleTime.beginTime}-{scheduleTime.endTime}  (余号{scheduleTime.leftNum})</option>
+          })
+        }
+      </div>
+    )
+  }
+
+  selectPayTypeRender (schedule) {
+    return (
+      <div style={{width: '100%', textAlign: 'center', backgroundColor: '#ffffff', paddingTop: 2}}>
+        <option style={{height: 24, width: '100%', padding: 2, borderBottom: 'solid 1px #dddddd'}} onClick={() => { this.setState({selectPayTypeShow: false, payType: '自费'}) }}>自费</option>
+        <option style={{height: 24, width: '100%', padding: 2, borderBottom: 'solid 1px #dddddd'}} onClick={() => { this.setState({selectPayTypeShow: false, payType: '职工医保'}) }}>职工医保</option>
+        <option style={{height: 24, width: '100%', padding: 2, borderBottom: 'solid 1px #dddddd'}} onClick={() => { this.setState({selectPayTypeShow: false, payType: '铁路医保'}) }}>铁路医保</option>
+        <option style={{height: 24, width: '100%', padding: 2, borderBottom: 'solid 1px #dddddd'}} onClick={() => { this.setState({selectPayTypeShow: false, payType: '生育保险'}) }}>生育保险</option>
+        <option style={{height: 24, width: '100%', padding: 2, borderBottom: 'solid 1px #dddddd'}} onClick={() => { this.setState({selectPayTypeShow: false, payType: '农合医保'}) }}>农合医保</option>
+        <option style={{height: 24, width: '100%', padding: 2, borderBottom: 'solid 1px #dddddd'}} onClick={() => { this.setState({selectPayTypeShow: false, payType: '城镇医保'}) }}>城镇医保</option>
+      </div>
+    )
   }
 
   // 提交
@@ -25,22 +80,25 @@ class ScheduleDetailScreen extends Component {
     const patient = this.props.patients[this.props.patientId]
     const patientCardId = patient.patientCards[0].id
     const scheduleId = this.props.scheduleId
+    const visitScheduleTimeId = this.state.visitScheduleTimeId
+    const payType = this.state.payType
     if (!patientCardId) {
       return this.popup.alert('请选择就诊人')
     }
     this.setState({animating: true})
-    await props.addAppointment(props.client, { scheduleId, patientCardId })
+    var appointmentId = await props.addAppointment(props.client, { scheduleId, patientCardId, visitScheduleTimeId, payType })
     this.setState({animating: false})
     if (this.props.addError) return this.popup.alert(this.props.addError)
     // return this.props.url.back()
-    return Router.push('/appointment/appointment_list')
+    return Router.push('/appointment/appointment_success?appointmentId=' + appointmentId)
   }
   render () {
-    const {doctors, doctorId, schedules, scheduleId, patients} = this.props
+    const {doctors, doctorId, schedules, scheduleId, patients, selectPatient} = this.props
     const doctor = doctors[doctorId]
     const schedule = schedules[scheduleId]
-    const array = getPatients(this.props.patients)
-    console.log('patients：：：：：', patients)
+    const array = getPatients(selectPatient, this.props.patients, this.props.patientId)
+    let beginTime = this.state.beginTime || (schedule.visitScheduleTimes && schedule.visitScheduleTimes[0] ? schedule.visitScheduleTimes[0].beginTime : null)
+    let endTime = this.state.endTime || (schedule.visitScheduleTimes && schedule.visitScheduleTimes[0] ? schedule.visitScheduleTimes[0].endTime : null)
     let patientId = this.props.patientId
     if (!patientId) {
       patientId = array[0].id
@@ -76,14 +134,14 @@ class ScheduleDetailScreen extends Component {
         </div>
         <div style={styles.item} key={'amPm'}>
           <span style={styles.textLeft}>{'就诊时间'}</span>
-          <div style={styles.rightView}>
-            <span style={styles.textRight}> {schedule.amPm === 'a' ? '8:00-12:00' : '13:00-17:00'} </span>
+          <div style={styles.rightView} onClick={() => { this.setState({selectTimeRangeShow: true}) }}>
+            <span style={styles.textRight}> {beginTime ? beginTime : (schedule.amPm === 'a' ? '8:00' : '13:00')} - {endTime ? endTime : (schedule.amPm === 'a' ? '9:00' : '14:00')} </span>
             <img src='/static/icons/arrow_right.png' style={{width: 10, height: 12}} />
           </div>
         </div>
         <div style={styles.item} key={'name'}>
           <span style={styles.textLeft}>{'就诊人'}</span>
-          <div style={styles.rightView}>
+          <div style={styles.rightView} onClick={() => { Router.push('/appointment/select_patient') }}>
             <span style={styles.textRight}>{patient.name}</span>
             <img src='/static/icons/arrow_right.png' style={{width: 10, height: 12}} />
           </div>
@@ -102,8 +160,11 @@ class ScheduleDetailScreen extends Component {
         </div>*/}
         <div style={styles.item} key={'payType'}>
           <span style={styles.textLeft}>{'支付类别'}</span>
-          <div style={styles.rightView}>
-            <span style={styles.textRight}>自费</span>
+          <div style={styles.rightView} onClick={() => {
+            console.log('支付类别')
+            this.setState({selectPayTypeShow: true})
+          }}>
+            <span style={styles.textRight}>{this.state.payType}</span>
             <img src='/static/icons/arrow_right.png' style={{width: 10, height: 12}} />
           </div>
         </div>
@@ -127,14 +188,25 @@ class ScheduleDetailScreen extends Component {
       >
         确定
       </button>
+      <div style={{position: 'fixed', bottom: '20px', width: '90%'}}>
+        {
+          this.state.selectTimeRangeShow ? this.selectTimeRangeRender(schedule) : ''
+        }
+        {
+          this.state.selectPayTypeShow ? this.selectPayTypeRender(schedule) : ''
+        }
+      </div>
       {/*<Popup ref={popup => { this.popup = popup }} />*/}
     </div>)
   }
 }
 
-const getPatients = (patients) => {
+const getPatients = (selectPatient, patients, patientId) => {
   let array = []
   for (let key in patients) {
+    if (!patientId && patients[key].default) {
+      selectPatient({patientId: patients[key].id})
+    }
     array.push(patients[key])
   }
   return array
@@ -153,7 +225,8 @@ const styles = {
     paddingBottom: 10
   },
   item: {
-    height: 35,
+    height: 30,
+    paddingTop: 10,
     flexWrap: 'nowrap',
     alignItems: 'center',
     flexDirection: 'row',
@@ -221,4 +294,4 @@ function mapStateToProps (state) {
   }
 }
 
-export default connect(mapStateToProps, { selectPatient, addAppointment, selectSchedule })(ScheduleDetailScreen)
+export default connect(mapStateToProps, { signin, queryUser, queryPatients, queryDoctors, selectPatient, addAppointment, selectSchedule })(ScheduleDetailScreen)

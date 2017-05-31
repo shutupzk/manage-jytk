@@ -1,11 +1,10 @@
 import React, { Component } from 'react'
 import Router from 'next/router'
 import { connect } from 'react-redux'
-import localforage from 'localforage'
 
-import { signin, queryUser, selectAppointment, queryPatients, queryAppointmentDetail, updateAppointment, selectDepartment, selectDoctor } from '../../../ducks'
+import { signin, queryUser, queryPatients, queryAppointments, queryAppointmentDetail, updateAppointment, selectAppointment } from '../../../ducks'
 
-class AppointmentDetailScreen extends Component {
+class AppointmentSuccessScreen extends Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -14,105 +13,54 @@ class AppointmentDetailScreen extends Component {
   }
 
   componentWillMount () {
-    // const appointment = this.props.appointments[this.props.appointmentId]
-    // const departmentId = appointment.visitSchedule.department.id
-    // const doctorId = appointment.visitSchedule.doctor.id
-    // this.setState({ departmentId, doctorId })
-    // const client = this.props.client
-    // this.props.queryAppointmentDetail(client, {appointmentId: this.props.appointmentId})
-    this.initState()
+    if (this.props.userId) {
+      this.initState()
+    }
   }
 
   async initState () {
-    if (this.props.appointments) {
-      const appointmentId = this.props.url.query.appointmentId
-      this.setState({isInit: true})
-      await this.props.queryAppointmentDetail(this.props.client, {appointmentId})
-      await this.props.selectAppointment({appointmentId})
-      const appointments = this.props.appointments
-      console.log(appointments)
-      const appointment = appointments[this.props.appointmentId]
-      const departmentId = appointment.visitSchedule.department.id
-      const doctorId = appointment.visitSchedule.doctor.id
-      this.setState({ departmentId, doctorId })
-      const userId = await localforage.getItem('userId')
-      await this.props.queryPatients(this.props.client, {userId})
-    } else {
-      console.log('sw')
-      const { appointmentId, appointments } = this.props
-      const appointment = appointments[appointmentId]
-      const departmentId = appointment.visitSchedule.department.id
-      const doctorId = appointment.visitSchedule.doctor.id
-      this.setState({ departmentId, doctorId })
-      const client = this.props.client
-      this.setState({isInit: true})
-      this.props.queryAppointmentDetail(client, {appointmentId})
+    console.log('1')
+    this.setState({isInit: true})
+    const error = await this.props.signin({ username: null, password: null })
+    if (error) return console.log(error)
+    const userId = this.props.userId
+    if (userId) {
+      this.props.queryUser(this.props.client, { userId })
+      this.props.queryPatients(this.props.client, {userId})
+      this.props.queryAppointments(this.props.client, { userId: this.props.userId })
     }
+    const { appointmentId, appointments, url, selectAppointment } = this.props
+    await selectAppointment({appointmentId: url.query.appointmentId})
+    const appointment = appointments[appointmentId]
+    const departmentId = appointment.visitSchedule.department.id
+    const doctorId = appointment.visitSchedule.doctor.id
+    this.setState({ departmentId, doctorId })
+    const client = this.props.client
+    await this.props.queryAppointmentDetail(client, {appointmentId})
     this.setState({isInit: false})
-  }
-  // 取消挂号
-  async cancelAppointment () {
-    const appointmentId = this.props.appointmentId
-    const visitStatus = '02'
-    const error = await this.props.updateAppointment(this.props.client, { appointmentId, visitStatus })
-    console.log('error', error)
-    if (error) return this.popup.alert(error)
-    return this.props.url.back()
-    // this.popup.confirm({
-    //   content: '确定取消？',
-    //   ok: {
-    //     text: '确定',
-    //     style: { color: 'red' },
-    //     callback: async () => {
-    //       const error = await this.props.updateAppointment(this.props.client, { appointmentId, visitStatus })
-    //       console.log('error', error)
-    //       if (error) return this.popup.alert(error)
-    //       return this.props.url.goBack()
-    //     }
-    //   },
-    //   cancel: {text: '取消', style: {color: 'blue'}}
-    // })
-  }
-
-  // 再次预约跳转医生排版
-  gotoSchedule () {
-    const { selectDepartment, selectDoctor } = this.props
-    const departmentId = this.state.departmentId
-    const doctorId = this.state.doctorId
-    Router.push('/appointment/doctor_list')
-    selectDepartment({departmentId})
-    selectDoctor({doctorId})
+    console.log('2')
   }
 
   render () {
-    console.log(this.props)
+    console.log('3')
     if (this.state.isInit || this.props.loading) {
-      return (<div>loading...</div>)
+      return (<div>loading</div>)
     }
     if (this.props.error) {
-      return (<div>error...</div>)
+      return (<div>error</div>)
     }
     const { patients, appointments, appointmentId } = this.props
     const appointment = appointments[appointmentId]
     const patient = patients[appointment.patientId]
     let buttonColor = '#FFFFFF'
-    let status = '待取号'
-    let statusStyle = styles.unCancelText
-    let buttonText = '取消预约'
-    let buttonTextColor = '#E45252'
     if (appointment.visitStatus === '02') {
-      status = '已取消'
-      statusStyle = styles.cancelText
-      buttonText = '再次预约'
       buttonColor = '#3CA0FF'
-      buttonTextColor = '#FFFFFF'
     }
     return (
       <div style={styles.container}>
         <div style={styles.detailView}>
           <div style={styles.itemTopView}>
-            <span>{`预约号码：${appointment.orderSn}`}</span>
-            <span style={statusStyle}>{status}</span>
+            <div style={{fontSize: 20, textAlign: 'center'}}>挂号成功</div>
           </div>
           <div style={styles.subView}>
             <div style={{color: '#000000', marginBottom: 3}}><b>挂号信息</b></div>
@@ -136,7 +84,18 @@ class AppointmentDetailScreen extends Component {
               <span style={styles.itemLeft}>{'就诊日期'}</span>
               <span style={styles.itemRight}>{appointment.visitSchedule.visitDate}</span>
             </div>
-            
+            {/*<div style={styles.itemView}>
+              <span style={styles.itemLeft}>{'支付类别'}</span>
+              <span style={styles.itemRight}>{appointment.payType}</span>
+            </div>
+            <div style={styles.itemView}>
+              <span style={styles.itemLeft}>{'支付金额'}</span>
+              <span style={styles.itemRight}>{appointment.visitSchedule.registerFee}</span>
+            </div>
+            <div style={styles.itemView}>
+              <span style={styles.itemLeft}>{'就  诊  号'}</span>
+              <span style={styles.itemRight}>{appointment.visitNo}</span>
+            </div>*/}
             <div style={styles.itemView}>
               <span style={styles.itemLeft}>{'预计候诊时间'}</span>
               <span style={styles.itemRight}>{appointment.timeRangeOfVist}</span>
@@ -178,17 +137,24 @@ class AppointmentDetailScreen extends Component {
           </div>
 
         </div>
-        <div style={{marginTop: 15}}>
-          <button
-            style={{backgroundColor: buttonColor, color: buttonTextColor, width: '100%', display: 'block'}}
-            onClick={() => {
-              if (buttonText === '取消预约') {
-                this.cancelAppointment(this.props)
-              } else {
-                this.gotoSchedule()
-              }
-            }} >{buttonText}</button>
+        <div style={{margin: 5}}>
+          <h3>*重要提示：</h3>
+          <div>1.东川门诊预约患者，请于预约当天预约时段前10分钟到自助报到机/人工台报到，报到后到指定诊间外候诊。如未能在预约时段后半小时内报到，系统将自动取消此次预约。</div>
+          <div>2.英东/老研所/惠福/平洲/合群门诊部预约患者，请于当天预约时段内携相关有效证件到挂号台或自助机取号，或在支付界面缴费后凭短信直接到医生诊间外候诊。</div>
+          <div>3.此信息不作为报销凭证。</div>
         </div>
+        <div style={{marginTop: 15, backgroundColor: '#ffffff', height: 30, padding: 10}}>
+          <button
+            style={{backgroundColor: buttonColor, color: '#3CA0FF', width: '20%', display: 'block', float: 'right', border: 'solid 1px #cccccc', marginLeft: 10}}
+            onClick={() => {
+            }} >去支付</button>
+          <button
+            style={{backgroundColor: buttonColor, color: '#505050', width: '20%', display: 'block', float: 'right', border: 'solid 1px #cccccc'}}
+            onClick={() => {
+              Router.push('/appointment/appointment_list')
+            }} >稍后支付</button>
+        </div>
+        {/*<Popup ref={popup => { this.popup = popup }} />*/}
       </div>
     )
   }
@@ -260,4 +226,4 @@ function mapStateToProps (state) {
   }
 }
 
-export default connect(mapStateToProps, { signin, queryUser, selectAppointment, queryPatients, queryAppointmentDetail, updateAppointment, selectDepartment, selectDoctor })(AppointmentDetailScreen)
+export default connect(mapStateToProps, { signin, queryUser, queryPatients, queryAppointments, queryAppointmentDetail, updateAppointment, selectAppointment })(AppointmentSuccessScreen)

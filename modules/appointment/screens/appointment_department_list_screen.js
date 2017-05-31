@@ -1,25 +1,37 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import _ from 'lodash'
-import localforage from 'localforage'
+// import localforage from 'localforage'
 import Router from 'next/router'
+import localforage from 'localforage'
 
 import SearchBar from './search_bar'
 import DepartmentList from '../../hospital/components/department_list'
-import { queryDepartments, selectDepartment } from '../../../ducks'
-import { isEmptyObject } from '../../../utils'
+import { signin, queryUser, queryPatients, queryDepartments, selectDepartment } from '../../../ducks'
+import { isEmptyObject, convertPinyin, convertPinyinFirst } from '../../../utils'
 
 class AppointmentDepartmentListScreen extends Component {
   constructor (props) {
     super(props)
     this.toDetail = false
+    this.state = {searchFlag: false, searchResult: []}
   }
   componentWillMount () {
+    this.autoSignin()
     // if (!this.props.token) {
     //   this.getCurrentUser()
     // }
     if (isEmptyObject(this.props.data)) {
       this.getDepartments()
+    }
+  }
+  async autoSignin () {
+    const error = await this.props.signin({ username: null, password: null })
+    if (error) return console.log(error)
+    const userId = this.props.userId || await localforage.getItem('userId')
+    if (userId) {
+      this.props.queryUser(this.props.client, { userId })
+      this.props.queryPatients(this.props.client, {userId})
     }
   }
   // async getCurrentUser () {
@@ -36,6 +48,9 @@ class AppointmentDepartmentListScreen extends Component {
   }
   getDepartments () {
     this.props.queryDepartments(this.props.client)
+  }
+  searchDept (theData, term) {
+    this.setState({searchFlag: true, searchResult: filterData(theData, term)})
   }
   render () {
     console.log(this.props)
@@ -66,9 +81,12 @@ class AppointmentDepartmentListScreen extends Component {
       _.mapValues(department, function (dep) {
         deps.push(dep)
       })
+      if (this.state.searchFlag) {
+        deps = this.state.searchResult
+      }
       return (
         <div>
-          <div style={{margin: '10px 15px'}}><SearchBar /></div>
+          <div style={{margin: '10px 15px'}}><SearchBar departments={this.props.departments} searchDep={(theData, term) => { this.searchDept(theData, term) }} /></div>
           <DepartmentList deps={deps} selectDepartment={(dep) => { this.selectDepartment(dep) }} />
         </div>
       )
@@ -85,12 +103,38 @@ function mapStateToProps (state) {
   //   userId,
   //   token
   // }
+  console.log(state)
   return {
     token: state.user.data.token,
     user: state.user.data,
+    patients: state.patients.data,
     departments: state.departments.data,
     loading: state.departments.loading || state.user.loading,
     error: state.departments.error || state.user.error
   }
 }
-export default connect(mapStateToProps, { queryDepartments, selectDepartment })(AppointmentDepartmentListScreen)
+export default connect(mapStateToProps, { signin, queryUser, queryPatients, queryDepartments, selectDepartment })(AppointmentDepartmentListScreen)
+
+
+function filterData (theData, term) {
+  let newData = []
+  console.log(term)
+  _.mapValues(theData, (dep) => {
+    if (searchData(dep.deptName, term)) {
+      newData.push(dep)
+    }
+  })
+  return newData
+}
+
+function searchData (dataStr, term) {
+  let reg = new RegExp('[a-zA-Z0-9\\- ]')
+  if (reg.test(term)) {
+    term = term.toUpperCase()
+  }
+  if (dataStr.indexOf(term) > -1 || convertPinyin(dataStr).toUpperCase().indexOf(term) > -1 || convertPinyinFirst(dataStr).indexOf(term) > -1) {
+    return true
+  } else {
+    return false
+  }
+}

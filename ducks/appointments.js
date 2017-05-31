@@ -64,6 +64,7 @@ const QUERY_APPOINTMENTS = gql`
             payStatus
             visitNo
             payType
+            seqNo
             timeRangeOfVist
             patientCard{
               id
@@ -141,6 +142,7 @@ const QUERY_APPOINTMENT_DETAIL = gql`
       payStatus
       visitNo
       payType
+      seqNo
       timeRangeOfVist
       patientCard {
         id
@@ -202,13 +204,14 @@ export const queryAppointmentDetail = (client, { appointmentId }) => async dispa
 }
 
 const ADD_APPOINTMENT = gql`
-  mutation ($scheduleId: ObjID!, $patientCardId: ObjID!) {
-    createAppointment(input: {visitScheduleId: $scheduleId, patientCardId: $patientCardId}) {
+  mutation ($scheduleId: ObjID!, $patientCardId: ObjID!, $visitScheduleTimeId: ObjID, $payType: String) {
+    createAppointment(input: {visitScheduleId: $scheduleId, patientCardId: $patientCardId, visitScheduleTimeId: $visitScheduleTimeId, payType: $payType}) {
       id
       orderSn
       visitStatus
       payStatus
       visitNo
+      seqNo
       payType
       timeRangeOfVist
       patientCard {
@@ -241,12 +244,13 @@ const ADD_APPOINTMENT = gql`
 `
 
 // 挂号
-export const addAppointment = (client, {scheduleId, patientCardId}) => async dispatch => {
+export const addAppointment = (client, {scheduleId, patientCardId, visitScheduleTimeId, payType}) => async dispatch => {
+  console.log(scheduleId, patientCardId, visitScheduleTimeId, payType)
   dispatch({
     type: APPOINTMENT_APPOINTMENTS_ADD
   })
   try {
-    let data = await client.mutate({ mutation: ADD_APPOINTMENT, variables: { scheduleId, patientCardId } })
+    let data = await client.mutate({ mutation: ADD_APPOINTMENT, variables: { scheduleId, patientCardId, visitScheduleTimeId, payType } })
     if (data.error) {
       return dispatch({
         type: APPOINTMENT_APPOINTMENTS_ADD_FAIL,
@@ -261,6 +265,7 @@ export const addAppointment = (client, {scheduleId, patientCardId}) => async dis
       type: APPOINTMENT_APPOINTMENTS_ADD_SUCCESS,
       appointments: json
     })
+    return appointment.id
   } catch (e) {
     console.log(e)
     dispatch({
@@ -277,6 +282,7 @@ const UPDATE_APPOINTMENT = gql`
       orderSn
       visitStatus
       payStatus
+      seqNo
       visitNo
       payType
       timeRangeOfVist

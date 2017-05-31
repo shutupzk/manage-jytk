@@ -3,11 +3,15 @@ import _ from 'lodash'
  * 出诊时间
  */
 function DoctorScheduleList (props) {
-  let {schedules, goDetail} = props
+  let {schedules, goDetail, departmentId, doctor} = props
+  console.log(departmentId)
+  console.log(doctor.id)
   console.log(schedules)
   let scheduleArr = []
   _.mapValues(schedules, (schedule) => {
-    scheduleArr.push(schedule)
+    if (schedule.doctorId === doctor.id && schedule.departmentId === departmentId) {
+      scheduleArr.push(schedule)
+    }
   })
   return (
     <div className='descriptionView'>

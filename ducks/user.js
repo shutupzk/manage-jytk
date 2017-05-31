@@ -31,7 +31,7 @@ const initState = {
 
 // reducer
 export function user (state = initState, action = {}) {
-  console.log('action', action)
+  // console.log('action', action)
   switch (action.type) {
     case PROFILE_USER_SIGNUP:
     case PROFILE_USER_SIGNIN:
