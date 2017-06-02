@@ -55,6 +55,14 @@ const QUREY_NEWS_GGROUP = gql`
     newsGroups {
       id
       type
+      newss {
+        id
+        title
+        summary
+        time
+        image
+        content
+      }
     }
   }
 `
@@ -74,7 +82,7 @@ export const queryNewsGroups = (client) => async dispatch => {
     let newses = data.data.newsGroups
     let json = {}
     for (let news of newses) {
-      news = Object.assign({}, news, {newss: []})
+      // news = Object.assign({}, news, {newss: []})
       json[news.id] = news
     }
     // news[newsGroupId] = Object.assign({}, news[newsGroupId], {newss: actionNews.newss})

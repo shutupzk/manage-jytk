@@ -103,13 +103,14 @@ class ReportScreen extends Component {
 
   renderLaboratory () {
     let laboratories = this.props.laboratories
+    console.log(laboratories)
     if (!isEmptyObject(laboratories)) {
       return (
         <div>
           {
-            laboratories.map((item) => {
+            laboratories.map((item, i) => {
               return (
-                <div style={styles.itemView} key={item.id}>
+                <div style={styles.itemView} key={i}>
                   <div style={styles.itemTitleView}>
                     <div style={{ flex: 1 }}>{Object.keys(item)[0]}</div>
                     <div style={styles.dateTitleText}>[{item[Object.keys(item)[0]].length}项]</div>
@@ -117,7 +118,7 @@ class ReportScreen extends Component {
                   <div style={styles.itemContentsView}>
                     {
                       item[Object.keys(item)[0]].map((item, i) => (
-                        <div key={i}>
+                        <div key={item.id}>
                           <div onClick={() => {
                             this.props.selectLaboratory({
                               date: item.reportTime,

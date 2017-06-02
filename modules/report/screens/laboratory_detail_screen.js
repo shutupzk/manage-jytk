@@ -62,7 +62,7 @@ class LaboratoryDetailScreen extends Component {
         <div>
           {
             laboratory.inspectionItems.map((item, i) => (
-              <div key={i} style={{padding: '0px 10px', display: 'flex', backgroundColor: i % 2 === 0 ? '#F8F8F8' : 'white'}}>
+              <div key={item.id} style={{padding: '0px 10px', display: 'flex', backgroundColor: i % 2 === 0 ? '#F8F8F8' : 'white'}}>
                 <div className='itemTitleView' style={{flex: 1, borderLeftWidth: 0}}>
                   <div style={styles.itemText}>{i + 1}</div>
                 </div>
