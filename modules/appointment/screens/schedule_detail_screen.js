@@ -21,7 +21,6 @@ class ScheduleDetailScreen extends Component {
 
   componentWillMount () {
     if (!this.props.userId) {
-      console.log('1')
       this.initState()
     }
     // this.props.selectSchedule(this.props.scheduleId)
@@ -29,7 +28,6 @@ class ScheduleDetailScreen extends Component {
 
 
   async initState () {
-    console.log('2')
     const error = await this.props.signin({ username: null, password: null })
     if (error) return console.log(error)
     const userId = this.props.userId
@@ -38,8 +36,6 @@ class ScheduleDetailScreen extends Component {
       await this.props.queryPatients(this.props.client, {userId})
       await this.props.queryAppointments(this.props.client, { userId: this.props.userId })
     }
-    console.log(this.props)
-    console.log('3')
     const array = getPatients(this.props.selectPatient, this.props.patients, this.props.patientId)
     const patientId = this.props.patientId || array[0].id
     this.props.selectPatient({ patientId })
@@ -161,7 +157,6 @@ class ScheduleDetailScreen extends Component {
         <div style={styles.item} key={'payType'}>
           <span style={styles.textLeft}>{'支付类别'}</span>
           <div style={styles.rightView} onClick={() => {
-            console.log('支付类别')
             this.setState({selectPayTypeShow: true})
           }}>
             <span style={styles.textRight}>{this.state.payType}</span>

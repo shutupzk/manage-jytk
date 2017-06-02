@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-// import Link from 'next/link'
+import Router from 'next/router'
 import { isEmptyObject } from '../../../utils'
 import {queryDoctors} from '../../../ducks'
 import DoctorDetail from '../components/doctor_detail'
@@ -22,6 +22,11 @@ class DoctorDetailScreen extends Component {
     this.setState({toDetail: false})
   }
 
+  gotoEvaluate () {
+    let doctorId = this.props.url.query.doctorId
+    Router.push('/hospital/departments/doctor_introduce_list/add_doctor_evaluate?doctorId=' + doctorId)
+  }
+
   render () {
     let doctorId = this.props.url.query.doctorId
     var doctor = this.props.doctors[doctorId]
@@ -36,7 +41,7 @@ class DoctorDetailScreen extends Component {
       )
     }
     return (
-      <DoctorDetail doctor={doctor} />
+      <DoctorDetail doctor={doctor} gotoEvaluate={() => { this.gotoEvaluate() }} />
     )
   }
 }

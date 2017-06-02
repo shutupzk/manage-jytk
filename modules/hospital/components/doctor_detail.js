@@ -5,10 +5,10 @@ import DoctorDescription from './doctor_description'
 import DoctorAwards from './doctor_awards'
 
 // button: 我要评价
-function renderBottomButton (doc) {
+function renderBottomButton (doc, gotoEvaluate) {
   return (
     <div style={{position: 'absolute', bottom: '15px', width: '90%', height: '40px'}}>
-      <button style={{width: '100%', display: 'block', backgroundColor: '#3CA0FF', height: '40px', borderRadius: '10px', fontSize: 16}}>我要评价</button>
+      <button onClick={() => { gotoEvaluate() }} style={{width: '100%', display: 'block', backgroundColor: '#3CA0FF', height: '40px', borderRadius: '10px', fontSize: 16}}>我要评价</button>
     </div>
   )
 }
@@ -16,7 +16,7 @@ function renderBottomButton (doc) {
 export default (props) => {
   let doctor = props.doctor
   // let schedules = props.schedules
-  // let goDetail = props.goDetail
+  let gotoEvaluate = props.gotoEvaluate
   let height = 600 // window.innerHeight - 140
   return (
     <div className='container' style={{height: height, overflow: 'auto'}}>
@@ -28,7 +28,7 @@ export default (props) => {
         <DoctorAwards doctor={doctor} />
       </div>
       {
-        renderBottomButton(doctor)
+        renderBottomButton(doctor, gotoEvaluate)
       }
       <style jsx>{`
         .container {

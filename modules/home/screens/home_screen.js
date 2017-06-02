@@ -14,28 +14,36 @@ export default () => (
         </section>
       </a></Link>
       <section className="navRight">
-        <article>
-          <svg className='patientPayIcon' viewBox="48 -1 78 59" version="1.1" xmlns="http://www.w3.org/2000/svg">{patientPayHomeIcon}</svg>
-          <h3>门诊缴费</h3>
-          <p>在线缴费不排队</p>
-        </article>
-        <article>
-          <svg className='selfExamineIcon' viewBox="39 -4 72 73" version="1.1" xmlns="http://www.w3.org/2000/svg">{selfExamineHomeIcon}</svg>
-          <h3>疾病自查</h3>
-          <p>智能引导就诊</p>
-        </article>
+        <Link href='/outpatient'><a>
+          <article>
+            <svg className='patientPayIcon' viewBox="48 -1 78 59" version="1.1" xmlns="http://www.w3.org/2000/svg">{patientPayHomeIcon}</svg>
+            <h3>门诊缴费</h3>
+            <p>在线缴费不排队</p>
+          </article>
+        </a></Link>
+        <Link href=''><a>
+          <article>
+            <svg className='selfExamineIcon' viewBox="39 -4 72 73" version="1.1" xmlns="http://www.w3.org/2000/svg">{selfExamineHomeIcon}</svg>
+            <h3>疾病自查</h3>
+            <p>智能引导就诊</p>
+          </article>
+        </a></Link>
       </section>
       <section className="navRight">
-        <article>
-          <svg className='reportIcon' viewBox="600 381 62 57" version="1.1" xmlns="http://www.w3.org/2000/svg">{reportHomeIcon}</svg>
-          <h3>查询报告</h3>
-          <p>在线查看检验报告</p>
-        </article>
-        <article>
-          <svg className='inHosIcon' viewBox="600 594 62 55" version="1.1" xmlns="http://www.w3.org/2000/svg">{inHosHomeIcon}</svg>
-          <h3>住院跟踪</h3>
-          <p>查询住院信息</p>
-        </article>
+        <Link href='/report'><a>
+          <article>
+            <svg className='reportIcon' viewBox="600 381 62 57" version="1.1" xmlns="http://www.w3.org/2000/svg">{reportHomeIcon}</svg>
+            <h3>查询报告</h3>
+            <p>在线查看检验报告</p>
+          </article>
+        </a></Link>
+        <Link href='/inpatient'><a>
+          <article>
+            <svg className='inHosIcon' viewBox="600 594 62 55" version="1.1" xmlns="http://www.w3.org/2000/svg">{inHosHomeIcon}</svg>
+            <h3>住院跟踪</h3>
+            <p>查询住院信息</p>
+          </article>
+        </a></Link>
       </section>
     </CardWhite>
     <div className='container'>
@@ -43,7 +51,8 @@ export default () => (
         <Link href='/hospital'>医院中心</Link>
       </div>
       <div>
-        <h3>健康咨询</h3>
+        <h3 style={{float: 'left'}}>健康咨询</h3>
+        <Link href='hospital/news_list'><a style={{float: 'right', padding: '18px 0px'}}><span>更多>></span></a></Link>
       </div>
     </div>
     <style jsx global>{`

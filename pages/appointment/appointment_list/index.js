@@ -1,10 +1,10 @@
 import { AppointmentListScreen } from '../../../modules/appointment'
 import withData from '../../../config/withData'
 // import App from '../../../config/App'
-import { BlankLayout } from '../../../modules/common'
+import { Layout } from '../../../modules/common'
 
 export default withData((props) => (
-  <BlankLayout title='预约列表'>
+  <Layout title='预约列表'>
     <AppointmentListScreen {...props} />
-  </BlankLayout>
+  </Layout>
 ))

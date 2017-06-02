@@ -1,7 +1,7 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-// import Link from 'next/link'
+import Link from 'next/link'
 import {queryDepartmentDetail} from '../../../ducks'
 class DepartmentDetailScreen extends Component {
   constructor (props) {
@@ -21,9 +21,7 @@ class DepartmentDetailScreen extends Component {
   }
 
   render () {
-    console.log(this.props)
-    let departmentId = this.props.url.query.departmentId
-    console.log(departmentId)
+    let departmentId = this.props.departmentId || this.props.url.query.departmentId
     var department = this.props.department[departmentId]
     if (this.props.error) {
       return (
@@ -35,6 +33,8 @@ class DepartmentDetailScreen extends Component {
         <div className='container'>loading...</div>
       )
     }
+    let evaluates = department.departmentEvaluates ? department.departmentEvaluates.slice(0, 3) : []
+    let goEvaluateUrl = '/hospital/departments/evaluate_list?departmentId=' + departmentId
     return (
       <div className='container'>
         <div style={{backgroundColor: '#eee'}}>
@@ -62,21 +62,27 @@ class DepartmentDetailScreen extends Component {
             <div style={{backgroundColor: '#fff'}}>
               <div style={styles.commonText}>
                 科室评价
-                <a style={{float: 'right'}}>更多>></a>
+                <Link href={goEvaluateUrl}><a style={{float: 'right'}}>更多>></a></Link>
               </div>
               <div style={styles.contentText}>
                 <ul style={{padding: 0, margin: 0}}>
-                  <li>
-                    <div>评价人:xxx</div>
-                    <div>评价内容:xxxxxxxxxxxxxxxxxxxx</div>
-                  </li>
+                  {
+                    evaluates.length > 0 ? evaluates.map((evaluate) => {
+                      return (
+                        <li style={{borderBottom: 'solid 1px #dddddd',marginBottom: 5}}>
+                          <div>评价人:{evaluate.user.name}</div>
+                          <div>评价内容:{evaluate.advice}</div>
+                        </li>
+                      )
+                    }) : '暂无评价'
+                  }
                 </ul>
               </div>
             </div>
           </div>
-          <div style={{position: 'absolute', bottom: '15px', width: '90%', height: '40px'}}>
+          {/*<div style={{position: 'absolute', bottom: '15px', width: '90%', height: '40px'}}>
             <button style={{width: '100%', display: 'block', backgroundColor: '#3CA0FF', height: '40px', borderRadius: '10px', fontSize: 16}}>我要评价</button>
-          </div>
+          </div>*/}
         </div>
       </div>
     )
@@ -85,6 +91,7 @@ class DepartmentDetailScreen extends Component {
 function mapStateToProps (state) {
   return {
     department: state.departments.data,
+    departmentId: state.departments.selectId,
     error: state.departments.error,
     loading: state.departments.loading
   }

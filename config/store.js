@@ -8,11 +8,17 @@ import {
   hospitals,
   departments,
   doctors,
+  doctorEvaluates,
   user,
   patients,
   schedules,
   appointments,
-  clinicStops
+  clinicStops,
+  news,
+  examinations,
+  laboratories,
+  outpatient,
+  inpatient
 } from '../ducks'
 // 服务地址
 // export const API_SERVER = 'localhost:3000'
@@ -70,11 +76,17 @@ function getReducer (client) {
     hospitals,
     departments,
     doctors,
+    doctorEvaluates,
     user,
     patients,
     schedules,
     appointments,
-    clinicStops
+    clinicStops,
+    news,
+    examinations,
+    laboratories,
+    outpatient,
+    inpatient
   })
 }
 

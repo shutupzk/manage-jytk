@@ -11,6 +11,9 @@ const HOSPITAL_DEPARTMENTS_DEPARTMENT_FAIL = 'hospital/departments/department/fa
 
 const HOSPITAL_DEPARTMENTS_SELECT = 'hospital/departments/select'
 
+const DEPARTMENT_EVALUATE_ADD = 'hospital/department/evaluate/add/fail'
+const DEPARTMENT_EVALUATE_ADD_SUCCESS = 'hospital/department/evaluate/add/success'
+const DEPARTMENT_EVALUATE_ADD_FAIL = 'hospital/department/evaluate/add/fail'
 const initState = {
   data: {},
   loading: true,
@@ -25,12 +28,15 @@ export function departments (state = initState, action = {}) {
     //   return Object.assign({}, state, action.payload.departments, { loading: false, error: null })
     case HOSPITAL_DEPARTMENTS_QUERY:
     case HOSPITAL_DEPARTMENTS_DEPARTMENT_QUERY:
+    case DEPARTMENT_EVALUATE_ADD:
       return Object.assign({}, state, { loading: true, error: null })
     case HOSPITAL_DEPARTMENTS_SUCCESS:
     case HOSPITAL_DEPARTMENTS_DEPARTMENT_DETAIL:
+    case DEPARTMENT_EVALUATE_ADD_SUCCESS:
       return Object.assign({}, state, { data: action.data, loading: false, error: null })
     case HOSPITAL_DEPARTMENTS_FAIL:
     case HOSPITAL_DEPARTMENTS_DEPARTMENT_FAIL:
+    case DEPARTMENT_EVALUATE_ADD_FAIL:
       return Object.assign({}, state, { loading: false, error: action.error })
     case HOSPITAL_DEPARTMENTS_SELECT:
       return Object.assign({}, state, {selectId: action.selectId, loading: false, error: null})
@@ -92,6 +98,17 @@ const QUERY_DEPARTMENT = gql`
       description
       features
       position
+      departmentEvaluates{
+        id
+        user{
+          id
+          name
+        }
+        advice
+        orderlyScore
+        technologyScore
+        createdAt
+      }
     }
   }
 `
@@ -133,4 +150,45 @@ export const selectDepartment = ({ departmentId }) => dispatch => {
     type: HOSPITAL_DEPARTMENTS_SELECT,
     selectId: departmentId
   })
+}
+
+var ADD_DEPARTMENT_EVALUATE = gql`
+  mutation($departmentId: ObjID!,$userId: ObjID!,$orderlyScore: Int!, $technologyScore: Int!, $advice:String!) {
+  createDepartmentEvaluate(input:{departmentId:$departmentId,userId:$userId,orderlyScore:$orderlyScore,technologyScore:$technologyScore,advice:$advice}) {
+    id
+    user{
+      id
+      name
+    }
+    orderlyScore
+    technologyScore
+    advice
+    createdAt
+  }
+}
+`
+export const addDepartmentEvaluate = (client, {departmentId, userId, orderlyScore, technologyScore, advice}) => async dispatch => {
+  dispatch({
+    type: DEPARTMENT_EVALUATE_ADD
+  })
+  console.log(departmentId, userId, orderlyScore, technologyScore, advice)
+  try {
+    let data = await client.mutate({ mutation: ADD_DEPARTMENT_EVALUATE, variables: { departmentId, userId, orderlyScore, technologyScore, advice } })
+    if (data.error) {
+      return dispatch({
+        type: DEPARTMENT_EVALUATE_ADD_FAIL,
+        error: data.error.message
+      })
+    }
+    return dispatch({
+      type: DEPARTMENT_EVALUATE_ADD_SUCCESS,
+      data: data.data.departmentEvaluates
+    })
+  } catch (e) {
+    console.log(e)
+    return dispatch({
+      type: DEPARTMENT_EVALUATE_ADD_FAIL,
+      error: '添加评价失败！'
+    })
+  }
 }
