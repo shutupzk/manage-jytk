@@ -1,0 +1,9 @@
+{
+  "apps" : [{
+    "name"        : "hospital-patient-wechat",
+    "script"      : "server.js",
+    "watch"       : true,
+    "log_date_format": "YYYY-MM-DD HH:mm:ss",
+    "exec_interpreter" : "babel-node"
+  }]
+}
