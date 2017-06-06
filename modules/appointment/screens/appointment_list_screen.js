@@ -24,6 +24,8 @@ class AppointmentListScreen extends Component {
   componentWillMount () {
     if (!this.props.userId) {
       this.autoSignin()
+    } else {
+      this.props.queryAppointments(this.props.client, { userId: this.props.userId })
     }
   }
 
@@ -113,7 +115,7 @@ class AppointmentListScreen extends Component {
   }
 
   render () {
-    if (this.props.loading && this.state.isInit) {
+    if (this.props.loading || this.state.isInit) {
       return <div>loading...</div>
     }
     if (this.props.error) {
@@ -121,8 +123,9 @@ class AppointmentListScreen extends Component {
     }
     const { appointments, selectAppointment } = this.props
     const dataList = getListData(appointments)
+    var height = window.innerHeight - 50
     return (
-      <div style={styles.container}>
+      <div style={{height: height}}>
         {
           dataList.map((item) => {
             return (

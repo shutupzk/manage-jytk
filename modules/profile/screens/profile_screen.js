@@ -63,15 +63,15 @@ class ProfileScreen extends Component {
     const array = [
       { title: '就诊人管理', icon: 'people', type: 'simple-line-icon', navigateUrl: 'profile/patient_list' },
       { title: '我的医生', icon: 'star', type: 'simple-line-icon', navigateUrl: 'profile/my_doctors' },
-      { title: '缴费记录', icon: 'star', type: 'simple-line-icon', navigateUrl: 'payment_list' },
+      { title: '缴费记录', icon: 'star', type: 'simple-line-icon', navigateUrl: 'profile/deposit_record' },
       // { title: '我的随访', icon: 'pencil-square-o', type: 'font-awesome', navigateUrl: 'ehr' },
-      { title: '满意度评价', icon: 'like', type: 'simple-line-icon', navigateUrl: 'evaluation' }
+      { title: '满意度评价', icon: 'like', type: 'simple-line-icon', navigateUrl: 'profile/evaluation' }
     ]
     const array2 = [
       { title: '医保卡信息', icon: 'doc', type: 'simple-line-icon', navigateUrl: 'healthcare_card' },
       { title: '修改密码', icon: 'password', type: 'simple-line-icon', navigateUrl: 'profile/setPassword' },
       { title: '隐私条款', icon: 'prvite', type: 'simple-line-icon', navigateUrl: 'prviteInfo' },
-      { title: '常见问题', icon: 'question', type: 'simple-line-icon', navigateUrl: 'questions' },
+      { title: '常见问题', icon: 'question', type: 'simple-line-icon', navigateUrl: 'profile/questions' },
       // { title: '我的报告单', icon: 'doc', type: 'simple-line-icon', navigateUrl: 'favorite_list' },
       { title: '退出登录', icon: 'logout', type: 'simple-line-icon', navigateUrl: 'logout' }
       // { title: '设置', icon: 'settings', type: 'simple-line-icon', navigateUrl: 'setting' }

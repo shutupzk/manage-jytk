@@ -10,6 +10,10 @@ import PatientDetailScreen from './screens/patient_detail_screen'
 import BindCardScreen from './screens/bind_card_screen'
 import MyDoctorScreen from './screens/my_doctors_screen'
 import MyDoctorDetailScreen from './screens/my_doctor_detail_screen'
+import QuestionsScreen from './screens/questions_screen'
+import DepositRecordScreen from './screens/deposit_record_screen'
+import DepositDetailScreen from './screens/deposit_detail_screen'
+import EvaluationScreen from './screens/evaluation_screen'
 
 export {
   ProfileScreen,
@@ -23,5 +27,9 @@ export {
   PatientDetailScreen,
   BindCardScreen,
   MyDoctorScreen,
-  MyDoctorDetailScreen
+  MyDoctorDetailScreen,
+  QuestionsScreen,
+  DepositRecordScreen,
+  DepositDetailScreen,
+  EvaluationScreen
 }

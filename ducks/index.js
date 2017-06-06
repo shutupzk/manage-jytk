@@ -12,6 +12,12 @@ import { examinations, queryExaminations, selectExamination } from './examinatio
 import { laboratories, queryLaboratories, selectLaboratory, queryLaboratoryItems } from './laboratories'
 import { outpatient, queryOutpatient } from './outpatient'
 import { inpatient, queryInpatient, selectInpatient } from './inpatient'
+import { billitem, queryBillitems, selectBillitem } from './billitem'
+import { dailyfee, queryDailyfee, selectInpatientRecord } from './dailyfee'
+import { questions, queryQuestions } from './questions'
+import { deposit, queryDeposits, selectDeposit } from './deposit'
+import { addHospitalEvaluate } from './hospital_evaluate'
+
 // key
 export {
     hospitals,
@@ -27,7 +33,11 @@ export {
     examinations,
     laboratories,
     outpatient,
-    inpatient
+    inpatient,
+    billitem,
+    dailyfee,
+    questions,
+    deposit
 }
 
 // action
@@ -82,5 +92,13 @@ export {
     selectHospitalGuide,
     queryOutpatient,
     queryInpatient,
-    selectInpatient
+    selectInpatient,
+    queryBillitems,
+    selectBillitem,
+    queryDailyfee,
+    selectInpatientRecord,
+    queryQuestions,
+    queryDeposits,
+    selectDeposit,
+    addHospitalEvaluate
 }
