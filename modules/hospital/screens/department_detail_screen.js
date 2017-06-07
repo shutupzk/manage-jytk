@@ -9,8 +9,6 @@ class DepartmentDetailScreen extends Component {
     this.toDetail = false
   }
   static async getInitialProps (context) {
-    console.log(context)
-    console.log('aaa')
     return {usr: 'baek'}
   }
 

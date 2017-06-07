@@ -283,7 +283,6 @@ const styles = {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {
     laboratories: state.laboratories.data,
     patients: state.patients.data,

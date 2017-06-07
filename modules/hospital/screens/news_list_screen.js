@@ -62,7 +62,6 @@ class NewsListScreen extends Component {
     }
   }
   render () {
-    console.log(this.props.newses)
     if (this.props.loading || this.state.isInit) {
       return (
         <div>

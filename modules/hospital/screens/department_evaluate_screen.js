@@ -7,7 +7,6 @@ import { isEmptyObject } from '../../../utils'
 class DepartmentEvaluateScreen extends Component {
   componentWillMount () {
     var departmentId = this.props.departmentId || this.props.url.query.departmentId
-    console.log(departmentId)
     if (isEmptyObject(this.props.departments)) {
       this.getDepartmentDetail(departmentId)
     }
@@ -24,10 +23,10 @@ class DepartmentEvaluateScreen extends Component {
             [1, 2, 3, 4, 5].map((i) => {
               if (i > score) {
                 return (
-                  <li><a></a></li>
+                  <li><a /></li>
                 )
               } else {
-                return (<li className='light'><a></a></li>)
+                return (<li className='light'><a /></li>)
               }
             })
           }
@@ -75,22 +74,25 @@ class DepartmentEvaluateScreen extends Component {
     var departmentId = this.props.departmentId || this.props.url.query.departmentId
     const department = this.props.departments[departmentId]
     const evaluates = department.departmentEvaluates
+    const height = window.innerHeight - 80
     return (
       <div>
-        {
-          evaluates.length > 0 ? evaluates.map((evaluate) => {
-            return (
-              <div key={evaluate.id} style={{backgroundColor: '#ffffff', padding: 10, marginBottom: 2}}>
-                <div style={{marginBottom: 5, color: '#505050'}}>{evaluate.user.name} <span style={{float: 'right'}}>{moment(evaluate.createdAt).format('YYYY-MM-DD')}</span></div>
-                <div style={{display: 'flex', fontSize: 14, color: '#505050'}}>
-                  <div style={{width: '50%'}}>技术水平 {this.renderStar(evaluate.technologyScore)}</div>
-                  <div>候诊秩序 {this.renderStar(evaluate.orderlyScore)}</div>
+        <div style={{height: height, overflow: 'auto'}}>
+          {
+            evaluates.length > 0 ? evaluates.map((evaluate) => {
+              return (
+                <div key={evaluate.id} style={{backgroundColor: '#ffffff', padding: 10, marginBottom: 2}}>
+                  <div style={{marginBottom: 5, color: '#505050'}}>{evaluate.user.name} <span style={{float: 'right'}}>{moment(evaluate.createdAt).format('YYYY-MM-DD')}</span></div>
+                  <div style={{display: 'flex', fontSize: 14, color: '#505050'}}>
+                    <div style={{width: '50%'}}>技术水平 {this.renderStar(evaluate.technologyScore)}</div>
+                    <div>候诊秩序 {this.renderStar(evaluate.orderlyScore)}</div>
+                  </div>
+                  <div style={{color: '#505050'}}>{evaluate.advice}</div>
                 </div>
-                <div style={{color: '#505050'}}>{evaluate.advice}</div>
-              </div>
-            )
-          }) : <div>暂无评价</div>
-        }
+              )
+            }) : <div>暂无评价</div>
+          }
+        </div>
         <div style={{position: 'absolute', bottom: '15px', width: '90%', height: '40px', margin: '0px 20px'}}>
           <button
             onClick={() => { Router.push('/hospital/departments/add_department_evaluate?departmentId=' + departmentId) }}

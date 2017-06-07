@@ -36,24 +36,16 @@ const filterSchedules = (schedules, doctor, departmentId, selectedDate) => {
 }
 
 const isExistDepartment = (doctors, departmentId) => {
-  console.log(doctors)
-  console.log(departmentId)
   let selectDoctors = []
   for (let key in doctors) {
     if (filterDepartments(doctors[key].departmentIds, departmentId)) {
       selectDoctors.push(doctors[key])
-      // console.log('yes')
-      // var schedulesData = await querySchedules(client, { departmentId, doctorId: doctors[key].id })
-      // console.log(schedulesData)
-      // if (schedulesData && schedulesData.length > 0) {
-      //   selectDoctors.push(doctors[key])
-      // }
     }
   }
   return selectDoctors
 }
 
-const isExistDepartment2 = (doctors, departmentId, schedules, selectedDate) => {
+const isExistSchedule = (doctors, departmentId, schedules, selectedDate) => {
   let selectDoctors = []
   for (let key in doctors) {
     if (filterSchedules(schedules, doctors[key], departmentId, selectedDate)) {
@@ -69,7 +61,7 @@ class AppointmentDoctorListScreen extends Component {
     this.state = {toDetail: false, isDateTab: false, selectedDate: '', firstDate: moment().format('YYYY-MM-DD')}
   }
   componentWillMount () {
-    let doctors = this.props.doctorsData
+    let doctors = this.props.doctors
     let departmentId = this.props.departmentId
     if (!departmentId) {
       this.props.selectDepartment({departmentId: this.props.url.query.departmentId})
@@ -77,7 +69,7 @@ class AppointmentDoctorListScreen extends Component {
     let schedules = this.props.schedules
     let selectDoctors = isExistDepartment(doctors, departmentId, schedules)
     if (isEmptyObject(doctors) || selectDoctors.length === 0) {
-      this.queryData2()
+      this.queryData()
     } else {
       this.props.selectDoctor({doctorId: selectDoctors[0].id})
     }
@@ -97,13 +89,13 @@ class AppointmentDoctorListScreen extends Component {
   //   this.setState({toDetail: false})
   // }
 
-  async queryData2 () {
+  async queryData () {
     let { client, doctors, departmentId, queryDoctors, selectDoctor, querySchedules, schedules } = this.props
     this.setState({toDetail: true})
     await queryDoctors(client, {departmentId})
     if (!isEmptyObject(doctors)) {
       await querySchedules(client, {departmentId})
-      let selectDoctors = isExistDepartment2(doctors, departmentId, schedules, this.state.selectedDate)
+      let selectDoctors = isExistSchedule(doctors, departmentId, schedules, this.state.selectedDate)
       await selectDoctor({ doctorId: selectDoctors[0] ? selectDoctors[0].id : null })
     }
     this.setState({toDetail: false})
@@ -250,7 +242,6 @@ class AppointmentDoctorListScreen extends Component {
     )
   }
   render () {
-    console.log(this.props)
     if (this.state.toDetail || this.props.loading) {
       return <div>loading...</div>
     }
@@ -261,7 +252,7 @@ class AppointmentDoctorListScreen extends Component {
     let departmentId = this.props.departmentId
     let doctors = this.props.doctors
     let schedules = this.props.schedules
-    let selectDoctors = isExistDepartment2(doctors, departmentId, schedules, this.state.selectedDate)
+    let selectDoctors = isExistSchedule(doctors, departmentId, schedules, this.state.selectedDate)
     let doctorId = this.props.doctorId
     let doctor = {}
     if (selectDoctors.length > 0) {
@@ -289,7 +280,6 @@ class AppointmentDoctorListScreen extends Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {
     loading: state.doctors.loading,
     error: state.doctors.error,

@@ -19,7 +19,6 @@ class AppointmentSuccessScreen extends Component {
   }
 
   async initState () {
-    console.log('1')
     this.setState({isInit: true})
     const error = await this.props.signin({ username: null, password: null })
     if (error) return console.log(error)
@@ -38,11 +37,9 @@ class AppointmentSuccessScreen extends Component {
     const client = this.props.client
     await this.props.queryAppointmentDetail(client, {appointmentId})
     this.setState({isInit: false})
-    console.log('2')
   }
 
   render () {
-    console.log('3')
     if (this.state.isInit || this.props.loading) {
       return (<div>loading</div>)
     }
@@ -216,7 +213,6 @@ const styles = {
 }
 
 function mapStateToProps (state) {
-  console.log('state:', state)
   return {
     appointments: state.appointments.data,
     appointmentId: state.appointments.selectId,

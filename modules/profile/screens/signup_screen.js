@@ -66,9 +66,6 @@ class SignupScreen extends Component {
       console.log('密码输入不一致，请重新输入')
       return // this.popup.alert('密码输入不一致，请重新输入')
     }
-    console.log(phone)
-    console.log('ssss')
-    console.log(password)
     props.savePhone({ phone, password })
     // const { navigate } = props.navigation
     // window.location.href = '/signup_compelete'

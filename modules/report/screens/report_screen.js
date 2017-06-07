@@ -103,7 +103,6 @@ class ReportScreen extends Component {
 
   renderLaboratory () {
     let laboratories = this.props.laboratories
-    console.log(laboratories)
     if (!isEmptyObject(laboratories)) {
       return (
         <div>

@@ -35,11 +35,9 @@ class GuideDetailScreen extends Component {
   componentWillMount () {
     const hospitals = this.props.hospitals
     if (isEmptyObject(this.props.hospitals)) {
-      console.log('1')
       this.setState({isInit: true})
       this.hetHospitalWithGuides()
     } else if (!this.getHospital(hospitals).visitNoticeGroup) {
-      console.log('2')
       this.setState({isInit: true})
       this.getGuides(this.getHospital(hospitals).id)
     } else {
@@ -111,7 +109,6 @@ const styles = {
   }
 }
 function mapStateToProps (state) {
-  console.log(state)
   return {
     selectGuideIds: state.hospitals.selectGuideIds,
     selectId: state.hospitals.selectId,

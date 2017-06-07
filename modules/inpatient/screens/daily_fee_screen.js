@@ -237,7 +237,6 @@ const styles = {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {
     // token: state.user.data.token,
     userId: state.user.data.id,

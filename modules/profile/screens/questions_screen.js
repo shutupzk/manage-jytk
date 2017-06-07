@@ -10,7 +10,6 @@ class QuestionsScreen extends Component {
     this.state = {}
   }
   componentWillMount () {
-    console.log(this.props.questions)
     if (isEmptyObject(this.props.questions)) {
       this.props.queryQuestions(this.props.client)
     }
@@ -44,7 +43,6 @@ class QuestionsScreen extends Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {
     questions: state.questions.data,
     loading: state.questions.loading,

@@ -24,7 +24,6 @@ class SignupCompletionScreen extends Component {
     const password = this.props.user.password
     const name = this.state.name
     const certificateNo = this.state.certificateNo
-    console.log(phone, password, name, certificateNo)
     if (!name) {
       console.log('姓名不能为空')
       return // this.popup.alert('姓名不能为空')
@@ -140,7 +139,6 @@ const styles = {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {
     token: state.user.data.token,
     userId: state.user.data.id,

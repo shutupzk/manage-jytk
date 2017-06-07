@@ -131,7 +131,6 @@ const detailList = (props) => {
 // 跳转
 const gotoBindCard = (props) => {
   // Router.push('/profile/bind_card')
-  console.log(props.url.query)
   Router.push({
     pathname: '/profile/bind_card',
     query: props.url.query

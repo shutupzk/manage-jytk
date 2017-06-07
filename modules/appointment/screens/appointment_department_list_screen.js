@@ -40,7 +40,6 @@ class AppointmentDepartmentListScreen extends Component {
   //   this.props.queryUser(this.props.client, { userId })
   // }
   selectDepartment (dep) {
-    console.log(dep.id)
     this.props.selectDepartment({departmentId: dep.id})
     var href = {pathname: '/appointment/doctor_list', query: {departmentId: dep.id}}
     Router.push(href)
@@ -53,7 +52,6 @@ class AppointmentDepartmentListScreen extends Component {
     this.setState({searchFlag: true, searchResult: filterData(theData, term)})
   }
   render () {
-    console.log(this.props)
     let department = this.props.departments
     if (!this.props.token) {
       return (
@@ -103,7 +101,6 @@ function mapStateToProps (state) {
   //   userId,
   //   token
   // }
-  console.log(state)
   return {
     token: state.user.data.token,
     user: state.user.data,
@@ -118,7 +115,6 @@ export default connect(mapStateToProps, { signin, queryUser, queryPatients, quer
 
 function filterData (theData, term) {
   let newData = []
-  console.log(term)
   _.mapValues(theData, (dep) => {
     if (searchData(dep.deptName, term)) {
       newData.push(dep)

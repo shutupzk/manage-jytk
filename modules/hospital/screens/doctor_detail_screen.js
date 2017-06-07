@@ -46,7 +46,6 @@ class DoctorDetailScreen extends Component {
   }
 }
 function mapStateToProps (state) {
-  console.log(state)
   return {
     doctors: state.doctors.data,
     error: state.doctors.error,

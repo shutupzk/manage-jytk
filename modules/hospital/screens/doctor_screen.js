@@ -47,7 +47,6 @@ class DoctorScreen extends Component {
   }
 
   render () {
-    console.log(this.props)
     let departmentId = this.props.url.query.departmentId
     let doctors = this.props.doctorsData
     let selectDoctors = isExistDepartment(doctors, departmentId)

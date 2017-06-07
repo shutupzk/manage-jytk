@@ -28,7 +28,6 @@ class DepartmentScreen extends Component {
   }
 
   render () {
-    console.log(this.props)
     let department = this.props.department
     if (department.loading && !this.toDetail) {
       return (

@@ -14,6 +14,11 @@ const HOSPITAL_DEPARTMENTS_SELECT = 'hospital/departments/select'
 const DEPARTMENT_EVALUATE_ADD = 'hospital/department/evaluate/add/fail'
 const DEPARTMENT_EVALUATE_ADD_SUCCESS = 'hospital/department/evaluate/add/success'
 const DEPARTMENT_EVALUATE_ADD_FAIL = 'hospital/department/evaluate/add/fail'
+
+const APPOINTMENT_DEPARTMENTS_SEARCH = 'appointment/departments/search'
+const APPOINTMENT_DEPARTMENTS_SEARCH_SUCCESS = 'appointment/departments/search/success'
+const APPOINTMENT_DEPARTMENTS_SEARCH_FAIL = 'appointment/departments/search/fail'
+
 const initState = {
   data: {},
   loading: true,
@@ -29,14 +34,17 @@ export function departments (state = initState, action = {}) {
     case HOSPITAL_DEPARTMENTS_QUERY:
     case HOSPITAL_DEPARTMENTS_DEPARTMENT_QUERY:
     case DEPARTMENT_EVALUATE_ADD:
+    case APPOINTMENT_DEPARTMENTS_SEARCH:
       return Object.assign({}, state, { loading: true, error: null })
     case HOSPITAL_DEPARTMENTS_SUCCESS:
     case HOSPITAL_DEPARTMENTS_DEPARTMENT_DETAIL:
     case DEPARTMENT_EVALUATE_ADD_SUCCESS:
+    case APPOINTMENT_DEPARTMENTS_SEARCH_SUCCESS:
       return Object.assign({}, state, { data: action.data, loading: false, error: null })
     case HOSPITAL_DEPARTMENTS_FAIL:
     case HOSPITAL_DEPARTMENTS_DEPARTMENT_FAIL:
     case DEPARTMENT_EVALUATE_ADD_FAIL:
+    case APPOINTMENT_DEPARTMENTS_SEARCH_FAIL:
       return Object.assign({}, state, { loading: false, error: action.error })
     case HOSPITAL_DEPARTMENTS_SELECT:
       return Object.assign({}, state, {selectId: action.selectId, loading: false, error: null})
@@ -189,6 +197,51 @@ export const addDepartmentEvaluate = (client, {departmentId, userId, orderlyScor
     return dispatch({
       type: DEPARTMENT_EVALUATE_ADD_FAIL,
       error: '添加评价失败！'
+    })
+  }
+}
+
+var SEARCH_DEPARTMENTS = gql`
+  query($deptName: String) {
+  searchDepartment {
+    id
+    hospital{
+      id
+      hospitalName
+    }
+    deptName
+    position
+    childs {
+      id
+      deptName
+    }
+    deptSn
+    description
+  }
+}
+`
+
+export const searchDepartments = (client, {deptName}) => async dispatch => {
+  dispatch({
+    type: APPOINTMENT_DEPARTMENTS_SEARCH
+  })
+  try {
+    let data = await client.query({ query: SEARCH_DEPARTMENTS, variables: { deptName } })
+    if (data.error) {
+      return dispatch({
+        type: APPOINTMENT_DEPARTMENTS_SEARCH_FAIL,
+        error: data.error.message
+      })
+    }
+    return dispatch({
+      type: APPOINTMENT_DEPARTMENTS_SEARCH_SUCCESS,
+      data: data.data.departmentEvaluates
+    })
+  } catch (e) {
+    console.log(e)
+    return dispatch({
+      type: APPOINTMENT_DEPARTMENTS_SEARCH_FAIL,
+      error: '查找科室失败'
     })
   }
 }

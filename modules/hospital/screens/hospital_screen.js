@@ -4,7 +4,6 @@ import { HOSPITAL_FUNCTION_LIST } from '../../../config'
 import { List } from '../../../components'
 
 function HospitalScreen (props) {
-  console.log(props)
   return (
     <div style={styles.container}>
       <div style={styles.containerStyle}>
@@ -15,7 +14,6 @@ function HospitalScreen (props) {
       </div>
       <style jsx>{`
         .ScrollDiv {
-              height:'';
               overflow-y:auto;
             }
       `}</style>

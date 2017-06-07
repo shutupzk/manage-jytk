@@ -116,7 +116,6 @@ const styles = {
   }
 }
 function mapStateToProps (state) {
-  console.log(state)
   return {
     hospitalData: state.hospitals.data,
     loading: state.hospitals.loading,

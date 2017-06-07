@@ -15,7 +15,6 @@ class ProfileScreen extends Component {
 
   // 自动登陆 刷新token,用户信息,就诊人信息，
   async autoSignin () {
-    console.log('自动登录')
     const error = await this.props.signin({ username: null, password: null })
     if (error) return console.log(error)
     const userId = this.props.userId
@@ -215,7 +214,6 @@ const styles = {
 }
 
 function mapStateToProps (state) {
-  console.log('state:', state)
   return {
     token: state.user.data.token,
     userId: state.user.data.id,

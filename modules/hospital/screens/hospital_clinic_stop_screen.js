@@ -30,7 +30,6 @@ class HospitalClinicStop extends Component {
       )
     }
     const clinicStops = this.props.clinicStops
-    console.log(clinicStops)
     return (
       <div className='container'>
         {
@@ -56,7 +55,6 @@ class HospitalClinicStop extends Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {
     loading: state.clinicStops.loading,
     error: state.clinicStops.error,

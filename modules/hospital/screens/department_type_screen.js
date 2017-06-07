@@ -61,7 +61,6 @@ class DepartmentTypeScreen extends Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
   return {
     departmentType: state.departmentTypes
   }
