@@ -4,9 +4,6 @@ import _ from 'lodash'
  */
 function DoctorScheduleList (props) {
   let {schedules, goDetail, departmentId, doctor} = props
-  console.log(departmentId)
-  console.log(doctor.id)
-  console.log(schedules)
   let scheduleArr = []
   _.mapValues(schedules, (schedule) => {
     if (schedule.doctorId === doctor.id && schedule.departmentId === departmentId) {

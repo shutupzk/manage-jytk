@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import Router from 'next/router'
 import { updatePassword } from '../../../ducks'
 import { connect } from 'react-redux'
+import swal from 'sweetalert2'
 
 /**
  * 修改密码
@@ -21,13 +22,23 @@ class UpdatePasswordScreen extends Component {
     const newpassword = this.state.newpassword
     const repassword = this.state.repassword
     if (oldpassword !== password) {
-      return this.popup.alert('原密码错误')
+      return swal({
+        text: '原密码错误'
+        // type: 'error',
+        // width: '260px',
+        // confirmButtonText: '知道了',
+        // showCloseButton: true,
+        // timer: 3000,
+        // background: '#fff'
+      })
+      // swal('Good job!', 'You clicked the button!', 'success')
+      // return
     }
-    if (newpassword.length < 6) {
-      return this.popup.alert('密码不能小于6位')
+    if (!newpassword || newpassword.length < 6) {
+      return swal('密码不能小于6位')
     }
     if (newpassword !== repassword) {
-      return this.popup.alert('新密码输入不一致，请重新输入')
+      return swal('新密码输入不一致，请重新输入')
     }
     this.setState({animating: true})
     const userId = props.userId

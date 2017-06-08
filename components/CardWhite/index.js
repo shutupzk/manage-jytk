@@ -11,11 +11,11 @@ function CardWhite (props) {
 }
 
 CardWhite.propTypes = {
-	children: React.PropTypes.oneOfType([
-      React.PropTypes.array,
-      React.PropTypes.object,
-      React.PropTypes.string,
-    ])
+  children: React.PropTypes.oneOfType([
+    React.PropTypes.array,
+    React.PropTypes.object,
+    React.PropTypes.string
+  ])
 
 }
 

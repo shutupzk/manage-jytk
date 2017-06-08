@@ -34,7 +34,7 @@ export default (props) => (
         background-color: #22BAD9;
         border: 0;
         color: white;
-        display: flex;
+        {/*display: flex;*/}
         padding: 5px 7px;
       }
       button:active {

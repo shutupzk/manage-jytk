@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import Link from 'next/link'
+import swal from 'sweetalert'
 
 // import { SubButton } from '../components'
 import { signin, queryUser, queryPatients } from '../../../ducks'
@@ -16,11 +17,13 @@ class SigninScreen extends Component {
     const username = this.state.username
     const password = this.state.password
     if (!username) {
+      swal('请输入正确的账号')
       console.log('请输入正确的账号')
       return
       // return this.popup.alert('请输入正确的账号')
     }
     if (!password) {
+      swal('请输入密码')
       console.log('请输入密码')
       return
       // return this.popup.alert('请输入密码')
@@ -28,7 +31,7 @@ class SigninScreen extends Component {
     this.setState({animating: true})
     const error = await this.props.signin({ username, password })
     this.setState({animating: false})
-    if (error) return console.log('用户名或密码错误')
+    if (error) return swal('用户名或密码错误') // console.log('用户名或密码错误')
     await this.props.queryUser(this.props.client, { userId: this.props.userId })
     await this.props.queryPatients(this.props.client, { userId: this.props.userId })
     // return this.props.navigation.goBack(null)

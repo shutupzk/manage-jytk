@@ -17,6 +17,7 @@ import { dailyfee, queryDailyfee, selectInpatientRecord } from './dailyfee'
 import { questions, queryQuestions } from './questions'
 import { deposit, queryDeposits, selectDeposit } from './deposit'
 import { addHospitalEvaluate } from './hospital_evaluate'
+import { patientTypes, queryPatientTypes, selectPatientType } from './patient_types' 
 
 // key
 export {
@@ -37,7 +38,8 @@ export {
     billitem,
     dailyfee,
     questions,
-    deposit
+    deposit,
+    patientTypes
 }
 
 // action
@@ -100,5 +102,7 @@ export {
     queryQuestions,
     queryDeposits,
     selectDeposit,
-    addHospitalEvaluate
+    addHospitalEvaluate,
+    queryPatientTypes,
+    selectPatientType
 }

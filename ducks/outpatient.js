@@ -4,8 +4,15 @@ export const OUTPATIENT_OUTPATIENT_QUERY = 'outpatient/outpatient/query'
 export const OUTPATIENT_OUTPATIENT_QUERY_SUCCESS = 'outpatient/outpatient/query/success'
 export const OUTPATIENT_OUTPATIENT_QUERY_FAIL = 'outpatient/outpatient/query/fail'
 
+const initState = {
+  data: {},
+  selectId: null,
+  loading: false,
+  error: null
+}
+
 // reducers
-export function outpatient (state = initialState, action) {
+export function outpatient (state = initState, action) {
   switch (action.type) {
     case OUTPATIENT_OUTPATIENT_QUERY_SUCCESS:
       return Object.assign({}, state, { data: action.paymentTotals, loading: false, error: null })

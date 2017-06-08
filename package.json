@@ -30,7 +30,8 @@
     "redux": "^3.6.0",
     "redux-persist": "^4.8.0",
     "redux-thunk": "^2.2.0",
-    "styled-components": "^1.4.6"
+    "styled-components": "^1.4.6",
+    "sweetalert2": "^6.6.5"
   },
   "devDependencies": {
     "eslint": "^3.18.0",

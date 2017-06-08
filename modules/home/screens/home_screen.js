@@ -59,36 +59,36 @@ class Home extends Component {
             <section className='navLeft'>
               <h3>预约挂号</h3>
               <p>预约挂号</p>
-              <svg className='hosapmIcon' viewBox='62 541 146 131' version='1.1' xmlns="http://www.w3.org/2000/svg">{hosApmHomeIcon}</svg>
+              <svg className='hosapmIcon' viewBox='62 541 146 131' version='1.1' xmlns='http://www.w3.org/2000/svg'>{hosApmHomeIcon}</svg>
             </section>
           </a></Link>
           <section className='navRight'>
             <Link href='/outpatient'><a>
               <article>
-                <svg className='patientPayIcon' viewBox="48 -1 78 59" version='1.1' xmlns="http://www.w3.org/2000/svg">{patientPayHomeIcon}</svg>
+                <svg className='patientPayIcon' viewBox='48 -1 78 59' version='1.1' xmlns='http://www.w3.org/2000/svg'>{patientPayHomeIcon}</svg>
                 <h3>门诊缴费</h3>
                 <p>在线缴费不排队</p>
               </article>
             </a></Link>
             <Link href=''><a>
               <article>
-                <svg className='selfExamineIcon' viewBox="39 -4 72 73" version="1.1" xmlns="http://www.w3.org/2000/svg">{selfExamineHomeIcon}</svg>
+                <svg className='selfExamineIcon' viewBox='39 -4 72 73' version='1.1' xmlns='http://www.w3.org/2000/svg'>{selfExamineHomeIcon}</svg>
                 <h3>疾病自查</h3>
                 <p>智能引导就诊</p>
               </article>
             </a></Link>
           </section>
-          <section className="navRight">
+          <section className='navRight'>
             <Link href='/report'><a>
               <article>
-                <svg className='reportIcon' viewBox="600 381 62 57" version="1.1" xmlns="http://www.w3.org/2000/svg">{reportHomeIcon}</svg>
+                <svg className='reportIcon' viewBox='600 381 62 57' version='1.1' xmlns='http://www.w3.org/2000/svg'>{reportHomeIcon}</svg>
                 <h3>查询报告</h3>
                 <p>在线查看检验报告</p>
               </article>
             </a></Link>
             <Link href='/inpatient'><a>
               <article>
-                <svg className='inHosIcon' viewBox="600 594 62 55" version="1.1" xmlns="http://www.w3.org/2000/svg">{inHosHomeIcon}</svg>
+                <svg className='inHosIcon' viewBox='600 594 62 55' version='1.1' xmlns='http://www.w3.org/2000/svg'>{inHosHomeIcon}</svg>
                 <h3>住院跟踪</h3>
                 <p>查询住院信息</p>
               </article>
@@ -194,10 +194,6 @@ class Home extends Component {
             width: 100%;
             resizeMode: stretch;
           }
-          .ScrollDiv {
-                height:'';
-                overflow-y:auto;
-              }
         `}</style>
       </div>
     )

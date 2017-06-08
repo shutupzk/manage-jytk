@@ -1,7 +1,10 @@
 import React, { Component } from 'react'
-import { signin, queryUser, queryPatients, queryDoctors, selectPatient, addAppointment, selectSchedule } from '../../../ducks'
+import { signin, queryHospitals, queryUser, queryPatients, queryDoctors, selectPatient, addAppointment, selectSchedule, queryPatientTypes, selectPatientType } from '../../../ducks'
 import { connect } from 'react-redux'
 import Router from 'next/router'
+import _ from 'lodash'
+
+import { isEmptyObject } from '../../../utils'
 /**
  * 号源详情
  */
@@ -9,7 +12,7 @@ class ScheduleDetailScreen extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      animating: false,
+      isInit: false,
       beginTime: null,
       endTime: null,
       payType: '自费',
@@ -20,13 +23,22 @@ class ScheduleDetailScreen extends Component {
   }
 
   componentWillMount () {
-    if (!this.props.userId) {
+    this.setState({isInit: true})
+    if (isEmptyObject(this.props.patients)) {
       this.initState()
+    } else {
+      this.queryPatientTypes()
     }
+    this.setState({isInit: false})
     // this.props.selectSchedule(this.props.scheduleId)
   }
-
-
+  async queryPatientTypes () {
+    if (isEmptyObject(this.props.hospitals)) {
+      await this.props.queryHospitals(this.props.client)
+    }
+    const hospitalId = _.keys(this.props.hospitals)[0]
+    this.props.queryPatientTypes(this.props.client, {hospitalId})
+  }
   async initState () {
     const error = await this.props.signin({ username: null, password: null })
     if (error) return console.log(error)
@@ -34,7 +46,7 @@ class ScheduleDetailScreen extends Component {
     if (userId) {
       await this.props.queryUser(this.props.client, { userId })
       await this.props.queryPatients(this.props.client, {userId})
-      await this.props.queryAppointments(this.props.client, { userId: this.props.userId })
+      // await this.props.queryAppointments(this.props.client, { userId: this.props.userId })
     }
     const array = getPatients(this.props.selectPatient, this.props.patients, this.props.patientId)
     const patientId = this.props.patientId || array[0].id
@@ -42,6 +54,7 @@ class ScheduleDetailScreen extends Component {
     if (!this.props.scheduleId) {
       this.props.selectSchedule(this.props.url.query.scheduleId)
     }
+    this.queryPatientTypes()
   }
 
   selectTimeRangeRender (schedule) {
@@ -59,14 +72,32 @@ class ScheduleDetailScreen extends Component {
   }
 
   selectPayTypeRender (schedule) {
+    var patientTypes = []
+    _.mapValues(this.props.patientTypes, function (type) {
+      patientTypes.push(type)
+    })
     return (
       <div style={{width: '100%', textAlign: 'center', backgroundColor: '#ffffff', paddingTop: 2}}>
-        <option style={{height: 24, width: '100%', padding: 2, borderBottom: 'solid 1px #dddddd'}} onClick={() => { this.setState({selectPayTypeShow: false, payType: '自费'}) }}>自费</option>
+        {
+          patientTypes.map((type) => {
+            return (
+              <option
+                key={type.id}
+                style={{height: 24, width: '100%', padding: 2, borderBottom: 'solid 1px #dddddd'}}
+                onClick={() => {
+                  this.setState({selectPayTypeShow: false, payType: type.patientTypeName})
+                  this.props.selectPatientType(type.id)
+                }}
+              >{type.patientTypeName}</option>
+            )
+          })
+        }
+        {/*<option style={{height: 24, width: '100%', padding: 2, borderBottom: 'solid 1px #dddddd'}} onClick={() => { this.setState({selectPayTypeShow: false, payType: '自费'}) }}>自费</option>
         <option style={{height: 24, width: '100%', padding: 2, borderBottom: 'solid 1px #dddddd'}} onClick={() => { this.setState({selectPayTypeShow: false, payType: '职工医保'}) }}>职工医保</option>
         <option style={{height: 24, width: '100%', padding: 2, borderBottom: 'solid 1px #dddddd'}} onClick={() => { this.setState({selectPayTypeShow: false, payType: '铁路医保'}) }}>铁路医保</option>
         <option style={{height: 24, width: '100%', padding: 2, borderBottom: 'solid 1px #dddddd'}} onClick={() => { this.setState({selectPayTypeShow: false, payType: '生育保险'}) }}>生育保险</option>
         <option style={{height: 24, width: '100%', padding: 2, borderBottom: 'solid 1px #dddddd'}} onClick={() => { this.setState({selectPayTypeShow: false, payType: '农合医保'}) }}>农合医保</option>
-        <option style={{height: 24, width: '100%', padding: 2, borderBottom: 'solid 1px #dddddd'}} onClick={() => { this.setState({selectPayTypeShow: false, payType: '城镇医保'}) }}>城镇医保</option>
+        <option style={{height: 24, width: '100%', padding: 2, borderBottom: 'solid 1px #dddddd'}} onClick={() => { this.setState({selectPayTypeShow: false, payType: '城镇医保'}) }}>城镇医保</option>*/}
       </div>
     )
   }
@@ -77,18 +108,26 @@ class ScheduleDetailScreen extends Component {
     const patientCardId = patient.patientCards[0].id
     const scheduleId = this.props.scheduleId
     const visitScheduleTimeId = this.state.visitScheduleTimeId
+    const beginTime = this.state.beginTime
+    const endTime = this.state.endTime
+    const timeRangeOfVist = beginTime + '-' + endTime
     const payType = this.state.payType
     if (!patientCardId) {
       return this.popup.alert('请选择就诊人')
     }
     this.setState({animating: true})
-    var appointmentId = await props.addAppointment(props.client, { scheduleId, patientCardId, visitScheduleTimeId, payType })
+    var appointmentId = await props.addAppointment(props.client, { scheduleId, patientCardId, visitScheduleTimeId, timeRangeOfVist, payType })
     this.setState({animating: false})
     if (this.props.addError) return this.popup.alert(this.props.addError)
     // return this.props.url.back()
-    return Router.push('/appointment/appointment_success?appointmentId=' + appointmentId)
+    if (!this.props.addLoading) return Router.push('/appointment/appointment_success?appointmentId=' + appointmentId)
   }
   render () {
+    if (this.state.isInit) {
+      return (
+        <div>loading...</div>
+      )
+    }
     const {doctors, doctorId, schedules, scheduleId, patients, selectPatient} = this.props
     const doctor = doctors[doctorId]
     const schedule = schedules[scheduleId]
@@ -131,7 +170,7 @@ class ScheduleDetailScreen extends Component {
         <div style={styles.item} key={'amPm'}>
           <span style={styles.textLeft}>{'就诊时间'}</span>
           <div style={styles.rightView} onClick={() => { this.setState({selectTimeRangeShow: true}) }}>
-            <span style={styles.textRight}> {beginTime ? beginTime : (schedule.amPm === 'a' ? '8:00' : '13:00')} - {endTime ? endTime : (schedule.amPm === 'a' ? '9:00' : '14:00')} </span>
+            <span style={styles.textRight}> {beginTime || (schedule.amPm === 'a' ? '8:00' : '13:00')} - {endTime || (schedule.amPm === 'a' ? '9:00' : '14:00')} </span>
             <img src='/static/icons/arrow_right.png' style={{width: 10, height: 12}} />
           </div>
         </div>
@@ -277,15 +316,17 @@ function mapStateToProps (state) {
     token: state.user.data.token,
     userId: state.user.data.id,
     user: state.user.data,
+    hospitals: state.hospitals.data,
     patients: state.patients.data,
     patientId: state.patients.selectId,
     doctors: state.doctors.data,
     doctorId: state.doctors.selectId,
     schedules: state.schedules.data,
     scheduleId: state.schedules.selectId,
+    patientTypes: state.patientTypes.data,
     addError: state.appointments.error,
     addLoading: state.appointments.loading
   }
 }
 
-export default connect(mapStateToProps, { signin, queryUser, queryPatients, queryDoctors, selectPatient, addAppointment, selectSchedule })(ScheduleDetailScreen)
+export default connect(mapStateToProps, { signin, queryHospitals, queryUser, queryPatients, queryDoctors, selectPatient, addAppointment, selectSchedule, queryPatientTypes, selectPatientType })(ScheduleDetailScreen)

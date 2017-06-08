@@ -72,7 +72,7 @@ const QUREY_LABORATORY = gql`
     id
     patientCards {
       id
-      inspections {
+      laboratorys {
         id
         reportNo
         inspectName
@@ -92,7 +92,7 @@ const QUREY_LABORATORY = gql`
   }
 }
 `
-let inspections = [
+let laboratorys = [
   {
     id: '592802ce39feba2cbed12cf1',
     reportNo: '111',
@@ -154,7 +154,7 @@ export const queryLaboratories = (client, {patientId}) => async dispatch => {
         error: data.error.message
       })
     }
-    let laboratories = groupLaboratoriesByTime(data.data.patient.patientCards[0].inspections)
+    let laboratories = groupLaboratoriesByTime(laboratorys)// groupLaboratoriesByTime(data.data.patient.patientCards[0].laboratorys)
     dispatch({
       type: REPORT_LABORATORY_SUCCESS,
       laboratories
@@ -224,7 +224,7 @@ export const selectLaboratory = ({date, laboratoryId}) => dispatch => {
 
 const QUREY_LABORATORY_ITEMS = gql`
   query ($id: ObjID!) {
-    inspection(id: $id) {
+    laboratory(id: $id) {
       id
       reportNo
       inspectName
@@ -239,7 +239,7 @@ const QUREY_LABORATORY_ITEMS = gql`
       applyDoctor
       inspectDoctor
       reportDoctor
-      inspectionItems {
+      laboratoryItems {
         id
         itemName
         itemEnglishName
@@ -255,7 +255,7 @@ const QUREY_LABORATORY_ITEMS = gql`
 `
 var items = {
   id: '592802ce39feba2cbed12cf1',
-  inspectionItems: [
+  laboratoryItems: [
     {
       id: '12345',
       itemName: 'A霉',
@@ -317,7 +317,7 @@ export const queryLaboratoryItems = (client, {laboratoryId}) => async dispatch =
     }
     dispatch({
       type: REPORT_LABORATORY_ITEMS_SUCCESS,
-      laboratory: data.data.inspection
+      laboratory: items// data.data.laboratory
     })
   } catch (e) {
     console.log(e)

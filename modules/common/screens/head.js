@@ -18,7 +18,10 @@ export const Head = (props) => (
     <meta property='og:url' content={props.url || defaultOGURL} />
     <meta property='og:title' content={props.title || ''} />
     <meta property='og:description' content={props.description || defaultDescription} />
-    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    {/*<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>*/}
+    <link href='/static/styles/swal2.css' rel='stylesheet' type='text/css' />
+    {/*<script src='https://maps.googleapis.com/maps/api/js'></script>*/}
+    {/*<script type='text/javascript' src='http://api.map.baidu.com/api?v=2.0&ak='></script>*/}
   </NextHead>
 )
 

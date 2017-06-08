@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import Router from 'next/router'
 
 import {
   queryHospitals,
@@ -51,6 +52,7 @@ class NavigationScreen extends Component {
         </div>
         <div style={{margin: 15}}>
           <button
+            onClick={() => { Router.push('/hospital/navigation/maps') }}
             style={{width: '100%', display: 'block', backgroundColor: '#3CA0FF', height: '40px', borderRadius: '20px', fontSize: 16}}
           >查看地图</button>
         </div>

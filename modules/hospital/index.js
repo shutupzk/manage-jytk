@@ -16,6 +16,7 @@ import AddDepartmentEvaluateScreen from './screens/add_department_evaluate_scree
 import AddDoctorEvaluateScreen from './screens/add_doctor_evaluate_screen'
 import NavigationScreen from './screens/navigation_screen'
 import HospitalEnvironmentScreen from './screens/hospital_environment_screen'
+import NavigationMapsScreen from './screens/navigation_maps_screen'
 
 export {
     HospitalScreen,
@@ -35,5 +36,6 @@ export {
     AddDepartmentEvaluateScreen,
     AddDoctorEvaluateScreen,
     NavigationScreen,
-    HospitalEnvironmentScreen
+    HospitalEnvironmentScreen,
+    NavigationMapsScreen
 }

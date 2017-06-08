@@ -1,42 +1,47 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import { HospitalFunctionList } from '../components'
 import { HOSPITAL_FUNCTION_LIST } from '../../../config'
 import { List } from '../../../components'
+import { queryHospitals } from '../../../ducks'
+import { isEmptyObject } from '../../../utils'
 
-function HospitalScreen (props) {
-  return (
-    <div style={styles.container}>
-      <div style={styles.containerStyle}>
-        <img style={styles.bgImage} src='../../../static/icons/hospital_bg_image.png' />
-      </div>
-      <div style={styles.scrollContainer}>
-        <List component={HospitalFunctionList} items={HOSPITAL_FUNCTION_LIST} />
-      </div>
-      <style jsx>{`
-        .ScrollDiv {
-              overflow-y:auto;
-            }
-      `}</style>
-    </div>
-  )
-}
+class HospitalScreen extends React.Component {
+  compomentWillMount () {
+    if (isEmptyObject(this.props.hospitals)) {
+      this.props.queryHospitals(this.props.client)
+    }
+  }
 
-const styles = {
-  container: {
-    flex: 1
-  },
-  containerStyle: {
-    flexDirection: 'column'
-  },
-  scrollContainer: {
-    display: 'flex',
-    flexDirection: 'column'
-  },
-  bgImage: {
-    height: 180,
-    width: '100%',
-    resizeMode: 'stretch'
+  render () {
+    return (
+      <div>
+        <div>
+          <img className='bgImage' src='/static/icons/hospital_bg_image.png' />
+        </div>
+        <div>
+          <List component={HospitalFunctionList} items={HOSPITAL_FUNCTION_LIST} />
+        </div>
+        <style jsx>{`
+          .ScrollDiv {
+            overflow-y:auto;
+          }
+          .bgImage {
+            height: 180px;
+            width: 100%;
+          }
+        `}</style>
+      </div>
+    )
   }
 }
 
-export default HospitalScreen
+function mapStateToProps (state) {
+  return {
+    hospitals: state.hospitals.data,
+    loading: state.hospitals.loading,
+    error: state.hospitals.error
+  }
+}
+
+export default connect(mapStateToProps, {queryHospitals})(HospitalScreen)

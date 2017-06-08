@@ -123,7 +123,8 @@ class AppointmentListScreen extends Component {
     }
     const { appointments, selectAppointment } = this.props
     const dataList = getListData(appointments)
-    var height = window.innerHeight - 50
+    var height = process.browser ? window.innerHeight - 50 : ''
+    // var height = window.innerHeight - 50
     return (
       <div style={{height: height}}>
         {

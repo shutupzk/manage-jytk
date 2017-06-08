@@ -42,7 +42,6 @@ const queryGql = gql`
       inpatientRecords{
         id
         deptName
-        wardName
         bedNo
         inDate
         outDate
@@ -114,6 +113,7 @@ export const updateInpatient = (client, {inpatientCardId, newNativePlaceProvince
     }
     let docs = data.data.patient.inpatientCards[0].inpatientRecords
     const inpatientNo = data.data.patient.inpatientCards[0].inpatientNo
+    const patientId = data.data.patient.id
     const name = data.data.patient.name
     let inpatientRecords = {}
     for (let doc of docs) {
