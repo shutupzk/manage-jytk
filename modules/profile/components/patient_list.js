@@ -48,7 +48,6 @@ const Item = (item, i, gotoDetail) => {
 }
 
 const sexIcon = (item) => {
-  console.log(item.sex)
   let color = '#FF7C7C'
   if (item.sex === '0') {
     color = '#3CA0FF'

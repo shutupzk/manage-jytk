@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 // import { Router } from '../../../routes'
 import Router from 'next/router'
+import swal from 'sweetalert2'
 
 import { savePhone } from '../../../ducks'
 import { connect } from 'react-redux'
@@ -39,32 +40,25 @@ class SignupScreen extends Component {
     const phone = this.state.phone
     const repassword = this.state.repassword
     if (!phone) {
-      console.log('请输入手机号')
-      return // this.popup.alert('请输入手机号')
+      return swal('', '请输入手机号')
     }
     if (phone.length !== 11) {
-      console.log('手机号格式不正确')
-      return // this.popup.alert('手机号格式不正确')
+      return swal('', '手机号格式不正确')
     }
     if (!verCode) {
-      console.log('请输入验证码')
-      return // this.popup.alert('请输入验证码')
+      return swal('', '请输入验证码')
     }
     if (verCode !== '1234') {
-      console.log('验证码输入错误')
-      return // this.popup.alert('验证码输入错误')
+      return swal('', '验证码输入错误')
     }
     if (!password) {
-      console.log('请输入密码')
-      return // this.popup.alert('请输入密码')
+      return swal('', '请输入密码')
     }
     if (password.length < 8) {
-      console.log('密码长度不能小于8位')
-      return // this.popup.alert('密码长度不能小于8位')
+      return swal('', '密码长度不能小于8位')
     }
     if (password !== repassword) {
-      console.log('密码输入不一致，请重新输入')
-      return // this.popup.alert('密码输入不一致，请重新输入')
+      return swal('', '密码输入不一致，请重新输入')
     }
     props.savePhone({ phone, password })
     // const { navigate } = props.navigation

@@ -43,7 +43,7 @@ class UpdatePasswordScreen extends Component {
     this.setState({animating: true})
     const userId = props.userId
     const error = await props.updatePassword(props.client, { userId, password: newpassword })
-    if (error) return this.popup.alert(error)
+    if (error) return swal('', error)
     return Router.push('/profile')
   }
   render () {

@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Router from 'next/router'
+import swal from 'sweetalert2'
 
 import { updatePatient } from '../../../ducks'
 
@@ -18,11 +19,11 @@ class BindCardScreen extends Component {
     const patientId = this.props.patientId || this.url.query.patientId
     const carteVital = this.state.carteVital
     if (!carteVital) {
-      return console.log('请输入医保卡') // this.popup.alert('请输入医保卡')
+      return swal({text: '请输入医保卡'})
     }
     this.setState({animating: true})
     const error = await this.props.updatePatient(this.props.client, { patientId, carteVital })
-    if (error) return this.popup.alert(error)
+    if (error) return swal('', error)
     this.props.url.back()
   }
   render () {

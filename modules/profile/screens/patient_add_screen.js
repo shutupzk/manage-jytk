@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import _ from 'lodash'
-import Router from 'next/router'
+// import Router from 'next/router'
 import localforage from 'localforage'
+import swal from 'sweetalert2'
 // import { SubButton } from '../components'
 import { ages, getBirthday, getSex } from '../../../utils'
 import { addPatient, queryPatients, updatePatientDefault } from '../../../ducks'
@@ -27,7 +28,6 @@ class PatientAddScreen extends Component {
   }
   async addPatient () {
     const userId = this.props.userId || await localforage.getItem('userId')
-    console.log(userId)
     const name = this.state.name
     const phone = this.state.phone
     const certificateNo = this.state.certificateNo
@@ -35,22 +35,22 @@ class PatientAddScreen extends Component {
     const carteVital = this.state.carteVital
     const isDefault = this.state.default
     if (!name) {
-      return this.popup.alert('姓名不能为空')
-    }
-    if (!phone) {
-      return this.popup.alert('手机号不能为空')
-    }
-    if (phone.length !== 11) {
-      return this.popup.alert('手机号格式不正确')
+      return swal('', '姓名不能为空')
     }
     if (!certificateNo) {
-      return this.popup.alert('身份证不能为空')
+      return swal('', '身份证不能为空')
     }
     if (certificateNo.length !== 18) {
-      return this.popup.alert('手机号格式不正确')
+      return swal('', '身份证格式不正确')
+    }
+    if (!phone) {
+      return swal('', '手机号不能为空')
+    }
+    if (phone.length !== 11) {
+      return swal('', '手机号格式不正确')
     }
     if (!relationship) {
-      return this.popup.alert('关系不能为空')
+      return swal('', '关系不能为空')
     }
     this.setState({animating: true})
     const error = await this.props.addPatient(this.props.client, { userId, name, phone, certificateNo, relationship, carteVital, isDefault })
@@ -61,11 +61,11 @@ class PatientAddScreen extends Component {
       var me = this
       patientIds.map(async (patientId) => {
         const error3 = await me.props.updatePatientDefault(me.props.client, {patientId, isDefault: false})
-        if (error3) return this.popup.alert(error3)
+        if (error3) return swal('', error3)
       })
     }
     this.setState({animating: false})
-    if (error.error) return this.popup.alert(error.error)
+    if (error.error) return swal('', error.error)
     return this.props.url.back()// Router.push('/profile/patient_list')
   }
   render () {
@@ -77,16 +77,16 @@ class PatientAddScreen extends Component {
       { key: '05', value: '其他' }
     ]
     return (
-      <div className='container' style={styles.container}>
-        <div style={styles.list}>
-          <div style={styles.item} key={'name'}>
-            <span style={styles.textLeft}>&nbsp;姓&nbsp; 名&nbsp;</span>
-            <input placeholder={'输入您的真实姓名'} className='textInput' style={styles.itemViewRight}
+      <div>
+        <div className='list'>
+          <div className='item' key={'name'}>
+            <span className='textLeft'>&nbsp;姓&nbsp; 名&nbsp;</span>
+            <input placeholder={'输入您的真实姓名'} className='textInput itemViewRight'
               onChange={(e) => this.setState({ name: e.target.value })} />
           </div>
-          <div style={styles.item} key={'certificateNo'}>
-            <span style={styles.textLeft}> 身份证号 </span>
-            <input placeholder={'输入身份证号'} className='textInput' style={styles.itemViewRight}
+          <div className='item' key={'certificateNo'}>
+            <span className='textLeft'> 身份证号 </span>
+            <input placeholder={'输入身份证号'} className='textInput itemViewRight'
               onChange={(e) => {
                 var certificateNo = e.target.value
                 if (certificateNo.length === 18) {
@@ -99,17 +99,17 @@ class PatientAddScreen extends Component {
                 }
               }} />
           </div>
-          <div style={styles.item} key={'sex'}>
-            <span style={styles.textLeft}>&nbsp;性&nbsp; 别&nbsp;</span>
-            <input placeholder={this.state.sexText} className='textInput' style={styles.itemViewRight} disabled />
+          <div className='item' key={'sex'}>
+            <span className='textLeft'>&nbsp;性&nbsp; 别&nbsp;</span>
+            <input placeholder={this.state.sexText} className='textInput itemViewRight' disabled />
           </div>
-          <div style={styles.item} key={'birthday'}>
-            <span style={styles.textLeft}> 出生日期 </span>
-            <input placeholder={this.state.birthday} className='textInput' style={styles.itemViewRight} disabled />
+          <div className='item' key={'birthday'}>
+            <span className='textLeft'> 出生日期 </span>
+            <input placeholder={this.state.birthday} className='textInput itemViewRight' disabled />
           </div>
-          <div style={styles.item} key={'phone'}>
-            <span style={styles.textLeft}> 手 机 号 </span>
-            <input placeholder={'输入手机号'} className='textInput' style={styles.itemViewRight}
+          <div className='item' key={'phone'}>
+            <span className='textLeft'> 手 机 号 </span>
+            <input placeholder={'输入手机号'} className='textInput itemViewRight'
               onChange={(e) => this.setState({ phone: e.target.value })} />
           </div>
           {/* <div style={styles.item} key={'relationship'}>
@@ -126,19 +126,19 @@ class PatientAddScreen extends Component {
               </div>
             </div>
           </div> */}
-          <div style={styles.item} key={'carteVital'}>
-            <span style={styles.textLeft}> 医保卡号 </span>
-            <input placeholder={'非医保卡号可不填写'} className='textInput' style={styles.itemViewRight}
+          <div className='item' key={'carteVital'}>
+            <span className='textLeft'> 医保卡号 </span>
+            <input placeholder={'非医保卡号可不填写'} className='textInput itemViewRight'
               onChange={(e) => this.setState({ carteVital: e.target.value })} />
           </div>
           <div style={{marginTop: 20}}>
-            <div style={styles.item}>
-              <span style={styles.textLeft}>设为默认就诊人</span>
+            <div className='item'>
+              <span className='textLeft'>设为默认就诊人</span>
               <input type='checkbox' style={{float: 'right', zoom: '160%', marginRight: 12}} onClick={(e) => this.changeCheckbox(e)} />
             </div>
           </div>
         </div>
-        <button className='blockPrimaryBtn' style={{display: 'block', width: '100%'}} onClick={() => this.addPatient()} >完成</button>
+        <div style={{margin: '20px'}}><button className='blockPrimaryBtn' style={{display: 'block', width: '100%'}} onClick={() => this.addPatient()} >完成</button></div>
         {/* <div
           ref={(popupDialog) => { this.popupDialog = popupDialog }}>
           <div>
@@ -160,89 +160,63 @@ class PatientAddScreen extends Component {
             </div>
           </div>
         </div> */}
+        <style jsx>{`
+          .list {
+            margin-top: 20px;
+            margin-bottom: 5px;
+          }
+          .dialogList {
+            marginTop: 0px;
+          }
+          .item {
+            display: flex;
+            height: 51px;
+            flex-wrap: nowrap;
+            align-items: center;
+            flex-direction: row;
+            background-color: #ffffff;
+            margin-bottom: 1px;
+          }
+          .itemLast {
+            height: 51px;
+            align-items: center;
+            flex-direction: row;
+            background-color: #ffffff;
+            justifyContent: space-between;
+          }
+          .textLeft {
+            flex: 3;
+            fontSize: 16px;
+            color: #797979;
+            margin-left: 20px;
+          }
+          .itemViewRight {
+            width: 58%;
+            flex: 8;
+            border: 0px;
+            float: right;
+            margin-right: 20px;
+          }
+          .selectButton {
+            height: 51px;
+            margin-right: 10px;
+            flex-wrap: nowrap;
+            flex-direction: row;
+          }
+          .selectItem {
+            height: 51,
+            align-items: center;
+            justify-content: center;
+            border-bottom-color: #D8D8D8;
+            border-bottom-width: 1px;
+          }
+          .itemText {
+            color: #505050;
+            font-size: 18px;
+          }
+        `}</style>
       </div>
     )
-  }
-}
-
-const styles = {
-  container: {
-    flex: 1
-  },
-  scrollView: {
-    flex: 1,
-    marginTop: 10
-  },
-  deleteView: {
-    height: 40
-  },
-  list: {
-    borderTopWidth: 0,
-    marginTop: 20,
-    marginBottom: 5,
-    borderBottomWidth: 0
-  },
-  dialogList: {
-    borderTopWidth: 0,
-    marginTop: 0,
-    borderBottomWidth: 0
-  },
-  item: {
-    height: 51,
-    flexWrap: 'nowrap',
-    alignItems: 'center',
-    flexDirection: 'row',
-    backgroundColor: '#ffffff',
-    justifyContent: 'space-between',
-    borderBottomColor: '#E6E6E6',
-    borderBottomWidth: 1
-  },
-  itemLast: {
-    height: 51,
-    flexWrap: 'nowrap',
-    alignItems: 'center',
-    flexDirection: 'row',
-    backgroundColor: '#ffffff',
-    justifyContent: 'space-between'
-  },
-  textLeft: {
-    flex: 1,
-    fontSize: 16,
-    color: '#797979',
-    marginLeft: 10
-  },
-  itemViewRight: {
-    width: '58%',
-    flex: 2,
-    borderBottomWidth: 0,
-    float: 'right',
-    marginRight: 20
-  },
-  selectButton: {
-    height: 51,
-    marginRight: 10,
-    flexWrap: 'nowrap',
-    flexDirection: 'row'
-  },
-  selectItem: {
-    height: 51,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderBottomColor: '#D8D8D8',
-    borderBottomWidth: 1
-  },
-  itemText: {
-    color: '#505050',
-    fontSize: 18
-  },
-  buttonStyle: {
-    marginTop: 100
-  },
-  loading: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 8,
-    height: 80
   }
 }
 

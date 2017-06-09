@@ -14,6 +14,8 @@ import QuestionsScreen from './screens/questions_screen'
 import DepositRecordScreen from './screens/deposit_record_screen'
 import DepositDetailScreen from './screens/deposit_detail_screen'
 import EvaluationScreen from './screens/evaluation_screen'
+import CarteVitalScreen from './screens/carte_vital_screen'
+import PrivacyTermsScreen from './screens/privacy_terms_screen'
 
 export {
   ProfileScreen,
@@ -31,5 +33,7 @@ export {
   QuestionsScreen,
   DepositRecordScreen,
   DepositDetailScreen,
-  EvaluationScreen
+  EvaluationScreen,
+  CarteVitalScreen,
+  PrivacyTermsScreen
 }

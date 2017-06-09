@@ -83,7 +83,7 @@ class IntrodectionScreen extends Component {
       <div className='container'>
         <div>
           {
-            this.renderIntroduceCard('医院概况', hosiptal.description, hosiptal.phone, hosiptal.website, '小西天外附东大街28号')
+            this.renderIntroduceCard('医院概况', hosiptal.description, hosiptal.phone, hosiptal.website, hosiptal.address)
           }
           {/* {
             this.renderCard('医院评价', hosiptal.description)

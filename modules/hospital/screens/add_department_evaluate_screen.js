@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import localforage from 'localforage'
+import swal from 'sweetalert2'
 // import moment from 'moment'
 import {addDepartmentEvaluate} from '../../../ducks'
 import Stars from '../components/stars'
@@ -26,7 +27,7 @@ class AddDepartmentEvaluateScreen extends Component {
     let userId = await localforage.getItem('userId')
     let departmentId = this.props.departmentId || this.props.url.query.departmentId
     if (!advice) {
-      console.log('建议不能为空')
+      swal({text: '建议不能为空'})
       return
     }
     this.props.addDepartmentEvaluate(this.props.client, {userId, departmentId, technologyScore, orderlyScore, advice})

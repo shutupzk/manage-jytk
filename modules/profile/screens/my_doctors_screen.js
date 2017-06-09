@@ -52,7 +52,7 @@ class MyDoctorsScreen extends Component {
     })
     return (
       <div className='container'>
-        <DoctorList doctors={mydoctors} toUrl={(docId) => { this.toUrl(docId) }} />
+        <DoctorList doctors={mydoctors} userId={this.state.userId} toUrl={(docId) => { this.toUrl(docId) }} />
       </div>
     )
   }

@@ -15,13 +15,14 @@ function renderBottomButton (doc, gotoEvaluate) {
 
 export default (props) => {
   let doctor = props.doctor
+  const isMyDoc = props.isMyDoc
   // let schedules = props.schedules
   let gotoEvaluate = props.gotoEvaluate
   let height = 600 // window.innerHeight - 140
   return (
     <div className='container' style={{height: height, overflow: 'auto'}}>
       <div>
-        <DoctorTitleCard doctor={doctor} />
+        <DoctorTitleCard doctor={doctor} isMyDoc={isMyDoc} />
         <DoctorIntro doctor={doctor} />
         <DoctorScheduleList {...props} />
         <DoctorDescription doctor={doctor} />

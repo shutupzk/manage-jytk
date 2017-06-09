@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import Router from 'next/router'
+import swal from 'sweetalert2'
 
 import { signup } from '../../../ducks'
 import { connect } from 'react-redux'
@@ -25,23 +26,19 @@ class SignupCompletionScreen extends Component {
     const name = this.state.name
     const certificateNo = this.state.certificateNo
     if (!name) {
-      console.log('姓名不能为空')
-      return // this.popup.alert('姓名不能为空')
+      return swal('', '姓名不能为空')
     }
     if (!certificateNo) {
-      console.log('身份证号不能为空')
-      return // this.popup.alert('身份证号不能为空')
+      return swal('', '身份证号不能为空')
     }
     if (certificateNo.length !== 18) {
-      console.log('身份证格式不正确')
-      return // this.popup.alert('身份证格式不正确')
+      return swal('', '身份证格式不正确')
     }
     this.setState({animating: true})
     const error = await this.props.signup(this.props.client, { phone, password, certificateNo, name })
     this.setState({animating: false})
     if (error) {
-      console.log(error + '')
-      return // this.popup.alert(error + '')
+      return swal('', error + '')
     }
     Router.push('/signin')
   }

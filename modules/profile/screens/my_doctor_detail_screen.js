@@ -40,9 +40,14 @@ class DoctorDetailScreen extends Component {
     }
     const doctorId = this.props.doctorId || this.props.url.query.doctorId
     var doctor = this.props.doctors[doctorId]
+    const userId = this.props.userId
+    let isMyDoc = false
+    if (doctor.userIds.indexOf(userId) > -1) {
+      isMyDoc = true
+    }
     return (
       <div>
-        <DoctorDetail doctor={doctor} />
+        <DoctorDetail doctor={doctor} isMyDoc={isMyDoc} />
       </div>
     )
   }

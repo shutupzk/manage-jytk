@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Router from 'next/router'
+import swal from 'sweetalert2'
 
 import {
   signin,
@@ -44,22 +45,17 @@ class AppointmentListScreen extends Component {
 
     // 取消挂号
   async cancelAppointment (appointment) {
-    console.log('确定取消？')
     const appointmentId = appointment.id
     const visitStatus = '02'
-    this.popup.confirm({
-      content: '确定取消？',
-      ok: {
-        text: '确定',
-        style: { color: 'red' },
-        callback: async () => {
-          const error = await this.props.updateAppointment(this.props.client, { appointmentId, visitStatus })
-          console.log('error', error)
-          if (error) return this.popup.alert(error)
-          return this.props.navigation.goBack(null)
-        }
-      },
-      cancel: {text: '取消', style: {color: 'blue'}}
+    swal({
+      text: '确定取消？',
+      showCancelButton: true,
+      confirmButtonText: 'Yes!',
+      cancelButtonText: 'No!'
+    }).then(async () => {
+      const error = await this.props.updateAppointment(this.props.client, { appointmentId, visitStatus })
+      if (error) return swal('', error)
+      return window.history.back()
     })
   }
 

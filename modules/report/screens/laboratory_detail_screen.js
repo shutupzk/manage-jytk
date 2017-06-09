@@ -46,7 +46,6 @@ class LaboratoryDetailScreen extends Component {
     await this.props.queryLaboratoryItems(this.props.client, {laboratoryId})
     // }
     this.setState({ isInit: false })
-    console.log(laboratories)
   }
   componentWillMount () {
     // this.initData()

@@ -4,7 +4,7 @@ import Router from 'next/router'
 import localforage from 'localforage'
 
 import { queryPatients, selectPatient } from '../../../ducks'
-import { ages } from '../../../utils'
+// import { ages } from '../../../utils'
 import PatientList from '../components/patient_list'
 
 class PatientListScreen extends Component {
@@ -38,9 +38,12 @@ class PatientListScreen extends Component {
     if (this.props.error) {
       return <div>error</div>
     }
+    var height = process.browser ? window.innerHeight - 100 : ''
     return (
-      <div className='container'>
-        <PatientList patients={this.props.patients} gotoDetail={(patientId) => { this.gotoDetail(patientId) }} />
+      <div className=''>
+        <div style={{height: height, overflow: 'auto'}}>
+          <PatientList patients={this.props.patients} gotoDetail={(patientId) => { this.gotoDetail(patientId) }} />
+        </div>
         <button className='blockPrimaryBtn' style={{width: '90%', display: 'block', bottom: 20, position: 'absolute'}} onClick={() => Router.push('/profile/patient_add')}>
           <span >添加</span>
         </button>

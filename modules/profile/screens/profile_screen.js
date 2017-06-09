@@ -67,9 +67,9 @@ class ProfileScreen extends Component {
       { title: '满意度评价', icon: 'like', type: 'simple-line-icon', navigateUrl: 'profile/evaluation' }
     ]
     const array2 = [
-      { title: '医保卡信息', icon: 'doc', type: 'simple-line-icon', navigateUrl: 'healthcare_card' },
+      { title: '医保卡信息', icon: 'doc', type: 'simple-line-icon', navigateUrl: 'profile/carte_vital' },
       { title: '修改密码', icon: 'password', type: 'simple-line-icon', navigateUrl: 'profile/setPassword' },
-      { title: '隐私条款', icon: 'prvite', type: 'simple-line-icon', navigateUrl: 'prviteInfo' },
+      { title: '隐私条款', icon: 'prvite', type: 'simple-line-icon', navigateUrl: 'profile/privacy_terms' },
       { title: '常见问题', icon: 'question', type: 'simple-line-icon', navigateUrl: 'profile/questions' },
       // { title: '我的报告单', icon: 'doc', type: 'simple-line-icon', navigateUrl: 'favorite_list' },
       { title: '退出登录', icon: 'logout', type: 'simple-line-icon', navigateUrl: 'logout' }

@@ -1,24 +1,18 @@
 function TitleCard (props) {
-  var doc = props.doctor
+  const doc = props.doctor
+  const isMyDoc = props.isMyDoc
   return (
     <div className='cardContainer'>
       <div style={{float: 'left', width: '25%'}}><img src='/static/icons/doctor_head.png' /></div>
       <div style={{hight: 60, width: '75%', float: 'right'}}>
         <div style={{float: 'left', width: '70%', height: 60}}>
           <div>{doc.doctorName}</div>
-          <div>主任医师</div>
+          <div>{doc.title || '主任医师'}</div>
         </div>
-        <div style={{float: 'right', width: '30%', height: 60}}>
-          <div>
-            {/*<Icon
-              size={22}
-              name='star'
-              type='font-awesome'
-              color='#E0E0E0' />*/}
-            <div style={{color: '#505050'}}>
-              收藏
-            </div>
-          </div>
+        <div style={{float: 'right', width: '20%', height: 60, color: '#505050', padding: 5}}>
+          {
+            isMyDoc ? <div style={{alignItems: 'center'}}><li className='light' ><a /></li><div>已收藏</div></div> : <div><li><a /></li><div>收藏</div></div>
+          }
         </div>
       </div>
       <div className='.clearfix'>&nbsp;</div>
@@ -45,59 +39,25 @@ function TitleCard (props) {
           font-size: 13px;
           color: #B4B4B4;
         }
+        li {
+          {/*float: left;*/}
+          list-style: none;
+          width: 27px;
+          height: 27px;
+          background: url(/static/icons/stars.gif)
+        }
+        li a {
+          display: block;
+          width: 100%;
+          padding-top: 27px;
+          overflow: hidden;
+        }
+        li.light {
+          background-position: 0 -29px;
+        }
       `}</style>
     </div>
   )
-}
-
-const styles = {
-  container: {
-    flex: 7,
-    backgroundColor: 'white'
-  },
-  containerStyle: {
-    borderBottomWidth: 0
-  },
-  avatarStyle: {
-    borderRadius: 0,
-    height: 60,
-    width: 60
-  },
-  subView: {
-    height: 60,
-    flexDirection: 'row'
-  },
-  subtitleView: {
-    height: 60,
-    flex: 2
-  },
-  subCollectionView: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  collectionView: {
-    flexDirection: 'column'
-  },
-  nameText: {
-    margin: 5,
-    marginTop: 10,
-    alignItems: 'center',
-    fontSize: 18
-  },
-  titleText: {
-    margin: 5,
-    alignItems: 'center',
-    fontSize: 13
-  },
-  majorView: {
-    height: 60,
-    flexDirection: 'column'
-  },
-  descriptionView: {
-    flexDirection: 'column',
-    marginTop: 10
-  }
 }
 
 export default TitleCard

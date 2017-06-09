@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import localforage from 'localforage'
 import Router from 'next/router'
 import _ from 'lodash'
+import swal from 'sweetalert2'
 
 import { ages, isEmptyObject } from '../../../utils'
 import { queryPatients, removePatient, updatePatient, updatePatientDefault } from '../../../ducks'
@@ -26,46 +27,70 @@ class PatientDetailScreen extends Component {
       this.props.queryPatients(this.props.client, { userId })
     }
   }
+
   // 删除就诊人
   async delPatient () {
     const patients = this.props.patients
     const patient = patients[this.props.selectId]
     if (this.props.user.certificateNo === patient.certificateNo) {
-      return console.log('本人不能删除') // this.popup.alert('本人不能删除')
+      return swal({text: '本人不能删除'}) //
     }
-    this.popup.confirm({
-      content: '确定删除？',
-      ok: {
-        text: '确定',
-        style: { color: 'red' },
-        callback: async () => {
-          const error = await this.props.removePatient(this.props.client, {patientId: this.props.selectId})
-          console.log('error', error)
-          if (error) return this.popup.alert(error)
-          return this.props.navigation.goBack(null)
-        }
-      },
-      cancel: {text: '取消', style: {color: 'blue'}}
+    swal({
+      text: '确认删除？',
+      showCancelButton: true,
+      confirmButtonText: 'Yes!',
+      cancelButtonText: 'No!'
+    }).then(async () => {
+      const error = await this.props.removePatient(this.props.client, {patientId: this.props.selectId})
+      if (error) return swal('', error)
+      return window.history.back()
     })
   }
-
   render () {
     return (
-      <div className='container' style={styles.container}>
+      <div>
         {detailList(this.props, this.bindCard)}
         <button
           className='blockPrimaryBtn'
-          style={{backgroundColor: '#FFFFFF', color: '#E45252', display: 'block', width: '100%'}}
+          style={{backgroundColor: '#FFFFFF', color: '#E45252', display: 'block', width: '100%', marginTop: 20}}
           onClick={() => this.delPatient(this.props)}
           >删除就诊人</button>
         {/* <Popup ref={popup => { this.popup = popup }} /> */}
+        <style jsx global>{`
+          .list {
+            border-top: 0px;
+            margin-top: 10px;
+            margin-bottom: 5px;
+            border-bottom: 0px;
+          }
+          .item {
+            padding: 10px 20px;
+            {/*height: 31px;*/}
+            {/*flexWrap: nowrap;*/}
+            align-items: center;
+            flexDirection: row;
+            background-color: #ffffff;
+            justifyContent: space-between;
+            margin-bottom: 1px;
+          }
+          .textLeft {
+            font-size: 16px;
+            color: #797979;
+            {/*margin-left: 20px;*/}
+          }
+          .textRight {
+            float: right;
+            font-size: 14px;
+            color: #505050;
+            {/*margin-right: 20px;*/}
+          }
+        `}</style>
       </div>
     )
   }
 }
 
 async function changeCheckbox (props, e) {
-  console.log(e.target.checked)
   var patientId = props.url.query.patientId
   if (e.target.checked) {
     const error = await props.updatePatientDefault(props.client, {patientId, isDefault: true})
@@ -74,7 +99,7 @@ async function changeCheckbox (props, e) {
     const patientIds = await _.keys(patients)
     patientIds.map(async (patientId) => {
       const error3 = await props.updatePatientDefault(props.client, {patientId, isDefault: false})
-      if (error3) return this.popup.alert(error3)
+      if (error3) return swal('', error3)
     })
   } else {
     const error = await props.updatePatientDefault(props.client, {patientId, isDefault: false})
@@ -92,9 +117,7 @@ const relations = {
 
 const detailList = (props) => {
   const patients = props.patients
-  console.log('patients', patients)
   const selectId = props.selectId || props.url.query.patientId
-  console.log('selectId', selectId)
   if (!selectId) {
     return
   }
@@ -112,15 +135,15 @@ const detailList = (props) => {
     { key: '医保卡号', value: patient.carteVital }
   ]
   return (
-    <div style={styles.list}>
+    <div className='list'>
       {
         array.map((item, i) => (
            ListItem(item.key, item.value, props)
         ))
       }
       <div style={{marginTop: 20}}>
-        <div style={styles.item}>
-          <span style={styles.textLeft}>设为默认就诊人</span>
+        <div className='item'>
+          <span className='textLeft'>设为默认就诊人</span>
           <input type='checkbox' style={{float: 'right', zoom: '160%', marginRight: 12}} onClick={(e) => changeCheckbox(props, e)} defaultChecked={patient.default} />
         </div>
       </div>
@@ -139,11 +162,10 @@ const gotoBindCard = (props) => {
 }
 
 const ListItem = (key, value, props) => {
-  let style = styles.item
-  let rightView = (<div style={styles.textRight}>{value}</div>)
+  let rightView = (<div className='textRight'>{value}</div>)
   if (key === '医保卡号') {
     rightView = (
-      <div style={styles.textRight}>
+      <div className='textRight'>
         {value}
         <span
           style={{marginLeft: 10}}
@@ -155,60 +177,14 @@ const ListItem = (key, value, props) => {
       )
   }
   return (
-    <div style={style} key={key}>
-      <span style={styles.textLeft}>{key}</span>
+    <div className='item' key={key}>
+      <span className='textLeft'>{key}</span>
       {rightView}
     </div>
   )
 }
 
-const styles = {
-  container: {
-  },
-  list: {
-    borderTopWidth: 0,
-    marginTop: 0,
-    marginBottom: 5,
-    borderBottomWidth: 0
-  },
-  item: {
-    height: 51,
-    flexWrap: 'nowrap',
-    alignItems: 'center',
-    flexDirection: 'row',
-    backgroundColor: '#ffffff',
-    justifyContent: 'space-between',
-    borderBottomColor: '#E6E6E6',
-    borderBottomWidth: 1
-  },
-  itemLast: {
-    height: 51,
-    flexWrap: 'nowrap',
-    alignItems: 'center',
-    flexDirection: 'row',
-    backgroundColor: '#ffffff',
-    justifyContent: 'space-between'
-  },
-  textLeft: {
-    fontSize: 16,
-    color: '#797979',
-    marginLeft: 10
-  },
-  textRight: {
-    float: 'right',
-    fontSize: 14,
-    color: '#505050',
-    marginRight: 10
-  },
-  loading: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: 80
-  }
-}
-
 function mapStateToProps (state) {
-  console.log('state:', state)
   return {
     patients: state.patients.data,
     selectId: state.patients.selectId,

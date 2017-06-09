@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import Router from 'next/router'
 import { connect } from 'react-redux'
 import localforage from 'localforage'
+import swal from 'sweetalert2'
 
 import { signin, queryUser, selectAppointment, queryPatients, queryAppointmentDetail, updateAppointment, selectDepartment, selectDoctor } from '../../../ducks'
 
@@ -55,8 +56,17 @@ class AppointmentDetailScreen extends Component {
     const appointmentId = this.props.appointmentId
     const visitStatus = '02'
     const error = await this.props.updateAppointment(this.props.client, { appointmentId, visitStatus })
-    console.log('error', error)
-    if (error) return this.popup.alert(error)
+    if (error) return swal('', error)
+    swal({
+      text: '确认删除？',
+      showCancelButton: true,
+      confirmButtonText: 'Yes!',
+      cancelButtonText: 'No!'
+    }).then(async () => {
+      const error = await this.props.updateAppointment(this.props.client, { appointmentId, visitStatus })
+      if (error) return swal('', error)
+      return window.history.back()
+    })
     return this.props.url.back()
     // this.popup.confirm({
     //   content: '确定取消？',

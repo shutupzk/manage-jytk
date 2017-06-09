@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Router from 'next/router'
+import localforage from 'localforage'
 // import _ from 'lodash'
 
 import DoctorList from '../components/doctor_list'
-import { queryDoctors, selectDoctor } from '../../../ducks'
+import { queryDoctors, selectDoctor, queryMyDoctors } from '../../../ducks'
 
 const filterDepartments = (departmentIds, departmentId) => {
   let ids = departmentIds.filter((id) => {
@@ -29,28 +30,32 @@ const isExistDepartment = (doctors, departmentId) => {
 }
 
 class DoctorScreen extends Component {
-  // constructor (props) {
-  //   super(props)
-  // }
+  constructor (props) {
+    super(props)
+    this.state = {
+      isInit: false
+    }
+  }
   componentWillMount () {
     this.queryData()
   }
-  queryData () {
+  async queryData () {
     // var depId = getQueryString('id')
-    let departmentId = this.props.url.query.departmentId
-    this.props.queryDoctors(this.props.client, { departmentId })
+    this.setState({isInit: true})
+    let departmentId = this.props.departmentId || this.props.url.query.departmentId
+    await this.props.queryDoctors(this.props.client, { departmentId })
+    const userId = await localforage.getItem('userId')
+    this.setState({userId})
+    this.props.queryMyDoctors(this.props.client, {userId})
+    this.setState({isInit: false})
     // this.props.queryDoctors({departmentId: '58eb4faec77c0857c9dc5b0c'})
   }
-
   toUrl (docId) {
     Router.push('/hospital/departments/doctor_introduce_list/doctor_detail?departmentId=' + this.props.url.query.departmentId + '&doctorId=' + docId)
   }
 
   render () {
-    let departmentId = this.props.url.query.departmentId
-    let doctors = this.props.doctorsData
-    let selectDoctors = isExistDepartment(doctors, departmentId)
-    if (this.props.loading) {
+    if (this.props.loading || this.state.isInit) {
       return (
         <div>
           <h1>loading...</h1>
@@ -64,13 +69,17 @@ class DoctorScreen extends Component {
         </div>
       )
     }
+    let departmentId = this.props.departmentId || this.props.url.query.departmentId
+    let doctors = this.props.doctorsData
+    // console.log(doctors)
+    let selectDoctors = isExistDepartment(doctors, departmentId)
     // var docArr = []
     // _.mapValues(selectDoctors, function (doc) {
     //   docArr.push(doc)
     // })
     return (
       <div className='container'>
-        <DoctorList doctors={selectDoctors} toUrl={(docId) => { this.toUrl(docId) }} />
+        <DoctorList doctors={selectDoctors} userId={this.state.userId} toUrl={(docId) => { this.toUrl(docId) }} />
         {/* {tab(selectDoctors)} */}
       </div>
     )
@@ -87,5 +96,5 @@ function mapStateToProps (state) {
 }
 
 export default connect(
-  mapStateToProps, {queryDoctors, selectDoctor}
+  mapStateToProps, {queryDoctors, selectDoctor, queryMyDoctors}
 )(DoctorScreen)
