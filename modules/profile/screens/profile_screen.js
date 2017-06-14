@@ -31,7 +31,7 @@ class ProfileScreen extends Component {
   }
   birthdayView (user) {
     if (!user.birthday) return null
-    return <div style={styles.birtdayText}>{ `${user.sex === '0' ? '女' : '男'} | ${user.birthday}`}</div>
+    return <div className='birtdayText'>{ `${user.sex === '0' ? '女' : '男'} | ${user.birthday}`}</div>
   }
   topView (user) {
     const title = user.name ? '个人信息' : '去登录'
@@ -43,10 +43,10 @@ class ProfileScreen extends Component {
       href = '/' + navigateUrl
     }
     return (
-      <div style={styles.topView}>
-        <div style={{textAlign: 'center'}}><img style={styles.avatar} src='/static/icons/male_header.png' /></div> 
-        <div style={styles.userInfo}>
-          <div style={styles.nameText}>{name}</div>
+      <div className='topView'>
+        <div style={{textAlign: 'center'}}><img className='avatar' src='/static/icons/male_header.png' /></div> 
+        <div className='userInfo'>
+          <div className='nameText'>{name}</div>
           { this.birthdayView(user) }
         </div>
         <Link href={href}>
@@ -61,13 +61,13 @@ class ProfileScreen extends Component {
   buttomList (token) {
     const array = [
       { title: '就诊人管理', icon: 'people', type: 'simple-line-icon', navigateUrl: 'profile/patient_list' },
-      { title: '我的医生', icon: 'star', type: 'simple-line-icon', navigateUrl: 'profile/my_doctors' },
-      { title: '缴费记录', icon: 'star', type: 'simple-line-icon', navigateUrl: 'profile/deposit_record' },
+      { title: '我的医生', icon: 'doctor_head', type: 'simple-line-icon', navigateUrl: 'profile/my_doctors' },
+      { title: '缴费记录', icon: '', type: 'simple-line-icon', navigateUrl: 'profile/deposit_record' },
       // { title: '我的随访', icon: 'pencil-square-o', type: 'font-awesome', navigateUrl: 'ehr' },
       { title: '满意度评价', icon: 'like', type: 'simple-line-icon', navigateUrl: 'profile/evaluation' }
     ]
     const array2 = [
-      { title: '医保卡信息', icon: 'doc', type: 'simple-line-icon', navigateUrl: 'profile/carte_vital' },
+      { title: '医保卡信息', icon: 'idCard_icon', type: 'simple-line-icon', navigateUrl: 'profile/carte_vital' },
       { title: '修改密码', icon: 'password', type: 'simple-line-icon', navigateUrl: 'profile/setPassword' },
       { title: '隐私条款', icon: 'prvite', type: 'simple-line-icon', navigateUrl: 'profile/privacy_terms' },
       { title: '常见问题', icon: 'question', type: 'simple-line-icon', navigateUrl: 'profile/questions' },
@@ -76,8 +76,8 @@ class ProfileScreen extends Component {
       // { title: '设置', icon: 'settings', type: 'simple-line-icon', navigateUrl: 'setting' }
     ]
     return (
-      <div style={styles.list}>
-        <div style={{marginBottom: 20, display: 'flex'}}>
+      <div className='list'>
+        <div style={{marginBottom: 10, display: 'flex', padding: 10, backgroundColor: '#fff'}}>
           {
             array.map((item, i) => {
               var href = 'signin'
@@ -86,15 +86,15 @@ class ProfileScreen extends Component {
               }
               return (
                 <div
-                  style={{flex: 1}}
+                  style={{flex: 1, alignItems: 'center'}}
                 >
                   <Link
                     key={i}
                     href={href}
                   >
-                    <a>
+                    <a style={{alignItems: 'center'}}>
+                      <img src={`/static/icons/${item.icon}.png`} type={item.type} height='16' width='16' style={{color: '#505050'}} />
                       <div style={{fontSize: 15}}>{item.title}</div>
-                      <img src={item.icon} type={item.type} height='16' width='16' style={{color: '#505050'}} />
                     </a>
                   </Link>
                 </div>
@@ -113,25 +113,25 @@ class ProfileScreen extends Component {
               if (item.navigateUrl === 'logout') {
                 return (
                   <div
-                    style={{flex: 1}}
+                    style={{flex: 1, backgroundColor: '#fff', padding: 10, marginBottom: 1}}
                     onClick={() => { this.doSignout() }}
                   >
-                    <a>
+                    <a style={{display: 'flex'}}>
+                      <img src={`/static/icons/${item.icon}.png`} type={item.type} height='16' width='16' style={{color: '#505050'}} />
                       <div style={{fontSize: 15}}>{token ? item.title : '未登录'}</div>
-                      <img src={item.icon} type={item.type} height='16' width='16' style={{color: '#505050'}} />
                     </a>
                   </div>
                 )
               }
               return (
-                <div style={{flex: 1}}>
+                <div style={{flex: 1, backgroundColor: '#fff', padding: 10, marginBottom: 1}}>
                   <Link
                     key={i}
                     href={href}
                   >
-                    <a>
+                    <a style={{display: 'flex'}}>
+                      <img src={`/static/icons/${item.icon}.png`} type={item.type} height='16' width='16' style={{color: '#505050'}} />
                       <div style={{fontSize: 15}}>{item.title}</div>
-                      <img src={item.icon} type={item.type} height='16' width='16' style={{color: '#505050'}} />
                     </a>
                   </Link>
                 </div>
@@ -155,61 +155,57 @@ class ProfileScreen extends Component {
       <div className='container'>
         { this.topView(user) }
         { this.buttomList(token) }
+        <style jsx global>{`
+          .list {
+            border-top: none;
+            margin-top: 0px;
+            margin-bottom: 15px;
+            border-bottom: none;
+          }
+          .topView {
+            align-items: center;
+            background-color: #ffffff;
+            height: 200px;
+            margin-bottom: 12px;
+          },
+          .avatar {
+            width: 70px;
+            height: 70px;
+            margin-top: 20px;
+          }
+          .userInfo {
+            align-items: center;
+            height: 70px;
+          }
+          .nameText {
+            text-align: center;
+            height: auto;
+            font-size: 18px;
+            margin-top: 16px;
+            color: #505050;
+          }
+          .birtdayText {
+            text-align: center;
+            font-size: 14px;
+            margin-top: 8px;
+            color: #797979;
+          },
+          .middleView {
+            flex-wrap: nowrap;
+            align-self: center;
+            flex-direction: row;
+            background-color: #ffffff;
+          },
+          .icon {
+            align-self: center;
+            width: 15px;
+            height: 15px;
+            margin-left: 5px;
+            margin-right: 5px;
+          }
+        `}</style>
       </div>
     )
-  }
-}
-
-const styles = {
-  container: {
-    flex: 1
-  },
-  list: {
-    borderTopWidth: 0,
-    marginTop: 0,
-    marginBottom: 15,
-    borderBottomWidth: 0
-  },
-  topView: {
-    alignItems: 'center',
-    backgroundColor: '#ffffff',
-    height: 200,
-    marginBottom: 12
-  },
-  avatar: {
-    width: 70,
-    height: 70,
-    marginTop: 20
-  },
-  userInfo: {
-    alignItems: 'center',
-    height: 70
-  },
-  nameText: {
-    textAlign: 'center',
-    height: 'auto',
-    fontSize: 18,
-    marginTop: 16,
-    color: '#505050'
-  },
-  birtdayText: {
-    textAlign: 'center',
-    fontSize: 14,
-    marginTop: 8,
-    color: '#797979'
-  },
-  middleView: {
-    flexWrap: 'nowrap',
-    alignSelf: 'center',
-    flexDirection: 'row',
-    backgroundColor: '#ffffff'
-  },
-  icon: {
-    alignSelf: 'center',
-    width: 15,
-    height: 15,
-    marginLeft: 5,
-    marginRight: 5
   }
 }
 

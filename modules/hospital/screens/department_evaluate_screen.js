@@ -23,10 +23,10 @@ class DepartmentEvaluateScreen extends Component {
             [1, 2, 3, 4, 5].map((i) => {
               if (i > score) {
                 return (
-                  <li><a /></li>
+                  <li key={i}><a /></li>
                 )
               } else {
-                return (<li className='light'><a /></li>)
+                return (<li key={i} className='light'><a /></li>)
               }
             })
           }
@@ -74,14 +74,14 @@ class DepartmentEvaluateScreen extends Component {
     var departmentId = this.props.departmentId || this.props.url.query.departmentId
     const department = this.props.departments[departmentId]
     const evaluates = department.departmentEvaluates
-    const height = window.innerHeight - 80
+    const height = window.innerHeight - 70
     return (
       <div>
         <div style={{height: height, overflow: 'auto'}}>
           {
             evaluates.length > 0 ? evaluates.map((evaluate) => {
               return (
-                <div key={evaluate.id} style={{backgroundColor: '#ffffff', padding: 10, marginBottom: 2}}>
+                <div key={evaluate.id} style={{backgroundColor: '#ffffff', padding: '10px 15px', marginBottom: 2}}>
                   <div style={{marginBottom: 5, color: '#505050'}}>{evaluate.user.name} <span style={{float: 'right'}}>{moment(evaluate.createdAt).format('YYYY-MM-DD')}</span></div>
                   <div style={{display: 'flex', fontSize: 14, color: '#505050'}}>
                     <div style={{width: '50%'}}>技术水平 {this.renderStar(evaluate.technologyScore)}</div>

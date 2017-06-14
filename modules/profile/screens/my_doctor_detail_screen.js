@@ -53,7 +53,6 @@ class DoctorDetailScreen extends Component {
   }
 }
 function mapStateToProps (state) {
-  console.log(state)
   return {
     userId: state.user.data.id,
     user: state.user.data,

@@ -245,3 +245,12 @@ export function convertCurrency (money) {
   }
   return chineseStr
 }
+
+// 替换字符串的部分
+export function replaceStr (sorceText, startIndex, endIndex, repStr) {
+  var str = sorceText.substring(startIndex, endIndex)
+  if (str.length > 0) {
+    sorceText = sorceText.replace(str, repStr)
+  }
+  return sorceText
+}

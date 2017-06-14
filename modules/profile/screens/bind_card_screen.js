@@ -37,58 +37,35 @@ class BindCardScreen extends Component {
         <div>loading...</div>
       )
     }
-    return (<div className='container' style={styles.container}>
-      <div style={styles.div}>
-        <div style={styles.item} key={'carteVital'}>
-          <span style={styles.textLeft}>医保卡</span>
+    return (<div>
+      <div>
+        <div className='item' key={'carteVital'}>
+          <span className='textLeft'>医保卡</span>
           <input placeholder={'输入医保卡'} style={{float: 'right', width: '72%', marginRight: 15}} className='textInput'
             onChange={(e) => this.setState({ carteVital: e.target.value })} />
         </div>
       </div>
       <button title='确定' onClick={() => this.submit()} style={{display: 'block', width: '100%', borderRadius: '10px', height: 40}}>确定</button>
       {/* <Popup ref={popup => { this.popup = popup }} /> */}
+      <style jsx>{`
+        .item {
+          padding: 10px;
+          height: 51px;
+          flex-wrap: nowrap;
+          align-items: center;
+          flex-direction: row;
+          background-color: #ffffff;
+          justify-content: 'space-between';
+          margin-bottom: 10px;
+        }
+        .textLeft {
+          flex: 1;
+          font-size: 16px;
+          color: #505050;
+          margin-left: 15px;
+        }
+      `}</style>
     </div>)
-  }
-}
-
-const styles = {
-  container: {
-    flex: 1
-  },
-  list: {
-    borderTopWidth: 0,
-    marginTop: 10,
-    marginBottom: 5,
-    borderBottomWidth: 0
-  },
-  item: {
-    height: 51,
-    flexWrap: 'nowrap',
-    alignItems: 'center',
-    flexDirection: 'row',
-    backgroundColor: '#ffffff',
-    justifyContent: 'space-between',
-    borderBottomColor: '#E6E6E6',
-    borderBottomWidth: 1
-  },
-  textLeft: {
-    flex: 1,
-    fontSize: 16,
-    color: '#505050',
-    marginLeft: 15
-  },
-  TextInput: {
-    flex: 3,
-    borderBottomWidth: 0,
-    marginRight: 15
-  },
-  buttonStyle: {
-    marginTop: 35
-  },
-  loading: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: 80
   }
 }
 

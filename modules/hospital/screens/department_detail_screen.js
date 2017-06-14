@@ -3,10 +3,15 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Link from 'next/link'
 import {queryDepartmentDetail} from '../../../ducks'
+import { replaceStr } from '../../../utils'
 class DepartmentDetailScreen extends Component {
   constructor (props) {
     super(props)
     this.toDetail = false
+    this.state = {
+      descriptionAll: false,
+      featuresAll: false
+    }
   }
   static async getInitialProps (context) {
     return {usr: 'baek'}
@@ -33,41 +38,58 @@ class DepartmentDetailScreen extends Component {
     }
     let evaluates = department.departmentEvaluates ? department.departmentEvaluates.slice(0, 3) : []
     let goEvaluateUrl = '/hospital/departments/evaluate_list?departmentId=' + departmentId
+    const description = department.description || 'Neurosurgery' // '神经外科（Neurosurgery）是外科学中的一个分支，是在外科学以手术为主要治疗手段的基础上，应用独特的神经外科学研究方法，研究人体神经系统，如脑、脊髓和周围神经系统，以及与之神经外科（Neurosurgery）是外科学中的一个分支，是在外科学以手术为主要治疗手段的基础上，应用独特的神经外科学研究方法，研究人体神经系统，如脑、脊髓和周围神经系统。'
+    const features = department.features || '神经外科（Neurosurgery）是外科学中的一个分支，是在外科学以手术为主要治疗手段的基础上，应用独特的神经外科学研究方法，研究人体神经系统，如脑、脊髓和周围神经系统，以及与之神经外科（Neurosurgery）是外科学中的一个分支，是在外科学以手术为主要治疗手段的基础上，应用独特的神经外科学研究方法，研究人体神经系统，如脑、脊髓和周围神经系统。'
     return (
-      <div className='container'>
-        <div style={{backgroundColor: '#eee'}}>
-          <div style={{backgroundColor: '#eee'}}>
-            <div style={{backgroundColor: '#fff', marginBottom: 10, height: 30}}>
-              <div style={styles.titleText}>{department.deptName}</div>
-              <div style={styles.titleTypeText}>{department.features}</div>
+      <div>
+        <div>
+          <div>
+            <div style={{backgroundColor: '#fff', margin: '10px 0px', padding: 10, height: 30}}>
+              <span style={{fontSize: 15}}>{department.deptName}</span>
+              <span style={{fontSize: 14, marginLeft: 5, color: '#D4D4D4'}}>{ department.position || '病理医学部'}</span>
             </div>
-            <div style={{backgroundColor: '#fff', marginBottom: 10, height: 120, overflow: 'auto'}}>
-              <div style={styles.commonText}>
+            <div style={{backgroundColor: '#fff', marginBottom: 10, padding: '10px 15px', overflow: 'auto'}}>
+              <div style={{fontSize: 15, marginBottom: 15, display: 'flex'}}>
+                <div style={{backgroundColor: '#3CA0FF', width: 5, marginRight: 5, height: 18}} />
                 科室介绍
               </div>
-              <div style={styles.contentText}>
-                {department.description}
+              <div>
+                <div style={{minHeight: 50, fontSize: 14}}>
+                  {
+                    this.state.descriptionAll ? description : replaceStr(description, 100, description.length, '...')
+                  }
+                </div>
+                { description.length > 100 ? <div style={{color: '#3CA0FF', textAlign: 'right', marginBottom: 10}} onClick={() => { this.setState({descriptionAll: !this.state.descriptionAll}) }}>{this.state.descriptionAll ? '收起▲' : '展开▼'}</div> : '' }
               </div>
             </div>
-            <div style={{backgroundColor: '#fff', marginBottom: 10, height: 120, overflow: 'auto'}}>
-              <div style={styles.commonText}>
+            <div style={{backgroundColor: '#fff', marginBottom: 10, padding: '10px 15px', overflow: 'auto'}}>
+              <div style={{fontSize: 15, marginBottom: 15, display: 'flex'}}>
+                <div style={{backgroundColor: '#3CA0FF', width: 5, marginRight: 5, height: 18}} />
                 特色诊疗
               </div>
-              <div style={styles.contentText}>
-                神经外科（Neurosurgery）是外科学中的一个分支，是在外科学以手术为主要治疗手段的基础上，应用独特的神经外科学研究方法，研究人体神经系统，如脑、脊髓和周围神经系统，以及与之神经外科（Neurosurgery）是外科学中的一个分支，是在外科学以手术为主要治疗手段的基础上，应用独特的神经外科学研究方法，研究人体神经系统，如脑、脊髓和周围神经系统。。。
-            </div>
-            </div>
-            <div style={{backgroundColor: '#fff'}}>
-              <div style={styles.commonText}>
-                科室评价
-                <Link href={goEvaluateUrl}><a style={{float: 'right'}}>更多>></a></Link>
+              <div>
+                <div style={{minHeight: 50, fontSize: 14}}>
+                  {
+                    this.state.featuresAll ? features : replaceStr(features, 100, features.length, '...')
+                  }
+                </div>
+                { features.length > 100 ? <div style={{color: '#3CA0FF', textAlign: 'right', marginBottom: 10}} onClick={() => { this.setState({featuresAll: !this.state.featuresAll}) }}>{this.state.featuresAll ? '收起▲' : '展开▼'}</div> : '' }
               </div>
-              <div style={styles.contentText}>
+            </div>
+            <div style={{backgroundColor: '#fff', padding: '10px 15px'}}>
+              <div style={{fontSize: 15, marginBottom: 15, display: 'flex'}}>
+                <div style={{flex: 1, display: 'flex'}}>
+                  <div style={{backgroundColor: '#3CA0FF', width: 5, marginRight: 5, height: 18}} />
+                  科室评价
+                </div>
+                <Link href={goEvaluateUrl}><a style={{textAlign: 'right', color: '#D4D4D4', fontSize: 13, flex: 1}}>更多>></a></Link>
+              </div>
+              <div style={{fontSize: 14}}>
                 <ul style={{padding: 0, margin: 0}}>
                   {
                     evaluates.length > 0 ? evaluates.map((evaluate) => {
                       return (
-                        <li style={{borderBottom: 'solid 1px #dddddd',marginBottom: 5}}>
+                        <li style={{borderBottom: 'solid 1px #dddddd', marginBottom: 5}} key={evaluate.id}>
                           <div>评价人:{evaluate.user.name}</div>
                           <div>评价内容:{evaluate.advice}</div>
                         </li>
@@ -95,21 +117,4 @@ function mapStateToProps (state) {
   }
 }
 
-const styles = {
-  containerStyle: {
-    margin: 0
-  },
-  titleStyle: {
-    alignSelf: 'flex-start',
-    fontSize: 15
-  },
-  commonText: {
-    marginBottom: 10,
-    fontSize: 15
-    // lineHeight: 18
-  },
-  contentText: {
-    fontSize: 14
-  }
-}
 export default connect(mapStateToProps, {queryDepartmentDetail})(DepartmentDetailScreen)

@@ -5,7 +5,7 @@ import Router from 'next/router'
 import _ from 'lodash'
 import swal from 'sweetalert2'
 
-import { ages, isEmptyObject } from '../../../utils'
+import { ages, isEmptyObject, phone, certificateNo } from '../../../utils'
 import { queryPatients, removePatient, updatePatient, updatePatientDefault } from '../../../ducks'
 
 class PatientDetailScreen extends Component {
@@ -128,8 +128,8 @@ const detailList = (props) => {
     { key: '性别', value: patient.sex === '0' ? '女' : '男' },
     { key: '年龄', value: `${ages(patient.birthday)}岁` },
     { key: '出生日期', value: patient.birthday },
-    { key: '身份证号', value: patient.certificateNo },
-    { key: '手机号', value: patient.phone },
+    { key: '身份证号', value: certificateNo(patient.certificateNo) },
+    { key: '手机号', value: phone(patient.phone) },
     { key: '与本人关系', value: relationship },
     { key: '就诊号', value: patient.patientCards[0].patientIdNo },
     { key: '医保卡号', value: patient.carteVital }
