@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 // import { Router } from '../../../routes'
 import Router from 'next/router'
-import swal from 'sweetalert2'
+// import console.log from 'sweetalert2'
 
 import { savePhone } from '../../../ducks'
 import { connect } from 'react-redux'
@@ -40,25 +40,25 @@ class SignupScreen extends Component {
     const phone = this.state.phone
     const repassword = this.state.repassword
     if (!phone) {
-      return swal('', '请输入手机号')
+      return console.log('', '请输入手机号')
     }
     if (phone.length !== 11) {
-      return swal('', '手机号格式不正确')
+      return console.log('', '手机号格式不正确')
     }
     if (!verCode) {
-      return swal('', '请输入验证码')
+      return console.log('', '请输入验证码')
     }
     if (verCode !== '1234') {
-      return swal('', '验证码输入错误')
+      return console.log('', '验证码输入错误')
     }
     if (!password) {
-      return swal('', '请输入密码')
+      return console.log('', '请输入密码')
     }
     if (password.length < 8) {
-      return swal('', '密码长度不能小于8位')
+      return console.log('', '密码长度不能小于8位')
     }
     if (password !== repassword) {
-      return swal('', '密码输入不一致，请重新输入')
+      return console.log('', '密码输入不一致，请重新输入')
     }
     props.savePhone({ phone, password })
     // const { navigate } = props.navigation
@@ -68,40 +68,63 @@ class SignupScreen extends Component {
   }
 
   render () {
-    return (<div style={styles.container}>
-      <div style={styles.list}>
-        <div style={styles.item} key={'username'}>
-          <span style={styles.textLeft}> &nbsp;账&nbsp; 号: </span>
-          <input placeholder={'请输入您的手机号'} className='textInput' style={{width: '60%'}}
+    return (<div>
+      <div className='list'>
+        <div className='item' key={'username'}>
+          <span className={'textLeft'}> &nbsp;账&nbsp; 号: </span>
+          <input placeholder={'请输入您的手机号'} className='textInput'
             onChange={(e) => this.setState({ phone: e.target.value })} value={this.state.phone} />
         </div>
-        <div style={styles.item} key={'verCode'}>
-          <span style={styles.textLeft}>验 证 码: </span>
-          <input placeholder={'请输入验证码'} className='textInput'
-            onChange={(e) => this.setState({ verCode: e.target.value })} value={this.state.verCode} />
-          <button style={{display: 'inline', marginLeft: '5px', height: '30px'}}
-            onClick={() => { this.sendCode(this.props) }} disabled={this.state.clickable} >
-            <span>{this.state.buttonTitle}</span>
-          </button>
+        <div className={'item'} key={'verCode'}>
+          <span className={'textLeft'}>验 证 码: </span>
+          <div style={{flex: 8}}>
+            <input placeholder={'请输入验证码'} className='textInput'
+              onChange={(e) => this.setState({ verCode: e.target.value })} value={this.state.verCode} />
+            <button style={{display: 'inline', height: '30px'}}
+              onClick={() => { this.sendCode(this.props) }} disabled={this.state.clickable} >
+              <span>{this.state.buttonTitle}</span>
+            </button>
+          </div>
         </div>
-        <div style={styles.item} key={'password'}>
-          <span style={styles.textLeft}> &nbsp;密&nbsp; 码: </span>
-          <input placeholder={'8-18位，同时包含数字和字母'} className='textInput' style={{width: '60%'}} type='password'
+        <div className={'item'} key={'password'}>
+          <span className={'textLeft'}> &nbsp;密&nbsp; 码: </span>
+          <input placeholder={'8-18位，同时包含数字和字母'} className='textInput' type='password'
             onChange={(e) => this.setState({ password: e.target.value })} value={this.state.password} />
         </div>
-        <div style={styles.item} key={'repassword'}>
-          <span style={styles.textLeft}>再次输入: </span>
-          <input placeholder={'再次输入密码'} className='textInput' style={{width: '60%'}} type='password'
+        <div className={'item'} key={'repassword'}>
+          <span className={'textLeft'}>再次输入: </span>
+          <input placeholder={'再次输入密码'} className='textInput' type='password'
             onChange={(e) => this.setState({ repassword: e.target.value })} value={this.state.repassword} />
         </div>
       </div>
       <button
-        style={{width: '90%', display: 'block', backgroundColor: '#3CA0FF', height: '40px', borderRadius: '10px', fontSize: 16}}
+        style={{width: '90%', display: 'block', margin: '5%', backgroundColor: '#3CA0FF', height: '40px', borderRadius: '10px', fontSize: 16}}
         onClick={() => this.submit(this.props)}
       >
         下一步
       </button>
       {/* <Popup ref={popup => { this.popup = popup }} /> */}
+      <style jsx>{`
+      .list {
+        margin-bottom: 20px;
+      }
+      .item {
+        padding: 10px;
+        margin-bottom: 1px;
+        background-color: #fff;
+        display: flex;
+      }
+      .textLeft {
+        flex: 3;
+        font-size: 16px;
+        color: #505050;
+        margin-left: 10px;
+      }
+      .textInput {
+        flex: 7;
+        margin-right: 15px;
+      }
+    `}</style>
     </div>)
   }
 }

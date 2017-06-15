@@ -19,6 +19,8 @@ const APPOINTMENT_DEPARTMENTS_SEARCH = 'appointment/departments/search'
 const APPOINTMENT_DEPARTMENTS_SEARCH_SUCCESS = 'appointment/departments/search/success'
 const APPOINTMENT_DEPARTMENTS_SEARCH_FAIL = 'appointment/departments/search/fail'
 
+const REMOVE_APPOINTMENT_DEPARTMENTS_SEARCH = 'appointment/departments/search/remove'
+
 const initState = {
   data: {},
   loading: true,
@@ -39,8 +41,12 @@ export function departments (state = initState, action = {}) {
     case HOSPITAL_DEPARTMENTS_SUCCESS:
     case HOSPITAL_DEPARTMENTS_DEPARTMENT_DETAIL:
     case DEPARTMENT_EVALUATE_ADD_SUCCESS:
-    case APPOINTMENT_DEPARTMENTS_SEARCH_SUCCESS:
       return Object.assign({}, state, { data: action.data, loading: false, error: null })
+    case APPOINTMENT_DEPARTMENTS_SEARCH_SUCCESS:
+      let departments = action.data
+      let searchDepIds = departments.searchDepIds
+      delete departments.searchDepIds
+      return Object.assign({}, state, { data: departments, searchDepIds: searchDepIds, loading: false, error: null })
     case HOSPITAL_DEPARTMENTS_FAIL:
     case HOSPITAL_DEPARTMENTS_DEPARTMENT_FAIL:
     case DEPARTMENT_EVALUATE_ADD_FAIL:
@@ -48,6 +54,8 @@ export function departments (state = initState, action = {}) {
       return Object.assign({}, state, { loading: false, error: action.error })
     case HOSPITAL_DEPARTMENTS_SELECT:
       return Object.assign({}, state, {selectId: action.selectId, loading: false, error: null})
+    case REMOVE_APPOINTMENT_DEPARTMENTS_SEARCH:
+      return Object.assign({}, state, {searchDepIds: [], loading: false, error: null})
     default:
       return state
   }
@@ -202,23 +210,23 @@ export const addDepartmentEvaluate = (client, {departmentId, userId, orderlyScor
 }
 
 var SEARCH_DEPARTMENTS = gql`
-  query($deptName: String) {
-  searchDepartment {
-    id
-    hospital{
+  query($deptName: String!) {
+    searchDepartment(deptName: $deptName) {
       id
-      hospitalName
-    }
-    deptName
-    position
-    childs {
-      id
+      hospital{
+        id
+        hospitalName
+      }
       deptName
+      position
+      childs {
+        id
+        deptName
+      }
+      deptSn
+      description
     }
-    deptSn
-    description
   }
-}
 `
 
 export const searchDepartments = (client, {deptName}) => async dispatch => {
@@ -233,9 +241,17 @@ export const searchDepartments = (client, {deptName}) => async dispatch => {
         error: data.error.message
       })
     }
+    let departments = data.data.searchDepartment
+    let json = {}
+    let depIds = []
+    for (let department of departments) {
+      json[department.id] = department
+      depIds.push(department.id)
+    }
+    let deps = Object.assign({}, json, {searchDepIds: depIds})
     return dispatch({
       type: APPOINTMENT_DEPARTMENTS_SEARCH_SUCCESS,
-      data: data.data.departmentEvaluates
+      data: deps
     })
   } catch (e) {
     console.log(e)
@@ -244,4 +260,11 @@ export const searchDepartments = (client, {deptName}) => async dispatch => {
       error: '查找科室失败'
     })
   }
+}
+
+// 取消搜索科室
+export const removeSearchDepIds = () => dispatch => {
+  return dispatch({
+    type: REMOVE_APPOINTMENT_DEPARTMENTS_SEARCH
+  })
 }

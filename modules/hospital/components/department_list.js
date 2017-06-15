@@ -13,7 +13,9 @@ class DepartmentList extends Component {
                 key={dep.id} onClick={(deps) => {
                   this.props.selectDepartment(dep)
                 }}>
-                <div style={{ verticalAlign: 'center', height: '2em', fontSize: '14px', borderBottom: '1px solid #ccc' }}>{dep.deptName}</div>
+                <div style={{ verticalAlign: 'center', height: '2em', fontSize: '14px', borderBottom: '1px solid #ccc' }}>
+                  <div dangerouslySetInnerHTML={{__html: this.props.searchKey(dep.deptName)}} />
+                </div>
               </div>
             )
           })

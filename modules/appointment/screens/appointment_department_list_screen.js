@@ -5,10 +5,10 @@ import _ from 'lodash'
 import Router from 'next/router'
 import localforage from 'localforage'
 
-import SearchBar from './search_bar'
+import SearchBar from '../components/search_bar'
 import DepartmentList from '../../hospital/components/department_list'
 import { signin, queryUser, queryPatients, queryDepartments, selectDepartment } from '../../../ducks'
-import { isEmptyObject, convertPinyin, convertPinyinFirst } from '../../../utils'
+import { isEmptyObject, convertPinyin, convertPinyinFirst, replaceSearchKey } from '../../../utils'
 
 class AppointmentDepartmentListScreen extends Component {
   constructor (props) {
@@ -84,8 +84,14 @@ class AppointmentDepartmentListScreen extends Component {
       }
       return (
         <div>
-          <div style={{margin: '10px 15px'}}><SearchBar departments={this.props.departments} searchDep={(theData, term) => { this.searchDept(theData, term) }} /></div>
-          <DepartmentList deps={deps} selectDepartment={(dep) => { this.selectDepartment(dep) }} />
+          <div
+            style={{margin: '10px 15px', alignItems: 'center', backgroundColor: '#fff', height: 20, padding: 5, textAlign: 'center'}}
+            onClick={() => { Router.push('/appointment/search') }}
+          >
+            {/*<SearchBar departments={this.props.departments} searchDep={(theData, term) => { this.searchDept(theData, term) }} />*/}
+            <img src='/static/icons/search.png' style={{width: 15, height: 15, marginRight: 10}} /><span>搜索科室或医生</span>
+          </div>
+          <DepartmentList deps={deps} selectDepartment={(dep) => { this.selectDepartment(dep) }} searchKey={(text) => { return replaceSearchKey(text, 'undefind') }} />
         </div>
       )
     } else {

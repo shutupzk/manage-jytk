@@ -63,7 +63,7 @@ export default (props) => (
         line-height: 30px;
         height: 30px;
         border-radius: 5px;
-        margin-right: 15;
+        margin-right: 15px;
       }
       .blockPrimaryBtn {
         {/*width: 90%;*/}

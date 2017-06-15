@@ -5,6 +5,7 @@ import AppointmentListScreen from './screens/appointment_list_screen'
 import AppointmentDetailScreen from './screens/appointment_detail_screen'
 import AppointmentSuccessScreen from './screens/appointment_success_screen'
 import SelectPatientScreen from './screens/select_patient_screen'
+import SearchScreen from './screens/search_screen'
 
 export {
   AppointmentDepartmentListScreen,
@@ -13,5 +14,6 @@ export {
   AppointmentListScreen,
   AppointmentDetailScreen,
   AppointmentSuccessScreen,
-  SelectPatientScreen
+  SelectPatientScreen,
+  SearchScreen
 }

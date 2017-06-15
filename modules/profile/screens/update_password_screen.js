@@ -47,73 +47,53 @@ class UpdatePasswordScreen extends Component {
     return Router.push('/profile')
   }
   render () {
-    return (<div className='container'>
-      <div style={styles.list}>
-        <div style={styles.item} key={'oldpassword'}>
-          <span style={styles.textLeft}>&nbsp;原密码 </span>
+    return (<div className=''>
+      <div className='list'>
+        <div className='item' key={'oldpassword'}>
+          <span className='textLeft'>&nbsp;原密码 </span>
           <input placeholder={'输入现有密码'} className='textInput' style={{width: '60%'}} type='password'
             onChange={(e) => this.setState({ oldpassword: e.target.value })} />
         </div>
-        <div style={styles.item} key={'newpassword'}>
-          <span style={styles.textLeft}> &nbsp;新密码 </span>
+        <div className='item' key={'newpassword'}>
+          <span className='textLeft'> &nbsp;新密码 </span>
           <input placeholder={'设置新密码，不少于六位'} className='textInput' style={{width: '60%'}} type='password'
             onChange={(e) => this.setState({ newpassword: e.target.value })} />
         </div>
-        <div style={styles.item} key={'repassword'}>
-          <span style={styles.textLeft}>{'再次输入'}</span>
+        <div className='item' key={'repassword'}>
+          <span className='textLeft'>{'再次输入'}</span>
           <input placeholder={'再次输入新密码'} className='textInput' style={{width: '60%'}} type='password'
             onChange={(e) => this.setState({ repassword: e.target.value })} />
         </div>
       </div>
       <button
-        style={{width: '100%', display: 'block'}}
+        style={{width: '90%', display: 'block', margin: '5%'}}
         className='blockPrimaryBtn'
         onClick={() => this.submit(this.props)}
       >
         完成
       </button>
+      <style jsx>{`
+        .list {
+          margin-bottom: 20px;
+        }
+        .item {
+          padding: 10px;
+          margin-bottom: 1px;
+          background-color: #fff;
+          display: flex;
+        }
+        .textLeft {
+          flex: 3;
+          font-size: 16px;
+          color: #505050;
+          margin-left: 10px;
+        }
+        .textInput {
+          flex: 7;
+          margin-right: 15px;
+        }
+      `}</style>
     </div>)
-  }
-}
-
-const styles = {
-  container: {
-    flex: 1
-  },
-  list: {
-    borderTopWidth: 0,
-    marginTop: 10,
-    marginBottom: 5,
-    borderBottomWidth: 0
-  },
-  item: {
-    height: 51,
-    flexWrap: 'nowrap',
-    alignItems: 'center',
-    flexDirection: 'row',
-    backgroundColor: '#ffffff',
-    justifyContent: 'space-between',
-    borderBottomColor: '#E6E6E6',
-    borderBottomWidth: 1
-  },
-  textLeft: {
-    flex: 1,
-    fontSize: 16,
-    color: '#505050',
-    marginLeft: 15
-  },
-  TextInput: {
-    flex: 3,
-    borderBottomWidth: 0,
-    marginRight: 15
-  },
-  buttonStyle: {
-    marginTop: 35
-  },
-  loading: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: 80
   }
 }
 

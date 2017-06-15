@@ -5,6 +5,7 @@ import Router from 'next/router'
 
 import {queryDepartments, selectDepartment} from '../../../ducks'
 import DepartmentList from '../components/department_list'
+import { replaceSearchKey } from '../../../utils'
 // import Link from 'next/link'
 
 class DepartmentScreen extends Component {
@@ -50,7 +51,7 @@ class DepartmentScreen extends Component {
       })
       return (
         <div>
-          <DepartmentList deps={deps} selectDepartment={(dep) => { this.selectDepartment(dep) }} />
+          <DepartmentList deps={deps} selectDepartment={(dep) => { this.selectDepartment(dep) }} searchKey={(text) => { return replaceSearchKey(text, 'undefind') }} />
         </div>
       )
     } else {

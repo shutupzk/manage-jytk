@@ -15,6 +15,12 @@ const MY_DOCTOR_ADD = 'mydoctors/add'
 const MY_DOCTOR_ADD_SUCCESS = 'mydoctors/add/success'
 const MY_DOCTOR_ADD_FAIL = 'mydoctors/add/fail'
 
+const APPOINTMENT_SEARCH_DOCTORS_QUERY = 'appointment/search/doctors/query'
+const APPOINTMENT_SEARCH_DOCTORS_SUCCESS = 'appointment/search/doctors/success'
+const APPOINTMENT_SEARCH_DOCTORS_FAIL = 'appointment/search/doctors/fail'
+
+const REMOVE_APPOINTMENT_DOCTORS_SEARCH = 'appointment/search/doctors/remove'
+
 const initState = {
   data: {},
   loading: false,
@@ -31,6 +37,7 @@ export function doctors (state = initState, action = {}) {
     case HOSPITAL_DOCTORS_QUERY:
     case PROFILE_MY_DOCTORS_QUERY:
     case MY_DOCTOR_ADD:
+    case APPOINTMENT_SEARCH_DOCTORS_QUERY:
       return Object.assign({}, state, { loading: true, error: null })
     case PROFILE_MY_DOCTORS_SUCCESS:
     case HOSPITAL_DOCTORS_SUCCESS:
@@ -39,14 +46,21 @@ export function doctors (state = initState, action = {}) {
       return Object.assign({}, state, { data: doctors, loading: false, error: null })
     // case PROFILE_MY_DOCTORS_SUCCESS:
     //   return Object.assign({}, state, { data: action.doctors, loading: false, error: null })
+    case APPOINTMENT_SEARCH_DOCTORS_SUCCESS:
+      let searchDoctors = getDoctors(state, action.doctors)
+      delete searchDoctors.searchDocIds
+      return Object.assign({}, state, { data: searchDoctors, searchDocIds: action.doctors.searchDocIds, loading: false, error: null })
     case HOSPITAL_DOCTORS_FAIL:
     case PROFILE_MY_DOCTORS_FAIL:
     case MY_DOCTOR_ADD_FAIL:
+    case APPOINTMENT_SEARCH_DOCTORS_FAIL:
       return Object.assign({}, state, { loading: false, error: action.error })
     case HOSPITAL_DOCTORS_SELECT:
       return Object.assign({}, state, { selectId: action.selectId, loading: false, error: null })
     case HOSPITAL_DOCTORS_REMOVE_SELECT:
       return Object.assign({}, state, { selectId: null, loading: false, error: null })
+    case REMOVE_APPOINTMENT_DOCTORS_SEARCH:
+      return Object.assign({}, state, { searchDocIds: [], loading: false, error: null })
     default:
       return state
   }
@@ -208,7 +222,7 @@ export const queryMyDoctors = (client, {userId}) => async dispatch => {
     })
   }
 }
-// 获取我的医生列表
+// 收藏医生
 var ADD_MY_DOCTORS = gql`
   mutation ($doctorId: ObjID!, $userId: ObjID!){
     createUserHasDoctor(input: {doctorId: $doctorId, userId: $userId}) {
@@ -259,4 +273,59 @@ export const createUserHasDoctor = (client, {userId, doctorId}) => async dispatc
 }
 export const removeUserHasDoctor = (client, {userId, doctorId}) => async dispatch => {
 
+}
+// 搜索医生
+const SEARCH_DOCTORS = gql`
+  query($doctorName: String!) {
+    searchDoctor(doctorName: $doctorName) {
+      id,
+      doctorName,
+      title,
+      major,
+      description,
+      remark,
+      recommend,
+      hot,
+      isAppointment
+    }
+  }
+`
+export const searchDoctors = (client, {doctorName}) => async dispatch => {
+  dispatch({
+    type: APPOINTMENT_SEARCH_DOCTORS_QUERY
+  })
+  try {
+    let data = await client.query({ query: SEARCH_DOCTORS, variables: {doctorName} })
+    if (data.error) {
+      return dispatch({
+        type: APPOINTMENT_SEARCH_DOCTORS_FAIL,
+        error: data.error.message
+      })
+    }
+    let searchDoctors = data.data.searchDoctor
+    let doctors = {}
+    let searchDocIds = []
+    for (let doc of searchDoctors) {
+      doctors[doc.id] = doc
+      searchDocIds.push(doc.id)
+    }
+    let docs = Object.assign({}, doctors, { searchDocIds })
+    return dispatch({
+      type: APPOINTMENT_SEARCH_DOCTORS_SUCCESS,
+      doctors: docs
+    })
+  } catch (e) {
+    console.log(e)
+    return dispatch({
+      type: APPOINTMENT_SEARCH_DOCTORS_FAIL,
+      error: '数据请求失败！'
+    })
+  }
+}
+
+// 取消搜索科室
+export const removeSearchDocIds = () => dispatch => {
+  return dispatch({
+    type: REMOVE_APPOINTMENT_DOCTORS_SEARCH
+  })
 }

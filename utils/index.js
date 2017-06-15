@@ -254,3 +254,16 @@ export function replaceStr (sorceText, startIndex, endIndex, repStr) {
   }
   return sorceText
 }
+
+// 查询字符蓝色替换
+export function replaceSearchKey (text, searchKey) {
+  if (text.indexOf(searchKey) >= 0) {
+    let first = text.substr(0, text.indexOf(searchKey))
+    let newkey = '<span style="color: #22BAD9">' + searchKey + '</span>'
+    let lastText = text.substr(text.indexOf(searchKey) + searchKey.length)
+    console.log(first + newkey + lastText)
+    return first + newkey + lastText
+  } else {
+    return text
+  }
+}
