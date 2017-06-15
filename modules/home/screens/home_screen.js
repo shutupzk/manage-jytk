@@ -50,15 +50,15 @@ class Home extends Component {
   }
 
   goHospitalPage () {
-    console.log('====');
-    Router.push('/hospital');
+    console.log('====')
+    Router.push('/hospital')
   }
   render () {
     let newses = this.props.newses
     let newNewses = this.getNewses(newses)
     return (
       <div>
-        <img src='/static/icons/banner3.png' />
+        <img src='/static/icons/banner3.png' style={{width: '100%'}} />
         <CardWhite classChild='nav'>
           <Link href='/appointment/department_list'><a>
             <section className='navLeft'>
@@ -100,19 +100,21 @@ class Home extends Component {
             </a></Link>
           </section>
         </CardWhite>
-        <CardWhite classChild='hospitalCenter' onClick={this.goHospitalPage.bind(this)}>
-          <img src='/static/icons/hospital_bg_image.png' alt='' className='hosbgimg' />
-          <section>
-            <img src='/static/icons/hospital_logo.png' alt='' />
-            <p>广东省广州市中山二路106号</p>
-            <p>联系电话：020-83827812</p>
-          </section>
-          <article className='back-left flex tb-flex'>&nbsp;</article>
-        </CardWhite>
+        <div onClick={() => { this.goHospitalPage() }}>
+          <CardWhite classChild='hospitalCenter'>
+            <img src='/static/icons/hospital_bg_image.png' alt='' className='hosbgimg' />
+            <section>
+              <img src='/static/icons/hospital_logo.png' alt='' />
+              <p>广东省广州市中山二路106号</p>
+              <p>联系电话：020-83827812</p>
+            </section>
+            <article className='back-left flex tb-flex'>&nbsp;</article>
+          </CardWhite>
+        </div>
         <CardWhite classChild='consultList'>
           <dl>
             <dt className='left'>健康资讯</dt>
-            <dd className='right'>
+            <dd className='right' onClick={() => { Router.push('/hospital/news_list') }}>
               <span className='left'>更多</span>
               <article className='back-left right'>&nbsp;</article>
               <div className='clearfix'>&nbsp;</div>
