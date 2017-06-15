@@ -4,12 +4,13 @@ import Navigation from './foot_navigation'
 // var innerHeight = document.body.clientHeight
 
 const Layout = (props) => {
+  console.log('------props', props);
   return (
     <main>
       <Head title={props.title} />
       <div>
         {/*<Header title={props.title} />*/}
-        <div style={{overflow: 'auto'}}> {props.children}</div>
+        <div style={{overflow: 'auto', marginBottom: '60px'}}> {props.children}</div>
         <Navigation />
       </div>
       <style jsx global>{`
@@ -85,6 +86,12 @@ const Layout = (props) => {
           margin: 20px 20px;
           {/*padding: 20px;*/}
         }
+        .left{
+          float: left;
+        }
+        .right{
+          float: right;
+        }
         .clearfix {
           content: ".";
           height: 0;
@@ -94,6 +101,31 @@ const Layout = (props) => {
         }
         a {text-decoration:none}
         li {list-style: none}
+        dl, p, h3{
+          margin: 0;
+        }
+        dd{
+          -webkit-margin-start: 0;
+        }
+        ul{
+          padding: 0; margin: 0;
+        }
+        .back-left{
+          width: .08rem;
+          height: .08rem;
+          border-top: .03rem solid #C7C7CC;
+          border-left: .03rem solid #C7C7CC;
+        }
+        /*textoverflow*/
+        .textoverflow1{
+          overflow: hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-line-clamp: 1;-webkit-box-orient: vertical;
+        }
+        .textoverflow2{
+          overflow: hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;
+        }
+
+        {/* lvyinlei end --- */}
+
         .textInput {
           flex: 3;
           border-bottom: 0px;

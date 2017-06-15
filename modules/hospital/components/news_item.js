@@ -8,63 +8,41 @@ class NewsItem extends Component {
     let imagUrl = item.image ? item.image : '/static/icons/doctor_head.png'
     return (
       <div key={item.id} onClick={() => { this.props.gotoDetail(item) }}>
-        <div style={styles.itemView}>
-          <img src={imagUrl} style={{float: 'left', height: 80, width: 80, margin: 10}} />
-          <div style={styles.itemContentView}>
-            <div style={styles.timeText}>{item.time}</div>
-            <div style={styles.titleText}>{item.title.substring(0, 15)}...</div>
-            <div style={{tabSize: 12}}>{item.summary.substring(0, 30)}...</div>
-          </div>
-        </div>
+        <li className={'flex tb-flex newsItem'} key={item.id} onClick={() => { this.props.gotoDetail(item) }}>
+          <img src={imagUrl} alt='' />
+          <section>
+            <article>{item.time}</article>
+            <h3 className='textoverflow1'>{item.title}</h3>
+            <p className='textoverflow2'>{item.summary}</p>
+          </section>
+        </li>
+        <style jsx global>{`
+          .newsItem{
+            border-top: 1px solid #d8d8d8;
+            padding: .12rem .15rem;
+            height: .9rem;
+            color: #777777;
+            font-size: .11rem;
+          }
+          .newsItem img{
+            width: .9rem;
+            height: .9rem;
+            margin-right: .15rem;
+          }
+          .newsItem p{
+            color: #797979;
+            font-size: .14rem;
+            line-height: .2rem;
+          }
+          .newsItem h3{
+            color: #505050;
+            font-weight: 500;
+            font-size: .15rem;
+            margin: .06rem 0;
+          }
+        `}</style>
       </div>
     )
-  }
-}
-
-const styles = {
-  tabBarUnderlineStyle: {
-    backgroundColor: '#3CA0FF'
-  },
-  tabBarTextStyle: {
-    fontSize: 15,
-    fontWeight: 'bold'
-  },
-  tabBar: {
-    width: '100%',
-    height: 50
-  },
-  itemView: {
-    height: 100,
-    backgroundColor: 'white',
-    flexDirection: 'row',
-    alignItems: 'center'
-  },
-  itemImage: {
-    height: 80,
-    width: 80,
-    margin: 10,
-    resizeMode: 'contain'
-  },
-  itemContentView: {
-    paddingTop: 10,
-    height: 80,
-    flexDirection: 'column'
-    // width:  - 120
-  },
-  timeText: {
-    fontSize: 11,
-    color: '#B4B4B4'
-  },
-  contentText: {
-    fontSize: 14,
-    color: '#B4B4B4',
-    lineHeight: 16,
-    marginTop: 5
-  },
-  titleText: {
-    fontSize: 16,
-    color: '#505050',
-    marginTop: 5
   }
 }
 

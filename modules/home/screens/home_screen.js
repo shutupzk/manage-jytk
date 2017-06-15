@@ -48,11 +48,16 @@ class Home extends Component {
     selectNews({newsGroupId: news.groupId, newsId: news.id})
     Router.push('/hospital/news_detail?newsId=' + news.id + '&newsGroupId=' + news.groupId)
   }
+
+  goHospitalPage () {
+    console.log('====');
+    Router.push('/hospital');
+  }
   render () {
     let newses = this.props.newses
     let newNewses = this.getNewses(newses)
     return (
-      <div style={{height: 600}}>
+      <div>
         <img src='/static/icons/banner3.png' />
         <CardWhite classChild='nav'>
           <Link href='/appointment/department_list'><a>
@@ -95,35 +100,48 @@ class Home extends Component {
             </a></Link>
           </section>
         </CardWhite>
-        <div className='container'>
-          <div style={{height: '100px', width: '100%'}}>
-            <Link href='/hospital'>医院中心</Link>
-          </div>
-          <div>
-            <div>
-              <h3 style={{float: 'left'}}>健康咨询</h3>
-              <Link href='hospital/news_list'><a style={{float: 'right', padding: '18px 0px'}}><span>更多>></span></a></Link>
-              <div className='clearfix'></div>
-            </div>
-            <div>
-              {
-                this.props.loading || this.state.isInit ? 'loading...' : (this.props.error ? 'error'
-                : <div>
-                  {
-                    newNewses.map((item) => {
-                      return (
-                        <div key={item.id}>
-                          <NewsItem news={item} gotoDetail={(news) => { this.gotoDetail(news) }} />
-                        </div>
-                      )
-                    })
-                  }
-                </div>
+        <CardWhite classChild='hospitalCenter' onClick={this.goHospitalPage.bind(this)}>
+          <img src='/static/icons/hospital_bg_image.png' alt='' className='hosbgimg' />
+          <section>
+            <img src='/static/icons/hospital_logo.png' alt='' />
+            <p>广东省广州市中山二路106号</p>
+            <p>联系电话：020-83827812</p>
+          </section>
+          <article className='back-left flex tb-flex'>&nbsp;</article>
+        </CardWhite>
+        <CardWhite classChild='consultList'>
+          <dl>
+            <dt className='left'>健康资讯</dt>
+            <dd className='right'>
+              <span className='left'>更多</span>
+              <article className='back-left right'>&nbsp;</article>
+              <div className='clearfix'>&nbsp;</div>
+            </dd>
+            <div className='clearfix'>&nbsp;</div>
+          </dl>
+          <ul>
+            {
+              this.props.loading || this.state.isInit ?
+                'loading...'
+              :
+                (this.props.error ?
+                  'error'
+                :
+                  <ul>
+                    {
+                      newNewses.map((item, index) => {
+                        return (
+                          <div key={index}>
+                            <NewsItem news={item} gotoDetail={(news) => { this.gotoDetail(news) }} />
+                          </div>
+                        )
+                      })
+                    }
+                  </ul>
                 )
-              }
-            </div>
-          </div>
-        </div>
+            }
+          </ul>
+        </CardWhite>
         <style jsx global>{`
           .nav{
             display: -webkit-box;
@@ -184,15 +202,64 @@ class Home extends Component {
             width: .32rem;
             height: .32rem;
           }
-
-          .container {
-            flex: 1;
-            flexDirection: column;
+          .hospitalCenter{
+            padding: .1rem .15rem;
+            display: -webkit-box;
           }
-          img {
-            height: 180;
-            width: 100%;
-            resizeMode: stretch;
+          .hospitalCenter .hosbgimg{
+            width: .7rem;
+            height: .7rem;
+          }
+          .hospitalCenter section{
+            -webkit-box-flex: 1;
+            padding-left: .15rem;
+            color: #797979;
+          }
+          .hospitalCenter section img{
+            width: 1.2rem;
+          }
+          .hospitalCenter section p{
+            line-height: 20px;
+            font-size: .13rem;
+          }
+          .hospitalCenter article{
+            display: block;
+            transform: rotate(135deg);
+            margin-top: .3rem;
+          }
+
+          .consultList{
+
+          }
+          .consultList dl{
+            padding: .1rem .15rem;
+            height: .2rem;
+            line-height: .2rem;
+            color: #505050;
+            text-indent: 6px;
+          }
+          .consultList dl dt{
+          }
+          .consultList dl dt:after{
+            content: '';
+            display: block;
+            float: left;
+            width: .04rem;
+            height: .2rem;
+            background: #257BDE;
+            border-radius: .03rem;
+          }
+          .consultList dl dd{
+            color: #b4b4b4;
+            font-size: .13rem;
+          }
+          .consultList dl dd article{
+            width: .06rem;
+            height: .06rem;
+            border-top: .02rem solid #C7C7CC;
+            border-left: .02rem solid #C7C7CC;
+            transform: rotate(135deg);
+            margin-top: .06rem;
           }
         `}</style>
       </div>
