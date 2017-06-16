@@ -31,7 +31,7 @@ class HospitalClinicStop extends Component {
     }
     const clinicStops = this.props.clinicStops
     return (
-      <div className='container'>
+      <div>
         {
           clinicStops.map((clinicStop) => {
             let imagUrl = clinicStop.departmentHasDoctors.doctor.avatar || '/static/icons/doctor_head.png'

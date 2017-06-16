@@ -94,6 +94,57 @@ class InpatientScreen extends Component {
             {middleList(this.filterRecord(inpatientRecordArray, selectInpatientId), this.props)}
             {buttomList(this.filterRecord(inpatientRecordArray, selectInpatientId), this.props, this.filterRecord(inpatientRecordArray, selectInpatientId).id)}
           </div>
+          <style jsx global>{`
+            .topView {
+              background-color: #ffffff;
+              margin-bottom: 5px;
+            }
+            .topViewTittle {
+              margin-left: 15px;
+              margin-right: 15px;
+              flex-wrap: nowrap;
+              flex-direction: row;
+              align-items: center;
+            }
+            .topViewInfor {
+              margin-left: 15px;
+              margin-right: 15px;
+              margin-top: 20px;
+              padding-bottom: 15px;
+              margin-bottom: 15px;
+              flex-wrap: wrap;
+              flex-direction: column;
+              align-items: flex-start;
+            }
+            .txtGray {
+              font-size: 14px;
+              color: #797979;
+              margin-top: 5px;
+              margin-bottom: 5px;
+              margin-right: 10px;
+            }
+            .txtBlack {
+              font-size: 14px;
+              color: #505050;
+              margin-top: 5px;
+              margin-bottom: 5px;
+            }
+            .spliteLine {
+              backgroundColor: #E6E6E6;
+              width: 100%;
+              height: 0.5px;
+            }
+            .payButton {
+              padding: 5px;
+              border: solid 1px #3CA0FF;
+              border-radius: 20px;
+              border-width: 0.5px;
+              align-items: center;
+              justify-content: center;
+              height: 20px;
+              width: 60px;
+            }
+          `}</style>
         </div>
       )
     } else {
@@ -120,8 +171,8 @@ const topView = (patient, inpatientRecord, patientsData, props) => {
     }
   }
   return (
-    <div style={styles.topView}>
-      <div style={styles.topViewTittle}>
+    <div className={'topView'}>
+      <div className={'topViewTittle'}>
         <div style={{ flex: 1, flexDirection: 'row', alignItems: 'center', padding: '5px 0px' }}>
           <span style={{ fontSize: 19, color: '#505050', marginTop: 15, marginBottom: 15 }} >{ name }</span>
           <span style={{ fontSize: 14, color: '#B4B4B4', marginLeft: 10 }}>{ '住院号：' + inpatientNo}</span>
@@ -135,30 +186,30 @@ const topView = (patient, inpatientRecord, patientsData, props) => {
           <img style={{width: 10, height: 10}} />
         </ModalPicker> */}
       </div>
-      <div style={styles.spliteLine} />
-      <div style={styles.topViewInfor}>
+      <div className={'spliteLine'} />
+      <div className={'topViewInfor'}>
         <div style={{ flexDirection: 'row', padding: '5px 0px' }}>
-          <span style={styles.txtGray} >科 &nbsp;&nbsp;室</span>
-          <span style={styles.txtBlack} >{ dept } {inpatientRecord.wardName}</span>
+          <span className={'txtGray'} >科 &nbsp;&nbsp;室</span>
+          <span className={'txtBlack'} >{ dept } {inpatientRecord.wardName}</span>
         </div>
         <div style={{ flexDirection: 'row', display: 'flex', padding: '5px 0px' }}>
           <div style={{ flexDirection: 'row', flex: 6 }}>
-            <span style={styles.txtGray} >入院日期</span>
-            <span style={styles.txtBlack} >{ inDate }</span>
+            <span className={'txtGray'} >入院日期</span>
+            <span className={'txtBlack'} >{ inDate }</span>
           </div>
           <div style={{ flexDirection: 'row', flex: 6 }}>
-            <span style={styles.txtGray} >住院天数</span>
-            <span style={styles.txtBlack} >{inDays}</span>
+            <span className={'txtGray'} >住院天数</span>
+            <span className={'txtBlack'} >{inDays}</span>
           </div>
         </div>
         {/* <div style={{ flexDirection: 'row' }}>
           <div style={{ flexDirection: 'row', flex: 1 }}>
-            <div style={styles.txtGray} >主管医生</div>
-            <div style={styles.txtBlack} >{ competentDoctor }</div>
+            <div className={'txtGray'} >主管医生</div>
+            <div className={'txtBlack'} >{ competentDoctor }</div>
           </div>
           <div style={{ flexDirection: 'row', flex: 1 }}>
-            <div style={styles.txtGray} >主管护士</div>
-            <div style={styles.txtBlack} >{ competentNurse }</div>
+            <div className={'txtGray'} >主管护士</div>
+            <div className={'txtBlack'} >{ competentNurse }</div>
           </div>
         </div> */}
       </div>
@@ -198,7 +249,7 @@ const balanceItem = (balance, status) => {
       <div style={{ marginLeft: 15, marginRight: 15, marginBottom: 19, display: 'flex', flexDirection: 'row', alignItems: 'center', marginTop: 13 }}>
         <div style={{ fontSize: 28, color: '#505050', flex: 6 }} >{balance}</div>
         <div onClick={() => { Router.push('/inpatient/payment') }}>
-          <div style={styles.payButton}>
+          <div className={'payButton'}>
             <div style={{color: '#3CA0FF', textAlign: 'center'}}>充值</div>
           </div>
         </div>
@@ -261,11 +312,11 @@ const buttomList = (inpatientRecord, props, id) => {
     array = array1
   }
   return (
-    <div style={{padding: 5, backgroundColor: '#ffffff'}}>
+    <div>
       {
         array.map((item, i) => {
           return (
-            <div style={{padding: 10, borderBottom: 'solid 1px #eeeeee'}} key={i} onClick={() => {
+            <div style={{padding: 15, marginBottom: 1, backgroundColor: '#ffffff'}} key={i} onClick={() => {
               if (item.title === '一日清单') {
                 props.selectInpatientRecord({patientRecordId: id})
               }
@@ -300,72 +351,3 @@ export default connect(
     selectInpatientRecord
   }
 )(InpatientScreen)
-
-const styles = {
-  container: {
-    flex: 1
-  },
-  button: {
-    borderRadius: 4,
-    padding: 10,
-    marginLeft: 10,
-    marginRight: 10,
-    backgroundColor: '#B8C'
-  },
-  list: {
-    borderTopWidth: 0,
-    marginTop: 0,
-    marginBottom: 5,
-    borderBottomWidth: 0
-  },
-  topView: {
-    backgroundColor: '#ffffff',
-    marginBottom: 5
-  },
-  topViewTittle: {
-    marginLeft: 15,
-    marginRight: 15,
-    flexWrap: 'nowrap',
-    flexDirection: 'row',
-    alignItems: 'center'
-  },
-  topViewInfor: {
-    marginLeft: 15,
-    marginRight: 15,
-    marginTop: 20,
-    paddingBottom: 15,
-    marginBottom: 15,
-    flexWrap: 'wrap',
-    flexDirection: 'column',
-    alignItems: 'flex-start'
-  },
-  txtGray: {
-    fontSize: 14,
-    color: '#797979',
-    marginTop: 5,
-    marginBottom: 5,
-    marginRight: 10
-  },
-  txtBlack: {
-    fontSize: 14,
-    color: '#505050',
-    marginTop: 5,
-    marginBottom: 5
-  },
-  spliteLine: {
-    backgroundColor: '#E6E6E6',
-    width: '100%',
-    height: 0.5
-  },
-  payButton: {
-    padding: 5,
-    border: 'solid 1px #3CA0FF',
-    // borderColor: '#3CA0FF',
-    borderRadius: 20,
-    borderWidth: 0.5,
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: 20,
-    width: 60
-  }
-}

@@ -11,7 +11,7 @@ export class DailyFeeListItem extends Component {
   render () {
     let {data} = this.props
     return (
-      <div style={{backgroundColor: '#ffffff'}}>
+      <div style={{backgroundColor: '#ffffff'}} key={data.id}>
         <div
           onClick={() => {
             this.setState({
@@ -19,12 +19,12 @@ export class DailyFeeListItem extends Component {
             })
           }}>
           <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', backgroundColor: '#ffffff', padding: '10px 15px'}}>
-            <div style={{color: '#B4B4B4', fontSize: 16}}>{data.name}</div>
+            <div style={{color: '#555', fontSize: 16}}>{data.name}</div>
             <div style={{flex: 1}} />
-            <div style={{color: '#B4B4B4', fontSize: 16}}>{data.chargeTotal}<span style={{padding: '0px 5px'}}>{!this.state.open ? '>' : <img src='/static/icons/down.png' style={{width: 10, height: 10}} />}</span></div>
+            <div style={{color: '#555', fontSize: 16}}>{data.chargeTotal}<span style={{padding: '0px 5px'}}>{!this.state.open ? '>' : <img src='/static/icons/down.png' style={{width: 10, height: 10}} />}</span></div>
           </div>
         </div>
-        <div style={styles.spliteLine} />
+        <div style={{backgroundColor: '#E6E6E6', height: 1.5}} />
         {contentList(this.state, data.inpatientBillItems)}
       </div>
     )
@@ -42,7 +42,7 @@ const contentList = (state, data) => {
         {
         data.map((item, i) => (
           <div
-            tyle={{backgroundColor: '#FBFBFB'}}
+            style={{backgroundColor: '#FBFBFB'}}
             key={i}
           >
             <img />
@@ -75,15 +75,7 @@ const contentListItem = (data) => {
           <div style={{color: '#797979', fontSize: 13, textAlign: 'right'}}>{'¥' + data.total}</div>
         </div>
       </div>
-      <div style={styles.spliteLine} />
+      <div style={{backgroundColor: '#E6E6E6', height: 1.5}} />
     </div>
   )
-}
-
-const styles = {
-  spliteLine: {
-    backgroundColor: '#E6E6E6',
-    // width: '100%',
-    height: 1.5
-  }
 }

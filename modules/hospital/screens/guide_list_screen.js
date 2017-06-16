@@ -56,12 +56,12 @@ class GuideListScreen extends Component {
       let hospital = this.getHospital(this.props.hospitals)
       return (
         <div>
-          <div style={styles.container} >
+          <div>
             {
               hospital.visitNoticeGroup.map((group, i) => (
-                <div key={i} style={styles.contentView}>
-                  <div style={styles.topView}>
-                    <span style={styles.titleText}>{group.name}</span>
+                <div key={i} className={'contentView'}>
+                  <div className={'topView'}>
+                    <span className={'titleText'}>{group.name}</span>
                   </div>
                   <div>
                     {
@@ -85,54 +85,28 @@ class GuideListScreen extends Component {
               ))
             }
           </div>
+          <style jsx>{`
+            .contentView {
+              margin-bottom: 10px;
+            }
+            .topView {
+              height: 30px;
+              background-color: #FFF;
+              align-items: center;
+              padding-top: 10px;
+              marginB-bottom: 1px;
+            }
+            .titleText {
+              font-size: 16px;
+              color: #3CA0FF;
+              padding: 10px;
+            },
+          `}</style>
         </div>
       )
     } else {
       return <div>no data</div>
     }
-  }
-}
-
-const styles = {
-  container: {
-    flexDirection: 'column'
-  },
-  contentView: {
-    marginBottom: 10
-  },
-  topView: {
-    height: 30,
-    backgroundColor: 'white',
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingTop: 10,
-    marginBottom: 1
-  },
-  titleText: {
-    fontSize: 16,
-    color: '#3CA0FF',
-    padding: 10
-  },
-  flatlistCW: {
-    width: '100%'
-  },
-  flatlist: {
-    backgroundColor: 'white',
-    width: '100%'
-  },
-  itemText: {
-    color: '#505050',
-    backgroundColor: '#EEEEEE',
-    fontSize: 14,
-    width: 50
-  },
-  itemImage: {
-    height: 80,
-    // width: width / 3,
-    alignItems: 'center',
-    justifyContent: 'center',
-    resizeMode: 'contain',
-    marginVertical: 5
   }
 }
 

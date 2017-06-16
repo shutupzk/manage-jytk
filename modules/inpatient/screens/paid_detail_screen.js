@@ -41,20 +41,4 @@ const title = (item) => {
   )
 }
 
-// const styles = {
-//   itemStyles: {
-//     marginLeft: 15,
-//     marginRight: 15,
-//     flexWrap: 'nowrap',
-//     flexDirection: 'row',
-//     alignItems: 'center'
-//   },
-//   spliteLine: {
-//     backgroundColor: '#E6E6E6',
-//     width: Dimensions.get('window').width,
-//     height: 0.5,
-//     marginTop: 10
-//   }
-// }
-
 export default PaidDetailScreen

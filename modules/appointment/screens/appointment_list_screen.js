@@ -69,31 +69,31 @@ class AppointmentListScreen extends Component {
 
   ItemView (appointment) {
     let status = '待取号'
-    let statusStyle = styles.unCancelText
+    let statusStyle = 'unCancelText'
     let buttonText = '取消预约'
     if (appointment.visitStatus === '02') {
       status = '已取消'
-      statusStyle = styles.cancelText
+      statusStyle = 'cancelText'
       buttonText = '再次预约'
     }
     return (
-      <div style={styles.listItem}>
-        <div style={styles.itemTopView}>
-          <span style={styles.topText}>{`就诊时间：${appointment.visitSchedule.visitDate}  ${appointment.visitSchedule.amPm === 'a' ? '上午' : '下午'}`}</span>
-          <span style={statusStyle}>{status}</span>
+      <div className={'listItem'}>
+        <div className={'itemTopView'}>
+          <span className={'topText'}>{`就诊时间：${appointment.visitSchedule.visitDate}  ${appointment.visitSchedule.amPm === 'a' ? '上午' : '下午'}`}</span>
+          <span className={statusStyle}>{status}</span>
         </div>
         <div>
           <div style={{width: '20%', float: 'left'}}>
-            <img src='/static/icons/doctor_head.png' style={styles.avatarStyle} />
+            <img src='/static/icons/doctor_head.png' className={'avatarStyle'} />
           </div>
-          <div style={styles.subView}>
-            <div style={styles.centerText}>{'预约号码：' + appointment.orderSn}</div>
-            <div style={styles.centerText}>{'就诊科室：' + appointment.visitSchedule.department.deptName}</div>
-            <div style={styles.centerText}>{'医生姓名：' + appointment.visitSchedule.doctor.doctorName}</div>
+          <div className={'subView'}>
+            <div className={'centerText'}>{'预约号码：' + appointment.orderSn}</div>
+            <div className={'centerText'}>{'就诊科室：' + appointment.visitSchedule.department.deptName}</div>
+            <div className={'centerText'}>{'医生姓名：' + appointment.visitSchedule.doctor.doctorName}</div>
           </div>
           <div className='clearfix'>&nbsp;</div>
         </div>
-        <div style={styles.itemBottomView}>
+        <div className={'itemBottomView'}>
           <button
             style={{float: 'right'}}
             onClick={(e) => {
@@ -135,6 +135,63 @@ class AppointmentListScreen extends Component {
             )
           })
         }
+        <style jsx global>{`
+          .listItem {
+            padding-top: 10px;
+            width: 100%;
+            height: 170px;
+            background-color: #ffffff;
+            margin-bottom: 10px;
+          }
+          .itemTopView {
+            background-color: #FBFBFB;
+            height: 40px;
+            margin-bottom: 5px;
+            margin-left: 15px;
+            flex-direction: row;
+            align-items: center;
+          }
+          .topText {
+            color: #797979;
+            flex: 2;
+            font-size: 15px;
+          }
+          .unCancelText {
+            color: #0087F4;
+            font-size: 14px;
+            float: right;
+            margin-right: 15px;
+          }
+          .cancelText {
+            color: #B4B4B4;
+            font-rize: 14px;
+            float: right;
+            margin-right: 15px;
+          }
+          .subView {
+            width: 75%;
+            float: right;
+            justify-content: center;
+            margin-left: 10px;
+          }
+          .centerText {
+            font-size: 13px;
+            color: #505050;
+            margin-bottom: 6px;
+          }
+          .avatarStyle {
+            height: 60px;
+            width: 60px;
+            margin-left: 10px;
+          }
+          .itemBottomView {
+            height: 40px;
+            margin-right: 15px;
+            margin-top: 5px;
+            flex-direction: row;
+            align-items: center;
+          }
+        `}</style>
       </div>
     )
   }
@@ -152,71 +209,6 @@ const getListData = (appointments, patientId) => {
     }
   }
   return array
-}
-
-const styles = {
-  container: {
-    flex: 1
-  },
-  listItem: {
-    paddingTop: 10,
-    width: '100%',
-    height: 170,
-    backgroundColor: '#ffffff',
-    marginBottom: 10
-  },
-  itemTopView: {
-    backgroundColor: '#FBFBFB',
-    height: 40,
-    marginBottom: 5,
-    marginLeft: 15,
-    flexDirection: 'row',
-    alignItems: 'center'
-  },
-  topText: {
-    color: '#797979',
-    flex: 2,
-    fontSize: 15
-  },
-  unCancelText: {
-    color: '#0087F4',
-    fontSize: 14,
-    float: 'right',
-    marginRight: 15
-  },
-  cancelText: {
-    color: '#B4B4B4',
-    fontSize: 14,
-    float: 'right',
-    marginRight: 15
-  },
-  subView: {
-    width: '75%',
-    float: 'right',
-    justifyContent: 'center',
-    marginLeft: 10
-  },
-  centerText: {
-    fontSize: 13,
-    color: '#505050',
-    marginBottom: 6
-  },
-  avatarStyle: {
-    height: 60,
-    width: 60,
-    marginLeft: 10
-  },
-  itemBottomView: {
-    height: 40,
-    marginRight: 15,
-    marginTop: 5,
-    flexDirection: 'row',
-    alignItems: 'center'
-  },
-  loading: {
-    alignItems: 'center',
-    justifyContent: 'center'
-  }
 }
 
 function mapStateToProps (state) {

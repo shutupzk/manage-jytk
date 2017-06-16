@@ -129,61 +129,6 @@ class SignupScreen extends Component {
   }
 }
 
-const styles = {
-  container: {
-    marginLeft: '5%',
-    marginTop: '20px',
-    flex: 1
-  },
-  list: {
-    borderTopWidth: 0,
-    marginTop: 10,
-    marginBottom: 5,
-    borderBottomWidth: 0
-  },
-  item: {
-    height: 51,
-    flexWrap: 'nowrap',
-    alignItems: 'center',
-    flexDirection: 'row',
-    backgroundColor: '#ffffff',
-    justifyContent: 'space-between',
-    borderBottomColor: '#E6E6E6',
-    borderBottomWidth: 1
-  },
-  textLeft: {
-    flex: 1,
-    fontSize: 16,
-    color: '#505050',
-    marginLeft: 15
-  },
-  TextInput: {
-    flex: 2,
-    borderBottomWidth: 0,
-    marginRight: 15
-  },
-  buttonStyle: {
-    marginTop: 35
-  },
-  rightView: {
-    flex: 1
-  },
-  sendButton: {
-    height: 30,
-    width: 60
-  },
-  sendText: {
-    fontSize: 10,
-    color: '#ffffff'
-  },
-  loading: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 8,
-    height: 80
-  }
-}
-
 function mapStateToProps (state) {
   return {
     token: state.user.data.token,

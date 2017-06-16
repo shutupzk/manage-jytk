@@ -8,19 +8,54 @@ export default class HospitalFunctionList extends Component {
     let href = {pathname: '/hospital/' + item.navigateName, query: item.params}
     // '/hospital/' + item.navigateName + '?toScreenKey=' + item.params ? item.params.toScreenKey : ''
     return (
-      <Link href={href}><div style={styles.itemDiv}>
-        <div style={styles.left}>
-          <img src={item.avatar} style={styles.img} />
+      <Link href={href}><div className={'itemDiv'}>
+        <div className={'left'}>
+          <img src={item.avatar} className={'img'} />
         </div>
-        <div style={styles.right}>
+        <div className={'right'}>
           <div style={{ float: 'left', width: '70%' }}>
             <h4 style={{ margin: '0px', fontSize: '14px' }}>{item.title}</h4>
-            <p style={styles.rightP}>{item.subTitle}</p>
+            <p className={'rightP'}>{item.subTitle}</p>
             <div style={{ clear: 'both' }}>&nbsp;</div>
           </div>
 
-          <img src='../../../static/icons/arrow_right.png' style={styles.rightImg} />
+          <img src='../../../static/icons/arrow_right.png' className={'rightImg'} />
         </div>
+        <style jsx>{`
+          .itemDiv {
+            margin-top: 30px;
+            width: 100%;
+          }
+          .left {
+            margin-top: 5px;
+            float: left;
+            width: 10%;
+            height: 46px;
+            vertical-align: middle;
+          }
+          .right {
+            margin-top: 10px;
+            width: 88%;
+            height: 100%;
+          }
+          .rightP {
+            margin: 0px;
+            font-size: 12px;
+          }
+          .img {
+            margin-top: 10px;
+            height: 30px;
+            width: 30px;
+            align-self: center;
+          }
+          .rightImg {
+            float: right;
+            margin-top: 15px;
+            height: 10px;
+            width: 8px;
+            align-self: center;
+          }
+        `}</style>
       </div></Link>
     )
   }
@@ -38,44 +73,3 @@ export default class HospitalFunctionList extends Component {
 // }
 
 export { HospitalFunctionList }
-const styles = {
-  itemDiv: {
-    marginTop: '30px',
-    width: '100%'
-  },
-  left: {
-    marginTop: '5px',
-    float: 'left',
-    width: '10%',
-    height: '46px',
-    verticalAlign: 'middle'
-  },
-  right: {
-    marginTop: '10px',
-    width: '88%',
-    height: '100%'
-  },
-  rightP: {
-    margin: '0px',
-    fontSize: '12px'
-  },
-  li: {
-    marginLeft: 10,
-    marginTop: 5,
-    color: '#B4B4B4',
-    fontSize: 13
-  },
-  img: {
-    marginTop: '10px',
-    height: 30,
-    width: 30,
-    alignSelf: 'center'
-  },
-  rightImg: {
-    float: 'right',
-    marginTop: '15px',
-    height: 10,
-    width: 8,
-    alignSelf: 'center'
-  }
-}

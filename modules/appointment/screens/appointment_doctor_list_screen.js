@@ -110,15 +110,15 @@ class AppointmentDoctorListScreen extends Component {
     return (
       <div style={{backgroundColor: '#ffffff', width: '100%'}}>
         <div style={{float: 'left', width: '20%'}}>
-          <ul id='tab_nav' style={styles.tab_nav}>
+          <ul id='tab_nav' className={'tab_nav'}>
             {
               selectDoctors.length > 0 ? selectDoctors.map((doc) => {
                 return (
-                  <li style={styles.tab_nav_li} key={doc.id} onClick={() => {
+                  <li className={'tab_nav_li'} key={doc.id} onClick={() => {
                     this.props.selectDoctor({doctorId: doc.id})
                     this.props.querySchedules(this.props.client, { departmentId, doctorId: doc.id })
                   }}>
-                    <a style={styles.tab_nav_a}>{doc.doctorName}</a>
+                    <a className={'tab_nav_a'}>{doc.doctorName}</a>
                   </li>
                 )
               }) : ''
@@ -274,6 +274,26 @@ class AppointmentDoctorListScreen extends Component {
         {
           selectDoctors.length > 0 ? this.tabRender(selectDoctors, doctor) : '没有可预约医生'
         }
+        <style jsx global>{`
+          .tab_nav {
+            margin: 0px;
+            padding: 0px;
+            height: 30px;
+          },
+          .tab_nav_li {
+            margin: 0px 0px;
+            border-bottom: 1px solid #999;
+            height: 30px;
+            width: 100%;
+            text-align: center;
+            background-color: #FFF
+          }
+          .tab_nav_a {
+            font: bold 14px/24px "微软雅黑", Verdana, Arial, Helvetica, sans-serif;
+            color: green;
+            text-decoration: none;
+          }
+        `}</style>
       </div>
     )
   }
@@ -289,42 +309,6 @@ function mapStateToProps (state) {
     doctorId: state.doctors.selectId,
     departmentId: state.departments.selectId,
     schedules: state.schedules.data
-  }
-}
-
-var styles = {
-  tab_nav: {
-    margin: 0,
-    padding: 0,
-    height: 30
-    // lineHeight: 24
-  },
-  tab_nav_li: {
-    // float: 'left',
-    margin: '0 0px',
-    listStyle: 'none',
-    borderBottom: '1px solid #999',
-    height: 30,
-    width: '100%',
-    textAlign: 'center',
-    background: '#FFF'
-  },
-  tab_nav_a: {
-    font: 'bold 14px/24px "微软雅黑", Verdana, Arial, Helvetica, sans-serif',
-    color: 'green',
-    textDecoration: 'none'
-  },
-  tab_content: {
-    height: 273,
-    border: '1px solid #999',
-    font: 'bold 4em/273px "微软雅黑", Verdana, Arial, Helvetica, sans-serif',
-    textAlign: 'center',
-    background: '#FFF',
-    overflow: 'hidden'
-  },
-  tab_content_div: {
-    width: '100%',
-    height: 273
   }
 }
 

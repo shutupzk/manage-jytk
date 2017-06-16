@@ -58,12 +58,12 @@ class IndoorNavigationScreen extends Component {
     let buildings = hosiptal.buildings || []
     return (
       <div>
-        <div style={styles.titleView}>
-          <div style={styles.circle} />
-          <div style={styles.contentView}>
-            <span style={styles.text}>{hosiptal.hospitalName}</span>
+        <div className={'titleView'}>
+          <div className={'circle'} />
+          <div className={'contentView'}>
+            <span className={'text'}>{hosiptal.hospitalName}</span>
           </div>
-          <div style={styles.rightCircle} />
+          <div className={'rightCircle'} />
         </div>
         {
           buildings.map((item, i) => (
@@ -71,56 +71,56 @@ class IndoorNavigationScreen extends Component {
               Router.push('/hospital/floors?buildingId=' + item.id)
               this.props.selectHospitalBuildings({buildingId: item.id})
             }}>
-              <div style={styles.titleView}>
-                <div style={styles.contentView}>
-                  <span style={styles.text}>{item.name}</span>
+              <div className={'titleView'}>
+                <div className={'contentView'}>
+                  <span className={'text'}>{item.name}</span>
                 </div>
               </div>
             </div>
           ))
         }
+        <style jsx>{`
+          .titleView {
+            height: 50px;
+            border-radius: 5px;
+            background-color: white;
+            margin: 5px;
+            flex-direction: row;
+            display: flex;
+          }
+          .circle {
+            height: 6px;
+            width: 6px;
+            border-radius: 3px;
+            background-color: #3CA0FF;
+            margin: 6px;
+          }
+          .rightCircle {
+            height: 6px;
+            width: 6px;
+            border-radius: 3px;
+            background-color: #3CA0FF;
+            margin: 6px;
+            float: right;
+          }
+          .contentView {
+            text-align: center;
+            flex: 1;
+            margin: 10px;
+            align-items: center;
+            justify-content: center;
+          }
+          .text {
+            text-align: center;
+            font-size: 15px;
+            color: #505050;
+          }
+        `}</style>
       </div>
     )
   }
 }
 
-const styles = {
-  titleView: {
-    height: 50,
-    borderRadius: 5,
-    backgroundColor: 'white',
-    margin: 5,
-    flexDirection: 'row',
-    display: 'flex'
-  },
-  circle: {
-    height: 6,
-    width: 6,
-    borderRadius: 3,
-    backgroundColor: '#3CA0FF',
-    margin: 6
-  },
-  rightCircle: {
-    height: 6,
-    width: 6,
-    borderRadius: 3,
-    backgroundColor: '#3CA0FF',
-    margin: 6,
-    float: 'right'
-  },
-  contentView: {
-    textAlign: 'center',
-    flex: 1,
-    margin: 10,
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  text: {
-    textAlign: 'center',
-    fontSize: 15,
-    color: '#505050'
-  }
-}
 function mapStateToProps (state) {
   return {
     selectId: state.hospitals.selectId,

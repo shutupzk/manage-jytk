@@ -62,6 +62,59 @@ class DailyFeeScreen extends Component {
             })
           }}
           modalVisible={this.state.modalVisible} /> */}
+        <style jsx global>{`
+          .spliteLine {
+            background-color: #E6E6E6;
+            width: 100%;
+            height: 1.5px;
+          }
+          .spliteLineWhite {
+            width: 100%;
+            height: 0.5px;
+            background-color: #ffffff;
+            margin-left: 15px;
+            margin-right: 15px;
+          }
+          .topView {
+            padding: 15px;
+            flex-direction: row;
+            background-color: #3CA0FF;
+            height: 104px;
+            display: flex;
+            align-items: center;
+          }
+          .calendar {
+            background-color: #3CA0FF;
+            flex-direction: row;
+            align-items: center;
+            text-align: center;
+            justify-content: center;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            display: flex;
+          }
+          .centerTips {
+            justify-content: center;
+            align-items: center;
+            padding-top: 10px;
+            padding-bottom: 10px;
+          }
+          .contentTop {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            background-color: #ffffff;
+            padding: 10px 15px;
+          }
+          .footView {
+            bottom: 20px
+            width: 100%;
+            position: absolute;
+            height: 22px;
+            justifyContent: center;
+            alignItems: center; 
+          }
+        `}</style>
       </div>
     )
   }
@@ -69,7 +122,7 @@ class DailyFeeScreen extends Component {
 
 const topView = (dailyfees, calendar) => {
   return (
-    <div style={styles.topView}>
+    <div className={'topView'}>
       {/* <div><img src='/static/icons/back.png' style={{width: 10, height: 10}} /></div> */}
       <div
         onClick={() => {
@@ -117,7 +170,7 @@ const topView = (dailyfees, calendar) => {
 
 const spliteLine = () => {
   return (
-    <div style={styles.spliteLineWhite} />
+    <div className={'spliteLineWhite'} />
   )
 }
 
@@ -127,7 +180,7 @@ const calendar = (props, state, calendar) => {
       onClick={() => {
         calendar.refs.calendar.startModal()
       }}>
-      <div style={styles.calendar}>
+      <div className={'calendar'}>
         <span style={{padding: '0px 10px'}}>📅</span>
         <div style={{color: '#ffffff', fontSize: 15}}>{state.date}</div>
       </div>
@@ -138,7 +191,7 @@ const calendar = (props, state, calendar) => {
 
 const centerTips = () => {
   return (
-    <div style={styles.centerTips}>
+    <div className={'centerTips'}>
       <div style={{color: '#B4B4B4', fontSize: 12, textAlign: 'center'}}>甲类：公费    乙类：部分公费    丙类：自费</div>
     </div>
   )
@@ -146,7 +199,7 @@ const centerTips = () => {
 
 const content = (dailyfees) => {
   return (
-    <div style={styles.content}>
+    <div className={'content'}>
       {contentTop()}
       <div
         style={{width: '100%'}}
@@ -164,76 +217,22 @@ const content = (dailyfees) => {
 const contentTop = () => {
   return (
     <div >
-      <div style={styles.contentTop}>
-        <div style={{color: '#B4B4B4', fontSize: 16}}>项目</div>
+      <div className={'contentTop'}>
+        <div style={{color: '#D4D4D4', fontSize: 16}}>项目</div>
         <div style={{flex: 1}} />
-        <div style={{color: '#B4B4B4', fontSize: 16}}>金额(元)</div>
+        <div style={{color: '#D4D4D4', fontSize: 16}}>金额(元)</div>
       </div>
-      <div style={styles.spliteLine} />
+      <div className={'spliteLine'} />
     </div>
   )
 }
 
 const footView = () => {
   return (
-    <div style={styles.footView}>
+    <div className={'footView'}>
       <div style={{fontSize: 12, color: '#B4B4B4', textAlign: 'center'}}>*仅供参考，以医院实际结算为准</div>
     </div>
   )
-}
-
-const styles = {
-  spliteLine: {
-    backgroundColor: '#E6E6E6',
-    width: '100%',
-    height: 1.5
-  },
-  spliteLineWhite: {
-    width: '100%',
-    height: 0.5,
-    backgroundColor: '#ffffff',
-    marginLeft: 15,
-    marginRight: 15
-  },
-  topView: {
-    padding: 15,
-    flexDirection: 'row',
-    backgroundColor: '#3CA0FF',
-    height: 104,
-    display: 'flex',
-    alignItems: 'center'
-  },
-  calendar: {
-    backgroundColor: '#3CA0FF',
-    flexDirection: 'row',
-    alignItems: 'center',
-    textAlign: 'center',
-    justifyContent: 'center',
-    paddingTop: 10,
-    paddingBottom: 10,
-    display: 'flex'
-  },
-  centerTips: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingTop: 10,
-    paddingBottom: 10
-  },
-  contentTop: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    backgroundColor: '#ffffff',
-    padding: '10px 15px'
-  },
-  footView: {
-    bottom: 20,
-    width: '100%',
-    position: 'absolute',
-    height: 22,
-    justifyContent: 'center',
-    alignItems: 'center'
-  }
 }
 
 function mapStateToProps (state) {

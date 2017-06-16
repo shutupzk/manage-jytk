@@ -61,8 +61,16 @@ const title = (item, i) => {
         <div style={{color: '#797979', fontSize: 13, flex: '2'}}>住院号</div>
         <div style={{color: '#505050', fontSize: 13, marginLeft: 5, flex: '9'}}>{item.inpatientNo}</div>
       </div>
-      <div style={styles.spliteLine}>&nbsp;</div>
+      <div className='spliteLine'>&nbsp;</div>
       <div style={{marginTop: 5}}>{subtitle()}</div>
+      <style jsx>{`
+        .spliteLine {
+          background-color: #E6E6E6;
+          width: 100%;
+          height: 1px;
+          margin-top: 10px;
+        }
+      `}</style>
     </div>
   )
 }
@@ -75,22 +83,6 @@ const subtitle = () => {
       </div>
     </div>
   )
-}
-
-const styles = {
-  itemStyles: {
-    marginLeft: 15,
-    marginRight: 15,
-    flexWrap: 'nowrap',
-    flexDirection: 'row',
-    alignItems: 'center'
-  },
-  spliteLine: {
-    backgroundColor: '#E6E6E6',
-    width: '100%',
-    height: 1,
-    marginTop: 10
-  }
 }
 
 export default PaidListScreen

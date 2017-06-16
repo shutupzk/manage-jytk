@@ -68,12 +68,12 @@ class ReportScreen extends Component {
           ItemSeparatorComponent={() => { return <div style={{height: 5}} /> }}
           renderItem={
             ({item}) =>
-              <div style={styles.itemView}>
-                <div style={styles.itemTitleView}>
-                  <div style={[styles.dateTitleText, { flex: 1 }]}>{Object.keys(item)[0]}</div>
-                  <div style={styles.dateTitleText}>[{item[Object.keys(item)[0]].length}项]</div>
+              <div className={'itemView'}>
+                <div className={'itemTitleView'}>
+                  <div className={{ flex: 1 }}>{Object.keys(item)[0]}</div>
+                  <div className={'dateTitleText'}>[{item[Object.keys(item)[0]].length}项]</div>
                 </div>
-                <div style={styles.itemContentsView}>
+                <div className={'itemContentsView'}>
                   {
                     item[Object.keys(item)[0]].map((item, i) => (
                       <div key={i}>
@@ -84,8 +84,8 @@ class ReportScreen extends Component {
                           })
                           this.props.navigation.navigate('examination_detail')
                         }}>
-                          <div style={styles.itemContentView}>
-                            <div style={styles.itemText}>{item.exammineName}</div>
+                          <div className={'itemContentView'}>
+                            <div className={'itemText'}>{item.exammineName}</div>
                           </div>
                         </div>
                       </div>
@@ -109,12 +109,12 @@ class ReportScreen extends Component {
           {
             laboratories.map((item, i) => {
               return (
-                <div style={styles.itemView} key={i}>
-                  <div style={styles.itemTitleView}>
+                <div className={'itemView'} key={i}>
+                  <div className={'itemTitleView'}>
                     <div style={{ flex: 1 }}>{Object.keys(item)[0]}</div>
-                    <div style={styles.dateTitleText}>[{item[Object.keys(item)[0]].length}项]</div>
+                    <div className={'dateTitleText'}>[{item[Object.keys(item)[0]].length}项]</div>
                   </div>
-                  <div style={styles.itemContentsView}>
+                  <div className={'itemContentsView'}>
                     {
                       item[Object.keys(item)[0]].map((item, i) => (
                         <div key={item.id}>
@@ -125,8 +125,8 @@ class ReportScreen extends Component {
                             })
                             Router.push('/report/laboratory_detail?laboratoryId=' + item.id + '&date=' + item.reportTime)
                           }}>
-                            <div style={styles.itemContentView}>
-                              <div style={styles.itemText}>{item.inspectName}</div>
+                            <div className={'itemContentView'}>
+                              <div className={'itemText'}>{item.inspectName}</div>
                             </div>
                           </div>
                         </div>
@@ -156,61 +156,57 @@ class ReportScreen extends Component {
       )
     }
     return (
-      <div style={styles.container}>
+      <div>
         <div style={{width: '100%'}}>
           {
            this.renderLaboratory()
           }
         </div>
+        <style jsx global>{`
+          .tabBarUnderlineStyle {
+            background-color: #3CA0FF;
+          }
+          .tabBarTextStyle {
+            font-size: 15px;
+            font-weight: bold;
+            margin-top: 5px;
+          }
+          .itemTitleView {
+            display: flex;
+            margin-bottom: 3px;
+            padding: 10px;
+            padding-horizontal: 10px;
+            padding-vertical: 5px;
+            align-items: center;
+            flex-direction: row;
+            background-color: #FBFBFB;
+          }
+          .dateTitleText {
+            float: right;
+            font-size: 12px
+            color: #B4B4B4;
+          }
+          .itemView {
+            margin-bottom: 10px;
+            flex-direction: column;
+          }
+          .itemContentsView {
+            background-color: white;
+          }
+          .itemContentView {
+            padding: 5px 10px;
+            background-color: white;
+            justify-content: center;
+            padding-horizontal: 10px;
+            border-bottom: solid 1px #eeeeee;
+          }
+          .itemText {
+            font-size: 15px;
+            color: #505050;
+          }
+        `}</style>
       </div>
     )
-  }
-}
-const styles = {
-  container: {
-    flex: 1
-  },
-  tabBarUnderlineStyle: {
-    backgroundColor: '#3CA0FF'
-  },
-  tabBarTextStyle: {
-    fontSize: 15,
-    fontWeight: 'bold',
-    marginTop: 5
-  },
-  itemTitleView: {
-    display: 'flex',
-    marginBottom: 3,
-    padding: 10,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    alignItems: 'center',
-    flexDirection: 'row',
-    backgroundColor: '#FBFBFB'
-  },
-  dateTitleText: {
-    float: 'right',
-    fontSize: 12,
-    color: '#B4B4B4'
-  },
-  itemView: {
-    marginBottom: 10,
-    flexDirection: 'column'
-  },
-  itemContentsView: {
-    backgroundColor: 'white'
-  },
-  itemContentView: {
-    padding: '5px 10px',
-    backgroundColor: 'white',
-    justifyContent: 'center',
-    // height: 30,
-    paddingHorizontal: 10,
-    borderBottom: 'solid 1px #eeeeee'
-  },
-  itemText: {
-    fontSize: 15,
-    color: '#505050'
   }
 }
 

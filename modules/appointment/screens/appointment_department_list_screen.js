@@ -5,7 +5,7 @@ import _ from 'lodash'
 import Router from 'next/router'
 import localforage from 'localforage'
 
-import SearchBar from '../components/search_bar'
+// import SearchBar from '../components/search_bar'
 import DepartmentList from '../../hospital/components/department_list'
 import { signin, queryUser, queryPatients, queryDepartments, selectDepartment } from '../../../ducks'
 import { isEmptyObject, convertPinyin, convertPinyinFirst, replaceSearchKey } from '../../../utils'

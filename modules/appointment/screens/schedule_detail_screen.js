@@ -141,89 +141,89 @@ class ScheduleDetailScreen extends Component {
     }
     const patient = patients[patientId]
 
-    return (<div className='container' style={styles.container}>
-      <div style={styles.list}>
-        <div style={{marginLeft: 15}}>
-          <div style={styles.subView}>
+    return (<div style={{flex: 1}}>
+      <div className={'list'}>
+        <div>
+          <div className={'subView'}>
             <img src='/static/icons/doctor_head.png' style={{width: 30, height: 30, borderRadius: '15px'}} />
-            <span style={styles.bigName}>{doctor.doctorName}</span>
-            <span style={styles.titleText}>{doctor.title}</span>
+            <span className={'bigName'}>{doctor.doctorName}</span>
+            <span className={'titleText'}>{doctor.title}</span>
           </div>
         </div>
-        <div style={{marginBottom: 30, marginTop: 15}}>
+        <div style={{marginBottom: 10, padding: 10, backgroundColor: '#fff'}}>
           <div>
-            <span style={styles.textLeft}>就诊科室</span>
-            <span style={styles.textRight}>{schedule.department.deptName}</span>
+            <span className={'textLeft'}>就诊科室</span>
+            <span className={'textRight'}>{schedule.department.deptName}</span>
           </div>
           <div>
-            <span style={styles.textLeft}>门诊类型</span>
-            <span style={styles.textRight}>{schedule.clinicType || '专科'}</span>
+            <span className={'textLeft'}>门诊类型</span>
+            <span className={'textRight'}>{schedule.clinicType || '专科'}</span>
           </div>
           <div>
-            <span style={styles.textLeft}>就诊时间</span>
-            <span style={styles.textRight}>{schedule.visitDate}</span>
+            <span className={'textLeft'}>就诊时间</span>
+            <span className={'textRight'}>{schedule.visitDate}</span>
           </div>
           <div>
-            <span style={styles.textLeft}>挂号费用</span>
-            <span style={styles.textRight}>{schedule.registerFee}</span>
+            <span className={'textLeft'}>挂号费用</span>
+            <span className={'textRight'}>{schedule.registerFee}</span>
           </div>
         </div>
-        <div style={styles.item} key={'amPm'}>
-          <span style={styles.textLeft}>{'就诊时间'}</span>
-          <div style={styles.rightView} onClick={() => { this.setState({selectTimeRangeShow: true}) }}>
-            <span style={styles.textRight}> {beginTime || (schedule.amPm === 'a' ? '8:00' : '13:00')} - {endTime || (schedule.amPm === 'a' ? '9:00' : '14:00')} </span>
+        <div className={'item'} key={'amPm'}>
+          <span className={'textLeft'}>{'就诊时间'}</span>
+          <div className={'rightView'} onClick={() => { this.setState({selectTimeRangeShow: true}) }}>
+            <span className={'textRight'}> {beginTime || (schedule.amPm === 'a' ? '8:00' : '13:00')} - {endTime || (schedule.amPm === 'a' ? '9:00' : '14:00')} </span>
             <img src='/static/icons/arrow_right.png' style={{width: 10, height: 12}} />
           </div>
         </div>
-        <div style={styles.item} key={'name'}>
-          <span style={styles.textLeft}>{'就诊人'}</span>
-          <div style={styles.rightView} onClick={() => { Router.push('/appointment/select_patient') }}>
-            <span style={styles.textRight}>{patient.name}</span>
+        <div className={'item'} key={'name'}>
+          <span className={'textLeft'}>{'就诊人'}</span>
+          <div className={'rightView'} onClick={() => { Router.push('/appointment/select_patient') }}>
+            <span className={'textRight'}>{patient.name}</span>
             <img src='/static/icons/arrow_right.png' style={{width: 10, height: 12}} />
           </div>
         </div>
-        {/*<div style={styles.item} key={'clinicType'}>
-          <span style={styles.textLeft}>{'号        别'}</span>
-          <div style={styles.rightView}>
-            <span style={styles.textRight}>{schedule.clinicType || '普通号'}</span>
+        {/*<div className={'item'} key={'clinicType'}>
+          <span className={'textLeft'}>{'号        别'}</span>
+          <div className={'rightView'}>
+            <span className={'textRight'}>{schedule.clinicType || '普通号'}</span>
           </div>
         </div>*/}
-        {/*<div style={styles.item} key={'deptName'}>
-          <span style={styles.textLeft}>{'就诊科室'}</span>
-          <div style={styles.rightView}>
-            <span style={styles.textRight}>{schedule.department.deptName} </span>
+        {/*<div className={'item'} key={'deptName'}>
+          <span className={'textLeft'}>{'就诊科室'}</span>
+          <div className={'rightView'}>
+            <span className={'textRight'}>{schedule.department.deptName} </span>
           </div>
         </div>*/}
-        <div style={styles.item} key={'payType'}>
-          <span style={styles.textLeft}>{'支付类别'}</span>
-          <div style={styles.rightView} onClick={() => {
+        <div className={'item'} key={'payType'}>
+          <span className={'textLeft'}>{'支付类别'}</span>
+          <div className={'rightView'} onClick={() => {
             this.setState({selectPayTypeShow: true})
           }}>
-            <span style={styles.textRight}>{this.state.payType}</span>
+            <span className={'textRight'}>{this.state.payType}</span>
             <img src='/static/icons/arrow_right.png' style={{width: 10, height: 12}} />
           </div>
         </div>
-        {/*<div style={styles.item} key={'registerFee'}>
-          <span style={styles.textLeft}>{'支付金额'}</span>
-          <div style={styles.rightView}>
-            <span style={styles.textRight}>{schedule.registerFee}</span>
+        {/*<div className={item} key={'registerFee'}>
+          <span className={textLeft}>{'支付金额'}</span>
+          <div className={rightView}>
+            <span className={textRight}>{schedule.registerFee}</span>
           </div>
         </div>*/}
-        <div style={styles.item} key={'carteVital'}>
-          <span style={styles.textLeft}>{'诊疗卡号'}</span>
-          <div style={styles.rightView}>
-            <span style={styles.textRight}>{patient.carteVital}</span>
+        <div className={'item'} key={'carteVital'}>
+          <span className={'textLeft'}>{'诊疗卡号'}</span>
+          <div className={'rightView'}>
+            <span className={'textRight'}>{patient.carteVital}</span>
           </div>
         </div>
       </div>
       <button
-        style={{width: '100%', display: 'block'}}
+        style={{width: '92%', display: 'block', margin: '4%'}}
         className='blockPrimaryBtn'
         onClick={() => this.submit(this.props)}
       >
         确定
       </button>
-      <div style={{position: 'fixed', bottom: '20px', width: '90%'}}>
+      <div style={{position: 'fixed', bottom: '20px', width: '100%'}}>
         {
           this.state.selectTimeRangeShow ? this.selectTimeRangeRender(schedule) : ''
         }
@@ -232,6 +232,67 @@ class ScheduleDetailScreen extends Component {
         }
       </div>
       {/*<Popup ref={popup => { this.popup = popup }} />*/}
+      <style jsx>{`
+        .list {
+          margin-top: 10px;
+          margin-bottom: 5px;
+          {/*background-color: #ffffff;*/}
+          padding-bottom: 10px;
+        }
+        .item {
+          padding: 10px;
+          {/*height: 30px;*/}
+          {/*paddingTop: 10px;*/}
+          flex-wrap: nowrap;
+          align-items: center;
+          flex-direction: row;
+          background-color: #ffffff;
+          justify-content: space-between;
+          margin-bottom: 2px;
+        }
+        .textLeft {
+          flex: 1;
+          font-size: 15px;
+          color: #797979;
+          margin-right: 25px;
+        }
+        .rightView {
+          flex: 3;
+          flex-direction: row;
+          align-items: center;
+          float: right;
+        }
+        .textRight {
+          font-size: 15px;
+          color: #505050;
+          margin-right: 10px;
+        }
+        .buttonStyle {
+          margin-top: 35px;
+        }
+        .loading {
+          align-items: center;
+          justify-content: center;
+          height: 80px;
+        }
+        .bigName {
+          font-size: 18px;
+          color: #505050;
+          margin-left: 10px;
+        }
+        .titleText {
+          font-size: 14px;
+          color: #797979;
+          margin-left: 10px;
+        }
+        .subView {
+          padding: 10px;
+          background-color: #fff;
+          margin-bottom: 1px;
+          flex-direction: row;
+          align-items: center;
+        }
+      `}</style>
     </div>)
   }
 }
@@ -245,71 +306,6 @@ const getPatients = (selectPatient, patients, patientId) => {
     array.push(patients[key])
   }
   return array
-}
-
-const styles = {
-  container: {
-    flex: 1
-  },
-  list: {
-    borderTopWidth: 0,
-    marginTop: 10,
-    marginBottom: 5,
-    borderBottomWidth: 0,
-    backgroundColor: '#ffffff',
-    paddingBottom: 10
-  },
-  item: {
-    height: 30,
-    paddingTop: 10,
-    flexWrap: 'nowrap',
-    alignItems: 'center',
-    flexDirection: 'row',
-    backgroundColor: '#ffffff',
-    justifyContent: 'space-between',
-    marginRight: 5,
-    borderBottom: 'solid 1px #eeeeee'
-  },
-  textLeft: {
-    flex: 1,
-    fontSize: 15,
-    color: '#797979',
-    marginLeft: 15,
-    marginRight: 25
-  },
-  rightView: {
-    flex: 3,
-    flexDirection: 'row',
-    alignItems: 'center',
-    float: 'right'
-  },
-  textRight: {
-    fontSize: 15,
-    color: '#505050',
-    marginRight: 10
-  },
-  buttonStyle: {
-    marginTop: 35
-  },
-  loading: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: 80
-  },
-  bigName: {
-    fontSize: 18,
-    color: '#505050',
-    marginLeft: 10
-  },
-  titleText: {
-    fontSize: 14,
-    color: '#797979',
-    marginLeft: 10
-  },
-  subView: {
-    flexDirection: 'row',
-    alignItems: 'center'
-  }
 }
 
 function mapStateToProps (state) {

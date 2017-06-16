@@ -52,10 +52,10 @@ class IndoorNavigationDetailScreen extends Component {
     this.props.selectHospital({hospitalId: this.getHospital(hospitals).id})
     this.getBuildings(this.getHospital(hospitals).id)
   }
-  getBuildings (hospitalId) {
+  async getBuildings (hospitalId) {
     let buildingId = this.props.url.query.buildingId
     this.props.selectHospitalBuildings({buildingId})
-    this.props.queryHospitalBuildings(this.props.client, {hospitalId})
+    await this.props.queryHospitalBuildings(this.props.client, {hospitalId})
     this.setState({isInit: false})
   }
   render () {
@@ -78,27 +78,27 @@ class IndoorNavigationDetailScreen extends Component {
     let buildings = hosiptal.buildings || []
     let building = filterBuildings(buildings, selectBuildingId)
     return (
-      <div>
-        <div style={styles.titleView}>
-          <div style={styles.circle} />
-          <div style={styles.contentView}>
-            <div style={styles.hospitalText}>{hosiptal.hospitalName}</div>
-            <div style={styles.text}>{building.name}</div>
+      <div style={{margin: '5px 10px'}}>
+        <div className={'titleView'}>
+          <div className={'circle'} />
+          <div className={'contentView'}>
+            <div className={'hospitalText'}>{hosiptal.hospitalName}</div>
+            <div className={'text'}>{building.name}</div>
           </div>
-          <div style={styles.circle} />
+          <div className={'circle'} />
         </div>
         {
           building.floors.map((item, i) => (
-            <div key={i} style={styles.floorsView}>
-              <div style={styles.floorsLeftView}>
-                <div style={styles.floorLeftLeftView}>&nbsp; </div>
-                <span style={styles.floorLeftText}>{item.floorNum}</span>
+            <div key={i} className={'floorsView'}>
+              <div className={'floorsLeftView'}>
+                <div className={'floorLeftLeftView'}>&nbsp; </div>
+                <span className={'floorLeftText'}>{item.floorNum}</span>
               </div>
               <div style={{padding: 10}}>
                 {
                   item.rooms.map((room) => {
                     return (
-                      <span key={room.id} style={styles.itemText}>{room.name}</span>
+                      <span key={room.id} className={'itemText'}>{room.name}</span>
                     )
                   })
                 }
@@ -106,90 +106,80 @@ class IndoorNavigationDetailScreen extends Component {
             </div>
           ))
         }
+        <style jsx>{`
+          .titleView {
+            height: 70px;
+            border-radius: 10px;
+            background-color: white;
+            margin-bottom: 10px;
+            flex-direction: row;
+            display: flex;
+          }
+          .circle {
+            height: 6px;
+            width: 6px;
+            border-radius: 3px;
+            background-color: #3CA0FF;
+            margin: 6px;
+          }
+          .contentView {
+            text-align: center;
+            flex: 1;
+            margin: 10px;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+          }
+          .text {
+            text-align: center;
+            margin: 5px;
+            font-size: 18px;
+            color: #505050;
+          }
+          .hospitalText {
+            text-align: center;
+            margin: 5px;
+            font-size: 15px;
+            color: #B4B4B4;
+          }
+          .floorsView {
+            border-radius: 5px;
+            background-color: white;
+            margin-bottom: 10px;
+            flex-direction: row;
+            display: flex;
+          }
+          .floorsLeftView {
+            padding-top: 3px;
+            float: left;
+            flex-direction: row;
+            width: 40px;
+            margin: 5px;
+            display: flex;
+          }
+          .floorLeftLeftView {
+            height: 20px;
+            width: 3px;
+            background-color: #D8D8D8;
+          }
+          .floorLeftText {
+            font-size: 18px;
+            font-weight: bold;
+            color: #505050;
+            margin-left: 3px;
+          }
+          .itemText {
+            flex: 1;
+            margin: 3px;
+            font-size: 14px;
+            color: #505050;
+          }
+        `}</style>
       </div>
     )
   }
 }
 
-const styles = {
-  titleView: {
-    height: 70,
-    borderRadius: 5,
-    backgroundColor: 'white',
-    margin: 5,
-    flexDirection: 'row',
-    display: 'flex'
-  },
-  circle: {
-    height: 6,
-    width: 6,
-    borderRadius: 3,
-    backgroundColor: '#3CA0FF',
-    margin: 6
-  },
-  rightCircle: {
-    height: 6,
-    width: 6,
-    borderRadius: 3,
-    backgroundColor: '#3CA0FF',
-    margin: 6,
-    float: 'right'
-  },
-  contentView: {
-    textAlign: 'center',
-    flex: 1,
-    margin: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'column'
-  },
-  text: {
-    textAlign: 'center',
-    margin: 5,
-    fontSize: 18,
-    color: '#505050'
-  },
-  hospitalText: {
-    textAlign: 'center',
-    margin: 5,
-    fontSize: 15,
-    color: '#B4B4B4'
-  },
-  floorsView: {
-    borderRadius: 5,
-    backgroundColor: 'white',
-    margin: 5,
-    flexDirection: 'row',
-    display: 'flex'
-  },
-  floorsLeftView: {
-    float: 'left',
-    flexDirection: 'row',
-    width: 40,
-    margin: 5
-  },
-  floorLeftLeftView: {
-    float: 'left',
-    height: 20,
-    width: 3,
-    backgroundColor: '#D8D8D8'
-  },
-  floorLeftText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#505050',
-    marginLeft: 3
-  },
-  flatlist: {
-    marginVertical: 5
-  },
-  itemText: {
-    flex: 1,
-    margin: 3,
-    fontSize: 14,
-    color: '#505050'
-  }
-}
 function mapStateToProps (state) {
   return {
     selectBuildingId: state.hospitals.selectBuildingId,

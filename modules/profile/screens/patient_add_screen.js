@@ -112,15 +112,15 @@ class PatientAddScreen extends Component {
             <input placeholder={'输入手机号'} className='textInput itemViewRight'
               onChange={(e) => this.setState({ phone: e.target.value })} />
           </div>
-          {/* <div style={styles.item} key={'relationship'}>
-            <span style={styles.textLeft}>与本人关系</span>
-            <input placeholder={'与本人关系'} className='textInput' style={styles.itemViewRight}
+          {/* <div className={'item'} key={'relationship'}>
+            <span className={'textLeft'}>与本人关系</span>
+            <input placeholder={'与本人关系'} className='textInput'
               onChange={(e) => this.setState({ relationshipText: e.tartet.value })} />
-            <div style={styles.itemViewRight}
+            <div className={'itemViewRight'}
               onClick={() => {
                 this.popupDialog.show()
               }}>
-              <div style={styles.selectButton}>
+              <div className={'selectButton'}>
                 <span style={{ color: '#B4B4B4', alignSelf: 'center', fontSize: 16, marginRight: 2 }}>{this.state.relationshipText}</span>
                 <img src='/static/icons/arrow-down' style={{size: 15}} />
               </div>
@@ -143,7 +143,7 @@ class PatientAddScreen extends Component {
           ref={(popupDialog) => { this.popupDialog = popupDialog }}>
           <div>
             <div id='title'>选择关系</div>
-            <div containerStyle={styles.dialogList} >
+            <div style={'dialogList'} >
               {
                 relations.map((item, i) => (
                   <div key={item.key}
@@ -151,8 +151,8 @@ class PatientAddScreen extends Component {
                       this.setState({ relationship: item.key, relationshipText: item.value })
                       this.popupDialog.dismiss()
                     }}>
-                    <div style={styles.selectItem}>
-                      <div style={styles.itemText} >{item.value}</div>
+                    <div className={'selectItem'}>
+                      <div className={'itemText'} >{item.value}</div>
                     </div>
                   </div>
                 ))

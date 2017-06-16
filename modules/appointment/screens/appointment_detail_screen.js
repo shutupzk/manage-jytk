@@ -31,7 +31,6 @@ class AppointmentDetailScreen extends Component {
       await this.props.queryAppointmentDetail(this.props.client, {appointmentId})
       await this.props.selectAppointment({appointmentId})
       const appointments = this.props.appointments
-      console.log(appointments)
       const appointment = appointments[this.props.appointmentId]
       const departmentId = appointment.visitSchedule.department.id
       const doctorId = appointment.visitSchedule.doctor.id
@@ -39,7 +38,6 @@ class AppointmentDetailScreen extends Component {
       const userId = await localforage.getItem('userId')
       await this.props.queryPatients(this.props.client, {userId})
     } else {
-      console.log('sw')
       const { appointmentId, appointments } = this.props
       const appointment = appointments[appointmentId]
       const departmentId = appointment.visitSchedule.department.id
@@ -95,7 +93,6 @@ class AppointmentDetailScreen extends Component {
   }
 
   render () {
-    console.log(this.props)
     if (this.state.isInit || this.props.loading) {
       return (<div>loading...</div>)
     }
@@ -107,88 +104,87 @@ class AppointmentDetailScreen extends Component {
     const patient = patients[appointment.patientId]
     let buttonColor = '#FFFFFF'
     let status = '待取号'
-    let statusStyle = styles.unCancelText
+    let statusStyle = 'unCancelText'
     let buttonText = '取消预约'
     let buttonTextColor = '#E45252'
     if (appointment.visitStatus === '02') {
       status = '已取消'
-      statusStyle = styles.cancelText
+      statusStyle = 'cancelText'
       buttonText = '再次预约'
       buttonColor = '#3CA0FF'
       buttonTextColor = '#FFFFFF'
     }
     return (
-      <div style={styles.container}>
-        <div style={styles.detailView}>
-          <div style={styles.itemTopView}>
+      <div>
+        <div className={'detailView'}>
+          <div className={'itemTopView'}>
             <span>{`预约号码：${appointment.orderSn}`}</span>
-            <span style={statusStyle}>{status}</span>
+            <span className={statusStyle}>{status}</span>
           </div>
-          <div style={styles.subView}>
+          <div className={'subView'}>
             <div style={{color: '#000000', marginBottom: 3}}><b>挂号信息</b></div>
-            <div style={styles.itemView}>
-              <span style={styles.itemLeft}>{'科        室'}</span>
-              <span style={styles.itemRight}>{appointment.visitSchedule.department.deptName}</span>
+            <div className={'itemView'}>
+              <span className={'itemLeft'}>{'科        室'}</span>
+              <span className={'sitemRight'}>{appointment.visitSchedule.department.deptName}</span>
             </div>
-            <div style={styles.itemView}>
-              <span style={styles.itemLeft}>{'医        生'}</span>
-              <span style={styles.itemRight}>{appointment.visitSchedule.doctor.doctorName}</span>
+            <div className={'itemView'}>
+              <span className={'itemLeft'}>{'医        生'}</span>
+              <span className={'itemRight'}>{appointment.visitSchedule.doctor.doctorName}</span>
             </div>
-            <div style={styles.itemView}>
-              <span style={styles.itemLeft}>{'挂号类型'}</span>
-              <span style={styles.itemRight}>{appointment.visitSchedule.clinicType}</span>
+            <div className={'itemView'}>
+              <span className={'itemLeft'}>{'挂号类型'}</span>
+              <span className={'itemRight'}>{appointment.visitSchedule.clinicType}</span>
             </div>
-            <div style={styles.itemView}>
-              <span style={styles.itemLeft}>{'挂号类型'}</span>
-              <span style={styles.itemRight}>{appointment.visitPlace}</span>
+            <div className={'itemView'}>
+              <span className={'itemLeft'}>{'挂号类型'}</span>
+              <span className={'itemRight'}>{appointment.visitPlace}</span>
             </div>
-            <div style={styles.itemView}>
-              <span style={styles.itemLeft}>{'就诊日期'}</span>
-              <span style={styles.itemRight}>{appointment.visitSchedule.visitDate}</span>
+            <div className={'itemView'}>
+              <span className={'itemLeft'}>{'就诊日期'}</span>
+              <span className={'itemRight'}>{appointment.visitSchedule.visitDate}</span>
             </div>
-            
-            <div style={styles.itemView}>
-              <span style={styles.itemLeft}>{'预计候诊时间'}</span>
-              <span style={styles.itemRight}>{appointment.timeRangeOfVist}</span>
+            <div className={'itemView'}>
+              <span className={'itemLeft'}>{'预计候诊时间'}</span>
+              <span className={'itemRight'}>{appointment.timeRangeOfVist}</span>
             </div>
           </div>
-          <div style={styles.subView}>
+          <div className={'subView'}>
             <div style={{color: '#000000', marginBottom: 3}}><b>就诊人信息</b></div>
-            <div style={styles.itemView}>
-              <span style={styles.itemLeft}>{'患者姓名'}</span>
-              <span style={styles.itemRight}>{patient.name}</span>
+            <div className={'itemView'}>
+              <span className={'itemLeft'}>{'患者姓名'}</span>
+              <span className={'itemRight'}>{patient.name}</span>
             </div>
-            <div style={styles.itemView}>
-              <span style={styles.itemLeft}>{'病人  ID'}</span>
-              <span style={styles.itemRight}>{appointment.patientCard.patientIdNo}</span>
+            <div className={'itemView'}>
+              <span className={'itemLeft'}>{'病人  ID'}</span>
+              <span className={'itemRight'}>{appointment.patientCard.patientIdNo}</span>
             </div>
-            <div style={styles.itemView}>
-              <span style={styles.itemLeft}>{'身份证号'}</span>
-              <span style={styles.itemRight}>{patient.certificateNo}</span>
+            <div className={'itemView'}>
+              <span className={'itemLeft'}>{'身份证号'}</span>
+              <span className={'itemRight'}>{patient.certificateNo}</span>
             </div>
-            <div style={styles.itemView}>
-              <span style={styles.itemLeft}>{'手机号'}</span>
-              <span style={styles.itemRight}>{patient.phone}</span>
+            <div className={'itemView'}>
+              <span className={'itemLeft'}>{'手机号'}</span>
+              <span className={'itemRight'}>{patient.phone}</span>
             </div>
           </div>
-          <div style={styles.subView}>
+          <div className={'subView'}>
             <div style={{color: '#000000', marginBottom: 3}}><b>订单信息</b></div>
-            <div style={styles.itemView}>
-              <span style={styles.itemLeft}>{'挂号费'}</span>
-              <span style={styles.itemRight}>{appointment.visitSchedule.registerFee}</span>
+            <div className={'itemView'}>
+              <span className={'itemLeft'}>{'挂号费'}</span>
+              <span className={'itemRight'}>{appointment.visitSchedule.registerFee}</span>
             </div>
-            <div style={styles.itemView}>
-              <span style={styles.itemLeft}>{'诊疗费'}</span>
-              <span style={styles.itemRight}>{appointment.treatFee}</span>
+            <div className={'itemView'}>
+              <span className={'itemLeft'}>{'诊疗费'}</span>
+              <span className={'itemRight'}>{appointment.treatFee}</span>
             </div>
-            <div style={styles.itemView}>
-              <span style={styles.itemLeft}>{'流水号'}</span>
-              <span style={styles.itemRight}>{appointment.seqNo}</span>
+            <div className={'itemView'}>
+              <span className={'itemLeft'}>{'流水号'}</span>
+              <span className={'itemRight'}>{appointment.seqNo}</span>
             </div>
           </div>
 
         </div>
-        <div style={{marginTop: 15}}>
+        <div style={{margin: '20px 10px'}}>
           <button
             style={{backgroundColor: buttonColor, color: buttonTextColor, width: '100%', display: 'block'}}
             onClick={() => {
@@ -199,68 +195,56 @@ class AppointmentDetailScreen extends Component {
               }
             }} >{buttonText}</button>
         </div>
+        <style jsx>{`
+          .detailView {
+            margin: 10px;
+            background-color: #FFFFFF;
+            padding-bottom: 15px;
+            padding-left: 10px;
+            padding-right: 10px;
+            font-size: 13px;
+          }
+          .itemTopView {
+            margin-left: 10px;
+            padding-top: 15px;
+            {/*background-color: #FFFFFFpx;*/}
+            height: 30px;
+            align-items: center;
+          }
+          .unCancelText {
+            float: right;
+            color: #0087F4;
+            margin-right: 10px;
+          }
+          .cancelText {
+            float: right;
+            color: #B4B4B4;
+            margin-right: 10px;
+          }
+          .subView {
+            justify-content: center;
+            margin-left: 10px;
+            margin-top: 20px;
+          }
+          .itemView {
+            flex-direction: row;
+            margin-top: 10px;
+          },
+          .itemLeft {
+            color: #797979;
+          }
+          .itemRight {
+            float: right;
+            color: #505050;
+            margin-right: 10px;
+          }
+        `}</style>
       </div>
     )
   }
 }
 
-const styles = {
-  container: {
-  },
-  detailView: {
-    // marginTop: 15,
-    // marginLeft: 15,
-    // marginRight: 15,
-    backgroundColor: '#FFFFFF',
-    paddingBottom: 15,
-    paddingLeft: 10,
-    paddingRight: 10,
-    fontSize: 13
-  },
-  itemTopView: {
-    marginLeft: 10,
-    paddingTop: 15,
-    // backgroundColor: '#FFFFFF',
-    height: 30,
-    flexDirection: 'row',
-    alignItems: 'center'
-  },
-  loading: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: 80
-  },
-  unCancelText: {
-    float: 'right',
-    color: '#0087F4',
-    marginRight: 10
-  },
-  cancelText: {
-    float: 'right',
-    color: '#B4B4B4',
-    marginRight: 10
-  },
-  subView: {
-    justifyContent: 'center',
-    marginLeft: 10,
-    marginTop: 20
-  },
-  itemView: {
-    flexDirection: 'row',
-    marginTop: 10
-  },
-  itemLeft: {
-    color: '#797979'
-  },
-  itemRight: {
-    float: 'right',
-    color: '#505050',
-    marginRight: 10
-  }
-}
-
 function mapStateToProps (state) {
-  console.log('state:', state)
   return {
     appointments: state.appointments.data,
     appointmentId: state.appointments.selectId,

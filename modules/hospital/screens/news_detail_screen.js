@@ -47,14 +47,36 @@ class NewsDetailScreen extends Component {
     let news = filterNews(newses[newsGroupId].newss, newsId)
     return (
       <div >
-        <div style={styles.container}>
+        <div style={{backgroundColor: '#fff'}}>
           {
-            news.image ? <img style={styles.image} src={news.image} /> : null
+            news.image ? <img className={'image'} src={news.image} /> : null
           }
-          <div style={styles.titleText}>{news.title}</div>
-          <div style={styles.timeText}>{news.time}</div>
-          <div style={styles.contentText}>{news.content}</div>
+          <div className={'titleText'}>{news.title}</div>
+          <div className={'timeText'}>{news.time}</div>
+          <div className={'contentText'}>{news.content}</div>
         </div>
+        <style jsx>{`
+          .image {
+            width: 100%;
+            height: 150px;
+          }
+          .titleText {
+            font-size: 18px;
+            padding: 10px;
+            color: #505050;
+          }
+          .timeText {
+            font-size: 12px;
+            padding-left: 10px;
+            color: #B4B4B4;
+          }
+          .contentText {
+            font-size: 14px;
+            color: #505050;
+            padding: 15px;
+            margin-top: 5px;
+          }
+        `}</style>
       </div>
     )
   }
@@ -66,32 +88,6 @@ function mapStateToProps (state) {
     newses: state.news.data,
     loading: state.news.loading,
     error: state.news.error
-  }
-}
-
-const styles = {
-  container: {
-    flex: 1
-  },
-  image: {
-    width: '100%',
-    height: 150
-  },
-  titleText: {
-    fontSize: 18,
-    margin: 10,
-    color: '#505050'
-  },
-  timeText: {
-    fontSize: 12,
-    marginLeft: 10,
-    color: '#B4B4B4'
-  },
-  contentText: {
-    fontSize: 15,
-    color: '#505050',
-    margin: 10
-    // lineHeight: 18
   }
 }
 

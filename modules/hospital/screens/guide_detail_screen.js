@@ -92,7 +92,7 @@ class GuideDetailScreen extends Component {
     let guide = filterGuides(guides, selectGuideIds)
     return (
       <div>
-        <div style={styles.text}>
+        <div style={{color: '#505050', fontSize: 15, padding: 10, backgroundColor: 'white'}}>
           {guide.content}
         </div>
       </div>
@@ -100,14 +100,6 @@ class GuideDetailScreen extends Component {
   }
 }
 
-const styles = {
-  text: {
-    color: '#505050',
-    fontSize: 15,
-    padding: 10,
-    backgroundColor: 'white'
-  }
-}
 function mapStateToProps (state) {
   return {
     selectGuideIds: state.hospitals.selectGuideIds,
