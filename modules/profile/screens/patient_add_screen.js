@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import _ from 'lodash'
 // import Router from 'next/router'
 import localforage from 'localforage'
-import swal from 'sweetalert2'
+// import swal from 'sweetalert2'
 // import { SubButton } from '../components'
 import { ages, getBirthday, getSex } from '../../../utils'
 import { addPatient, queryPatients, updatePatientDefault } from '../../../ducks'
@@ -35,22 +35,22 @@ class PatientAddScreen extends Component {
     const carteVital = this.state.carteVital
     const isDefault = this.state.default
     if (!name) {
-      return swal('', '姓名不能为空')
+      return console.log('', '姓名不能为空')
     }
     if (!certificateNo) {
-      return swal('', '身份证不能为空')
+      return console.log('', '身份证不能为空')
     }
     if (certificateNo.length !== 18) {
-      return swal('', '身份证格式不正确')
+      return console.log('', '身份证格式不正确')
     }
     if (!phone) {
-      return swal('', '手机号不能为空')
+      return console.log('', '手机号不能为空')
     }
     if (phone.length !== 11) {
-      return swal('', '手机号格式不正确')
+      return console.log('', '手机号格式不正确')
     }
     if (!relationship) {
-      return swal('', '关系不能为空')
+      return console.log('', '关系不能为空')
     }
     this.setState({animating: true})
     const error = await this.props.addPatient(this.props.client, { userId, name, phone, certificateNo, relationship, carteVital, isDefault })
@@ -61,11 +61,11 @@ class PatientAddScreen extends Component {
       var me = this
       patientIds.map(async (patientId) => {
         const error3 = await me.props.updatePatientDefault(me.props.client, {patientId, isDefault: false})
-        if (error3) return swal('', error3)
+        if (error3) return console.log('', error3)
       })
     }
     this.setState({animating: false})
-    if (error.error) return swal('', error.error)
+    if (error.error) return console.log('', error.error)
     return this.props.url.back()// Router.push('/profile/patient_list')
   }
   render () {

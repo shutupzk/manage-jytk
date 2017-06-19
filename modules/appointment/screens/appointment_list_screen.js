@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Router from 'next/router'
-import swal from 'sweetalert2'
+// import swal from 'sweetalert2'
 
 import {
   signin,
@@ -47,16 +47,19 @@ class AppointmentListScreen extends Component {
   async cancelAppointment (appointment) {
     const appointmentId = appointment.id
     const visitStatus = '02'
-    swal({
-      text: '确定取消？',
-      showCancelButton: true,
-      confirmButtonText: 'Yes!',
-      cancelButtonText: 'No!'
-    }).then(async () => {
-      const error = await this.props.updateAppointment(this.props.client, { appointmentId, visitStatus })
-      if (error) return swal('', error)
-      return window.history.back()
-    })
+    // todo
+    const error = await this.props.updateAppointment(this.props.client, { appointmentId, visitStatus })
+    console.log(error)
+    // swal({
+    //   text: '确定取消？',
+    //   showCancelButton: true,
+    //   confirmButtonText: 'Yes!',
+    //   cancelButtonText: 'No!'
+    // }).then(async () => {
+    //   const error = await this.props.updateAppointment(this.props.client, { appointmentId, visitStatus })
+    //   if (error) return swal('', error)
+    //   return window.history.back()
+    // })
   }
 
   gotoSchedule (appointment) {
@@ -119,10 +122,10 @@ class AppointmentListScreen extends Component {
     }
     const { appointments, selectAppointment } = this.props
     const dataList = getListData(appointments)
-    var height = process.browser ? window.innerHeight - 50 : ''
+    // var height = process.browser ? window.innerHeight - 50 : ''
     // var height = window.innerHeight - 50
     return (
-      <div style={{height: height}}>
+      <div>
         {
           dataList.map((item) => {
             return (

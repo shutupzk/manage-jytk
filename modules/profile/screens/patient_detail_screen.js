@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import localforage from 'localforage'
 import Router from 'next/router'
 import _ from 'lodash'
-import swal from 'sweetalert2'
+// import swal from 'sweetalert2'
 
 import { ages, isEmptyObject, phone, certificateNo } from '../../../utils'
 import { queryPatients, removePatient, updatePatient, updatePatientDefault } from '../../../ducks'
@@ -33,18 +33,19 @@ class PatientDetailScreen extends Component {
     const patients = this.props.patients
     const patient = patients[this.props.selectId]
     if (this.props.user.certificateNo === patient.certificateNo) {
-      return swal({text: '本人不能删除'}) //
+      return console.log('本人不能删除') //
     }
-    swal({
-      text: '确认删除？',
-      showCancelButton: true,
-      confirmButtonText: 'Yes!',
-      cancelButtonText: 'No!'
-    }).then(async () => {
-      const error = await this.props.removePatient(this.props.client, {patientId: this.props.selectId})
-      if (error) return swal('', error)
-      return window.history.back()
-    })
+    // todo
+    // swal({
+    //   text: '确认删除？',
+    //   showCancelButton: true,
+    //   confirmButtonText: 'Yes!',
+    //   cancelButtonText: 'No!'
+    // }).then(async () => {
+    //   const error = await this.props.removePatient(this.props.client, {patientId: this.props.selectId})
+    //   if (error) return swal('', error)
+    //   return window.history.back()
+    // })
   }
   render () {
     return (
@@ -99,7 +100,7 @@ async function changeCheckbox (props, e) {
     const patientIds = await _.keys(patients)
     patientIds.map(async (patientId) => {
       const error3 = await props.updatePatientDefault(props.client, {patientId, isDefault: false})
-      if (error3) return swal('', error3)
+      if (error3) return console.log('', error3)
     })
   } else {
     const error = await props.updatePatientDefault(props.client, {patientId, isDefault: false})

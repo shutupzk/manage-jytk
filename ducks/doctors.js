@@ -82,7 +82,7 @@ const getDoctors = (state, actionDoctors) => {
         userIds.push(actionDoctors[doc].userId)
       }
       delete actionDoctors[doc].userId
-      doctors[doc] = Object.assign({}, doctors[doc], {departmentIds}, {userIds})
+      doctors[doc] = Object.assign({}, actionDoctors[doc], {departmentIds}, {userIds})
     } else {
       let departmentId = actionDoctors[doc].departmentId
       if (departmentId) {
@@ -285,8 +285,13 @@ const SEARCH_DOCTORS = gql`
       description,
       remark,
       recommend,
-      hot,
-      isAppointment
+      departmentHasDoctors {
+        id
+        department {
+          id
+          deptName
+        }
+      }
     }
   }
 `
@@ -310,6 +315,7 @@ export const searchDoctors = (client, {doctorName}) => async dispatch => {
       searchDocIds.push(doc.id)
     }
     let docs = Object.assign({}, doctors, { searchDocIds })
+    console.log(docs)
     return dispatch({
       type: APPOINTMENT_SEARCH_DOCTORS_SUCCESS,
       doctors: docs

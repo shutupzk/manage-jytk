@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import localforage from 'localforage'
-import swal from 'sweetalert2'
+// import swal from 'sweetalert2'
 // import moment from 'moment'
 import {addDoctorEvaluate} from '../../../ducks'
 import Stars from '../components/stars'
@@ -21,7 +21,7 @@ class AddDoctorEvaluateScreen extends Component {
     let userId = await localforage.getItem('userId')
     let doctorId = this.props.doctorId || this.props.url.query.doctorId
     if (!advice) {
-      swal({text: '建议不能为空'})
+      console.log('建议不能为空')
       return
     }
     this.props.addDoctorEvaluate(this.props.client, {userId, doctorId, technologyScore, serviceScore, advice})

@@ -3,7 +3,7 @@ import { signin, queryHospitals, queryUser, queryPatients, queryDoctors, selectP
 import { connect } from 'react-redux'
 import Router from 'next/router'
 import _ from 'lodash'
-import swal from 'sweetalert2'
+// import swal from 'sweetalert2'
 
 import { isEmptyObject } from '../../../utils'
 /**
@@ -114,12 +114,12 @@ class ScheduleDetailScreen extends Component {
     const timeRangeOfVist = beginTime + '-' + endTime
     const payType = this.state.payType
     if (!patientCardId) {
-      return swal('', '请选择就诊人')
+      return console.log('', '请选择就诊人')
     }
     this.setState({animating: true})
     var appointmentId = await props.addAppointment(props.client, { scheduleId, patientCardId, visitScheduleTimeId, timeRangeOfVist, payType })
     this.setState({animating: false})
-    if (this.props.addError) return swal('', this.props.addError)
+    if (this.props.addError) return console.log('', this.props.addError)
     // return this.props.url.back()
     if (!this.props.addLoading) return Router.push('/appointment/appointment_success?appointmentId=' + appointmentId)
   }

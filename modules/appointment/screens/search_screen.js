@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import Router from 'next/router'
 
 import SearchBar from '../components/search_bar'
-import DoctorList from '../../hospital/components/doctor_list'
+import SearchDoctorList from '../components/search_doctor_list'
 import DepartmentList from '../../hospital/components/department_list'
 import { selectDoctor, selectDepartment, searchDepartments, searchDoctors, removeSearchDepIds, removeSearchDocIds } from '../../../ducks'
 import { replaceSearchKey } from '../../../utils'
@@ -21,6 +21,7 @@ class SearchScreen extends Component {
       term = '&%'
     }
     this.props.searchDepartments(this.props.client, {deptName: term})
+    this.props.searchDoctors(this.props.client, {doctorName: term})
   }
   selectDepartment (dep) {
     this.props.selectDepartment({departmentId: dep.id})
@@ -73,7 +74,7 @@ class SearchScreen extends Component {
           docs && docs.length > 0
           ? <div>
             <div style={{padding: 10}}>医生</div>
-            <DoctorList doctors={docs} userId={''} toUrl={(docId) => { this.selectDoctor(docId) }} term={this.state.term} />
+            <SearchDoctorList doctors={docs} selectDoctor={(docId) => { this.selectDoctor(docId) }} searchKey={(text) => { return replaceSearchKey(text, this.state.term) }} />
           </div> : ''
         }
       </div>

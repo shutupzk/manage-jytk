@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import swal from 'sweetalert2'
+// import swal from 'sweetalert2'
 
 import { updatePatient } from '../../../ducks'
 
@@ -15,7 +15,9 @@ class CarteVitalScreen extends Component {
 
   // 提交
   async submit () {
-    swal({text: '解除绑定成功'})
+    // todo
+
+    // swal({text: '解除绑定成功'})
     this.props.url.back()
   }
 
