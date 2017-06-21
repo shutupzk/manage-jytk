@@ -5,7 +5,8 @@ import localforage from 'localforage'
 // import _ from 'lodash'
 
 import DoctorList from '../components/doctor_list'
-import { queryDoctors, selectDoctor, queryMyDoctors } from '../../../ducks'
+import { queryDoctors, selectDoctor, queryMyDoctors, setQueryFlag } from '../../../ducks'
+import { isEmptyObject } from '../../../utils'
 
 const filterDepartments = (departmentIds, departmentId) => {
   let ids = departmentIds.filter((id) => {
@@ -37,16 +38,19 @@ class DoctorScreen extends Component {
     }
   }
   componentWillMount () {
-    this.queryData()
+    if (isEmptyObject(this.props.doctorsData) || this.props.queryFlag !== 'hospitalDoctors') {
+      this.queryData()
+    }
   }
   async queryData () {
     // var depId = getQueryString('id')
     this.setState({isInit: true})
     let departmentId = this.props.departmentId || this.props.url.query.departmentId
     await this.props.queryDoctors(this.props.client, { departmentId })
+    this.props.setQueryFlag({flag: 'hospitalDoctors'})
     const userId = await localforage.getItem('userId')
     this.setState({userId})
-    this.props.queryMyDoctors(this.props.client, {userId})
+    // this.props.queryMyDoctors(this.props.client, {userId})
     this.setState({isInit: false})
     // this.props.queryDoctors({departmentId: '58eb4faec77c0857c9dc5b0c'})
   }
@@ -89,6 +93,7 @@ class DoctorScreen extends Component {
 function mapStateToProps (state) {
   return {
     departmentId: state.departments.selectId,
+    queryFlag: state.doctors.queryFlag,
     doctorsData: state.doctors.data,
     loading: state.doctors.loading,
     error: state.doctors.error
@@ -96,5 +101,5 @@ function mapStateToProps (state) {
 }
 
 export default connect(
-  mapStateToProps, {queryDoctors, selectDoctor, queryMyDoctors}
+  mapStateToProps, {queryDoctors, selectDoctor, queryMyDoctors, setQueryFlag}
 )(DoctorScreen)

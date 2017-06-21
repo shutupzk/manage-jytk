@@ -1,17 +1,16 @@
+import { replaceStr } from '../../../utils'
 export default (props) => {
   let doctors = props.doctors
-  const userId = props.userId
-  console.log(doctors)
-  console.log(userId)
   return (
     <ul style={{padding: 0}}>
       {
         doctors.length > 0 ? doctors.map((doc) => {
-          let isMyDoc = false
-          console.log(doc.userIds.indexOf(userId))
+          let isMyDoc = doc.isMyDoctor
+          {/*console.log(doc.userIds.indexOf(userId))
           if (doc.userIds.indexOf(userId) > -1) {
             isMyDoc = true
-          }
+          }*/}
+          const description = '擅长领域: ' + doc.description
           return (
             <li key={doc.id} style={{marginBottom: 10, padding: 10, backgroundColor: '#ffffff'}}>
               <div style={{display: 'flex'}} onClick={() => { props.toUrl(doc.id) }}>
@@ -25,8 +24,8 @@ export default (props) => {
                     }
                   </div>
                   <h3 style={{margin: 0}}>姓名：{doc.doctorName}</h3>
-                  <div>{doc.major}|主治医师</div>
-                  <div>擅长领域{doc.description}</div>
+                  <div>{doc.deptName}|{doc.title}</div>
+                  <div>{replaceStr(description, 24, description.length, '...')}</div>
                 </div>
                 <div className='clearfix'>&nbsp;</div>
               </div>

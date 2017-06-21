@@ -41,6 +41,7 @@ class IndoorNavigationDetailScreen extends Component {
   getHospital (hospitals) {
     let hosiptal = {}
     for (let item in hospitals) {
+      this.props.selectHospital({hospitalId: item})
       hosiptal = hospitals[item]
       break
     }
@@ -49,7 +50,7 @@ class IndoorNavigationDetailScreen extends Component {
   async hetHospitalWithBuildings () {
     await this.props.queryHospitals(this.props.client)
     const hospitals = this.props.hospitals
-    this.props.selectHospital({hospitalId: this.getHospital(hospitals).id})
+    // this.props.selectHospital({hospitalId: this.getHospital(hospitals).id})
     this.getBuildings(this.getHospital(hospitals).id)
   }
   async getBuildings (hospitalId) {

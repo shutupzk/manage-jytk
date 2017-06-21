@@ -7,7 +7,7 @@ import DoctorAwards from './doctor_awards'
 // button: 我要评价
 function renderBottomButton (doc, gotoEvaluate) {
   return (
-    <div style={{position: 'absolute', bottom: '15px', width: '90%', height: '40px'}}>
+    <div style={{position: 'fixed', bottom: '0px', width: '90%', height: '40px'}}>
       <button onClick={() => { gotoEvaluate() }} style={{width: '100%', display: 'block', backgroundColor: '#3CA0FF', height: '40px', borderRadius: '10px', fontSize: 16}}>我要评价</button>
     </div>
   )
@@ -18,11 +18,11 @@ export default (props) => {
   const isMyDoc = props.isMyDoc
   // let schedules = props.schedules
   let gotoEvaluate = props.gotoEvaluate
-  let height = 600 // window.innerHeight - 140
+  const toMyDoctor = props.toMyDoctor
   return (
-    <div className='container' style={{height: height, overflow: 'auto'}}>
-      <div>
-        <DoctorTitleCard doctor={doctor} isMyDoc={isMyDoc} />
+    <div className='container'>
+      <div style={{overflow: 'auto', marginBottom: '60px'}}>
+        <DoctorTitleCard doctor={doctor} isMyDoc={isMyDoc} toMyDoctor={toMyDoctor} />
         <DoctorIntro doctor={doctor} />
         <DoctorScheduleList {...props} />
         <DoctorDescription doctor={doctor} />

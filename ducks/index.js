@@ -1,6 +1,6 @@
 import { hospitals, queryHospitals, queryHospitalBuildings, selectHospital, selectHospitalBuildings, queryHospitalGuides, selectHospitalGuide } from './hospitals'
 import { departments, queryDepartments, queryDepartmentDetail, selectDepartment, searchDepartments, removeSearchDepIds, addDepartmentEvaluate } from './departments'
-import { doctors, queryDoctors, selectDoctor, removeSelectDoctor, queryMyDoctors, createUserHasDoctor, searchDoctors, removeSearchDocIds } from './doctors'
+import { doctors, queryDoctors, selectDoctor, removeSelectDoctor, queryMyDoctors, createUserHasDoctor, removeUserHasDoctor, searchDoctors, removeSearchDocIds, setQueryFlag } from './doctors'
 import { doctorEvaluates, addDoctorEvaluate } from './doctor_evaluate'
 import { user, signup, signin, signout, queryUser, updatePassword, savePhone, currentUser } from './user'
 import { patients, queryPatients, addPatient, removePatient, updatePatient, selectPatient, clearPateints, updatePatientDefault } from './patients'
@@ -17,7 +17,7 @@ import { dailyfee, queryDailyfee, selectInpatientRecord } from './dailyfee'
 import { questions, queryQuestions } from './questions'
 import { deposit, queryDeposits, selectDeposit } from './deposit'
 import { addHospitalEvaluate } from './hospital_evaluate'
-import { patientTypes, queryPatientTypes, selectPatientType } from './patient_types' 
+import { patientTypes, queryPatientTypes, selectPatientType } from './patient_types'
 
 // key
 export {
@@ -56,8 +56,10 @@ export {
     removeSelectDoctor,
     queryMyDoctors,
     createUserHasDoctor,
+    removeUserHasDoctor,
     searchDoctors,
     removeSearchDocIds,
+    setQueryFlag,
     addDoctorEvaluate,
     signup,
     signin,

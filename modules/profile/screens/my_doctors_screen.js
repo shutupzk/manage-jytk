@@ -3,20 +3,21 @@ import localforage from 'localforage'
 import { connect } from 'react-redux'
 import Router from 'next/router'
 import _ from 'lodash'
-import { queryMyDoctors } from '../../../ducks'
+import { queryMyDoctors, setQueryFlag } from '../../../ducks'
 import { DoctorList } from '../../hospital/components'
+import { isEmptyObject } from '../../../utils'
 
-const filterUsers = (userIds, userId) => {
-  let ids = userIds.filter((id) => {
-    if (userId === id) {
-      return true
-    }
-    return false
-  })
-  if (ids.length > 0) {
-    return true
-  }
-}
+// const filterUsers = (userIds, userId) => {
+//   let ids = userIds.filter((id) => {
+//     if (userId === id) {
+//       return true
+//     }
+//     return false
+//   })
+//   if (ids.length > 0) {
+//     return true
+//   }
+// }
 
 class MyDoctorsScreen extends Component {
   constructor (props) {
@@ -27,7 +28,9 @@ class MyDoctorsScreen extends Component {
     }
   }
   componentWillMount () {
-    this.getMyDoctors()
+    if (isEmptyObject(this.props.doctors) || this.props.queryFlag !== 'myDoctors') {
+      this.getMyDoctors()
+    }
   }
 
   async getMyDoctors () {
@@ -35,6 +38,7 @@ class MyDoctorsScreen extends Component {
       const userId = await localforage.getItem('userId')
       this.setState({query: true, userId})
       this.props.queryMyDoctors(this.props.client, { userId })
+      this.props.setQueryFlag({flag: 'myDoctors'})
     }
   }
 
@@ -43,10 +47,10 @@ class MyDoctorsScreen extends Component {
   }
 
   render () {
-    const userId = this.state.userId
+    // const userId = this.state.userId
     var mydoctors = []
     _.mapValues(this.props.doctors, function (doc) {
-      if (filterUsers(doc.userIds, userId)) {
+      if (doc.isMyDoctor) {
         mydoctors.push(doc)
       }
     })
@@ -61,9 +65,10 @@ class MyDoctorsScreen extends Component {
 function mapStateToProps (state) {
   return {
     doctors: state.doctors.data,
+    queryFlag: state.doctors.queryFlag,
     error: state.doctors.error,
     loading: state.doctors.loading
   }
 }
 
-export default connect(mapStateToProps, { queryMyDoctors })(MyDoctorsScreen)
+export default connect(mapStateToProps, { queryMyDoctors, setQueryFlag })(MyDoctorsScreen)

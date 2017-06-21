@@ -35,6 +35,9 @@ class PatientDetailScreen extends Component {
     if (this.props.user.certificateNo === patient.certificateNo) {
       return console.log('本人不能删除') //
     }
+    const error = await this.props.removePatient(this.props.client, {patientId: this.props.selectId})
+    if (error) return console.log('', error)
+    return window.history.back()
     // todo
     // swal({
     //   text: '确认删除？',

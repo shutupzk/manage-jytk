@@ -1,5 +1,6 @@
 import gql from 'graphql-tag'
 import { REHYDRATE } from 'redux-persist/constants'
+import localforage from 'localforage'
 
 const HOSPITAL_DOCTORS_QUERY = 'hospital/doctors/query'
 const HOSPITAL_DOCTORS_SUCCESS = 'hospital/doctors/success'
@@ -21,22 +22,28 @@ const APPOINTMENT_SEARCH_DOCTORS_FAIL = 'appointment/search/doctors/fail'
 
 const REMOVE_APPOINTMENT_DOCTORS_SEARCH = 'appointment/search/doctors/remove'
 
+const MY_DOCTOR_REMOVE = 'mydoctors/remove'
+const MY_DOCTOR_REMOVE_SUCCESS = 'mydoctors/remove/success'
+const MY_DOCTOR_REMOVE_FAIL = 'mydoctors/remove/fail'
+
+const QUERY_DOCTORS_FLAG = 'doctors/query/flag'
+
 const initState = {
   data: {},
   loading: false,
   error: null,
-  selectId: null
+  selectId: null,
+  queryFlag: ''
 }
 
 export function doctors (state = initState, action = {}) {
   console.log('action', action)
   switch (action.type) {
-    case REHYDRATE:
-      console.log('----REHYDRATE----', 'REHYDRATE_DOCTORS')
-      return Object.assign({}, state, action.payload.doctors, { loading: false, error: null })
+    // case REHYDRATE:
+    //   console.log('----REHYDRATE----', 'REHYDRATE_DOCTORS')
+    //   return Object.assign({}, state, action.payload.doctors, { loading: false, error: null })
     case HOSPITAL_DOCTORS_QUERY:
     case PROFILE_MY_DOCTORS_QUERY:
-    case MY_DOCTOR_ADD:
     case APPOINTMENT_SEARCH_DOCTORS_QUERY:
       return Object.assign({}, state, { loading: true, error: null })
     case PROFILE_MY_DOCTORS_SUCCESS:
@@ -44,15 +51,15 @@ export function doctors (state = initState, action = {}) {
     case MY_DOCTOR_ADD_SUCCESS:
       let doctors = getDoctors(state, action.doctors)
       return Object.assign({}, state, { data: doctors, loading: false, error: null })
-    // case PROFILE_MY_DOCTORS_SUCCESS:
-    //   return Object.assign({}, state, { data: action.doctors, loading: false, error: null })
+    case MY_DOCTOR_REMOVE_SUCCESS:
+      let newDoctors = getNewDoctors(state, action.data)
+      return Object.assign({}, state, { data: newDoctors, loading: false, error: null })
     case APPOINTMENT_SEARCH_DOCTORS_SUCCESS:
       let searchDoctors = getDoctors(state, action.doctors)
       delete searchDoctors.searchDocIds
       return Object.assign({}, state, { data: searchDoctors, searchDocIds: action.doctors.searchDocIds, loading: false, error: null })
     case HOSPITAL_DOCTORS_FAIL:
     case PROFILE_MY_DOCTORS_FAIL:
-    case MY_DOCTOR_ADD_FAIL:
     case APPOINTMENT_SEARCH_DOCTORS_FAIL:
       return Object.assign({}, state, { loading: false, error: action.error })
     case HOSPITAL_DOCTORS_SELECT:
@@ -61,6 +68,8 @@ export function doctors (state = initState, action = {}) {
       return Object.assign({}, state, { selectId: null, loading: false, error: null })
     case REMOVE_APPOINTMENT_DOCTORS_SEARCH:
       return Object.assign({}, state, { searchDocIds: [], loading: false, error: null })
+    case QUERY_DOCTORS_FLAG:
+      return Object.assign({}, state, { queryFlag: action.queryFlag, loading: false, error: null })
     default:
       return state
   }
@@ -100,10 +109,21 @@ const getDoctors = (state, actionDoctors) => {
   return doctors
 }
 
+const getNewDoctors = (state, actionDoctors) => {
+  let doctors = state.data
+  if (doctors[actionDoctors.doctorId]) {
+    doctors[actionDoctors.doctorId].userIds = []
+    doctors[actionDoctors.doctorId].isMyDoctor = false
+  }
+  console.log(doctors)
+  return doctors
+}
+
 const QUERY_DOCTORS = gql`
-  query ($id: ObjID!){
+  query ($id: ObjID!, $userId: ObjID!){
     department(id: $id) {
       id,
+      deptName
       departmentHasDoctors {
         id,
         doctor {
@@ -116,6 +136,16 @@ const QUERY_DOCTORS = gql`
           recommend,
           hot,
           isAppointment
+          userHasDoctors(userId: $userId) {
+            id
+            user{
+              id
+              name
+            }
+            doctor{
+              id
+            }
+          }
         }
       }
     }
@@ -128,18 +158,25 @@ export const queryDoctors = (client, {departmentId}) => async dispatch => {
     type: HOSPITAL_DOCTORS_QUERY
   })
   try {
-    console.log(departmentId)
-    let data = await client.query({ query: QUERY_DOCTORS, variables: {id: departmentId} })
-    if (data.error) {
+    const userId = await localforage.getItem('userId')
+    let data = await client.query({ query: QUERY_DOCTORS, variables: {id: departmentId, userId} })
+    if (data.errors) {
       return dispatch({
         type: HOSPITAL_DOCTORS_FAIL,
-        error: data.error.message
+        error: data.errors[0].message
       })
     }
     let department = data.data.department
     let doctors = {}
     for (let doc of department.departmentHasDoctors) {
-      doctors[doc.doctor.id] = Object.assign({}, doc.doctor, { departmentId: department.id })
+      doctors[doc.doctor.id] = Object.assign({}, doc.doctor, { departmentId: department.id, deptName: department.deptName })
+      for (let user of doc.doctor.userHasDoctors) {
+        if (user.doctor.id === doc.doctor.id) {
+          const userHasDoctorId = user.id
+          const isMyDoctor = true
+          doctors[doc.doctor.id] = Object.assign({}, doc.doctor, { departmentId: department.id, deptName: department.deptName, userHasDoctorId, isMyDoctor })
+        }
+      }
     }
     return dispatch({
       type: HOSPITAL_DOCTORS_SUCCESS,
@@ -168,6 +205,13 @@ export const removeSelectDoctor = () => dispatch => {
     type: HOSPITAL_DOCTORS_SELECT
   })
 }
+// 设置queryFlag医生
+export const setQueryFlag = ({ flag }) => dispatch => {
+  dispatch({
+    type: QUERY_DOCTORS_FLAG,
+    queryFlag: flag
+  })
+}
 
 // 获取我的医生列表
 var QUERY_MY_DOCTORS = gql`
@@ -186,6 +230,12 @@ var QUERY_MY_DOCTORS = gql`
           recommend,
           hot,
           isAppointment
+          departmentHasDoctors {
+            department{
+              id
+              deptName
+            }
+          }
         }
       }
     }
@@ -199,17 +249,27 @@ export const queryMyDoctors = (client, {userId}) => async dispatch => {
   try {
     console.log(userId)
     let data = await client.query({ query: QUERY_MY_DOCTORS, variables: {id: userId} })
-    if (data.error) {
+    if (data.errors) {
       return dispatch({
         type: PROFILE_MY_DOCTORS_FAIL,
-        error: data.error.message
+        error: data.errors[0].message
       })
     }
     let user = data.data.user
+    console.log(user.userHasDoctors)
     let doctors = {}
     for (let doc of user.userHasDoctors) {
-      doctors[doc.doctor.id] = Object.assign({}, doc.doctor, { userHasDoctorId: doc.id, userId: user.id })
+      let deptName = ''
+      for (let dep of doc.doctor.departmentHasDoctors) {
+        if (deptName === '') {
+          deptName = dep.department.deptName
+        } else {
+          deptName = deptName + ',' + dep.department.deptName
+        }
+      }
+      doctors[doc.doctor.id] = Object.assign({}, doc.doctor, { userHasDoctorId: doc.id, isMyDoctor: true, userId, deptName })
     }
+    console.log(doctors)
     return dispatch({
       type: PROFILE_MY_DOCTORS_SUCCESS,
       doctors
@@ -250,29 +310,76 @@ export const createUserHasDoctor = (client, {userId, doctorId}) => async dispatc
   })
   try {
     let data = await client.mutate({ mutation: ADD_MY_DOCTORS, variables: { doctorId, userId } })
-    if (data.error) {
-      return dispatch({
+    if (data.errors) {
+      dispatch({
         type: MY_DOCTOR_ADD_FAIL,
-        error: data.error.message
+        error: data.errors[0].message
       })
+      return {
+        error: data.errors[0].message
+      }
     }
     let userHasDoctor = data.data.createUserHasDoctor
     let doctors = {}
-    doctors[userHasDoctor.doctor.id] = Object.assign({}, userHasDoctor.doctor, { userHasDoctorId: userHasDoctor.id, userId: userHasDoctor.user.id })
-    return dispatch({
+    doctors[userHasDoctor.doctor.id] = Object.assign({}, userHasDoctor.doctor, { userHasDoctorId: userHasDoctor.id, isMyDoctor: true, userId: userHasDoctor.user.id })
+    console.log(doctors)
+    dispatch({
       type: MY_DOCTOR_ADD_SUCCESS,
       doctors
     })
+    return {
+      data: doctors
+    }
   } catch (e) {
     console.log(e)
-    return dispatch({
+    dispatch({
       type: MY_DOCTOR_ADD_FAIL,
       error: '我的医生收藏失败！'
     })
+    return {
+      error: '我的医生收藏失败！'
+    }
   }
 }
-export const removeUserHasDoctor = (client, {userId, doctorId}) => async dispatch => {
-
+// 取消收藏医生
+var REMOVE_MY_DOCTORS = gql`
+  mutation ($id: ObjID!){
+    removeUserHasDoctor(id: $id)
+  }
+`
+export const removeUserHasDoctor = (client, {id, userId, doctorId}) => async dispatch => {
+  dispatch({
+    type: MY_DOCTOR_REMOVE
+  })
+  try {
+    let data = await client.mutate({ mutation: REMOVE_MY_DOCTORS, variables: { id } })
+    if (data.errors) {
+      dispatch({
+        type: MY_DOCTOR_REMOVE_FAIL,
+        error: data.errors[0].message
+      })
+      return {
+        error: data.errors[0].message
+      }
+    }
+    let isRemove = data.data.removeUserHasDoctor
+    dispatch({
+      type: MY_DOCTOR_REMOVE_SUCCESS,
+      data: {id: id, isRemove, userId, doctorId}
+    })
+    return {
+      data: {id: id, isRemove, userId, doctorId}
+    }
+  } catch (e) {
+    console.log(e)
+    dispatch({
+      type: MY_DOCTOR_REMOVE_FAIL,
+      error: '取消医生收藏失败！'
+    })
+    return {
+      error: '取消医生收藏失败！'
+    }
+  }
 }
 // 搜索医生
 const SEARCH_DOCTORS = gql`
@@ -301,10 +408,10 @@ export const searchDoctors = (client, {doctorName}) => async dispatch => {
   })
   try {
     let data = await client.query({ query: SEARCH_DOCTORS, variables: {doctorName} })
-    if (data.error) {
+    if (data.errors) {
       return dispatch({
         type: APPOINTMENT_SEARCH_DOCTORS_FAIL,
-        error: data.error.message
+        error: data.errors[0].message
       })
     }
     let searchDoctors = data.data.searchDoctor

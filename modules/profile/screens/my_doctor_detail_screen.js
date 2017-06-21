@@ -1,13 +1,14 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import localforage from 'localforage'
 // import Link from 'next/link'
-import { signin, queryUser, queryMyDoctors } from '../../../ducks'
+import { signin, queryUser, queryMyDoctors, createUserHasDoctor, removeUserHasDoctor } from '../../../ducks'
 import {DoctorDetail} from '../../hospital/components'
 import { isEmptyObject } from '../../../utils'
 class DoctorDetailScreen extends Component {
   constructor (props) {
     super(props)
-    this.state = {toDetail: false}
+    this.state = {toDetail: false, isMyDoctor: true}
   }
 
   componentWillMount () {
@@ -27,6 +28,23 @@ class DoctorDetailScreen extends Component {
     this.setState({toDetail: false})
   }
 
+  async saveOrCancelMyDoctor (isMyDoc) {
+    let doctorId = this.props.url.query.doctorId
+    var doctor = this.props.doctors[doctorId]
+    const userId = this.props.userId || await localforage.getItem('userId')
+    if (isMyDoc) {
+      const data = await this.props.removeUserHasDoctor(this.props.client, {id: doctor.userHasDoctorId, userId, doctorId: doctor.id})
+      if (!data.error && data.data.isRemove) {
+        this.setState({isMyDoctor: false})
+      }
+    } else {
+      const data = await this.props.createUserHasDoctor(this.props.client, {userId, doctorId: doctor.id})
+      if (!data.error) {
+        this.setState({isMyDoctor: true})
+      }
+    }
+  }
+
   render () {
     if (this.props.error) {
       return (
@@ -40,14 +58,10 @@ class DoctorDetailScreen extends Component {
     }
     const doctorId = this.props.doctorId || this.props.url.query.doctorId
     var doctor = this.props.doctors[doctorId]
-    const userId = this.props.userId
-    let isMyDoc = false
-    if (doctor.userIds.indexOf(userId) > -1) {
-      isMyDoc = true
-    }
+    let isMyDoc = this.state.isMyDoctor
     return (
       <div>
-        <DoctorDetail doctor={doctor} isMyDoc={isMyDoc} />
+        <DoctorDetail doctor={doctor} isMyDoc={isMyDoc} toMyDoctor={() => { this.saveOrCancelMyDoctor(isMyDoc) }} />
       </div>
     )
   }
@@ -63,4 +77,4 @@ function mapStateToProps (state) {
   }
 }
 
-export default connect(mapStateToProps, {signin, queryUser, queryMyDoctors})(DoctorDetailScreen)
+export default connect(mapStateToProps, {signin, queryUser, queryMyDoctors, createUserHasDoctor, removeUserHasDoctor})(DoctorDetailScreen)

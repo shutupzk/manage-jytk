@@ -6,6 +6,8 @@ import DoctorAwards from '../../hospital/components/doctor_awards'
 
 export default (props) => {
   let doctor = props.doctor
+  const isMyDoc = props.isMyDoc
+  const toMyDoctor = props.toMyDoctor
   // let schedules = props.schedules
   // let goDetail = props.goDetail
   let height = window.innerHeight - 100
@@ -13,7 +15,7 @@ export default (props) => {
   return (
     <div className='container' style={{height: height, overflow: 'auto', marginRight: -10, paddingRight: 10, width: width}}>
       <div>
-        <DoctorTitleCard doctor={doctor} />
+        <DoctorTitleCard doctor={doctor} isMyDoc={isMyDoc} toMyDoctor={toMyDoctor} />
         <DoctorIntro doctor={doctor} />
         <DoctorScheduleList {...props} />
         <DoctorDescription doctor={doctor} />

@@ -58,7 +58,7 @@ const isExistSchedule = (doctors, departmentId, schedules, selectedDate) => {
 class AppointmentDoctorListScreen extends Component {
   constructor (props) {
     super(props)
-    this.state = {toDetail: false, isDateTab: false, selectedDate: '', firstDate: moment().format('YYYY-MM-DD')}
+    this.state = {toDetail: false, isDateTab: false, selectedDate: '', firstDate: moment().format('YYYY-MM-DD'), isMyDoctor: false}
   }
   componentWillMount () {
     let doctors = this.props.doctors
@@ -66,28 +66,28 @@ class AppointmentDoctorListScreen extends Component {
     if (!departmentId) {
       this.props.selectDepartment({departmentId: this.props.url.query.departmentId})
     }
-    let schedules = this.props.schedules
-    let selectDoctors = isExistDepartment(doctors, departmentId, schedules)
+    let selectDoctors = isExistDepartment(doctors, departmentId)
     if (isEmptyObject(doctors) || selectDoctors.length === 0) {
       this.queryData()
     } else {
-      this.props.selectDoctor({doctorId: selectDoctors[0].id})
+      // this.props.selectDoctor({doctorId: selectDoctors[0].id})
+      this.querySchedule()
     }
   }
 
-  // async queryData () {
-  //   let { client, doctors, departmentId, queryDoctors, selectDoctor, querySchedules } = this.props
-  //   this.setState({toDetail: true})
-  //   await queryDoctors(client, {departmentId})
-  //   if (!isEmptyObject(doctors)) {
-  //     let selectDoctors = isExistDepartment(doctors, departmentId)
-  //     await selectDoctor({ doctorId: selectDoctors[0] ? selectDoctors[0].id : null })
-  //     if (selectDoctors[0]) {
-  //       await querySchedules(client, { departmentId, doctorId: selectDoctors[0].id })
-  //     }
-  //   }
-  //   this.setState({toDetail: false})
-  // }
+  async querySchedule () {
+    let { client, doctors, departmentId, selectDoctor, querySchedules, schedules } = this.props
+    this.setState({toDetail: true})
+    if (!isEmptyObject(doctors)) {
+      await querySchedules(client, {departmentId})
+      let selectDoctors = isExistSchedule(doctors, departmentId, schedules, this.state.selectedDate)
+      if (selectDoctors.length > 0) {
+        await selectDoctor({ doctorId: selectDoctors[0] ? selectDoctors[0].id : null })
+        this.setState({isMyDoctor: selectDoctors[0].isMyDoctor})
+      }
+    }
+    this.setState({toDetail: false})
+  }
 
   async queryData () {
     let { client, doctors, departmentId, queryDoctors, selectDoctor, querySchedules, schedules } = this.props
@@ -97,8 +97,13 @@ class AppointmentDoctorListScreen extends Component {
       await querySchedules(client, {departmentId})
       let selectDoctors = isExistSchedule(doctors, departmentId, schedules, this.state.selectedDate)
       await selectDoctor({ doctorId: selectDoctors[0] ? selectDoctors[0].id : null })
+      this.setState({isMyDoctor: selectDoctors[0].isMyDoctor})
     }
     this.setState({toDetail: false})
+  }
+
+  toMyDoctor () {
+    console.log('toMyDoctor')
   }
 
   tabRender (selectDoctors, doctor) {
@@ -127,7 +132,7 @@ class AppointmentDoctorListScreen extends Component {
         </div>
         <div id='tab_content' style={{width: '80%', float: 'right'}}>
           <div id={`tab_${doctorId}`} style={{overflow: 'hidden'}}>
-            <DoctorDetail doctor={doctor} schedules={this.props.schedules} departmentId={this.props.departmentId} goDetail={(schedule) => {
+            <DoctorDetail isMyDoc={this.state.isMyDoctor} toMyDoctor={() => { this.toMyDoctor() }} doctor={doctor} schedules={this.props.schedules} departmentId={this.props.departmentId} goDetail={(schedule) => {
               this.props.selectSchedule(schedule.id)
               Router.push('/appointment/schedule_detail?scheduleId=' + schedule.id)
             }} />
@@ -249,6 +254,7 @@ class AppointmentDoctorListScreen extends Component {
     if (this.props.error) {
       return <div>error...</div>
     }
+    console.log(this.props)
     let departmentId = this.props.departmentId
     let doctors = this.props.doctors
     let schedules = this.props.schedules

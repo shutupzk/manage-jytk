@@ -105,11 +105,3 @@ export const OUTPAYMENTS = gql`
     }
   }
 `
-
-// default state
-// data的数据结构 和 action里赋值时的结构要对应
-const initialState = {
-  data: [],
-  loading: false,
-  error: null
-}

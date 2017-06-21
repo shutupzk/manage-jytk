@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import _ from 'lodash'
 import Router from 'next/router'
 
-import {queryDepartments, selectDepartment} from '../../../ducks'
+import {queryDepartments, selectDepartment, setQueryFlag} from '../../../ducks'
 import DepartmentList from '../components/department_list'
 import { replaceSearchKey } from '../../../utils'
 // import Link from 'next/link'
@@ -15,6 +15,7 @@ class DepartmentScreen extends Component {
   }
 
   componentWillMount () {
+    this.props.setQueryFlag({flag: ''})
     this.getDepartments()
   }
 
@@ -66,7 +67,7 @@ function mapStateToProps (state) {
   }
 }
 export default connect(
-  mapStateToProps, {queryDepartments, selectDepartment}
+  mapStateToProps, {queryDepartments, selectDepartment, setQueryFlag}
 )(DepartmentScreen)
 
 function isEmptyObject (obj) {
