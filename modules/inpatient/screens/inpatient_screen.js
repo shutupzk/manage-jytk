@@ -2,12 +2,14 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import localforage from 'localforage'
 import Router from 'next/router'
+import _ from 'lodash'
 
 import {
   queryPatients,
   queryInpatient,
   selectInpatient,
-  selectInpatientRecord
+  selectInpatientRecord,
+  queryDeposits
  } from '../../../ducks'
 import { judge } from '../../../utils'
 class InpatientScreen extends Component {
@@ -59,6 +61,7 @@ class InpatientScreen extends Component {
   }
   queryInpatient (patientId) {
     this.props.queryInpatient(this.props.client, {patientId})
+    this.props.queryDeposits(this.props.client, {patientId})
   }
   filterRecord (inpatientRecordArray, selectInpatientId) {
     let inpatientRecord = inpatientRecordArray.filter((inpatientRecord) => {
@@ -68,6 +71,41 @@ class InpatientScreen extends Component {
       return false
     })
     return inpatientRecord[0]
+  }
+
+  renderPatientList () {
+    const patients = this.props.patientsData
+    let patientArr = []
+    _.mapKeys(patients, (patient) => {
+      patientArr.push(patient)
+    })
+    return (
+      <div style={{padding: 10, overflow: 'hidden', backgroundColor: '#fff', marginBottom: 15}}>
+        <div style={{border: '1px solid #ccc', display: 'flex'}}>
+          <select style={{flex: 11, height: 30, padding: 5, border: 'none', backgroundColor: '#fff'}}
+            ref='patientSelect'
+            onChange={(e) => {
+              console.log(e.target.value)
+              this.props.selectInpatient(e.target.value)
+            }}
+          >{
+            patientArr.map((patient) => {
+              return (
+                <option key={patient.id} style={{textAlign: 'center', font: 15}} value={patient.id}>
+                  {patient.name}
+                </option>
+              )
+            })
+          }
+            <option value='58eb7c94c77c0857c9dc5b1e'>查康</option>
+          </select>
+          {/*<img onClick={() => {
+            const select = this.refs.patientSelect
+            select.click()
+          }} style={{flex: 1, float: 'right', width: 8, height: 15, padding: 8}} src='/static/icons/down.png' />*/}
+        </div>
+      </div>
+    )
   }
 
   render () {
@@ -89,6 +127,7 @@ class InpatientScreen extends Component {
     if (inpatientRecordArray && inpatientRecordArray.length > 0 && this.filterRecord(inpatientRecordArray, selectInpatientId)) {
       return (
         <div>
+          {this.renderPatientList()}
           <div>
             {topView(patientsData[selectInpatientId], this.filterRecord(inpatientRecordArray, selectInpatientId), patientsData, this.props)}
             {middleList(this.filterRecord(inpatientRecordArray, selectInpatientId), this.props)}
@@ -148,7 +187,10 @@ class InpatientScreen extends Component {
         </div>
       )
     } else {
-      return (<div>patients is null</div>)
+      return (<div>
+        {this.renderPatientList()}
+        <div>没有住院信息</div>
+      </div>)
     }
   }
 }
@@ -283,13 +325,6 @@ const buttomList = (inpatientRecord, props, id) => {
   ]
   const array2 = [
     {
-      title: '住院须知',
-      icon: 'flight-takeoff',
-      navKey: ''
-    }
-  ]
-  const array3 = [
-    {
       title: '入院信息登记',
       icon: 'flight-takeoff',
       navKey: 'info_entry'
@@ -307,14 +342,14 @@ const buttomList = (inpatientRecord, props, id) => {
   ]
   let array = []
   if (status) {
-    array = array3
+    array = array2
   } else {
     array = array1
   }
   return (
     <div>
       {
-        array.map((item, i) => {
+        array2.map((item, i) => {
           return (
             <div style={{padding: 15, marginBottom: 1, backgroundColor: '#ffffff'}} key={i} onClick={() => {
               if (item.title === '一日清单') {
@@ -332,6 +367,7 @@ const buttomList = (inpatientRecord, props, id) => {
 }
 
 function mapStateToProps (state) {
+  console.log(state)
   return {
     token: state.user.data.token,
     userId: state.user.data.id,
@@ -348,6 +384,7 @@ export default connect(
     queryPatients,
     queryInpatient,
     selectInpatient,
-    selectInpatientRecord
+    selectInpatientRecord,
+    queryDeposits
   }
 )(InpatientScreen)

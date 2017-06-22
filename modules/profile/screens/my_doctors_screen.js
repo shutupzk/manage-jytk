@@ -48,8 +48,12 @@ class MyDoctorsScreen extends Component {
 
   render () {
     // const userId = this.state.userId
+    if (this.props.loading) {
+      return <div>loading...</div>
+    }
     var mydoctors = []
     _.mapValues(this.props.doctors, function (doc) {
+      console.log(doc)
       if (doc.isMyDoctor) {
         mydoctors.push(doc)
       }

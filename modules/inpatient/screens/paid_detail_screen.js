@@ -1,14 +1,16 @@
 import React, { Component } from 'react'
+import {connect} from 'react-redux'
 
 class PaidDetailScreen extends Component {
   render () {
+    const deposit = this.props.deposits[this.props.selectDepositId]
     const list = [
-      {key: '凭证单号', value: '383221231233123'},
-      {key: '缴费时间', value: '8月15日 12:00'},
-      {key: '支付方式', value: '支付宝'},
-      {key: '住院号', value: '1009660'},
-      {key: '患者姓名', value: '张三'},
-      {key: '充值金额', value: '¥0.02'}
+      {key: '凭证单号', value: deposit.tradeNo},
+      {key: '缴费时间', value: deposit.date},
+      {key: '支付方式', value: deposit.payWay},
+      {key: '住院号', value: deposit.inpatientNo},
+      {key: '患者姓名', value: deposit.patientName},
+      {key: '充值金额', value: '￥' + deposit.charge}
     ]
     return (
       <div>
@@ -18,7 +20,6 @@ class PaidDetailScreen extends Component {
               <div
                 style={{backgroundColor: '#ffffff', marginBottom: 1, padding: 10}}
                 key={i}
-                onPress={() => {}}
               >
                 <div>{title(item, i)}</div>
               </div>
@@ -41,4 +42,17 @@ const title = (item) => {
   )
 }
 
-export default PaidDetailScreen
+function mapStateToProps (state) {
+  return {
+    // userId: state.user.data.id,
+    // inpatientId: state.inpatient.selectInpatientId,
+    // selectInpatientId: state.inpatient.selectInpatientId,
+    // inpatients: state.inpatient.data,
+    deposits: state.deposit.data,
+    selectDepositId: state.deposit.selectId,
+    loading: state.deposit.loading,
+    error: state.deposit.error
+  }
+}
+
+export default connect(mapStateToProps)(PaidDetailScreen)

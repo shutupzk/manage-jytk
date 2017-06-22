@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Router from 'next/router'
-// import swal from 'sweetalert2'
+import _ from 'lodash'
 
 import {
   signin,
@@ -13,12 +13,14 @@ import {
   selectDepartment,
   updateAppointment,
   selectDoctor } from '../../../ducks'
+import { isEmptyObject } from '../../../utils'
 
 class AppointmentListScreen extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      isInit: false
+      isInit: false,
+      selectedId: ''
     }
   }
 
@@ -26,8 +28,21 @@ class AppointmentListScreen extends Component {
     if (!this.props.userId) {
       this.autoSignin()
     } else {
-      this.props.queryAppointments(this.props.client, { userId: this.props.userId })
+      this.queryAppointments()
     }
+  }
+
+  async queryAppointments () {
+    this.setState({isInit: true})
+    await this.props.queryAppointments(this.props.client, { userId: this.props.userId })
+    await this.props.queryPatients(this.props.client, {userId: this.props.userId})
+    if (!isEmptyObject(this.props.patients)) {
+      for (let key in this.props.patients) {
+        this.setState({selectedId: key})
+        break
+      }
+    }
+    this.setState({isInit: false})
   }
 
   async autoSignin () {
@@ -37,8 +52,14 @@ class AppointmentListScreen extends Component {
     const userId = this.props.userId
     if (userId) {
       this.props.queryUser(this.props.client, { userId })
-      this.props.queryPatients(this.props.client, {userId})
       this.props.queryAppointments(this.props.client, { userId: this.props.userId })
+      await this.props.queryPatients(this.props.client, {userId})
+      if (!isEmptyObject(this.props.patients)) {
+        for (let key in this.props.patients) {
+          this.setState({selectedId: key})
+          break
+        }
+      }
     }
     this.setState({isInit: false})
   }
@@ -113,6 +134,39 @@ class AppointmentListScreen extends Component {
     )
   }
 
+  renderPatientList () {
+    const patients = this.props.patients
+    let patientArr = []
+    _.mapKeys(patients, (patient) => {
+      patientArr.push(patient)
+    })
+    return (
+      <div style={{padding: 10, overflow: 'hidden', backgroundColor: '#fff', marginBottom: 15}}>
+        <div style={{border: '1px solid #ccc', display: 'flex'}}>
+          <select style={{flex: 11, height: 30, padding: 5, border: 'none', backgroundColor: '#fff'}}
+            ref='patientSelect'
+            onChange={(e) => {
+              this.setState({selectedId: e.target.value})
+            }}
+          >{
+            patientArr.map((patient) => {
+              return (
+                <option key={patient.id} style={{textAlign: 'center', font: 15}} value={patient.id}>
+                  {patient.name}
+                </option>
+              )
+            })
+          }
+          </select>
+          {/*<img onClick={() => {
+            const select = this.refs.patientSelect
+            select.click()
+          }} style={{flex: 1, float: 'right', width: 8, height: 15, padding: 8}} src='/static/icons/down.png' />*/}
+        </div>
+      </div>
+    )
+  }
+
   render () {
     if (this.props.loading || this.state.isInit) {
       return <div>loading...</div>
@@ -121,11 +175,13 @@ class AppointmentListScreen extends Component {
       return <div>error...</div>
     }
     const { appointments, selectAppointment } = this.props
-    const dataList = getListData(appointments)
+    const dataList = getListData(appointments, this.state.selectedId)
+    console.log(this.state.selectedId)
     // var height = process.browser ? window.innerHeight - 50 : ''
     // var height = window.innerHeight - 50
     return (
       <div>
+        {this.renderPatientList()}
         {
           dataList.map((item) => {
             return (

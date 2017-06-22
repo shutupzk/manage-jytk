@@ -2,15 +2,17 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import localforage from 'localforage'
 import moment from 'moment'
+import _ from 'lodash'
 
-import {queryOutpatient} from '../../../ducks'
+import {queryOutpatient, queryPatients} from '../../../ducks'
 import { isEmptyObject } from '../../../utils'
 class OutpatientScreen extends Component {
   constructor (props) {
     super(props)
     this.state = {
       isInit: false,
-      payStatus: false
+      payStatus: false,
+      selectedId: ''
     }
   }
 
@@ -24,17 +26,57 @@ class OutpatientScreen extends Component {
   async queryOutPatient () {
     var userId = await localforage.getItem('userId')
     await this.props.queryOutpatient(this.props.client, {userId})
+    await this.props.queryPatients(this.props.client, {userId})
+    if (!isEmptyObject(this.props.patients)) {
+      for (let key in this.props.patients) {
+        this.setState({selectedId: key})
+        break
+      }
+    }
     this.setState({isInit: false})
   }
-  getOutPatientArr (outpatient, payStatus) {
+  getOutPatientArr (outpatient, payStatus, patientId) {
     var outpatients = []
     for (var key in outpatient) {
-      if (outpatient[key].payStatus === payStatus) {
+      if (outpatient[key].payStatus === payStatus && outpatient[key].patientId === patientId) {
         outpatients.push(outpatient[key])
       }
     }
     return outpatients
   }
+  renderPatientList () {
+    const patients = this.props.patients
+    let patientArr = []
+    _.mapKeys(patients, (patient) => {
+      patientArr.push(patient)
+    })
+    return (
+      <div style={{padding: 10, overflow: 'hidden', backgroundColor: '#fff', marginBottom: 15}}>
+        <div style={{border: '1px solid #ccc', display: 'flex'}}>
+          <select style={{flex: 11, height: 30, padding: 5, border: 'none', backgroundColor: '#fff'}}
+            ref='patientSelect'
+            onChange={(e) => {
+              this.setState({selectedId: e.target.value})
+            }}
+          >{
+            patientArr.map((patient) => {
+              return (
+                <option key={patient.id} style={{textAlign: 'center', font: 15}} value={patient.id}>
+                  {patient.name}
+                </option>
+              )
+            })
+          }
+          </select>
+          {/*<img onClick={() => {
+            const select = this.refs.patientSelect
+            select.click()
+          }} style={{flex: 1, float: 'right', width: 8, height: 15, padding: 8}} src='/static/icons/down.png' />*/}
+        </div>
+      </div>
+    )
+  }
+
   render () {
     if (this.props.loading || this.state.isInit) {
       return (<div>loading...</div>)
@@ -42,9 +84,10 @@ class OutpatientScreen extends Component {
     if (this.props.error) {
       return (<div>error...</div>)
     }
-    var outpatients = this.getOutPatientArr(this.props.outpatient, this.state.payStatus)
+    var outpatients = this.getOutPatientArr(this.props.outpatient, this.state.payStatus, this.state.selectedId)
     return (
       <div>
+        {this.renderPatientList()}
         <div style={{display: 'flex', border: 'solid 1px #eeeeee', height: '20px', backgroundColor: '#ffffff', padding: 10}}>
           <div style={{width: '50%', textAlign: 'center'}} onClick={() => { this.setState({payStatus: false}) }}>未缴费</div>
           <div style={{width: '50%', textAlign: 'center'}} onClick={() => { this.setState({payStatus: true}) }}>已缴费</div>
@@ -124,9 +167,10 @@ class OutpatientScreen extends Component {
 function mapStateToProps (state) {
   return {
     outpatient: state.outpatient.data,
-    loading: state.outpatient.loading,
-    error: state.outpatient.error
+    patients: state.patients.data,
+    loading: state.outpatient.loading || state.patients.loading,
+    error: state.outpatient.error || state.patients.error
   }
 }
 
-export default connect(mapStateToProps, {queryOutpatient})(OutpatientScreen)
+export default connect(mapStateToProps, {queryOutpatient, queryPatients})(OutpatientScreen)

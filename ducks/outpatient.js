@@ -41,6 +41,7 @@ export const queryOutpatient = (client, { userId }) => async dispatch => {
     let array = {}
     for (let patient of patients) {
       let name = patient.name
+      let patientId = patient.id
       for (let card of patient.patientCards) {
         if (card.appointments.length > 0) {
           for (let appoint of card.appointments) {
@@ -50,6 +51,7 @@ export const queryOutpatient = (client, { userId }) => async dispatch => {
               outpatient.department = appoint.visitSchedule.department
               outpatient.doctor = appoint.visitSchedule.doctor
               outpatient.patientName = name
+              outpatient.patientId = patientId
               let outpatient2 = Object.assign({}, appoint.outPaymentTotal, outpatient)
               // outpatient.outPaymentTotal = appoint.outPaymentTotal
               array[appoint.outPaymentTotal.id] = outpatient2

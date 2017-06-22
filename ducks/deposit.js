@@ -44,12 +44,15 @@ const DEPOSITES = gql`
       id
       name
       inpatientCards {
+        id
+        inpatientNo
         depositRecodes{
           id
           charge
           date
           payWay
           tradeNo
+          createdAt
         }
       }
     }
@@ -62,7 +65,7 @@ export const queryDeposits = (client, {patientId}) => async dispatch => {
     type: INPATEINT_DEPOSIT_QUERY
   })
   try {
-    let data = await client.query({ query: DEPOSITES, variables: {id: '58eb7c94c77c0857c9dc5b1e'} }) // 58eb7c94c77c0857c9dc5b1e
+    let data = await client.query({ query: DEPOSITES, variables: {id: patientId} }) // 58eb7c94c77c0857c9dc5b1e
     if (data.error) {
       return dispatch({
         type: INPATEINT_DEPOSIT_FAIL,
@@ -70,12 +73,13 @@ export const queryDeposits = (client, {patientId}) => async dispatch => {
       })
     }
     let inpatientCards = data.data.patient.inpatientCards
-    let patientId = data.data.patient.id
+    // let patientId = data.data.patient.id
     let patientName = data.data.patient.name
     let json = {}
     for (let doc of inpatientCards) {
+      let inpatientNo = doc.inpatientNo
       for (let deposit of doc.depositRecodes) {
-        let newDeposit = Object.assign({}, deposit, {patientName, patientId})
+        let newDeposit = Object.assign({}, deposit, {patientName, patientId, inpatientNo})
         json[deposit.id] = newDeposit
       }
     }

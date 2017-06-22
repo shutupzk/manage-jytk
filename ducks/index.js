@@ -11,7 +11,7 @@ import { news, queryNewsGroups, queryNews, selectNews, queryNewsDetail } from '.
 import { examinations, queryExaminations, selectExamination } from './examinations'
 import { laboratories, queryLaboratories, selectLaboratory, queryLaboratoryItems } from './laboratories'
 import { outpatient, queryOutpatient } from './outpatient'
-import { inpatient, queryInpatient, selectInpatient } from './inpatient'
+import { inpatient, queryInpatient, selectInpatient, updateInpatientRecord } from './inpatient'
 import { billitem, queryBillitems, selectBillitem } from './billitem'
 import { dailyfee, queryDailyfee, selectInpatientRecord } from './dailyfee'
 import { questions, queryQuestions } from './questions'
@@ -101,6 +101,7 @@ export {
     queryOutpatient,
     queryInpatient,
     selectInpatient,
+    updateInpatientRecord,
     queryBillitems,
     selectBillitem,
     queryDailyfee,
