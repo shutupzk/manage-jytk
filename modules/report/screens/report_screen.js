@@ -2,11 +2,15 @@ import React, {Component } from 'react'
 import Router from 'next/router'
 import { connect } from 'react-redux'
 import localforage from 'localforage'
+import _ from 'lodash'
+import moment from 'moment'
+// import RangeDemo from '../components/date_rang'
 
 import {
   // signin,
   // queryUser,
   queryPatients,
+  selectPatient,
   queryExaminations,
   selectExamination,
   queryLaboratories,
@@ -18,16 +22,27 @@ class ReportScreen extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      isInit: false
+      isInit: false,
+      selectPatientId: '',
+      maxDate: moment().format('YYYY-MM-DD')
     }
   }
   componentWillMount () {
-    if (isEmptyObject(this.props.patients)) {
-      this.setState({isInit: true})
-      this.queryPatientReports()
-    } else {
-      this.setState({isInit: true})
-      this.queryReport()
+    // if (isEmptyObject(this.props.patients)) {
+    //   this.setState({isInit: true})
+    //   this.queryPatientReports()
+    // } else {
+    //   this.setState({isInit: true})
+    //   this.queryReport()
+    // }
+    this.queryPatient(this.props)
+  }
+  componentWillReceiveProps (nextProps) {
+    if (!isEmptyObject(nextProps.patients) && isEmptyObject(nextProps.laboratories) && !nextProps.selectPatientId) {
+      this.queryPatient(nextProps)
+    } else if (this.state.selectPatientId !== nextProps.selectPatientId) {
+      this.queryReport(nextProps.selectPatientId)
+      this.setState({selectPatientId: nextProps.selectPatientId})
     }
   }
   getPatient (patients) {
@@ -38,21 +53,40 @@ class ReportScreen extends Component {
     }
     return patient
   }
-  async queryReport () {
-    let patient = this.getPatient(this.props.patients)
-    let patientId = patient.id
+
+  selectPatient (patientId) {
+    this.props.selectPatient({patientId})
+  }
+
+  queryReport (patientId) {
+    // let patient = this.getPatient(this.props.patients)
+    // let patientId = patient.id
     this.props.queryExaminations(this.props.client, {patientId})
     this.props.queryLaboratories(this.props.client, {patientId})
-    this.setState({isInit: false})
   }
-  async queryPatientReports () {
+  async queryPatient (props) {
     // const error = await this.props.signin({ username: null, password: null })
     // if (error) return console.log(error)
-    const userId = this.props.userId || await localforage.getItem('userId')
-    if (userId) {
-      // this.props.queryUser(this.props.client, { userId })
-      await this.props.queryPatients(this.props.client, {userId})
-      this.queryReport()
+    // const userId = this.props.userId || await localforage.getItem('userId')
+    // if (userId) {
+    //   // this.props.queryUser(this.props.client, { userId })
+    //   await this.props.queryPatients(this.props.client, {userId})
+    //   this.queryReport()
+    // }
+    const patients = props.patients
+    if (isEmptyObject(patients)) {
+      var userId = await localforage.getItem('userId')
+      props.queryPatients(props.client, {userId})
+    } else {
+      let array = []
+      for (let i in patients) {
+        if (patients[i] && patients[i].id) {
+          array.push(patients[i])
+        }
+      }
+      if (array.length > 0) {
+        this.selectPatient(array[0].id)
+      }
     }
   }
   renderExamination () {
@@ -100,7 +134,37 @@ class ReportScreen extends Component {
       return <div>no data</div>
     }
   }
-
+  renderPatientList () {
+    const patients = this.props.patients
+    let patientArr = []
+    _.mapKeys(patients, (patient) => {
+      patientArr.push(patient)
+    })
+    return (
+      <div style={{padding: 10, overflow: 'hidden', backgroundColor: '#fff', marginBottom: 15}}>
+        <div style={{border: '1px solid #ccc', display: 'flex'}}>
+          <select style={{flex: 11, height: 30, padding: 5, border: 'none', backgroundColor: '#fff'}}
+            ref='patientSelect'
+            onChange={(e) => {
+              this.props.selectPatient({patientId: e.target.value})
+            }}
+          >{
+            patientArr.map((patient) => {
+              return (
+                <option key={patient.id} style={{textAlign: 'center', font: 15}} value={patient.id}>
+                  {patient.name}
+                </option>
+              )
+            })
+          }
+          </select>
+        </div>
+        <div style={{marginTop: 10, display: 'flex'}}>
+          <input type='date' style={{border: '1px solid #ccc', flex: 6}} name='startDate' max={this.state.maxDate} /><span style={{flex: 1, padding: 5, textAlign: 'center'}}> - </span><input type='date' style={{border: '1px solid #ccc', flex: 6}} name='endDate' max={this.state.maxDate} />
+        </div>
+      </div>
+    )
+  }
   renderLaboratory () {
     let laboratories = this.props.laboratories
     if (!isEmptyObject(laboratories)) {
@@ -158,6 +222,8 @@ class ReportScreen extends Component {
     return (
       <div>
         <div style={{width: '100%'}}>
+          {this.renderPatientList()}
+          {/*<RangeDemo />*/}
           {
            this.renderLaboratory()
           }
@@ -213,6 +279,7 @@ class ReportScreen extends Component {
 function mapStateToProps (state) {
   return {
     patients: state.patients.data,
+    selectPatientId: state.patients.selectId,
     examinations: state.examinations.data,
     laboratories: state.laboratories.data,
     examinationLoading: state.examinations.loading,
@@ -226,6 +293,7 @@ export default connect(mapStateToProps, {
   // signin,
   // queryUser,
   queryPatients,
+  selectPatient,
   queryExaminations,
   selectExamination,
   queryLaboratories,

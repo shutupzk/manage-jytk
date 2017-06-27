@@ -138,13 +138,13 @@ const bottomSetInfo = (inpatientRecord, props) => {
           <div key={i} style={{display: 'flex', backgroundColor: '#ffffff', marginBottom: 1}}>
             <div style={{flex: 3, padding: '10px 10px 10px 15px'}}>{item.key}</div>
             <div style={{flex: 8, paddingRight: 15, alignItems: 'right'}}>{item.isEdit
-              ? <select style={{textAlign: 'right', height: 35, width: '96%'}} ref={item.name} defaultValue={item.value || ''}>
+              ? <select style={{textAlign: 'right', height: 35, width: '100%'}} ref={item.name} defaultValue={item.value || ''}>
                 {item.options.map((item2) => {
                   return (
                     <option key={item2.id} value={item2.name}>{item2.name}</option>
                   )
                 })}
-              </select> : <input defaultValue={item.value} style={{textAlign: 'right', height: 30, width: '100%'}} ref={item.name} />}{item.isEdit ? '>' : ''}</div>
+              </select> : <input defaultValue={item.value} style={{textAlign: 'right', height: 30, width: '100%'}} ref={item.name} />}</div>
           </div>
         )
       })

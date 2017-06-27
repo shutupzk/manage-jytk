@@ -126,11 +126,11 @@ class PatientAddScreen extends Component {
               </div>
             </div>
           </div> */}
-          <div className='item' key={'carteVital'}>
+          {/*<div className='item' key={'carteVital'}>
             <span className='textLeft'> 医保卡号 </span>
             <input placeholder={'非医保卡号可不填写'} className='textInput itemViewRight'
               onChange={(e) => this.setState({ carteVital: e.target.value })} />
-          </div>
+          </div>*/}
           <div style={{marginTop: 20}}>
             <div className='item'>
               <span className='textLeft'>设为默认就诊人</span>

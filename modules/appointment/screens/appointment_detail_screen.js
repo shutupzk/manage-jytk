@@ -92,7 +92,9 @@ class AppointmentDetailScreen extends Component {
     selectDepartment({departmentId})
     selectDoctor({doctorId})
   }
-
+  gotoPay () {
+    Router.push('/appointment/select_pay_way')
+  }
   render () {
     if (this.state.isInit || this.props.loading) {
       return (<div>loading...</div>)
@@ -104,7 +106,7 @@ class AppointmentDetailScreen extends Component {
     const appointment = appointments[appointmentId]
     const patient = patients[appointment.patientId]
     let buttonColor = '#FFFFFF'
-    let status = '待取号'
+    let status = '预约中'
     let statusStyle = 'unCancelText'
     let buttonText = '取消预约'
     let buttonTextColor = '#E45252'
@@ -112,6 +114,13 @@ class AppointmentDetailScreen extends Component {
       status = '已取消'
       statusStyle = 'cancelText'
       buttonText = '再次预约'
+      buttonColor = '#3CA0FF'
+      buttonTextColor = '#FFFFFF'
+    }
+    if (appointment.visitStatus === '03') {
+      status = '已缴费'
+      statusStyle = 'cancelText'
+      buttonText = '退号退费'
       buttonColor = '#3CA0FF'
       buttonTextColor = '#FFFFFF'
     }
@@ -186,7 +195,32 @@ class AppointmentDetailScreen extends Component {
 
         </div>
         <div style={{margin: '20px 10px'}}>
-          <button
+          {
+            appointment.visitStatus === '02' ? <button
+              style={{backgroundColor: '#3CA0FF', color: '#fff', width: '100%', display: 'block', padding: 5}}
+              onClick={() => {
+                this.gotoSchedule()
+              }} >再次预约</button>
+            : <div>{
+              appointment.visitStatus === '01'
+                ? <div style={{display: 'flex'}}><button
+                  style={{backgroundColor: '#fff', color: '#E45252', width: '50%', display: 'block', padding: 5}}
+                  onClick={() => {
+                    this.cancelAppointment()
+                  }} >取消挂号</button>
+                  <button
+                    style={{backgroundColor: '#3CA0FF', color: '#fff', width: '50%', display: 'block', padding: 5}}
+                    onClick={() => {
+                      this.gotoPay()
+                    }} >去缴费</button></div>
+                : <button
+                  style={{backgroundColor: '#fff', color: '#E45252', width: '100%', display: 'block', padding: 5}}
+                  onClick={() => {
+                    this.退费()
+                  }} >退号退费</button>
+              }</div>
+          }
+          {/*<button
             style={{backgroundColor: buttonColor, color: buttonTextColor, width: '100%', display: 'block'}}
             onClick={() => {
               if (buttonText === '取消预约') {
@@ -194,7 +228,7 @@ class AppointmentDetailScreen extends Component {
               } else {
                 this.gotoSchedule()
               }
-            }} >{buttonText}</button>
+            }} >{buttonText}</button>*/}
         </div>
         <style jsx>{`
           .detailView {

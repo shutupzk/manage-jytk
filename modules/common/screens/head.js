@@ -1,5 +1,4 @@
 import NextHead from 'next/head'
-import PropTypes from 'prop-types'
 
 const defaultDescription = ''
 const defaultOGURL = ''
@@ -18,18 +17,13 @@ export const Head = (props) => (
     <meta property='og:url' content={props.url || defaultOGURL} />
     <meta property='og:title' content={props.title || ''} />
     <meta property='og:description' content={props.description || defaultDescription} />
-    {/*<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>*/}
-    <link href='/static/styles/swal2.css' rel='stylesheet' type='text/css' />
+    {/*<script src='https://code.jquery.com/jquery-3.2.1.min.js'></script>*/}
+    {/*<link href='/static/styles/swal2.css' rel='stylesheet' type='text/css' />*/}
     {/*<script src='https://maps.googleapis.com/maps/api/js'></script>*/}
     {/*<script type='text/javascript' src='http://api.map.baidu.com/api?v=2.0&ak='></script>*/}
+    {/*<link href='/static/mobiscroll-2.6.2/css/mobiscroll.custom-2.6.2.min.css' rel='stylesheet' type='text/css' />*/}
+    {/*<script src='/static/mobiscroll-2.6.2/js/mobiscroll.custom-2.6.2.min.js' type='text/javascript'></script>*/}
   </NextHead>
 )
-
-Head.propTypes = {
-  title: PropTypes.string,
-  description: PropTypes.string,
-  url: PropTypes.string
-  // ogImage: string
-}
 
 export default Head

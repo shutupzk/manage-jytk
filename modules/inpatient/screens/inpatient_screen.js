@@ -97,7 +97,6 @@ class InpatientScreen extends Component {
               )
             })
           }
-            <option value='58eb7c94c77c0857c9dc5b1e'>查康</option>
           </select>
           {/*<img onClick={() => {
             const select = this.refs.patientSelect

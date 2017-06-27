@@ -11,8 +11,9 @@ import { queryPatients, removePatient, updatePatient, updatePatientDefault } fro
 class PatientDetailScreen extends Component {
   constructor (props) {
     super(props)
-    this.state = {}
-    this.delPatient = this.delPatient.bind(this)
+    this.state = {
+      isEdit: false
+    }
   }
   componentWillMount () {
     if (isEmptyObject(this.props.patients)) {
@@ -26,6 +27,10 @@ class PatientDetailScreen extends Component {
       this.setState({query: true})
       this.props.queryPatients(this.props.client, { userId })
     }
+  }
+
+  updatePatient () {
+    this.setState({isEdit: false})
   }
 
   // 删除就诊人
@@ -54,11 +59,26 @@ class PatientDetailScreen extends Component {
     return (
       <div>
         {detailList(this.props, this.bindCard)}
-        <button
-          className='blockPrimaryBtn'
-          style={{backgroundColor: '#FFFFFF', color: '#E45252', display: 'block', width: '100%', marginTop: 20}}
-          onClick={() => this.delPatient(this.props)}
-          >删除就诊人</button>
+        {this.state.isEdit
+        ? <div style={{display: 'flex', bottom: 0, position: 'fixed', width: '100%'}}>
+          <button
+            className=''
+            style={{backgroundColor: '#3CA0FF', color: '#ffffff', flex: 1, marginTop: 20, height: 40, fontSize: 15}}
+            onClick={() => { this.updatePatient(this.props) }}
+            >保存就诊人</button>
+        </div>
+        : <div style={{display: 'flex', bottom: 0, position: 'fixed', width: '100%'}}>
+          <button
+            className=''
+            style={{backgroundColor: '#3CA0FF', color: '#ffffff', flex: 1, marginTop: 20, height: 40, fontSize: 15}}
+            onClick={() => { this.setState({isEdit: true}) }}
+            >编辑就诊人</button>
+          <button
+            className=''
+            style={{backgroundColor: '#FFFFFF', color: '#E45252', flex: 1, marginTop: 20, height: 40, fontSize: 15}}
+            onClick={() => { this.delPatient(this.props) }}
+            >删除就诊人</button>
+        </div>}
         {/* <Popup ref={popup => { this.popup = popup }} /> */}
         <style jsx global>{`
           .list {

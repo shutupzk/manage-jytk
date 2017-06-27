@@ -178,11 +178,13 @@ const calendar = (props, state, calendar) => {
   return (
     <div
       onClick={() => {
-        calendar.refs.calendar.startModal()
+        {/*calendar.refs.calendar.startModal()*/}
+        calendar.refs.calendar.click()
+        console.log(calendar.refs.calendar.value)
       }}>
       <div className={'calendar'}>
         <span style={{padding: '0px 10px'}}>📅</span>
-        <div style={{color: '#ffffff', fontSize: 15}}>{state.date}</div>
+        <div style={{color: '#ffffff', fontSize: 15}}><input id='date' type='date' ref='calendar' value={state.date} onChange={(e) => { calendar.setState({date: e.target.value})}} /></div>
       </div>
     </div>
 

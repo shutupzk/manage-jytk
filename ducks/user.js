@@ -20,6 +20,10 @@ const PROFILE_USER_UPDATEPASSWORD = 'profile/user/updatepassword'
 const PROFILE_USER_UPDATEPASSWORD_SUCCESS = 'profile/user/updatepassword/success'
 const PROFILE_USER_UPDATEPASSWORD_FAIL = 'profile/user/updatepassword/fail'
 
+const PROFILE_USERINFO_UPDATE = 'profile/userInfo/update'
+const PROFILE_USERINFO_UPDATE_SUCCESS = 'profile/userInfo/update/success'
+const PROFILE_USERINFO_UPDATE_FAIL = 'profile/userInfo/update/fail'
+
 const initState = {
   data: {
     token: null,

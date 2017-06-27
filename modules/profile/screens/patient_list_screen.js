@@ -40,11 +40,11 @@ class PatientListScreen extends Component {
     }
     var height = process.browser ? window.innerHeight - 100 : ''
     return (
-      <div className=''>
+      <div>
         <div style={{height: height, overflow: 'auto'}}>
           <PatientList patients={this.props.patients} gotoDetail={(patientId) => { this.gotoDetail(patientId) }} />
         </div>
-        <button className='blockPrimaryBtn' style={{width: '90%', display: 'block', bottom: 20, position: 'absolute'}} onClick={() => Router.push('/profile/patient_add')}>
+        <button className='blockPrimaryBtn' style={{width: '100%', display: 'block', bottom: 20, position: 'absolute'}} onClick={() => Router.push('/profile/patient_add')}>
           <span >添加</span>
         </button>
       </div>

@@ -91,13 +91,22 @@ class AppointmentListScreen extends Component {
     Router.push('/appointment/doctor_list')
   }
 
+  gotoPay () {
+    Router.push('/appointment/select_pay_way')
+  }
+
   ItemView (appointment) {
-    let status = '待取号'
+    let status = '预约中'
     let statusStyle = 'unCancelText'
     let buttonText = '取消预约'
     if (appointment.visitStatus === '02') {
       status = '已取消'
       statusStyle = 'cancelText'
+      buttonText = '再次预约'
+    }
+    if (appointment.visitStatus === '03') {
+      status = '已缴费'
+      statusStyle = 'unCancelText'
       buttonText = '再次预约'
     }
     return (
@@ -118,17 +127,37 @@ class AppointmentListScreen extends Component {
           <div className='clearfix'>&nbsp;</div>
         </div>
         <div className={'itemBottomView'}>
-          <button
-            style={{float: 'right'}}
-            onClick={(e) => {
-              e.stopPropagation()
-              if (status === '已取消') {
-                this.gotoSchedule(appointment)
-              } else {
-                this.cancelAppointment(appointment)
-              }
-            }}
-            >{buttonText}</button>
+          <div style={{float: 'right'}}>
+            {
+              appointment.visitStatus === '02' ? <button
+                style={{backgroundColor: '#fff', color: '#B4B4B4', width: '70px', display: 'block', border: 'solid 1px #ddd'}}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  this.gotoSchedule()
+                }} >再次预约</button>
+              : <div>{
+                appointment.visitStatus === '01'
+                  ? <div style={{display: 'flex'}}><button
+                    style={{backgroundColor: '#fff', color: '#B4B4B4', width: '70px', display: 'block', border: 'solid 1px #ddd', marginRight: 15}}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      this.cancelAppointment()
+                    }} >取消挂号</button>
+                    <button
+                      style={{backgroundColor: '#fff', color: '#0087F4', width: '70px', display: 'block', border: 'solid 1px #ddd'}}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        this.gotoPay()
+                      }} >去缴费</button></div>
+                  : <button
+                    style={{backgroundColor: '#fff', color: '#B4B4B4', width: '70px', display: 'block', border: 'solid 1px #ddd'}}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      this.退费()
+                    }} >退号退费</button>
+                }</div>
+            }
+          </div>
         </div>
       </div>
     )
