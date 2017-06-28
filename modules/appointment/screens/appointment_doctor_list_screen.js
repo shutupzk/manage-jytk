@@ -3,10 +3,11 @@ import { connect } from 'react-redux'
 import _ from 'lodash'
 import moment from 'moment'
 import Router from 'next/router'
+import localforage from 'localforage'
 
 import DoctorDetail from '../components/doctor_detail'
 import { isEmptyObject } from '../../../utils'
-import { queryDoctors, selectDoctor, selectDepartment, removeSelectDoctor, querySchedules, selectSchedule } from '../../../ducks'
+import { queryDoctors, selectDoctor, selectDepartment, removeSelectDoctor, querySchedules, selectSchedule, createUserHasDoctor, removeUserHasDoctor } from '../../../ducks'
 
 const filterDepartments = (departmentIds, departmentId) => {
   let ids = departmentIds.filter((id) => {
@@ -76,10 +77,12 @@ class AppointmentDoctorListScreen extends Component {
   }
 
   async querySchedule () {
-    let { client, doctors, departmentId, selectDoctor, querySchedules, schedules } = this.props
+    let { client, url, doctors, selectDoctor, querySchedules } = this.props
+    const departmentId = this.props.departmentId || url.query.departmentId
     this.setState({toDetail: true})
     if (!isEmptyObject(doctors)) {
       await querySchedules(client, {departmentId})
+      const schedules = this.props.schedules
       let selectDoctors = isExistSchedule(doctors, departmentId, schedules, this.state.selectedDate)
       if (selectDoctors.length > 0) {
         await selectDoctor({ doctorId: selectDoctors[0] ? selectDoctors[0].id : null })
@@ -90,20 +93,37 @@ class AppointmentDoctorListScreen extends Component {
   }
 
   async queryData () {
-    let { client, doctors, departmentId, queryDoctors, selectDoctor, querySchedules, schedules } = this.props
+    let { client, doctors, url, queryDoctors, selectDoctor, querySchedules } = this.props
+    const departmentId = this.props.departmentId || url.query.departmentId
     this.setState({toDetail: true})
     await queryDoctors(client, {departmentId})
     if (!isEmptyObject(doctors)) {
       await querySchedules(client, {departmentId})
+      const schedules = this.props.schedules
       let selectDoctors = isExistSchedule(doctors, departmentId, schedules, this.state.selectedDate)
-      await selectDoctor({ doctorId: selectDoctors[0] ? selectDoctors[0].id : null })
-      this.setState({isMyDoctor: selectDoctors[0].isMyDoctor})
+      if (selectDoctors.length > 0) {
+        await selectDoctor({ doctorId: selectDoctors[0] ? selectDoctors[0].id : null })
+        this.setState({isMyDoctor: selectDoctors[0].isMyDoctor})
+      }
     }
     this.setState({toDetail: false})
   }
 
-  toMyDoctor () {
-    console.log('toMyDoctor')
+  async saveOrCancelMyDoctor (isMyDoc) {
+    let doctorId = this.props.doctorId
+    var doctor = this.props.doctors[doctorId]
+    var userId = await localforage.getItem('userId')
+    if (isMyDoc) {
+      const data = await this.props.removeUserHasDoctor(this.props.client, {id: doctor.userHasDoctorId, userId, doctorId: doctor.id})
+      if (!data.error && data.data.isRemove) {
+        this.setState({isMyDoctor: false})
+      }
+    } else {
+      const data = await this.props.createUserHasDoctor(this.props.client, {userId, doctorId: doctor.id})
+      if (!data.error) {
+        this.setState({isMyDoctor: true})
+      }
+    }
   }
 
   tabRender (selectDoctors, doctor) {
@@ -113,26 +133,27 @@ class AppointmentDoctorListScreen extends Component {
     }
     var doctorId = doctor.id
     return (
-      <div style={{backgroundColor: '#ffffff', width: '100%'}}>
+      <div style={{width: '100%'}}>
         <div style={{float: 'left', width: '20%'}}>
           <ul id='tab_nav' className={'tab_nav'}>
             {
               selectDoctors.length > 0 ? selectDoctors.map((doc) => {
                 return (
-                  <li className={'tab_nav_li'} key={doc.id} onClick={() => {
+                  <li className={this.props.doctorId === doc.id ? 'tab_nav_li active' : 'tab_nav_li'} key={doc.id} onClick={() => {
                     this.props.selectDoctor({doctorId: doc.id})
+                    this.setState({isMyDoctor: this.props.doctors[doc.id].isMyDoctor})
                     this.props.querySchedules(this.props.client, { departmentId, doctorId: doc.id })
                   }}>
-                    <a className={'tab_nav_a'}>{doc.doctorName}</a>
+                    <a className={'tab_nav_a active'}>{doc.doctorName}</a>
                   </li>
                 )
               }) : ''
             }
           </ul>
         </div>
-        <div id='tab_content' style={{width: '80%', float: 'right'}}>
+        <div id='tab_content' style={{backgroundColor: '#ffffff', width: '80%', float: 'right'}}>
           <div id={`tab_${doctorId}`} style={{overflow: 'hidden'}}>
-            <DoctorDetail isMyDoc={this.state.isMyDoctor} toMyDoctor={() => { this.toMyDoctor() }} doctor={doctor} schedules={this.props.schedules} departmentId={this.props.departmentId} goDetail={(schedule) => {
+            <DoctorDetail isMyDoc={this.state.isMyDoctor} toMyDoctor={() => { this.saveOrCancelMyDoctor(this.state.isMyDoctor) }} doctor={doctor} schedules={this.props.schedules} departmentId={this.props.departmentId} goDetail={(schedule) => {
               this.props.selectSchedule(schedule.id)
               Router.push('/appointment/schedule_detail?scheduleId=' + schedule.id)
             }} />
@@ -220,16 +241,33 @@ class AppointmentDoctorListScreen extends Component {
             let isToday = false
             let todayClass = {
               color: 'inherit',
-              margin: 14,
+              backgroundColor: '#FFF',
+              margin: 5,
+              padding: 5,
+              width: 44,
               textAlign: 'center'
             }
             if (moment().format('YYYY-MM-DD') === moment(date.date).format('YYYY-MM-DD')) {
               todayClass = {
-                color: 'blue',
-                margin: 14,
+                color: '#3CA0FF',
+                backgroundColor: '#FFF',
+                margin: 5,
+                padding: 5,
+                width: 44,
                 textAlign: 'center'
               }
               isToday = true
+            }
+            if (moment(date.date).format('YYYY-MM-DD') === this.state.selectedDate) {
+              todayClass = {
+                color: '#FFF',
+                backgroundColor: '#3CA0FF',
+                borderRadius: 22,
+                margin: 5,
+                padding: 5,
+                width: 44,
+                textAlign: 'center'
+              }
             }
             return <div key={date.date} style={todayClass} onClick={() => { this.setState({selectedDate: moment(date.date).format('YYYY-MM-DD')}) }}>
               <div style={{marginBottom: 5}}>{isToday ? '今天' : weekdayStr}</div>
@@ -268,11 +306,11 @@ class AppointmentDoctorListScreen extends Component {
     }
     return (
       <div className=''>
-        <div style={{display: 'flex', textAlign: 'center', backgroundColor: '#ffffff', paddingTop: '10px', paddingBottom: '10px', marginBottom: 5, borderBottom: 'solid 0.2px #eeeeee'}}>
-          <li style={{textAlign: 'center', width: '50%', float: 'left', height: '25px', fontSize: '16px'}} onClick={() => { this.setState({isDateTab: false, selectedDate: '', firstDate: moment().format('YYYY-MM-DD')}) }}>全部日期</li>
-          <li style={{textAlign: 'center', width: '50%', float: 'right', height: '25px', fontSize: '16px'}} onClick={() => { this.setState({isDateTab: true}) }}>按日期挂号</li>
+        <div style={{display: 'flex', textAlign: 'center', backgroundColor: '#ffffff', marginBottom: 1.5}}>
+          <li style={{textAlign: 'center', width: '50%', float: 'left', height: '25px', fontSize: '16px', padding: 10}} className={this.state.isDateTab ? '' : 'top_nav_active'} onClick={() => { this.setState({isDateTab: false, selectedDate: '', firstDate: moment().format('YYYY-MM-DD')}) }}>全部日期</li>
+          <li style={{textAlign: 'center', width: '50%', float: 'right', height: '25px', fontSize: '16px', padding: 10}} className={this.state.isDateTab ? 'top_nav_active' : ''} onClick={() => { this.setState({isDateTab: true}) }}>按日期挂号</li>
         </div>
-        <div style={{padding: '0px 5px', backgroundColor: '#ffffff'}}>
+        <div style={{padding: '0px 5px', backgroundColor: '#ffffff', marginBottom: 1.5}}>
           {
             this.state.isDateTab ? this.renderDate() : ''
           }
@@ -285,18 +323,24 @@ class AppointmentDoctorListScreen extends Component {
             margin: 0px;
             padding: 0px;
             height: 30px;
-          },
+          }
           .tab_nav_li {
+            padding-top: 5px;
             margin: 0px 0px;
-            border-bottom: 1px solid #999;
-            height: 30px;
+            border-bottom: 1px solid #ddd;
+            height: 25px;
             width: 100%;
             text-align: center;
-            background-color: #FFF
+          }
+          .active {
+            background-color: #FFF;
+            color: #3CA0FF !important;
+          }
+          .top_nav_active {
+            border-bottom: solid 1.5px #3CA0FF
           }
           .tab_nav_a {
-            font: bold 14px/24px "微软雅黑", Verdana, Arial, Helvetica, sans-serif;
-            color: green;
+            color: #A4A4A4;
             text-decoration: none;
           }
         `}</style>
@@ -307,8 +351,8 @@ class AppointmentDoctorListScreen extends Component {
 
 function mapStateToProps (state) {
   return {
-    loading: state.doctors.loading,
-    error: state.doctors.error,
+    loading: state.doctors.loading || state.schedules.loading,
+    error: state.doctors.error || state.schedules.error,
     user: state.user.data,
     userId: state.user.data.id,
     doctors: state.doctors.data,
@@ -318,4 +362,4 @@ function mapStateToProps (state) {
   }
 }
 
-export default connect(mapStateToProps, { queryDoctors, selectDoctor, selectDepartment, removeSelectDoctor, querySchedules, selectSchedule })(AppointmentDoctorListScreen)
+export default connect(mapStateToProps, { queryDoctors, selectDoctor, selectDepartment, removeSelectDoctor, querySchedules, selectSchedule, createUserHasDoctor, removeUserHasDoctor })(AppointmentDoctorListScreen)

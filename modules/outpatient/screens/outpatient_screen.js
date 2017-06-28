@@ -103,7 +103,7 @@ class OutpatientScreen extends Component {
             return (
               <div key={outpatient.id} style={{padding: '10px 20px', backgroundColor: '#ffffff', marginBottom: 10}}>
                 <div>就诊时间:{outpatient.visitSchedule.visitDate} {outpatient.visitSchedule.amPm === 'a' ? '上午' : '下午'}
-                  <span style={{float: 'right'}}>¥{outpatient.chargeTotal}</span>
+                  <span style={{float: 'right'}}>¥{this.props.url.query.key === 'outpatient' ? outpatient.chargeTotal : outpatient.appointmentFee}</span>
                 </div>
                 <div style={{display: 'flex', paddingTop: 5}}>
                   <div>

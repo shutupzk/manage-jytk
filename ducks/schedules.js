@@ -23,7 +23,7 @@ export function schedules (state = initState, action = {}) {
       return Object.assign({}, state, { loading: true, error: null })
     case APPOINTMENT_SCHEDULES_SUCCESS:
     case APPOINTMENT_SCHEDULES_QUERYDETAIL_SUCCESS:
-      return Object.assign({}, state, { data: Object.assign({}, state.data, action.schedules), loading: false, error: null })
+      return Object.assign({}, state, { data: action.schedules, loading: false, error: null })
     case APPOINTMENT_SCHEDULES_FAIL:
     case APPOINTMENT_SCHEDULES_QUERYDETAIL_FAIL:
       return Object.assign({}, state, { loading: false, error: action.error })
@@ -46,6 +46,8 @@ const QUERY_SCHEDULES = gql`
         status
         leftNum
         totalNum
+        clinicCode
+        clinicType
         department {
           id
           deptName
@@ -72,6 +74,8 @@ const QUERY_SCHEDULES2 = gql`
           status
           leftNum
           totalNum
+          clinicCode
+          clinicType
           visitScheduleTimes {
             id
             beginTime
@@ -103,6 +107,7 @@ var schedulesEg = [
     'status': true,
     'leftNum': 25,
     'totalNum': 50,
+    'clinicType': '普通号',
     'visitScheduleTimes': [{
       'beginTime': '8:00',
       'endTime': '9:00',
@@ -110,18 +115,21 @@ var schedulesEg = [
       'totalNum': 20
     },
     {
+      'id': '',
       'beginTime': '9:00',
       'endTime': '10:00',
       'leftNum': 4,
       'totalNum': 20
     },
     {
+      'id': '',
       'beginTime': '10:00',
       'endTime': '11:00',
       'leftNum': 10,
       'totalNum': 20
     },
     {
+      'id': '',
       'beginTime': '11:00',
       'endTime': '12:00',
       'leftNum': 8,
@@ -145,6 +153,7 @@ var schedulesEg = [
     'status': true,
     'leftNum': 0,
     'totalNum': 50,
+    'clinicType': '专家号',
     'visitScheduleTimes': [{
       'beginTime': '13:00',
       'endTime': '14:00',
@@ -152,18 +161,21 @@ var schedulesEg = [
       'totalNum': 20
     },
     {
+      'id': '',
       'beginTime': '14:00',
       'endTime': '15:00',
       'leftNum': 4,
       'totalNum': 20
     },
     {
+      'id': '',
       'beginTime': '15:00',
       'endTime': '16:00',
       'leftNum': 11,
       'totalNum': 20
     },
     {
+      'id': '',
       'beginTime': '16:00',
       'endTime': '17:00',
       'leftNum': 6,
@@ -188,24 +200,28 @@ var schedulesEg = [
     'leftNum': 12,
     'totalNum': 50,
     'visitScheduleTimes': [{
+      'id': '',
       'beginTime': '8:00',
       'endTime': '9:00',
       'leftNum': 12,
       'totalNum': 20
     },
     {
+      'id': '',
       'beginTime': '9:00',
       'endTime': '10:00',
       'leftNum': 4,
       'totalNum': 20
     },
     {
+      'id': '',
       'beginTime': '10:00',
       'endTime': '11:00',
       'leftNum': 10,
       'totalNum': 20
     },
     {
+      'id': '',
       'beginTime': '11:00',
       'endTime': '12:00',
       'leftNum': 8,
@@ -230,18 +246,21 @@ var schedulesEg = [
     'leftNum': 45,
     'totalNum': 50,
     'visitScheduleTimes': [{
+      'id': '',
       'beginTime': '13:00',
       'endTime': '14:00',
       'leftNum': 6,
       'totalNum': 20
     },
     {
+      'id': '',
       'beginTime': '14:00',
       'endTime': '15:00',
       'leftNum': 4,
       'totalNum': 20
     },
     {
+      'id': '',
       'beginTime': '15:00',
       'endTime': '16:00',
       'leftNum': 0,
@@ -420,7 +439,7 @@ var schedulesEg = [
     }
   }
 ]
-// 获取医生排版
+// 获取医生排班
 export const querySchedules2 = (client, { departmentId, doctorId }) => async dispatch => {
   dispatch({
     type: APPOINTMENT_SCHEDULES_QUERY
@@ -502,6 +521,17 @@ const QUERY_SCHEDULE_DETAIL = gql`
       registerFee
       clinicCode
       clinicType
+      status
+      leftNum
+      totalNum
+      visitScheduleTimes {
+        id
+        beginTime
+        endTime
+        leftNum
+        totalNum
+        status
+      }
       department {
         id
         deptName
@@ -513,14 +543,42 @@ const QUERY_SCHEDULE_DETAIL = gql`
     }
   }
 `
-
+const times = [
+  {
+    'beginTime': '13:00',
+    'endTime': '14:00',
+    'leftNum': 12,
+    'totalNum': 20
+  },
+  {
+    'id': '',
+    'beginTime': '14:00',
+    'endTime': '15:00',
+    'leftNum': 4,
+    'totalNum': 20
+  },
+  {
+    'id': '',
+    'beginTime': '15:00',
+    'endTime': '16:00',
+    'leftNum': 11,
+    'totalNum': 20
+  },
+  {
+    'id': '',
+    'beginTime': '16:00',
+    'endTime': '17:00',
+    'leftNum': 6,
+    'totalNum': 10
+  }
+]
 // 获取排版详情
-export const queryScheduleDetail = (client, { doctorId }) => async dispatch => {
+export const queryScheduleDetail = (client, { scheduleId }) => async dispatch => {
   dispatch({
     type: APPOINTMENT_SCHEDULES_QUERYDETAIL
   })
   try {
-    let data = await client.query({ query: QUERY_SCHEDULE_DETAIL, variables: { doctorId } })
+    let data = await client.query({ query: QUERY_SCHEDULE_DETAIL, variables: { scheduleId } })
     if (data.error) {
       return dispatch({
         type: APPOINTMENT_SCHEDULES_QUERYDETAIL_FAIL,
@@ -529,7 +587,7 @@ export const queryScheduleDetail = (client, { doctorId }) => async dispatch => {
     }
     let schedule = data.data.visitSchedule
     let schedules = {}
-    schedules[schedule.id] = schedule
+    schedules[schedule.id] = Object.assign({}, schedule, { visitScheduleTimes: times, departmentId: schedule.department.id, doctorId: schedule.doctor.id })
     dispatch({
       type: APPOINTMENT_SCHEDULES_QUERYDETAIL_SUCCESS,
       schedules

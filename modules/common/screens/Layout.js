@@ -125,7 +125,17 @@ const Layout = (props) => {
         }
 
         {/* lvyinlei end --- */}
-
+        select {
+          -webkit-appearance:none;
+          appearance:none;
+          border:none;
+          padding:0px 10px;
+          display:block;
+          width:100%;
+          -webkit-box-sizing:border-box;
+          box-sizing:border-box;
+          background-color: #FFFFFF;
+        }
         .textInput {
           flex: 3;
           border-bottom: 0px;

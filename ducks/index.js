@@ -1,6 +1,6 @@
 import { hospitals, queryHospitals, queryHospitalBuildings, selectHospital, selectHospitalBuildings, queryHospitalGuides, selectHospitalGuide } from './hospitals'
 import { departments, queryDepartments, queryDepartmentDetail, selectDepartment, searchDepartments, removeSearchDepIds, addDepartmentEvaluate } from './departments'
-import { doctors, queryDoctors, selectDoctor, removeSelectDoctor, queryMyDoctors, createUserHasDoctor, removeUserHasDoctor, searchDoctors, removeSearchDocIds, setQueryFlag } from './doctors'
+import { doctors, queryDoctors, queryDoctorDetail, selectDoctor, removeSelectDoctor, queryMyDoctors, createUserHasDoctor, removeUserHasDoctor, searchDoctors, removeSearchDocIds, setQueryFlag } from './doctors'
 import { doctorEvaluates, addDoctorEvaluate } from './doctor_evaluate'
 import { user, signup, signin, signout, queryUser, updatePassword, savePhone, currentUser } from './user'
 import { patients, queryPatients, addPatient, removePatient, updatePatient, selectPatient, clearPateints, updatePatientDefault } from './patients'
@@ -52,6 +52,7 @@ export {
     removeSearchDepIds,
     addDepartmentEvaluate,
     queryDoctors,
+    queryDoctorDetail,
     selectDoctor,
     removeSelectDoctor,
     queryMyDoctors,

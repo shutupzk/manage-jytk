@@ -216,7 +216,9 @@ class AppointmentListScreen extends Component {
             return (
               <div key={item.id} onClick={() => {
                 selectAppointment({appointmentId: item.id})
-                Router.push('/appointment/appointment_detail?appointmentId=' + item.id)
+                const href = '/appointment/appointment_detail?appointmentId=' + item.id
+                const as = '/appointment/appointment_detail'
+                Router.push(href, as, { shallow: false })
               }}>
                 {this.ItemView(item)}
               </div>

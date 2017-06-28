@@ -5,6 +5,7 @@ import localforage from 'localforage'
 // import swal from 'sweetalert2'
 
 import { signin, queryUser, selectAppointment, queryPatients, queryAppointmentDetail, updateAppointment, selectDepartment, selectDoctor } from '../../../ducks'
+import { isEmptyObject } from '../../../utils'
 
 class AppointmentDetailScreen extends Component {
   constructor (props) {
@@ -25,7 +26,7 @@ class AppointmentDetailScreen extends Component {
   }
 
   async initState () {
-    if (this.props.appointments) {
+    if (isEmptyObject(this.props.appointments)) {
       const appointmentId = this.props.url.query.appointmentId
       this.setState({isInit: true})
       await this.props.queryAppointmentDetail(this.props.client, {appointmentId})

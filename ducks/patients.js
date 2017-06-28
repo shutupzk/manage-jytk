@@ -232,6 +232,7 @@ const UPDATE_PATIENT = gql`
       patientCards {
         id
         patientIdNo
+        visitNo
       }
       inpatientCards {
         id
