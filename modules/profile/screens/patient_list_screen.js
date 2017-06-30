@@ -38,7 +38,7 @@ class PatientListScreen extends Component {
     if (this.props.error) {
       return <div>error</div>
     }
-    var height = process.browser ? window.innerHeight - 100 : ''
+    // var height = process.browser ? window.innerHeight - 100 : ''
     return (
       <div>
         <div>

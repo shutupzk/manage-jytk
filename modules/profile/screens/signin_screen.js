@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import Link from 'next/link'
+import Router from 'next/router'
 
-import { CardWhite, theme } from 'components'
+import { CardWhite, theme, Prompt } from 'components'
 import { signin, queryUser, queryPatients } from '../../../ducks'
 import { connect } from 'react-redux'
 
@@ -9,24 +10,60 @@ class SigninScreen extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      animating: false
+      animating: false,
+      isShow: false,
+      promptContent: ''
     }
   }
   async submit () {
+    let i = 2
     const username = this.state.username
     const password = this.state.password
     if (!username) {
-      console.log('', '请输入正确的账号')
+      this.setState({
+        isShow: true,
+        promptContent: '请输入正确的账号'
+      })
+      this.interval = setInterval(() => {
+        if (i === 0) {
+          clearInterval(this.interval)
+          this.setState({ isShow: false, promptContent: '' })
+        }
+        i--
+      }, 1000)
       return
     }
     if (!password) {
-      console.log('', '请输入密码')
+      this.setState({
+        isShow: true,
+        promptContent: '请输入密码'
+      })
+      this.interval = setInterval(() => {
+        if (i === 0) {
+          clearInterval(this.interval)
+          this.setState({ isShow: false, promptContent: '' })
+        }
+        i--
+      }, 1000)
       return
     }
     this.setState({animating: true})
     const error = await this.props.signin({ username, password })
     this.setState({animating: false})
-    if (error) return console.log('', '用户名或密码错误')
+    if (error) {
+      this.setState({
+        isShow: true,
+        promptContent: '用户名或密码错误'
+      })
+      this.interval = setInterval(() => {
+        if (i === 0) {
+          clearInterval(this.interval)
+          this.setState({ isShow: false, promptContent: '' })
+        }
+        i--
+      }, 1000)
+      return
+    }
     await this.props.queryUser(this.props.client, { userId: this.props.userId })
     await this.props.queryPatients(this.props.client, { userId: this.props.userId })
     // return this.props.navigation.goBack(null)
@@ -47,7 +84,7 @@ class SigninScreen extends Component {
               <input placeholder={'请输入密码'} type='password'
                 onChange={(e) => this.setState({ password: e.target.value })} value={this.state.password} />
             </article>
-            <a><span className='forgetpass'>忘记密码?</span></a>
+            <a onClick={() => { Router.push('/profile/forgot_password') }}><span className='forgetpass'>忘记密码?</span></a>
           </section>
         </div>
         <footer style={{margin: '10px 15px'}}>
@@ -59,6 +96,7 @@ class SigninScreen extends Component {
           </Link>
         </footer>
         <img src={`/static/icons/loginlogo.png`} alt="" className="loginpagelogo" />
+        <Prompt isShow={this.state.isShow}>{this.state.promptContent}</Prompt>
         <style jsx>{`
           .registerbtn{
             margin-top: ${theme.lrmargin};

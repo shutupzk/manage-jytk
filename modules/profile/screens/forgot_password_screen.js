@@ -3,19 +3,17 @@ import React, { Component } from 'react'
 import Router from 'next/router'
 import {theme, Prompt} from 'components'
 
-import { savePhone, sendVerifyCode, checkVerifyCode } from '../../../ducks'
+import { forgotPassword } from '../../../ducks'
 import { connect } from 'react-redux'
 
 /**
  * 修改密码
  */
-class SignupScreen extends Component {
+class ForgotPasswordScreen extends Component {
   constructor (props) {
     super(props)
     this.state = {
       animating: false,
-      phone: '',
-      verCode: '',
       buttonTitle: '获取',
       clickable: false,
       isShow: false,
@@ -24,23 +22,7 @@ class SignupScreen extends Component {
   }
 
   // 发送验证码
-  async sendCode () {
-    let n = 2
-    await this.props.sendVerifyCode(this.props.client, {phone: this.state.phone})
-    if (this.props.error) {
-      this.setState({
-        isShow: true,
-        promptContent: '发送失败'
-      })
-      this.interval = setInterval(() => {
-        if (n === 0) {
-          clearInterval(this.interval)
-          this.setState({ isShow: false, promptContent: '' })
-        }
-        n--
-      }, 1000)
-      return
-    }
+  sendCode () {
     let i = 10
     this.setState({ buttonTitle: `${i}s`, clickable: true })
     this.interval = setInterval(() => {
@@ -54,10 +36,10 @@ class SignupScreen extends Component {
   }
 
   // 提交
-  async submit (props) {
+  submit (props) {
     let i = 2
     const password = this.state.password
-    const code = this.state.verCode
+    const verCode = this.state.verCode
     const phone = this.state.phone
     const repassword = this.state.repassword
     if (!phone) {
@@ -89,10 +71,24 @@ class SignupScreen extends Component {
       }, 1000)
       return
     }
-    if (!code) {
+    if (!verCode) {
       this.setState({
         isShow: true,
-        promptContent: '请输入验证码'
+        promptContent: '手机号格式不正确'
+      })
+      this.interval = setInterval(() => {
+        if (i === 0) {
+          clearInterval(this.interval)
+          this.setState({ isShow: false, promptContent: '' })
+        }
+        i--
+      }, 1000)
+      return console.log('', '请输入验证码')
+    }
+    if (verCode !== '1234') {
+      this.setState({
+        isShow: true,
+        promptContent: '验证码输入错误'
       })
       this.interval = setInterval(() => {
         if (i === 0) {
@@ -103,20 +99,6 @@ class SignupScreen extends Component {
       }, 1000)
       return
     }
-    // if (code !== '1234') {
-    //   this.setState({
-    //     isShow: true,
-    //     promptContent: '验证码输入错误'
-    //   })
-    //   this.interval = setInterval(() => {
-    //     if (i === 0) {
-    //       clearInterval(this.interval)
-    //       this.setState({ isShow: false, promptContent: '' })
-    //     }
-    //     i--
-    //   }, 1000)
-    //   return
-    // }
     if (!password) {
       this.setState({
         isShow: true,
@@ -159,26 +141,8 @@ class SignupScreen extends Component {
       }, 1000)
       return
     }
-    const error = await props.checkVerifyCode(props.client, {phone, code})
-    if (error) {
-      this.setState({
-        isShow: true,
-        promptContent: error
-      })
-      this.interval = setInterval(() => {
-        if (i === 0) {
-          clearInterval(this.interval)
-          this.setState({ isShow: false, promptContent: '' })
-        }
-        i--
-      }, 1000)
-      return
-    }
-    props.savePhone({ phone, password })
-    // const { navigate } = props.navigation
-    // window.location.href = '/signup_compelete'
-    // Router.pushRoute('signup_compelete')
-    Router.push('/signup/signup_compelete')
+    // props.forgotPassword({ phone, password })
+    Router.push('/sigin')
   }
 
   render () {
@@ -214,7 +178,7 @@ class SignupScreen extends Component {
       <footer style={{margin: '10px 15px'}}>
         <button
           className='btnBG btnBGMain loginPageBtnItem'
-          onClick={() => this.submit(this.props)}>下一步</button>
+          onClick={() => this.submit(this.props)}>完成</button>
       </footer>
       {/* <Popup ref={popup => { this.popup = popup }} /> */}
       <Prompt isShow={this.state.isShow}>{this.state.promptContent}</Prompt>
@@ -269,4 +233,4 @@ function mapStateToProps (state) {
   }
 }
 
-export default connect(mapStateToProps, { savePhone, sendVerifyCode, checkVerifyCode })(SignupScreen)
+export default connect(mapStateToProps, { forgotPassword })(ForgotPasswordScreen)

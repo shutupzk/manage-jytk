@@ -51,6 +51,8 @@ export const queryOutpatient = (client, { userId }) => async dispatch => {
               outpatient.department = appoint.visitSchedule.department
               outpatient.doctor = appoint.visitSchedule.doctor
               outpatient.appointmentFee = appoint.appointmentFee
+              outpatient.registerFee = appoint.visitSchedule.registerFee
+              outpatient.treatFee = appoint.visitSchedule.treatFee
               outpatient.patientName = name
               outpatient.patientId = patientId
               let outpatient2 = Object.assign({}, appoint.outPaymentTotal, outpatient)
@@ -89,6 +91,8 @@ export const OUTPAYMENTS = gql`
             visitSchedule {
               visitDate
               amPm
+              registerFee
+              treatFee
               doctor{
                 id
                 doctorName
@@ -99,8 +103,11 @@ export const OUTPAYMENTS = gql`
               }
             }
             outPaymentTotal{
+              id
               chargeTotal
               individualPayment
+              carteVitalPayment
+              carteVitalAcountPayment
               payStatus
             }
           }

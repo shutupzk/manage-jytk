@@ -59,7 +59,13 @@ class PatientDetailScreen extends Component {
     return (
       <div>
         {detailList(this.props, this.bindCard)}
-        {this.state.isEdit
+        <div className='fullWidthFixed'>
+          <button
+            className='fullWidthFixed fullWidthBtn fullWidthBtnBackWhite'
+            onClick={() => { this.delPatient(this.props) }}
+            >删除就诊人</button>
+        </div>
+        {/*{this.state.isEdit
         ? <div className='fullWidthFixed'>
           <button
             className='fullWidthFixed fullWidthBtn fullWidthBtnMain'
@@ -77,7 +83,7 @@ class PatientDetailScreen extends Component {
             style={{width: '50%'}}
             onClick={() => { this.setState({isEdit: true}) }}
             >编辑就诊人</button>
-        </div>}
+        </div>}*/}
         {/* <Popup ref={popup => { this.popup = popup }} /> */}
         <style jsx global>{`
           .list {
@@ -130,13 +136,13 @@ async function changeCheckbox (props, e) {
   }
 }
 
-const relations = {
-  '01': '本人',
-  '02': '家庭成员',
-  '03': '亲戚',
-  '04': '朋友',
-  '05': '其他'
-}
+// const relations = {
+//   '01': '本人',
+//   '02': '家庭成员',
+//   '03': '亲戚',
+//   '04': '朋友',
+//   '05': '其他'
+// }
 
 const detailList = (props) => {
   const patients = props.patients
@@ -145,17 +151,17 @@ const detailList = (props) => {
     return
   }
   const patient = patients[selectId] || {}
-  let relationship = relations[patient.relationship || '01'] || '其他'
+  // let relationship = relations[patient.relationship || '01'] || '其他'
   const array = [
     { key: '姓名', value: patient.name },
+    { key: '身份证号', value: certificateNo(patient.certificateNo) },
     { key: '性别', value: patient.sex === '0' ? '女' : '男' },
     { key: '年龄', value: `${ages(patient.birthday)}岁` },
-    { key: '出生日期', value: patient.birthday },
-    { key: '身份证号', value: certificateNo(patient.certificateNo) },
-    { key: '手机号', value: phone(patient.phone) },
-    { key: '与本人关系', value: relationship },
-    { key: '就诊号', value: patient.patientCards[0].patientIdNo },
-    { key: '医保卡号', value: patient.carteVital }
+    // { key: '出生日期', value: patient.birthday },
+    // { key: '与本人关系', value: relationship },
+    // { key: '就诊号', value: patient.patientCards[0].patientIdNo },
+    // { key: '医保卡号', value: patient.carteVital },
+    { key: '手机号', value: phone(patient.phone) }
   ]
   return (
     <div className='list'>

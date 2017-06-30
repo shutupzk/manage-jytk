@@ -48,14 +48,14 @@ class UserInfoScreen extends Component {
       return <div className=''>loading...</div>
     }
     const patient = getSelfPatient(this.props.patients)
-    let btnText = '编辑信息'
-    if (this.state.isEdit) {
-      btnText = '保存信息'
-    }
+    // let btnText = '编辑信息'
+    // if (this.state.isEdit) {
+    //   btnText = '保存信息'
+    // }
     return (
       <div className=''>
         {detailList(this.props.user, patient, this.props, this.state)}
-        <button className='fullWidthFixed fullWidthBtn fullWidthBtnMain'
+        {/*<button className='fullWidthFixed fullWidthBtn fullWidthBtnMain'
           onClick={() => {
             if (this.state.isEdit) {
               this.updateInfo()
@@ -63,7 +63,7 @@ class UserInfoScreen extends Component {
               this.setState({isEdit: true})
             }
           }}
-        >{btnText}</button>
+        >{btnText}</button>*/}
         <style jsx global>{`
           .list {
             border-top: 0px;

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Router from 'next/router'
 import { updatePassword } from '../../../ducks'
 import { connect } from 'react-redux'
-import {theme} from 'components'
+import {theme, Prompt} from 'components'
 
 /**
  * 修改密码
@@ -11,34 +11,60 @@ class UpdatePasswordScreen extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      animating: false
+      animating: false,
+      isShow: false,
+      promptContent: ''
     }
   }
 
   // 提交
   async submit (props) {
+    let i = 1
     const password = props.user.password
     const oldpassword = this.state.oldpassword
     const newpassword = this.state.newpassword
     const repassword = this.state.repassword
     if (oldpassword !== password) {
-      // return swal({
-      //   text: '原密码错误'
-      //   // type: 'error',
-      //   // width: '260px',
-      //   // confirmButtonText: '知道了',
-      //   // showCloseButton: true,
-      //   // timer: 3000,
-      //   // background: '#fff'
-      // })
-      // swal('Good job!', 'You clicked the button!', 'success')
-      return console.log('原密码错误')
+      this.setState({
+        isShow: true,
+        promptContent: '原密码错误'
+      })
+      this.interval = setInterval(() => {
+        if (i === 0) {
+          clearInterval(this.interval)
+          this.setState({ isShow: false, promptContent: '' })
+        }
+        i--
+      }, 1000)
+      return
     }
     if (!newpassword || newpassword.length < 6) {
-      return console.log('密码不能小于6位')
+      this.setState({
+        isShow: true,
+        promptContent: '密码不能小于6位'
+      })
+      this.interval = setInterval(() => {
+        if (i === 0) {
+          clearInterval(this.interval)
+          this.setState({ isShow: false, promptContent: '' })
+        }
+        i--
+      }, 1000)
+      return
     }
     if (newpassword !== repassword) {
-      return console.log('新密码输入不一致，请重新输入')
+      this.setState({
+        isShow: true,
+        promptContent: '新密码输入不一致，请重新输入'
+      })
+      this.interval = setInterval(() => {
+        if (i === 0) {
+          clearInterval(this.interval)
+          this.setState({ isShow: false, promptContent: '' })
+        }
+        i--
+      }, 1000)
+      return
     }
     this.setState({animating: true})
     const userId = props.userId
@@ -70,6 +96,7 @@ class UpdatePasswordScreen extends Component {
           className='btnBG btnBGMain loginPageBtnItem'
           onClick={() => this.submit(this.props)}>完成</button>
       </footer>
+      <Prompt isShow={this.state.isShow}>{this.state.promptContent}</Prompt>
       <style jsx>{`
         .loginPageText{
           background: #fff;

@@ -5,7 +5,7 @@ import Router from 'next/router'
 import { signup } from '../../../ducks'
 import { connect } from 'react-redux'
 import { getBirthday, getSex } from '../../../utils'
-import {theme} from 'components'
+import {theme, Prompt} from 'components'
 
 /**
  * 修改密码
@@ -16,30 +16,77 @@ class SignupCompletionScreen extends Component {
     this.state = {
       sex: '性别',
       birthday: '出生日期',
-      animating: false
+      animating: false,
+      isShow: false,
+      promptContent: ''
     }
   }
 
   // 提交
   async submit () {
+    let i = 2
     const phone = this.props.user.phone
     const password = this.props.user.password
     const name = this.state.name
     const certificateNo = this.state.certificateNo
     if (!name) {
-      return console.log('', '姓名不能为空')
+      this.setState({
+        isShow: true,
+        promptContent: '姓名不能为空'
+      })
+      this.interval = setInterval(() => {
+        if (i === 0) {
+          clearInterval(this.interval)
+          this.setState({ isShow: false, promptContent: '' })
+        }
+        i--
+      }, 1000)
+      return
     }
     if (!certificateNo) {
-      return console.log('', '身份证号不能为空')
+      this.setState({
+        isShow: true,
+        promptContent: '身份证号不能为空'
+      })
+      this.interval = setInterval(() => {
+        if (i === 0) {
+          clearInterval(this.interval)
+          this.setState({ isShow: false, promptContent: '' })
+        }
+        i--
+      }, 1000)
+      return
     }
     if (certificateNo.length !== 18) {
-      return console.log('', '身份证格式不正确')
+      this.setState({
+        isShow: true,
+        promptContent: '身份证格式不正确'
+      })
+      this.interval = setInterval(() => {
+        if (i === 0) {
+          clearInterval(this.interval)
+          this.setState({ isShow: false, promptContent: '' })
+        }
+        i--
+      }, 1000)
+      return
     }
     this.setState({animating: true})
     const error = await this.props.signup(this.props.client, { phone, password, certificateNo, name })
     this.setState({animating: false})
     if (error) {
-      return console.log('', error + '')
+      this.setState({
+        isShow: true,
+        promptContent: error
+      })
+      this.interval = setInterval(() => {
+        if (i === 0) {
+          clearInterval(this.interval)
+          this.setState({ isShow: false, promptContent: '' })
+        }
+        i--
+      }, 1000)
+      return
     }
     Router.push('/signin')
   }
@@ -88,7 +135,7 @@ class SignupCompletionScreen extends Component {
           title='完成'
           onClick={() => this.submit()}>完成</button>
       </footer>
-      {/* <Popup ref={popup => { this.popup = popup }} /> */}
+      <Prompt isShow={this.state.isShow}>{this.state.promptContent}</Prompt>
       <style jsx>{`
         .loginPageText{
           background: #fff;

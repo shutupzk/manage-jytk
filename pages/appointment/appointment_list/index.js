@@ -4,7 +4,7 @@ import withData from '../../../config/withData'
 import { Layout } from '../../../modules/common'
 
 export default withData((props) => (
-  <Layout title='预约列表'>
+  <Layout title='预约列表' url={props.url}>
     <AppointmentListScreen {...props} />
   </Layout>
 ))

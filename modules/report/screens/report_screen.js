@@ -24,7 +24,9 @@ class ReportScreen extends Component {
     this.state = {
       isInit: false,
       selectPatientId: '',
-      maxDate: moment().format('YYYY-MM-DD')
+      maxDate: moment().format('YYYY-MM-DD'),
+      startDate: undefined,
+      endDate: undefined
     }
   }
   componentWillMount () {
@@ -134,6 +136,34 @@ class ReportScreen extends Component {
       return <div>no data</div>
     }
   }
+  dateRangeFilterLabs (laboratorieData) {
+    console.log(this.state.startDate)
+    let labs = []
+    if (this.state.startDate || this.state.startDate) {
+      for (let lab of laboratorieData) {
+        if (this.state.startDate && this.state.endDate) {
+          if ((new Date(Object.keys(lab)[0]) >= new Date(this.state.startDate)) && (new Date(Object.keys(lab)[0]) <= new Date(this.state.endDate))) {
+            labs.push(lab)
+          }
+        } else {
+          if (this.state.startDate) {
+            console.log(lab)
+            if (new Date(Object.keys(lab)[0]) >= new Date(this.state.startDate)) {
+              labs.push(lab)
+            }
+          }
+          if (this.state.endDate) {
+            if (new Date(Object.keys(lab)[0]) <= new Date(this.state.endDate)) {
+              labs.push(lab)
+            }
+          }
+        }
+      }
+    } else {
+      labs = Object.assign([], laboratorieData)
+    }
+    return labs
+  }
   renderPatientList () {
     const patients = this.props.patients
     let patientArr = []
@@ -160,13 +190,20 @@ class ReportScreen extends Component {
           </select>
         </div>
         <div style={{marginTop: 10, display: 'flex'}}>
-          <input type='date' style={{border: '1px solid #ccc', flex: 6}} name='startDate' max={this.state.maxDate} /><span style={{flex: 1, padding: 5, textAlign: 'center'}}> - </span><input type='date' style={{border: '1px solid #ccc', flex: 6}} name='endDate' max={this.state.maxDate} />
+          <input type='date'
+            onChange={(e) => { this.setState({startDate: e.target.value}) }}
+            style={{border: '1px solid #ccc', flex: 6}} name='startDate' max={this.state.maxDate} />
+          <span style={{flex: 1, padding: 5, textAlign: 'center'}}> - </span>
+          <input type='date'
+            onChange={(e) => { this.setState({endDate: e.target.value}) }}
+            style={{border: '1px solid #ccc', flex: 6}} name='endDate' max={this.state.maxDate} />
         </div>
       </div>
     )
   }
   renderLaboratory () {
-    let laboratories = this.props.laboratories
+    let laboratorieData = this.props.laboratories
+    const laboratories = this.dateRangeFilterLabs(laboratorieData)
     if (!isEmptyObject(laboratories)) {
       return (
         <div>

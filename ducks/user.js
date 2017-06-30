@@ -20,9 +20,17 @@ const PROFILE_USER_UPDATEPASSWORD = 'profile/user/updatepassword'
 const PROFILE_USER_UPDATEPASSWORD_SUCCESS = 'profile/user/updatepassword/success'
 const PROFILE_USER_UPDATEPASSWORD_FAIL = 'profile/user/updatepassword/fail'
 
-const PROFILE_USERINFO_UPDATE = 'profile/userInfo/update'
-const PROFILE_USERINFO_UPDATE_SUCCESS = 'profile/userInfo/update/success'
-const PROFILE_USERINFO_UPDATE_FAIL = 'profile/userInfo/update/fail'
+const PROFILE_FORGOT_PASSWORD = 'profile/forget/password'
+const PROFILE_FORGOT_PASSWORD_SUCCESS = 'profile/forget/password/success'
+const PROFILE_FORGOT_PASSWORD_FAIL = 'profile/forget/password/fail'
+
+const PROFILE_VERIFY_CODE = 'profile/send/verify/code'
+const PROFILE_VERIFY_CODE_SUCCESS = 'profile/send/verify/code/success'
+const PROFILE_VERIFY_CODE_FAIL = 'profile/send/verify/code/fail'
+
+const CHECK_VERIFY_CODE = 'profile/check/verify/code'
+const CHECK_VERIFY_CODE_SUCCESS = 'profile/check/verify/code/success'
+const CHECK_VERIFY_CODE_FAIL = 'profile/check/verify/code/fail'
 
 const initState = {
   data: {
@@ -86,6 +94,14 @@ export function user (state = initState, action = {}) {
         { data: Object.assign({}, state.data, { phone: action.phone, password: action.password }) },
         { loading: false, error: null }
       )
+    case PROFILE_VERIFY_CODE_SUCCESS:
+    case CHECK_VERIFY_CODE_SUCCESS:
+      return Object.assign(
+        {},
+        state,
+        { data: Object.assign({}, state.data, { code: action.code }) },
+        { loading: false, error: null }
+      )
     default:
       return state
   }
@@ -113,12 +129,12 @@ export const signup = (client, { phone, password, certificateNo, name }, callbac
         name: name
       }
     })
-    if (data.error) {
+    if (data.errors) {
       dispatch({
         type: PROFILE_USER_SIGNUP_FAIL,
-        error: data.error.message
+        error: data.errors[0].message
       })
-      return data.data.error
+      return data.errors[0].message
     }
     dispatch({
       type: PROFILE_USER_SIGNUP_SUCCESS
@@ -294,4 +310,113 @@ export const savePhone = ({phone, password}) => dispatch => {
     phone,
     password
   })
+}
+
+const SEND_VERIFY_CODE = gql`
+  mutation($phone: String!){
+    createVerifyCode(input: {phone: $phone}) {
+      id
+      phone
+      verifyCode
+      valid
+      seconds
+      overdue
+    }
+  }
+`
+
+export const sendVerifyCode = (client, {phone}) => async dispatch => {
+  dispatch({
+    type: PROFILE_VERIFY_CODE
+  })
+  try {
+    let data = await client.mutate({
+      mutation: SEND_VERIFY_CODE,
+      variables: { phone }
+    })
+    if (data.errors) {
+      dispatch({
+        type: PROFILE_VERIFY_CODE_FAIL,
+        error: data.errors[0].message
+      })
+      return data.error[0].message
+    }
+    const verifyCode = data.data.createVerifyCode
+    dispatch({
+      type: PROFILE_VERIFY_CODE_SUCCESS,
+      code: verifyCode
+    })
+    return null
+  } catch (e) {
+    dispatch({
+      trype: PROFILE_VERIFY_CODE_FAIL,
+      error: e.message
+    })
+    return e.message
+  }
+}
+
+const CHECKVERIFYCODE = gql`
+  mutation($phone: String!, $code: String!){
+    checkVerifyCode(input: {phone: $phone, code: $code}){
+      id
+      phone
+      verifyCode
+      valid
+      seconds
+      overdue
+    }
+  }
+`
+
+export const checkVerifyCode = (client, {phone, code}) => async dispatch => {
+  dispatch({
+    type: CHECK_VERIFY_CODE
+  })
+  try {
+    let data = await client.mutate({
+      mutation: CHECKVERIFYCODE,
+      variables: { phone, code }
+    })
+    if (data.errors) {
+      dispatch({
+        type: CHECK_VERIFY_CODE_FAIL,
+        error: data.errors[0].message
+      })
+      return data.error[0].message
+    }
+    const verifyCode = data.data.createVerifyCode
+    dispatch({
+      type: CHECK_VERIFY_CODE_SUCCESS,
+      code: verifyCode
+    })
+    if (!verifyCode) {
+      return '验证码错误'
+    }
+    return null
+  } catch (e) {
+    dispatch({
+      trype: CHECK_VERIFY_CODE_FAIL,
+      error: e.message
+    })
+    return e.message
+  }
+}
+
+export const forgotPassword = ({phone, password}) => async dispatch => {
+  dispatch({
+    type: PROFILE_FORGOT_PASSWORD
+  })
+  try {
+    dispatch({
+      type: PROFILE_FORGOT_PASSWORD_SUCCESS,
+      data: phone
+    })
+  } catch (e) {
+    dispatch({
+      type: PROFILE_FORGOT_PASSWORD_FAIL,
+      error: e.message
+    })
+    return e.message
+  }
 }

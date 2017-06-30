@@ -20,7 +20,9 @@ class AppointmentListScreen extends Component {
     super(props)
     this.state = {
       isInit: false,
-      selectedId: ''
+      selectedId: '',
+      startDate: undefined,
+      endDate: undefined
     }
   }
 
@@ -192,6 +194,15 @@ class AppointmentListScreen extends Component {
             select.click()
           }} style={{flex: 1, float: 'right', width: 8, height: 15, padding: 8}} src='/static/icons/down.png' />*/}
         </div>
+        <div style={{marginTop: 10, display: 'flex'}}>
+          <input type='date'
+            onChange={(e) => { this.setState({startDate: e.target.value}) }}
+            style={{border: '1px solid #ccc', flex: 6}} name='startDate' max={this.state.maxDate} />
+          <span style={{flex: 1, padding: 5, textAlign: 'center'}}> - </span>
+          <input type='date'
+            onChange={(e) => { this.setState({endDate: e.target.value}) }}
+            style={{border: '1px solid #ccc', flex: 6}} name='endDate' max={this.state.maxDate} />
+        </div>
       </div>
     )
   }
@@ -204,7 +215,7 @@ class AppointmentListScreen extends Component {
       return <div>error...</div>
     }
     const { appointments, selectAppointment } = this.props
-    const dataList = getListData(appointments, this.state.selectedId)
+    const dataList = getListData(this.state, appointments, this.state.selectedId)
     console.log(this.state.selectedId)
     // var height = process.browser ? window.innerHeight - 50 : ''
     // var height = window.innerHeight - 50
@@ -287,15 +298,54 @@ class AppointmentListScreen extends Component {
   }
 }
 
-const getListData = (appointments, patientId) => {
+const getListData = (state, appointments, patientId) => {
   let array = []
-  for (let key in appointments) {
-    if (patientId) {
-      if (appointments[key].patientId === patientId) {
+  if (state.startDate || state.startDate) {
+    for (let key in appointments) {
+      if (state.startDate && state.endDate) {
+        if ((new Date(appointments[key].visitSchedule.visitDate) >= new Date(state.startDate)) && (new Date(appointments[key].visitSchedule.visitDate) <= new Date(state.endDate))) {
+          if (patientId) {
+            if (appointments[key].patientId === patientId) {
+              array.push(Object.assign({}, appointments[key], { key }))
+            }
+          } else {
+            array.push(Object.assign({}, appointments[key], { key }))
+          }
+        }
+      } else {
+        if (state.startDate) {
+          if (new Date(appointments[key].visitSchedule.visitDate) >= new Date(state.startDate)) {
+            if (patientId) {
+              if (appointments[key].patientId === patientId) {
+                array.push(Object.assign({}, appointments[key], { key }))
+              }
+            } else {
+              array.push(Object.assign({}, appointments[key], { key }))
+            }
+          }
+        }
+        if (state.endDate) {
+          if (new Date(appointments[key].visitSchedule.visitDate) <= new Date(state.endDate)) {
+            if (patientId) {
+              if (appointments[key].patientId === patientId) {
+                array.push(Object.assign({}, appointments[key], { key }))
+              }
+            } else {
+              array.push(Object.assign({}, appointments[key], { key }))
+            }
+          }
+        }
+      }
+    }
+  } else {
+    for (let key in appointments) {
+      if (patientId) {
+        if (appointments[key].patientId === patientId) {
+          array.push(Object.assign({}, appointments[key], { key }))
+        }
+      } else {
         array.push(Object.assign({}, appointments[key], { key }))
       }
-    } else {
-      array.push(Object.assign({}, appointments[key], { key }))
     }
   }
   return array

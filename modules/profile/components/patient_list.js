@@ -43,7 +43,7 @@ const Item = (item, i, gotoDetail) => {
           <article className={'flex tb-flex lr-flex'}><img src='/static/icons/phoneNum_icon.png' /></article>
           <span className={'smallText'} >{item.phone}</span>
         </div>
-        <p className='defaultIcon'><span>{item.default ? '默认' : ''}</span><i className='bgIcon'></i></p>
+        <p className='defaultIcon'><span>{item.default ? '默认' : ''}</span>{item.default ? <i className='bgIcon' /> : ''}</p>
       </div>
       <style jsx>{`
         .patientListItem{

@@ -3,7 +3,7 @@ import _ from 'lodash'
 // import Router from 'next/router'
 import localforage from 'localforage'
 // import swal from 'sweetalert2'
-// import { SubButton } from '../components'
+import { Prompt } from 'components'
 import { ages, getBirthday, getSex } from '../../../utils'
 import { addPatient, queryPatients, updatePatientDefault } from '../../../ducks'
 import { connect } from 'react-redux'
@@ -19,7 +19,9 @@ class PatientAddScreen extends Component {
       birthday: '出生日期',
       sexText: '性别',
       default: false,
-      animating: false
+      animating: false,
+      isShow: false,
+      promptContent: ''
     }
     this.addPatient = this.addPatient.bind(this)
   }
@@ -27,6 +29,7 @@ class PatientAddScreen extends Component {
     this.setState({default: e.target.checked})
   }
   async addPatient () {
+    let i = 2
     const userId = this.props.userId || await localforage.getItem('userId')
     const name = this.state.name
     const phone = this.state.phone
@@ -35,23 +38,78 @@ class PatientAddScreen extends Component {
     const carteVital = this.state.carteVital
     const isDefault = this.state.default
     if (!name) {
-      return console.log('', '姓名不能为空')
+      this.setState({
+        isShow: true,
+        promptContent: '姓名不能为空'
+      })
+      this.interval = setInterval(() => {
+        if (i === 0) {
+          clearInterval(this.interval)
+          this.setState({ isShow: false, promptContent: '' })
+        }
+        i--
+      }, 1000)
+      return console.log('', '')
     }
     if (!certificateNo) {
-      return console.log('', '身份证不能为空')
+      this.setState({
+        isShow: true,
+        promptContent: '身份证不能为空'
+      })
+      this.interval = setInterval(() => {
+        if (i === 0) {
+          clearInterval(this.interval)
+          this.setState({ isShow: false, promptContent: '' })
+        }
+        i--
+      }, 1000)
+      return
     }
     if (certificateNo.length !== 18) {
-      return console.log('', '身份证格式不正确')
+      this.setState({
+        isShow: true,
+        promptContent: '身份证格式不正确'
+      })
+      this.interval = setInterval(() => {
+        if (i === 0) {
+          clearInterval(this.interval)
+          this.setState({ isShow: false, promptContent: '' })
+        }
+        i--
+      }, 1000)
+      return
     }
     if (!phone) {
-      return console.log('', '手机号不能为空')
+      this.setState({
+        isShow: true,
+        promptContent: '手机号不能为空'
+      })
+      this.interval = setInterval(() => {
+        if (i === 0) {
+          clearInterval(this.interval)
+          this.setState({ isShow: false, promptContent: '' })
+        }
+        i--
+      }, 1000)
+      return
     }
     if (phone.length !== 11) {
-      return console.log('', '手机号格式不正确')
+      this.setState({
+        isShow: true,
+        promptContent: '手机号格式不正确'
+      })
+      this.interval = setInterval(() => {
+        if (i === 0) {
+          clearInterval(this.interval)
+          this.setState({ isShow: false, promptContent: '' })
+        }
+        i--
+      }, 1000)
+      return
     }
-    if (!relationship) {
-      return console.log('', '关系不能为空')
-    }
+    // if (!relationship) {
+    //   return console.log('', '关系不能为空')
+    // }
     this.setState({animating: true})
     const error = await this.props.addPatient(this.props.client, { userId, name, phone, certificateNo, relationship, carteVital, isDefault })
     // const error2 = await this.props.queryPatients(this.props.client, {userId})
@@ -61,11 +119,37 @@ class PatientAddScreen extends Component {
       var me = this
       patientIds.map(async (patientId) => {
         const error3 = await me.props.updatePatientDefault(me.props.client, {patientId, isDefault: false})
-        if (error3) return console.log('', error3)
+        if (error3) {
+          this.setState({
+            isShow: true,
+            promptContent: error3
+          })
+          this.interval = setInterval(() => {
+            if (i === 0) {
+              clearInterval(this.interval)
+              this.setState({ isShow: false, promptContent: '' })
+            }
+            i--
+          }, 1000)
+          return console.log(error3)
+        }
       })
     }
     this.setState({animating: false})
-    if (error.error) return console.log('', error.error)
+    if (error.error) {
+      this.setState({
+        isShow: true,
+        promptContent: error.error
+      })
+      this.interval = setInterval(() => {
+        if (i === 0) {
+          clearInterval(this.interval)
+          this.setState({ isShow: false, promptContent: '' })
+        }
+        i--
+      }, 1000)
+      return
+    }
     return this.props.url.back()// Router.push('/profile/patient_list')
   }
   render () {
@@ -160,6 +244,7 @@ class PatientAddScreen extends Component {
             </div>
           </div>
         </div> */}
+        <Prompt isShow={this.state.isShow}>{this.state.promptContent}</Prompt>
         <style jsx>{`
           .list {
             margin-top: 20px;

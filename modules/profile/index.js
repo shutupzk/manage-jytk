@@ -16,6 +16,7 @@ import DepositDetailScreen from './screens/deposit_detail_screen'
 import EvaluationScreen from './screens/evaluation_screen'
 import CarteVitalScreen from './screens/carte_vital_screen'
 import PrivacyTermsScreen from './screens/privacy_terms_screen'
+import ForgotPasswordScreen from './screens/forgot_password_screen'
 
 export {
   ProfileScreen,
@@ -35,5 +36,6 @@ export {
   DepositDetailScreen,
   EvaluationScreen,
   CarteVitalScreen,
-  PrivacyTermsScreen
+  PrivacyTermsScreen,
+  ForgotPasswordScreen
 }

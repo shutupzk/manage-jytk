@@ -12,7 +12,9 @@ class OutpatientScreen extends Component {
     this.state = {
       isInit: false,
       payStatus: false,
-      selectedId: ''
+      selectedId: '',
+      startDate: undefined,
+      endDate: undefined
     }
   }
 
@@ -37,9 +39,36 @@ class OutpatientScreen extends Component {
   }
   getOutPatientArr (outpatient, payStatus, patientId) {
     var outpatients = []
-    for (var key in outpatient) {
-      if (outpatient[key].payStatus === payStatus && outpatient[key].patientId === patientId) {
-        outpatients.push(outpatient[key])
+    if (this.state.startDate || this.state.startDate) {
+      for (let key in outpatient) {
+        if (this.state.startDate && this.state.endDate) {
+          if ((new Date(outpatient[key].visitSchedule.visitDate) >= new Date(this.state.startDate)) && (new Date(outpatient[key].visitSchedule.visitDate) <= new Date(this.state.endDate))) {
+            if (outpatient[key].payStatus === payStatus && outpatient[key].patientId === patientId) {
+              outpatients.push(outpatient[key])
+            }
+          }
+        } else {
+          if (this.state.startDate) {
+            if (new Date(outpatient[key].visitSchedule.visitDate) >= new Date(this.state.startDate)) {
+              if (outpatient[key].payStatus === payStatus && outpatient[key].patientId === patientId) {
+                outpatients.push(outpatient[key])
+              }
+            }
+          }
+          if (this.state.endDate) {
+            if (new Date(outpatient[key].visitSchedule.visitDate) <= new Date(this.state.endDate)) {
+              if (outpatient[key].payStatus === payStatus && outpatient[key].patientId === patientId) {
+                outpatients.push(outpatient[key])
+              }
+            }
+          }
+        }
+      }
+    } else {
+      for (let key in outpatient) {
+        if (outpatient[key].payStatus === payStatus && outpatient[key].patientId === patientId) {
+          outpatients.push(outpatient[key])
+        }
       }
     }
     return outpatients
@@ -73,6 +102,15 @@ class OutpatientScreen extends Component {
             select.click()
           }} style={{flex: 1, float: 'right', width: 8, height: 15, padding: 8}} src='/static/icons/down.png' />*/}
         </div>
+        <div style={{marginTop: 10, display: 'flex'}}>
+          <input type='date'
+            onChange={(e) => { this.setState({startDate: e.target.value}) }}
+            style={{border: '1px solid #ccc', flex: 6}} name='startDate' max={this.state.maxDate} />
+          <span style={{flex: 1, padding: 5, textAlign: 'center'}}> - </span>
+          <input type='date'
+            onChange={(e) => { this.setState({endDate: e.target.value}) }}
+            style={{border: '1px solid #ccc', flex: 6}} name='endDate' max={this.state.maxDate} />
+        </div>
       </div>
     )
   }
@@ -103,7 +141,7 @@ class OutpatientScreen extends Component {
             return (
               <div key={outpatient.id} style={{padding: '10px 20px', backgroundColor: '#ffffff', marginBottom: 10}}>
                 <div>就诊时间:{outpatient.visitSchedule.visitDate} {outpatient.visitSchedule.amPm === 'a' ? '上午' : '下午'}
-                  <span style={{float: 'right'}}>¥{this.props.url.query.key === 'outpatient' ? outpatient.chargeTotal : outpatient.appointmentFee}</span>
+                  <span style={{float: 'right'}}>¥{this.props.url.query.key === 'outpatient' ? outpatient.treatFee : outpatient.registerFee}</span>
                 </div>
                 <div style={{display: 'flex', paddingTop: 5}}>
                   <div>
@@ -121,42 +159,44 @@ class OutpatientScreen extends Component {
               </div>
             )
           })
-          : <div><div style={{padding: '10px 20px', backgroundColor: '#ffffff', marginBottom: 10}}>
-            <div>就诊时间:2017-06-02 {'下午'}
-              <span style={{float: 'right'}}>¥128</span>
-            </div>
-            <div style={{display: 'flex', paddingTop: 5}}>
-              <div>
-                <img src='/static/icons/doctor_head.png' style={{width: '50px', height: '50px'}} />
+          : <div>
+            {/*<div style={{padding: '10px 20px', backgroundColor: '#ffffff', marginBottom: 10}}>
+              <div>就诊时间:2017-06-02 {'下午'}
+                <span style={{float: 'right'}}>¥128</span>
               </div>
-              <div style={{paddingLeft: 10}}>
-                <div>就诊科室：胸外科门诊</div>
-                <div>医生姓名：张小娴</div>
-                <div>就诊人：东东</div>
+              <div style={{display: 'flex', paddingTop: 5}}>
+                <div>
+                  <img src='/static/icons/doctor_head.png' style={{width: '50px', height: '50px'}} />
+                </div>
+                <div style={{paddingLeft: 10}}>
+                  <div>就诊科室：胸外科门诊</div>
+                  <div>医生姓名：张小娴</div>
+                  <div>就诊人：东东</div>
+                </div>
               </div>
+              { !this.state.payStatus ? <div><button style={{padding: '3px 5px', border: 'solid 1px #3CA0FF', backgroundColor: '#ffffff', color: '#3CA0FF', float: 'right'}}>去缴费</button>
+                <div className='clearfix'>&nbsp;</div>
+              </div> : ''}
             </div>
-            { !this.state.payStatus ? <div><button style={{padding: '3px 5px', border: 'solid 1px #3CA0FF', backgroundColor: '#ffffff', color: '#3CA0FF', float: 'right'}}>去缴费</button>
-              <div className='clearfix'>&nbsp;</div>
-            </div> : ''}
-          </div>
-          <div style={{padding: '10px 20px', backgroundColor: '#ffffff', marginBottom: 10}}>
-            <div>就诊时间:2017-05-31 {'下午'}
-              <span style={{float: 'right'}}>¥128</span>
-            </div>
-            <div style={{display: 'flex', paddingTop: 5}}>
-              <div>
-                <img src='/static/icons/doctor_head.png' style={{width: '50px', height: '50px'}} />
+            <div style={{padding: '10px 20px', backgroundColor: '#ffffff', marginBottom: 10}}>
+              <div>就诊时间:2017-05-31 {'下午'}
+                <span style={{float: 'right'}}>¥128</span>
               </div>
-              <div style={{paddingLeft: 10}}>
-                <div>就诊科室：胸外科门诊</div>
-                <div>医生姓名：张小娴</div>
-                <div>就诊人：东东</div>
+              <div style={{display: 'flex', paddingTop: 5}}>
+                <div>
+                  <img src='/static/icons/doctor_head.png' style={{width: '50px', height: '50px'}} />
+                </div>
+                <div style={{paddingLeft: 10}}>
+                  <div>就诊科室：胸外科门诊</div>
+                  <div>医生姓名：张小娴</div>
+                  <div>就诊人：东东</div>
+                </div>
               </div>
-            </div>
-            { !this.state.payStatus ? <div><button style={{padding: '3px 5px', backgroundColor: '#dddddd', color: '#ffffff', float: 'right'}}>已过期</button>
-              <div className='clearfix'></div>
-            </div> : ''}
-          </div>
+              { !this.state.payStatus ? <div><button style={{padding: '3px 5px', backgroundColor: '#dddddd', color: '#ffffff', float: 'right'}}>已过期</button>
+                <div className='clearfix'></div>
+              </div> : ''}
+            </div>*/}
+            no data
           </div>
         }
       </div>
