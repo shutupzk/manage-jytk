@@ -26,6 +26,10 @@ const MY_DOCTOR_REMOVE = 'mydoctors/remove'
 const MY_DOCTOR_REMOVE_SUCCESS = 'mydoctors/remove/success'
 const MY_DOCTOR_REMOVE_FAIL = 'mydoctors/remove/fail'
 
+const HOSPITAL_DOCTORS_DETAIL_QUERY = 'doctor/detail/query'
+const HOSPITAL_DOCTORS_DETAIL_SUCCESS = 'doctor/detail/success'
+const HOSPITAL_DOCTORS_DETAIL_FAIL = 'doctor/detail/fail'
+
 const QUERY_DOCTORS_FLAG = 'doctors/query/flag'
 
 const initState = {
@@ -45,10 +49,12 @@ export function doctors (state = initState, action = {}) {
     case HOSPITAL_DOCTORS_QUERY:
     case PROFILE_MY_DOCTORS_QUERY:
     case APPOINTMENT_SEARCH_DOCTORS_QUERY:
+    case HOSPITAL_DOCTORS_DETAIL_QUERY:
       return Object.assign({}, state, { loading: true, error: null })
     case PROFILE_MY_DOCTORS_SUCCESS:
     case HOSPITAL_DOCTORS_SUCCESS:
     case MY_DOCTOR_ADD_SUCCESS:
+    case HOSPITAL_DOCTORS_DETAIL_SUCCESS:
       let doctors = getDoctors(state, action.doctors)
       return Object.assign({}, state, { data: doctors, loading: false, error: null })
     case MY_DOCTOR_REMOVE_SUCCESS:
@@ -61,6 +67,7 @@ export function doctors (state = initState, action = {}) {
     case HOSPITAL_DOCTORS_FAIL:
     case PROFILE_MY_DOCTORS_FAIL:
     case APPOINTMENT_SEARCH_DOCTORS_FAIL:
+    case HOSPITAL_DOCTORS_DETAIL_FAIL:
       return Object.assign({}, state, { loading: false, error: action.error })
     case HOSPITAL_DOCTORS_SELECT:
       return Object.assign({}, state, { selectId: action.selectId, loading: false, error: null })
@@ -135,7 +142,7 @@ const QUERY_DOCTORS = gql`
           remark,
           recommend,
           hot,
-          isAppointment
+          isAppointment,
           userHasDoctors(userId: $userId) {
             id
             user{
@@ -186,6 +193,67 @@ export const queryDoctors = (client, {departmentId}) => async dispatch => {
     console.log(e)
     return dispatch({
       type: HOSPITAL_DOCTORS_FAIL,
+      error: '数据请求失败！'
+    })
+  }
+}
+
+const QUERY_DOCTOR_DETAIL = gql`
+  query($doctorId: ObjID!, $userId: ObjID!) {
+    doctor(id: $doctorId) {
+      id,
+      doctorName,
+      title,
+      major,
+      description,
+      remark,
+      recommend,
+      hot,
+      isAppointment,
+      userHasDoctors(userId: $userId) {
+        id
+        user{
+          id
+          name
+        }
+        doctor{
+          id
+        }
+      }
+    }
+  }
+`
+// 获取医生详细信息
+export const queryDoctorDetail = (client, { doctorId }) => async dispatch => {
+  dispatch({
+    type: HOSPITAL_DOCTORS_DETAIL_QUERY
+  })
+  try {
+    const userId = await localforage.getItem('userId')
+    let data = await client.query({ query: QUERY_DOCTOR_DETAIL, variables: { userId, doctorId } })
+    if (data.errors) {
+      return dispatch({
+        type: HOSPITAL_DOCTORS_DETAIL_FAIL,
+        error: data.errors[0].message
+      })
+    }
+    const doctor = data.data.doctor
+    let doctors = {}
+    for (let user of doctor.userHasDoctors) {
+      if (user.doctor.id === doctor.id) {
+        const userHasDoctorId = user.id
+        const isMyDoctor = true
+        doctors[doctor.id] = Object.assign({}, doctor, { userHasDoctorId, isMyDoctor })
+      }
+    }
+    return dispatch({
+      type: HOSPITAL_DOCTORS_DETAIL_SUCCESS,
+      doctors
+    })
+  } catch (e) {
+    console.log(e)
+    return dispatch({
+      type: HOSPITAL_DOCTORS_DETAIL_FAIL,
       error: '数据请求失败！'
     })
   }

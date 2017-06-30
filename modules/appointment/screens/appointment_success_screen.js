@@ -3,7 +3,7 @@ import Router from 'next/router'
 import { connect } from 'react-redux'
 
 import { signin, queryUser, queryPatients, queryAppointments, queryAppointmentDetail, updateAppointment, selectAppointment } from '../../../ducks'
-
+import { isEmptyObject } from '../../../utils'
 class AppointmentSuccessScreen extends Component {
   constructor (props) {
     super(props)
@@ -13,7 +13,7 @@ class AppointmentSuccessScreen extends Component {
   }
 
   componentWillMount () {
-    if (this.props.userId) {
+    if (isEmptyObject(this.props.appointments)) {
       this.initState()
     }
   }
@@ -28,12 +28,13 @@ class AppointmentSuccessScreen extends Component {
       this.props.queryPatients(this.props.client, {userId})
       this.props.queryAppointments(this.props.client, { userId: this.props.userId })
     }
-    const { appointmentId, appointments, url, selectAppointment } = this.props
+    const { url, selectAppointment } = this.props
     await selectAppointment({appointmentId: url.query.appointmentId})
-    const appointment = appointments[appointmentId]
-    const departmentId = appointment.visitSchedule.department.id
-    const doctorId = appointment.visitSchedule.doctor.id
-    this.setState({ departmentId, doctorId })
+    // const appointment = appointments[appointmentId]
+    // const departmentId = appointment.visitSchedule.department.id
+    // const doctorId = appointment.visitSchedule.doctor.id
+    // this.setState({ departmentId, doctorId })
+    const appointmentId = this.props.appointmentId
     const client = this.props.client
     await this.props.queryAppointmentDetail(client, {appointmentId})
     this.setState({isInit: false})
@@ -41,10 +42,10 @@ class AppointmentSuccessScreen extends Component {
 
   render () {
     if (this.state.isInit || this.props.loading) {
-      return (<div>loading</div>)
+      return (<div>loading...</div>)
     }
     if (this.props.error) {
-      return (<div>error</div>)
+      return (<div>error...</div>)
     }
     const { patients, appointments, appointmentId } = this.props
     const appointment = appointments[appointmentId]
@@ -204,11 +205,12 @@ class AppointmentSuccessScreen extends Component {
 
 function mapStateToProps (state) {
   return {
+    userId: state.user.data.id,
     appointments: state.appointments.data,
     appointmentId: state.appointments.selectId,
     patients: state.patients.data,
-    error: state.appointments.error,
-    loading: state.appointments.loading
+    error: state.appointments.error || state.patients.error,
+    loading: state.appointments.loading || state.patients.loading
   }
 }
 

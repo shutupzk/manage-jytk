@@ -204,8 +204,8 @@ export const queryAppointmentDetail = (client, { appointmentId }) => async dispa
 }
 
 const ADD_APPOINTMENT = gql`
-  mutation ($scheduleId: ObjID!, $patientCardId: ObjID!, $visitScheduleTimeId: ObjID, $timeRangeOfVist:String $payType: String) {
-    createAppointment(input: {visitScheduleId: $scheduleId, patientCardId: $patientCardId, visitScheduleTimeId: $visitScheduleTimeId, timeRangeOfVist:$timeRangeOfVist, payType: $payType}) {
+  mutation ($scheduleId: ObjID!, $patientCardId: ObjID!, $visitScheduleTimeId: ObjID, $patientTypeId: ObjID, $timeRangeOfVist:String, $payType: String, $visitNo: String) {
+    createAppointment(input: {visitScheduleId: $scheduleId, patientCardId: $patientCardId, patientTypeId: $patientTypeId, visitScheduleTimeId: $visitScheduleTimeId, timeRangeOfVist:$timeRangeOfVist, payType: $payType, visitNo: $visitNo}) {
       id
       orderSn
       visitStatus
@@ -244,13 +244,13 @@ const ADD_APPOINTMENT = gql`
 `
 
 // 挂号
-export const addAppointment = (client, {scheduleId, patientCardId, visitScheduleTimeId, timeRangeOfVist, payType}) => async dispatch => {
+export const addAppointment = (client, {scheduleId, patientCardId, patientTypeId, visitScheduleTimeId, timeRangeOfVist, payType, visitNo}) => async dispatch => {
   console.log(scheduleId, patientCardId, visitScheduleTimeId, payType)
   dispatch({
     type: APPOINTMENT_APPOINTMENTS_ADD
   })
   try {
-    let data = await client.mutate({ mutation: ADD_APPOINTMENT, variables: { scheduleId, patientCardId, visitScheduleTimeId, timeRangeOfVist, payType } })
+    let data = await client.mutate({ mutation: ADD_APPOINTMENT, variables: { scheduleId, patientCardId, patientTypeId, visitScheduleTimeId, timeRangeOfVist, payType, visitNo } })
     if (data.error) {
       return dispatch({
         type: APPOINTMENT_APPOINTMENTS_ADD_FAIL,

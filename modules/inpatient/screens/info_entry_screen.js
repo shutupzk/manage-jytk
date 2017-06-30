@@ -144,7 +144,7 @@ const bottomSetInfo = (inpatientRecord, props) => {
                     <option key={item2.id} value={item2.name}>{item2.name}</option>
                   )
                 })}
-              </select> : <input defaultValue={item.value} style={{textAlign: 'right', height: 30, width: '100%'}} ref={item.name} />}</div>
+              </select> : <input defaultValue={item.value} style={{border: 'none', textAlign: 'right', height: 30, width: '100%'}} ref={item.name} />}</div>
           </div>
         )
       })

@@ -69,7 +69,7 @@ class Home extends Component {
             </section>
           </a></Link>
           <section className='navRight'>
-            <Link href='/outpatient'><a>
+            <Link href='/outpatient/order_type'><a>
               <article>
                 <svg className='patientPayIcon' viewBox='48 -1 78 59' version='1.1' xmlns='http://www.w3.org/2000/svg'>{patientPayHomeIcon}</svg>
                 <h3>门诊缴费</h3>

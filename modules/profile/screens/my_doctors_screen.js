@@ -23,7 +23,7 @@ class MyDoctorsScreen extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      query: false,
+      isInit: false,
       userId: this.props.userId
     }
   }
@@ -34,12 +34,12 @@ class MyDoctorsScreen extends Component {
   }
 
   async getMyDoctors () {
-    if (!this.state.query) {
-      const userId = await localforage.getItem('userId')
-      this.setState({query: true, userId})
-      this.props.queryMyDoctors(this.props.client, { userId })
-      this.props.setQueryFlag({flag: 'myDoctors'})
-    }
+    this.setState({isInit: true})
+    const userId = await localforage.getItem('userId')
+    this.setState({query: true, userId})
+    await this.props.queryMyDoctors(this.props.client, { userId })
+    this.props.setQueryFlag({flag: 'myDoctors'})
+    this.setState({isInit: false})
   }
 
   toUrl (docId) {
@@ -48,9 +48,10 @@ class MyDoctorsScreen extends Component {
 
   render () {
     // const userId = this.state.userId
-    if (this.props.loading) {
+    if (this.props.loading || this.state.isInit) {
       return <div>loading...</div>
     }
+    console.log(this.props)
     var mydoctors = []
     _.mapValues(this.props.doctors, function (doc) {
       console.log(doc)
