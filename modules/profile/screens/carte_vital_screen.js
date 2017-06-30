@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-// import swal from 'sweetalert2'
+import {theme} from 'components'
 
 import { updatePatient } from '../../../ducks'
 
@@ -42,19 +42,41 @@ class CarteVitalScreen extends Component {
     }
     const patient = this.getSelfPatient(this.props.patients)
     return (<div style={{margin: '20px 0px'}}>
-      <div>
-        <div style={{backgroundColor: '#ffffff', padding: '10px 20px', marginBottom: 1, display: 'flex'}}>
-          <div style={{flex: 2}}>卡号</div>
-          <div style={{flex: 10}}>{patient.carteVital}</div>
+      <div className='list'>
+        <div className='item flex tb-flex'>
+          <span className='textLeft'>卡号</span>
+          <span className='textRight'>{patient.carteVital}</span>
         </div>
-        <div style={{backgroundColor: '#ffffff', padding: '10px 20px', marginBottom: 1, display: 'flex'}}>
-          <div style={{flex: 2}}>状态</div>
-          <div style={{flex: 10}}>{'有效'}</div>
+        <div className='item flex tb-flex'>
+          <span className='textLeft'>状态</span>
+          <span className='textRight'>{'有效'}</span>
         </div>
       </div>
       <div style={{marginTop: 20, padding: 20}}>
-        <button onClick={() => this.submit()} style={{backgroundColor: '#3CA0FF', display: 'block', width: '100%', borderRadius: '10px', height: 40}}>解除绑定</button>
+        <button className='btnBG btnBGMain' onClick={() => this.submit()}>解除绑定</button>
       </div>
+      <style jsx>{`
+        .item {
+          padding: 10px 20px;
+          {/*height: 31px;*/}
+          {/*flexWrap: nowrap;*/}
+          align-items: center;
+          flexDirection: row;
+          background-color: #ffffff;
+          justifyContent: space-between;
+          margin-bottom: 1px;
+        }
+        .textLeft {
+          {/*font-size: ;*/}
+          color: ${theme.fontcolor};
+          font-size: ${theme.fontsize};
+          padding-right: ${theme.tbmargin};
+        }
+        .textRight{
+          font-size: ${theme.fontsize};
+          color: ${theme.mainfontcolor};
+        }
+      `}</style>
     </div>)
   }
 }

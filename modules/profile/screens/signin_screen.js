@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
 import Link from 'next/link'
-// import swal from 'sweetalert2'
 
-// import { SubButton } from '../components'
+import { CardWhite, theme } from 'components'
 import { signin, queryUser, queryPatients } from '../../../ducks'
 import { connect } from 'react-redux'
 
@@ -34,55 +33,78 @@ class SigninScreen extends Component {
     window.location.href = '/'
   }
   render () {
-    return (<div>
-      <div>
-        <div className={'item'} key={'username'}>
-          <span className={'textLeft'}>账号:</span>
-          <input placeholder={'请输入您的手机号'} className='textInput' style={{width: '70%'}}
-            onChange={(e) => this.setState({ username: e.target.value })} value={this.state.username} />
+    return (
+      <div className="loginPage">
+        <div className="loginPageText">
+          <section className={'flex tb-flex'} key={'username'}>
+            <span>账号:</span>
+            <input placeholder={'请输入您的手机号'}
+              onChange={(e) => this.setState({ username: e.target.value })} value={this.state.username} />
+          </section>
+          <section className={'flex tb-flex'} key={'password'}>
+            <article className='flex tb-flex'>
+              <span>密码:</span>
+              <input placeholder={'请输入密码'} type='password'
+                onChange={(e) => this.setState({ password: e.target.value })} value={this.state.password} />
+            </article>
+            <a><span className='forgetpass'>忘记密码?</span></a>
+          </section>
         </div>
-        <div className={'item'} key={'password'}>
-          <span className={'textLeft'}>密码:</span>
-          <input placeholder={'请输入密码'} className={'TextInput'} type='password'
-            onChange={(e) => this.setState({ password: e.target.value })} value={this.state.password} />
-          <a><span>忘记密码?</span></a>
-        </div>
+        <footer style={{margin: '10px 15px'}}>
+          <button
+            className='btnBG btnBGMain loginPageBtnItem'
+            onClick={() => this.submit(this.props)}>登&nbsp;录</button>
+          <Link href='/signup'>
+            <a className='registerbtn'>没有账号？去注册→</a>
+          </Link>
+        </footer>
+        <img src={`/static/icons/loginlogo.png`} alt="" className="loginpagelogo" />
+        <style jsx>{`
+          .registerbtn{
+            margin-top: ${theme.lrmargin};
+            color: ${theme.maincolor};
+            text-align: center;
+            display: block;
+          }
+          .loginPageText{
+            background: #fff;
+            margin: ${theme.tbmargin} 0;
+            padding: 0 ${theme.lrmargin};
+            border-top: 1px solid ${theme.bordercolor};
+            border-bottom: 1px solid ${theme.bordercolor};
+          }
+          .loginPageText section{
+            height: .46rem;
+            line-height: .46rem;
+            color: ${theme.mainfontcolor};
+          }
+          .loginPageText section:last-child{
+            border-top: 1px solid ${theme.bordercolor};
+            justify-content: space-between;
+          }
+          .loginPageText input{
+            background: transparent;
+            border: none;
+            line-height: .46rem;
+            font-size: ${theme.fontsize};
+            padding-left: .06rem;
+          }
+          .forgetpass{
+            color: ${theme.maincolor};
+            font-size: ${theme.nfontsize};
+          }
+          .loginPageBtnItem {
+            margin: .25rem 0 .1rem;
+          }
+          .loginPage .loginpagelogo{
+            width: 50%;
+            position: fixed;
+            bottom: .5rem;
+            left: 25%;
+          }
+        `}</style>
       </div>
-      <button
-        style={{width: '92%', margin: '4%', display: 'block', backgroundColor: '#3CA0FF', height: '40px', borderRadius: '10px', fontSize: 16}}
-        onClick={() => this.submit(this.props)}
-      >
-        登录
-      </button>
-      <Link href='/signup'>
-        <a style={{fontSize: 13, textAlign: 'center', marginTop: '20px'}}><div>没有账号? 去注册</div></a>
-      </Link>
-      <style jsx>{`
-        .item {
-          padding: 10px;
-          flex-wrap: nowrap;
-          align-items: center;
-          flex-direction: row;
-          background-color: #ffffff;
-          justify-content: space-between;
-          border-bottom: solid 1px; #E6E6E6;
-        }
-        .textLeft {
-          flex: 1;
-          font-size: 16px;
-          color: #505050;
-          margin-left: 15px;
-        }
-        .TextInput {
-          flex: 3;
-          border-bottom: 0px;
-          line-height: 30px;
-          height: 30px;
-          border-radius: 5px;
-          margin-right: 15px;
-        }
-      `}</style>
-    </div>)
+    )
   }
 }
 

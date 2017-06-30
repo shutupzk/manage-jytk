@@ -60,24 +60,23 @@ class PatientDetailScreen extends Component {
       <div>
         {detailList(this.props, this.bindCard)}
         {this.state.isEdit
-        ? <div style={{display: 'flex', bottom: 0, position: 'fixed', width: '100%'}}>
+        ? <div className='fullWidthFixed'>
           <button
-            className=''
-            style={{backgroundColor: '#3CA0FF', color: '#ffffff', flex: 1, marginTop: 20, height: 40, fontSize: 15}}
+            className='fullWidthFixed fullWidthBtn fullWidthBtnMain'
             onClick={() => { this.updatePatient(this.props) }}
             >保存就诊人</button>
         </div>
-        : <div style={{display: 'flex', bottom: 0, position: 'fixed', width: '100%'}}>
+        : <div className='fullWidthFixed'>
           <button
-            className=''
-            style={{backgroundColor: '#3CA0FF', color: '#ffffff', flex: 1, marginTop: 20, height: 40, fontSize: 15}}
-            onClick={() => { this.setState({isEdit: true}) }}
-            >编辑就诊人</button>
-          <button
-            className=''
-            style={{backgroundColor: '#FFFFFF', color: '#E45252', flex: 1, marginTop: 20, height: 40, fontSize: 15}}
+            className='fullWidthBtn fullWidthBtnBackWhite'
+            style={{width: '50%'}}
             onClick={() => { this.delPatient(this.props) }}
             >删除就诊人</button>
+          <button
+            className='fullWidthBtn fullWidthBtnMain'
+            style={{width: '50%'}}
+            onClick={() => { this.setState({isEdit: true}) }}
+            >编辑就诊人</button>
         </div>}
         {/* <Popup ref={popup => { this.popup = popup }} /> */}
         <style jsx global>{`

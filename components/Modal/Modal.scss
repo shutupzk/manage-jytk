@@ -1,0 +1,39 @@
+@import '../../theme/variables.scss';
+
+.modal{
+  position: fixed;
+  top: 10%;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  section{
+    background: #fff;
+    border-radius: $inmargin;
+    position: relative;
+    z-index: 10;
+    width: 80%;
+    top: 10%;
+    margin: 10% auto 0;
+    box-shadow: 0 0 .12rem rgba(0,0,0,0.2);
+    header{
+      font-size: $tfont-size;
+      color: $bfont-color;
+      text-align: center;
+      padding: $lrmargin;
+      position: relative;
+      button{
+        position: absolute;
+      }
+    }
+    footer{
+      border-top: 1px solid $border-color;
+      color: #4A4A4A;
+      font-size: $bfont-size;
+      line-height: .46rem;
+      button{
+        background: transparent;
+      }
+    }
+  }
+}
+

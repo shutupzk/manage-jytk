@@ -1,6 +1,8 @@
 import React, {Component } from 'react'
 import { connect } from 'react-redux'
 import Link from 'next/link'
+import {Loading, CardWhite} from 'components'
+import theme from 'components/theme'
 import { signin, queryUser, queryPatients, signout, clearPateints } from '../../../ducks'
 
 class ProfileScreen extends Component {
@@ -31,7 +33,7 @@ class ProfileScreen extends Component {
   }
   birthdayView (user) {
     if (!user.birthday) return null
-    return <div className='birtdayText'>{ `${user.sex === '0' ? '女' : '男'} | ${user.birthday}`}</div>
+    return <p className='birtdayText'>{ `${user.sex === '0' ? '女' : '男'} | ${user.birthday}`}</p>
   }
   topView (user) {
     const title = user.name ? '个人信息' : '去登录'
@@ -43,32 +45,32 @@ class ProfileScreen extends Component {
       href = '/' + navigateUrl
     }
     return (
-      <div className='topView'>
-        <div style={{textAlign: 'center'}}><img className='avatar' src='/static/icons/male_header.png' /></div> 
-        <div className='userInfo'>
-          <div className='nameText'>{name}</div>
+      <CardWhite classChild='topView'>
+        <img src='/static/icons/user_male.png' />
+        <section>
+          <p className='nameText'>{name}</p>
           { this.birthdayView(user) }
-        </div>
+        </section>
         <Link href={href}>
           <a>
             <div style={{fontSize: 13, color: '#3CA0FF', textAlign: 'center'}} >{title} ></div>
           </a>
         </Link>
-      </div>
+      </CardWhite>
     )
   }
 
   buttomList (token) {
     const array = [
-      { title: '就诊人管理', icon: 'people', type: 'simple-line-icon', navigateUrl: 'profile/patient_list' },
-      { title: '我的医生', icon: 'doctor_head', type: 'simple-line-icon', navigateUrl: 'profile/my_doctors' },
-      { title: '缴费记录', icon: '', type: 'simple-line-icon', navigateUrl: 'profile/deposit_record' },
+      { title: '就诊人管理', icon: 'familyIcon', type: 'simple-line-icon', navigateUrl: 'profile/patient_list' },
+      { title: '我的医生', icon: 'doctors', type: 'simple-line-icon', navigateUrl: 'profile/my_doctors' },
+      { title: '缴费记录', icon: 'depositRecords', type: 'simple-line-icon', navigateUrl: 'profile/deposit_record' },
       // { title: '我的随访', icon: 'pencil-square-o', type: 'font-awesome', navigateUrl: 'ehr' },
-      { title: '满意度评价', icon: 'like', type: 'simple-line-icon', navigateUrl: 'profile/evaluation' }
+      { title: '满意度评价', icon: 'evaluationIcon', type: 'simple-line-icon', navigateUrl: 'profile/evaluation' }
     ]
     const array2 = [
-      { title: '医保卡信息', icon: 'idCard_icon', type: 'simple-line-icon', navigateUrl: 'profile/carte_vital' },
-      { title: '修改密码', icon: 'password', type: 'simple-line-icon', navigateUrl: 'profile/setPassword' },
+      { title: '医保卡信息', icon: 'cartecardicon', type: 'simple-line-icon', navigateUrl: 'profile/carte_vital' },
+      { title: '修改密码', icon: 'setpassword', type: 'simple-line-icon', navigateUrl: 'profile/setPassword' },
       { title: '隐私条款', icon: 'prvite', type: 'simple-line-icon', navigateUrl: 'profile/privacy_terms' },
       { title: '常见问题', icon: 'question', type: 'simple-line-icon', navigateUrl: 'profile/questions' },
       // { title: '我的报告单', icon: 'doc', type: 'simple-line-icon', navigateUrl: 'favorite_list' },
@@ -76,8 +78,8 @@ class ProfileScreen extends Component {
       // { title: '设置', icon: 'settings', type: 'simple-line-icon', navigateUrl: 'setting' }
     ]
     return (
-      <div className='list'>
-        <div style={{marginBottom: 10, display: 'flex', padding: 10, backgroundColor: '#fff'}}>
+      <div className=''>
+        <CardWhite classChild='middleView'>
           {
             array.map((item, i) => {
               var href = 'signin'
@@ -85,25 +87,25 @@ class ProfileScreen extends Component {
                 href = '/' + item.navigateUrl
               }
               return (
-                <div
-                  style={{flex: 1, alignItems: 'center'}}
+                <article
+                  className='left'
                 >
                   <Link
                     key={i}
                     href={href}
                   >
-                    <a style={{alignItems: 'center'}}>
-                      <img src={`/static/icons/${item.icon}.png`} type={item.type} height='16' width='16' style={{color: '#505050'}} />
-                      <div style={{fontSize: 15}}>{item.title}</div>
+                    <a>
+                      <img src={`/static/icons/${item.icon}.png`} type={item.type} />
+                      <p>{item.title}</p>
                     </a>
                   </Link>
-                </div>
+                </article>
               )
             })
           }
           <div className='clearfix'>&nbsp;</div>
-        </div>
-        <div>
+        </CardWhite>
+        <CardWhite classChild='bottomView'>
           {
             array2.map((item, i) => {
               var href = '/signin'
@@ -113,32 +115,34 @@ class ProfileScreen extends Component {
               if (item.navigateUrl === 'logout') {
                 return (
                   <div
-                    style={{flex: 1, backgroundColor: '#fff', padding: 10, marginBottom: 1}}
                     onClick={() => { this.doSignout() }}
                   >
-                    <a style={{display: 'flex'}}>
-                      <img src={`/static/icons/${item.icon}.png`} type={item.type} height='16' width='16' style={{color: '#505050'}} />
-                      <div style={{fontSize: 15}}>{token ? item.title : '未登录'}</div>
+                    <a className='flex tb-flex'>
+                      <dl className='flex tb-flex'>
+                        <dt><img src={`/static/icons/${item.icon}.png`} type={item.type} className='left' /></dt>
+                        <dd>{token ? item.title : '未登录'}</dd>
+                      </dl>
                     </a>
                   </div>
                 )
               }
               return (
-                <div style={{flex: 1, backgroundColor: '#fff', padding: 10, marginBottom: 1}}>
-                  <Link
-                    key={i}
-                    href={href}
-                  >
-                    <a style={{display: 'flex'}}>
-                      <img src={`/static/icons/${item.icon}.png`} type={item.type} height='16' width='16' style={{color: '#505050'}} />
-                      <div style={{fontSize: 15}}>{item.title}</div>
-                    </a>
-                  </Link>
-                </div>
+                <Link
+                  key={i}
+                  href={href}
+                >
+                  <a className='flex tb-flex'>
+                    <dl className='flex tb-flex'>
+                      <dt><img src={`/static/icons/${item.icon}.png`} type={item.type} className='left' /></dt>
+                      <dd>{item.title}</dd>
+                    </dl>
+                    <i className='back-left'></i>
+                  </a>
+                </Link>
               )
             })
           }
-        </div>
+        </CardWhite>
       </div>
     )
   }
@@ -149,59 +153,75 @@ class ProfileScreen extends Component {
       return <div className='container'>error...</div>
     }
     if (this.props.loading) {
-      return <div className='container'>loading...</div>
+      return <Loading showLoading={this.props.loading || this.state.isInit} />
     }
     return (
       <div className='container'>
         { this.topView(user) }
         { this.buttomList(token) }
         <style jsx global>{`
-          .list {
-            border-top: none;
-            margin-top: 0px;
-            margin-bottom: 15px;
-            border-bottom: none;
-          }
           .topView {
-            align-items: center;
-            background-color: #ffffff;
-            height: 200px;
-            margin-bottom: 12px;
-          },
-          .avatar {
-            width: 70px;
-            height: 70px;
-            margin-top: 20px;
+            text-align: center;
+            margin-top: 0;
+            padding: .2rem 0 ${theme.tbmargin};
           }
-          .userInfo {
-            align-items: center;
-            height: 70px;
+          .topView img{
+            width: .7rem;
+            height: .7rem;
+            border-radius: 50%;
+          }
+          .topView section{
+            padding: ${theme.tbmargin} 0;
           }
           .nameText {
-            text-align: center;
-            height: auto;
-            font-size: 18px;
-            margin-top: 16px;
-            color: #505050;
+            line-height: .3rem;
+            color: ${theme.mainfontcolor};
+            font-size: .18rem;
           }
           .birtdayText {
-            text-align: center;
-            font-size: 14px;
-            margin-top: 8px;
-            color: #797979;
-          },
+            margin-top: ${theme.lrmargin};
+          }
           .middleView {
-            flex-wrap: nowrap;
-            align-self: center;
-            flex-direction: row;
-            background-color: #ffffff;
-          },
-          .icon {
-            align-self: center;
-            width: 15px;
-            height: 15px;
-            margin-left: 5px;
-            margin-right: 5px;
+            margin-bottom: ${theme.tbmargin};
+            padding: .13rem 0 ${theme.tbmargin};
+            box-shadow: inset 0px -1px 0px 0px #E6E6E6, inset 0px 1px 0px 0px #E6E6E6;
+          }
+          .middleView article{
+            width: 25%;
+            text-align: center;
+          }
+          .middleView article img{
+            height: .28rem;
+          }
+          .middleView article p{
+            padding-top: .03rem;
+            color: ${theme.mainfontcolor};
+          }
+          .bottomView {
+            border-top: 1px solid ${theme.bordercolor};
+          }
+          .bottomView a{
+            border-bottom: 1px solid ${theme.bordercolor};
+            line-height: 44px;
+            padding: 0 .15rem;
+            justify-content: space-between;
+          }
+          .bottomView dt{
+            width: .26rem;
+            text-align: center;
+          }
+          .bottomView dd{
+            color: ${theme.mainfontcolor};
+          }
+          .bottomView a:nth-of-type(1) img{
+            height: .14rem;
+            padding-top: .02rem;
+          }
+          .bottomView img{
+            height: .16rem;
+          }
+          .bottomView i{
+            transform: rotate(135deg);
           }
         `}</style>
       </div>

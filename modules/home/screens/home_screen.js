@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Link from 'next/link'
 import { connect } from 'react-redux'
 import Router from 'next/router'
-import { CardWhite } from '../../../components'
+import { CardWhite, Loading } from '../../../components'
 import {
   queryNewsGroups,
   queryNews,
@@ -59,6 +59,7 @@ class Home extends Component {
     return (
       <div>
         <img src='/static/icons/banner3.png' style={{width: '100%'}} />
+        <Loading showLoading={this.props.loading || this.state.isInit} />
         <CardWhite classChild='nav'>
           <Link href='/appointment/department_list'><a>
             <section className='navLeft'>

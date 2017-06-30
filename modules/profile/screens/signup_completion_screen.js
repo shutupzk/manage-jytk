@@ -5,6 +5,7 @@ import Router from 'next/router'
 import { signup } from '../../../ducks'
 import { connect } from 'react-redux'
 import { getBirthday, getSex } from '../../../utils'
+import {theme} from 'components'
 
 /**
  * 修改密码
@@ -44,15 +45,15 @@ class SignupCompletionScreen extends Component {
   }
   render () {
     return (<div>
-      <div className={'list'}>
-        <div className={'item'} key={'name'}>
-          <span className={'textLeft'}> &nbsp;姓 名 </span>
-          <input placeholder={'输入您的真实姓名'} className='textInput' style={{width: '60%'}}
+      <div className='loginPageText'>
+        <section className={'flex tb-flex'} key={'name'}>
+          <span>姓&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;名</span>
+          <input placeholder={'输入您的真实姓名'}
             onChange={(e) => this.setState({ name: e.target.value })} />
-        </div>
-        <div className={'item'} key={'certificateNo'}>
-          <span className={'textLeft'}>{'身份证号'}</span>
-          <input placeholder={'输入身份证号'} className='textInput' style={{width: '60%'}}
+        </section>
+        <section className={'flex tb-flex'} key={'certificateNo'}>
+          <span>{'身份证号'}</span>
+          <input placeholder={'输入身份证号'}
             onChange={(e) => {
               var certificateNo = e.target.value
               if (certificateNo.length === 18) {
@@ -62,62 +63,67 @@ class SignupCompletionScreen extends Component {
                 this.setState({ certificateNo, birthday, sexText })
               }
             }} />
-        </div>
-        <div className={'item'} key={'sex'}>
-          <span className={'textLeft'}> &nbsp;性 别 </span>
-          <input placeholder={'输入身份证号后自动生成'} className='textInput' style={{width: '60%'}} value={this.state.sexText}
+        </section>
+        <section className={'flex tb-flex'} key={'sex'}>
+          <span>性&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;别 </span>
+          <input placeholder={'输入身份证号后自动生成'} value={this.state.sexText}
             disabled
             />
-        </div>
-        <div className={'item'} key={'birthday'}>
-          <span className={'textLeft'}>{'出生日期'}</span>
-          <input placeholder={'输入身份证号后自动生成'} className='textInput' style={{width: '60%'}} value={this.state.birthday}
+        </section>
+        <section className={'flex tb-flex'} key={'birthday'}>
+          <span>{'出生日期'}</span>
+          <input placeholder={'输入身份证号后自动生成'} value={this.state.birthday}
             disabled
             />
-        </div>
-        <div className={'item'} key={'carteVital'}>
-          <span className={'textLeft'}>{'医保卡号'}</span>
-          <input placeholder={'非医保用户可不填'} className='textInput' style={{width: '60%'}}
+        </section>
+        <section className={'flex tb-flex'} key={'carteVital'}>
+          <span>{'医保卡号'}</span>
+          <input placeholder={'非医保用户可不填'}
             onChange={(e) => this.setState({ carteVital: e.target.value })} />
-        </div>
+        </section>
       </div>
-      <button
-        className='blockPrimaryBtn' style={{width: '92%', display: 'block', margin: '4%'}}
-        title='完成'
-        onClick={() => this.submit()}
-        >完成</button>
+      <footer style={{margin: '10px 15px'}}>
+        <button
+          className='btnBG btnBGMain loginPageBtnItem'
+          title='完成'
+          onClick={() => this.submit()}>完成</button>
+      </footer>
       {/* <Popup ref={popup => { this.popup = popup }} /> */}
       <style jsx>{`
-        .container {
-          flex: 1;
-          margin-left: 5%;
-          margin-top: 20px;
+        .loginPageText{
+          background: #fff;
+          margin: ${theme.tbmargin} 0;
+          padding: 0 ${theme.lrmargin};
+          border-top: 1px solid ${theme.bordercolor};
+          border-bottom: 1px solid ${theme.bordercolor};
         }
-        .list {
-          {/*margin-top: 10px;*/}
-          margin-bottom: 15px;
+        .loginPageText section{
+          height: .46rem;
+          line-height: .46rem;
+          color: ${theme.mainfontcolor};
+          border-top: 1px solid ${theme.bordercolor};
         }
-        .item {
-          height: 51px;
-          flex-wrap: nowrap;
-          align-items: center;
-          flex-direction: row;
-          background-color: #ffffff;
+        .loginPageText section:first-child{
+          border-top: 1px solid #fff;
+        }
+        .loginPageText .towBtn{
           justify-content: space-between;
-          border-bottom: solid 1px #E6E6E6;
         }
-        .textLeft {
-          flex: 1;
-          font-size: 16px;
-          color: #505050;
-          margin-left: 15px;
+        .loginPageText input{
+          background: transparent;
+          border: none;
+          line-height: .46rem;
+          font-size: ${theme.fontsize};
+          padding-left: .06rem;
         }
-        .TextInput {
-          flex: 3;
-          margin-right: 15px;
-        },
-        .buttonStyle: {
-          margin-top: 35px;
+        .loginPageBtnItem {
+          margin: .25rem 0 .1rem;
+        }
+        .loginPage .loginpagelogo{
+          width: 50%;
+          position: fixed;
+          bottom: .5rem;
+          left: 25%;
         }
       `}</style>
     </div>)

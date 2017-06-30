@@ -5,6 +5,7 @@ import PropTypes from 'prop-types'
 import localforage from 'localforage'
 import { queryUser, queryPatients, updateUser, updatePatient, selectPatient } from '../../../ducks'
 import { isEmptyObject, phone, certificateNo, getSex, ages } from '../../../utils'
+import {theme} from 'components'
 
 function getSelfPatient (patients) {
   for (let key in patients) {
@@ -54,17 +55,15 @@ class UserInfoScreen extends Component {
     return (
       <div className=''>
         {detailList(this.props.user, patient, this.props, this.state)}
-        <div style={{width: '100%', position: 'fixed', bottom: 0}}>
-          <button style={{width: '100%', backgroundColor: '#3CA0FF', height: 40}}
-            onClick={() => {
-              if (this.state.isEdit) {
-                this.updateInfo()
-              } else {
-                this.setState({isEdit: true})
-              }
-            }}
-          >{btnText}</button>
-        </div>
+        <button className='fullWidthFixed fullWidthBtn fullWidthBtnMain'
+          onClick={() => {
+            if (this.state.isEdit) {
+              this.updateInfo()
+            } else {
+              this.setState({isEdit: true})
+            }
+          }}
+        >{btnText}</button>
         <style jsx global>{`
           .list {
             border-top: 0px;
@@ -91,17 +90,23 @@ class UserInfoScreen extends Component {
           }
           .textLeft {
             flex: 1;
-            font-size: 16px;
-            color: #505050;
-            margin-left: 10px;
+            font-size: ${theme.fontsize};
+            color: ${theme.fontcolor};
+            margin-left: ${theme.tbmargin};
             float: left;
           }
           .textRight {
             flex: 1;
             text-align: right;
-            font-size: 14px;
-            color: #797979;
-            margin-right: 10px;
+            font-size: ${theme.fontsize};
+            color: ${theme.mainfontcolor};
+            margin-right: ${theme.tbmargin};
+          }
+          .textRight input{
+            border: none;
+            line-height: 40px;
+            padding: 0;
+            margin: 0;
           }
         `}</style>
       </div>
@@ -178,8 +183,8 @@ const editItem = (key, value, i, length, props) => {
       <div className={'textLeft'} style={{padding: 10}}>{key}</div>
       {
         key === '年龄' || key === '性别'
-        ? <div className={'textRight'}><input defaultValue={value} style={{textAlign: 'right', height: 30}} disabled /></div>
-        : <div className={'textRight'}><input defaultValue={value} style={{textAlign: 'right', height: 30}} /></div>
+        ? <div className={'textRight'}><input defaultValue={value} className='textRight' disabled /></div>
+        : <div className={'textRight'}><input defaultValue={value} className='textRight' /></div>
       }
     </div>
   )

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Router from 'next/router'
 import { updatePassword } from '../../../ducks'
 import { connect } from 'react-redux'
-// import swal from 'sweetalert2'
+import {theme} from 'components'
 
 /**
  * 修改密码
@@ -48,49 +48,54 @@ class UpdatePasswordScreen extends Component {
   }
   render () {
     return (<div className=''>
-      <div className='list'>
-        <div className='item' key={'oldpassword'}>
-          <span className='textLeft'>&nbsp;原密码 </span>
-          <input placeholder={'输入现有密码'} className='textInput' style={{width: '60%'}} type='password'
+      <div className='loginPageText'>
+        <section className={'flex tb-flex'} key={'oldpassword'}>
+          <span className='textLeft'>原密码 </span>
+          <input placeholder={'输入现有密码'} className='textInput' type='password'
             onChange={(e) => this.setState({ oldpassword: e.target.value })} />
-        </div>
-        <div className='item' key={'newpassword'}>
-          <span className='textLeft'> &nbsp;新密码 </span>
-          <input placeholder={'设置新密码，不少于六位'} className='textInput' style={{width: '60%'}} type='password'
+        </section>
+        <section className={'flex tb-flex'} key={'newpassword'}>
+          <span className='textLeft'>新密码 </span>
+          <input placeholder={'设置新密码，不少于六位'} className='textInput' type='password'
             onChange={(e) => this.setState({ newpassword: e.target.value })} />
-        </div>
-        <div className='item' key={'repassword'}>
+        </section>
+        <section className={'flex tb-flex'} key={'repassword'}>
           <span className='textLeft'>{'再次输入'}</span>
-          <input placeholder={'再次输入新密码'} className='textInput' style={{width: '60%'}} type='password'
+          <input placeholder={'再次输入新密码'} className='textInput' type='password'
             onChange={(e) => this.setState({ repassword: e.target.value })} />
-        </div>
+        </section>
       </div>
-      <button
-        style={{width: '90%', display: 'block', margin: '5%'}}
-        className='blockPrimaryBtn'
-        onClick={() => this.submit(this.props)}
-      >
-        完成
-      </button>
+      <footer style={{margin: '10px 15px'}}>
+        <button
+          className='btnBG btnBGMain loginPageBtnItem'
+          onClick={() => this.submit(this.props)}>完成</button>
+      </footer>
       <style jsx>{`
-        .list {
-          margin-bottom: 20px;
+        .loginPageText{
+          background: #fff;
+          margin: ${theme.tbmargin} 0;
+          padding: 0 ${theme.lrmargin};
+          border-top: 1px solid ${theme.bordercolor};
+          border-bottom: 1px solid ${theme.bordercolor};
         }
-        .item {
-          padding: 10px;
-          margin-bottom: 1px;
-          background-color: #fff;
-          display: flex;
+        .loginPageText section{
+          height: .46rem;
+          line-height: .46rem;
+          color: ${theme.mainfontcolor};
+          border-top: 1px solid ${theme.bordercolor};
         }
-        .textLeft {
-          flex: 3;
-          font-size: 16px;
-          color: #505050;
-          margin-left: 10px;
+        .loginPageText section:first-child{
+          border-top: 1px solid #fff;
         }
-        .textInput {
-          flex: 7;
-          margin-right: 15px;
+        .loginPageText input{
+          background: transparent;
+          border: none;
+          line-height: .46rem;
+          font-size: ${theme.fontsize};
+          padding-left: .06rem;
+        }
+        .loginPageBtnItem {
+          margin: .25rem 0 .1rem;
         }
       `}</style>
     </div>)

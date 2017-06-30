@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 // import Router from 'next/router'
-// import swal from 'sweetalert2'
+import {theme} from 'components'
 
 import { updatePatient } from '../../../ducks'
 
@@ -37,32 +37,39 @@ class BindCardScreen extends Component {
         <div>loading...</div>
       )
     }
-    return (<div>
-      <div>
-        <div className='item' key={'carteVital'}>
-          <span className='textLeft'>医保卡</span>
-          <input placeholder={'输入医保卡'} style={{float: 'right', width: '72%', marginRight: 15}} className='textInput'
-            onChange={(e) => this.setState({ carteVital: e.target.value })} />
-        </div>
+    return (
+      <div className='list'>
+      <div className='item flex tb-flex' key={'carteVital'}>
+        <span className='textLeft'>医保卡</span>
+        <input placeholder={'输入医保卡'} className='textInput'
+          onChange={(e) => this.setState({ carteVital: e.target.value })} />
       </div>
-      <button title='确定' onClick={() => this.submit()} style={{display: 'block', width: '100%', borderRadius: '10px', height: 40}}>确定</button>
+      <footer style={{margin: '20px 15px'}}>
+        <button title='确定' className='btnBG btnBGMain' onClick={() => this.submit()}>确定</button>
+      </footer>
       {/* <Popup ref={popup => { this.popup = popup }} /> */}
       <style jsx>{`
         .item {
-          padding: 10px;
-          height: 51px;
-          flex-wrap: nowrap;
+          padding: 10px 20px;
+          {/*height: 31px;*/}
+          {/*flexWrap: nowrap;*/}
           align-items: center;
-          flex-direction: row;
+          flexDirection: row;
           background-color: #ffffff;
-          justify-content: 'space-between';
-          margin-bottom: 10px;
+          justifyContent: space-between;
+          margin-bottom: 1px;
         }
         .textLeft {
-          flex: 1;
-          font-size: 16px;
-          color: #505050;
-          margin-left: 15px;
+          {/*font-size: ;*/}
+          color: ${theme.fontcolor};
+          font-size: ${theme.fontsize};
+          padding-right: ${theme.tbmargin};
+        }
+        .textInput{
+          border: none;
+          background: #fff;
+          font-size: ${theme.fontsize};
+          color: ${theme.mainfontcolor};
         }
       `}</style>
     </div>)

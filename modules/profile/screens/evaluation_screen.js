@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 // import Router from 'next/router'
 import localforage from 'localforage'
 // import Link from 'next/link'
+import {theme} from 'components'
 import { queryUser, queryHospitals, addHospitalEvaluate } from '../../../ducks'
 import { isEmptyObject } from '../../../utils'
 import EvaluationItem from '../components/evaluation_item'
@@ -89,15 +90,20 @@ class EvaluationScreen extends Component {
           if (item.key === 'other') {
             return (
               <div style={{padding: 10, backgroundColor: '#ffffff'}}>
-                <div>{item.num}. {item.title}</div>
+                <header className='header'>{item.num}.&nbsp;{item.title}</header>
                 <div style={{padding: 10}}>
                   <textarea
                     rows='5'
                     placeholder='请填写您的意见或建议，以帮助我们改进。'
-                    style={{backgroundColor: '#eeeeee', width: '100%'}}
+                    style={{background: '#F2F2F2', border: '1px solid #D8D8D8', width: '100%', fontSize: theme.fontsize}}
                     onChange={(e) => { this.setState({advice: e.target.value}) }}
                   />
                 </div>
+                <style jsx>{`
+                  .header{
+                     color: ${theme.mainfontcolor}
+                  }
+                `}</style>
               </div>
             )
           }
@@ -105,7 +111,7 @@ class EvaluationScreen extends Component {
         }) }
         <div>
           <button
-            style={{width: '100%', backgroundColor: '#3CA0FF', display: 'block', padding: 10, textAlign: 'center'}}
+            className='fullWidthFixed fullWidthBtn fullWidthBtnMain'
             onClick={() => { this.submitEvaluation() }}
           >提交</button>
         </div>
