@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import localforage from 'localforage'
 import _ from 'lodash'
 import moment from 'moment'
+import {Loading, FilterCard, FilterSelect, FilterTime, Modal, ModalHeader, ModalFooter, FilterTimeResult, theme, TabHeader, CardWhite} from 'components'
 // import RangeDemo from '../components/date_rang'
 
 import {
@@ -26,7 +27,8 @@ class ReportScreen extends Component {
       selectPatientId: '',
       maxDate: moment().format('YYYY-MM-DD'),
       startDate: undefined,
-      endDate: undefined
+      endDate: undefined,
+      showFilterModal: false,
     }
   }
   componentWillMount () {
@@ -164,6 +166,8 @@ class ReportScreen extends Component {
     }
     return labs
   }
+
+
   renderPatientList () {
     const patients = this.props.patients
     let patientArr = []
@@ -171,36 +175,40 @@ class ReportScreen extends Component {
       patientArr.push(patient)
     })
     return (
-      <div style={{padding: 10, overflow: 'hidden', backgroundColor: '#fff', marginBottom: 15}}>
-        <div style={{border: '1px solid #ccc', display: 'flex'}}>
-          <select style={{flex: 11, height: 30, padding: 5, border: 'none', backgroundColor: '#fff'}}
-            ref='patientSelect'
-            onChange={(e) => {
-              this.props.selectPatient({patientId: e.target.value})
-            }}
-          >{
-            patientArr.map((patient) => {
-              return (
-                <option key={patient.id} style={{textAlign: 'center', font: 15}} value={patient.id}>
-                  {patient.name}
-                </option>
-              )
-            })
-          }
-          </select>
-        </div>
-        <div style={{marginTop: 10, display: 'flex'}}>
-          <input type='date'
-            onChange={(e) => { this.setState({startDate: e.target.value}) }}
-            style={{border: '1px solid #ccc', flex: 6}} name='startDate' max={this.state.maxDate} />
-          <span style={{flex: 1, padding: 5, textAlign: 'center'}}> - </span>
-          <input type='date'
-            onChange={(e) => { this.setState({endDate: e.target.value}) }}
-            style={{border: '1px solid #ccc', flex: 6}} name='endDate' max={this.state.maxDate} />
-        </div>
-      </div>
+      <FilterCard>
+        <FilterSelect
+          changePatientSelect={(e) => {
+            console.log('------changePatientSelect', e.target.value);
+            this.setState({selectedId: e.target.value})
+          }}
+          patientArr = {patientArr}
+        />
+        <FilterTime clickShowFilterModal={() => {this.setState({showFilterModal: true})}} />
+      </FilterCard>
     )
   }
+
+  renderModal() {
+    let modalHtml;
+    modalHtml = <Modal showModalState={this.state.showTipModal || this.state.showFilterModal}>
+      <ModalHeader>请选择起止时间</ModalHeader>
+      <div className='flex' style={{padding: 20}}>
+        <input type='date'
+          onChange={(e) => { this.setState({startDate: e.target.value}) }}
+          style={{border: '1px solid #ccc', flex: 6}} name='startDate' max={this.state.maxDate} />
+        <span style={{flex: 1, padding: 5, textAlign: 'center'}}> - </span>
+        <input type='date'
+          onChange={(e) => { this.setState({endDate: e.target.value}) }}
+          style={{border: '1px solid #ccc', flex: 6}} name='endDate' max={this.state.maxDate} />
+      </div>
+      <ModalFooter>
+        <button className='modalBtn modalBtnBorder' onClick={(e) => {this.setState({showFilterModal: false})}}>取消</button>
+        <button className='modalBtn modalMainBtn' onClick={(e) => {this.setState({showFilterModal: false})}}>确定</button>
+      </ModalFooter>
+    </Modal>
+    return modalHtml;
+  }
+
   renderLaboratory () {
     let laboratorieData = this.props.laboratories
     const laboratories = this.dateRangeFilterLabs(laboratorieData)
@@ -211,29 +219,26 @@ class ReportScreen extends Component {
             laboratories.map((item, i) => {
               return (
                 <div className={'itemView'} key={i}>
-                  <div className={'itemTitleView'}>
-                    <div style={{ flex: 1 }}>{Object.keys(item)[0]}</div>
-                    <div className={'dateTitleText'}>[{item[Object.keys(item)[0]].length}项]</div>
+                  <div className={'itemTitleView flex'}>
+                    <span>{Object.keys(item)[0]}</span>
+                    <span>[{item[Object.keys(item)[0]].length}项]</span>
                   </div>
-                  <div className={'itemContentsView'}>
+                  <ul className={'itemContentsView'}>
                     {
                       item[Object.keys(item)[0]].map((item, i) => (
-                        <div key={item.id}>
-                          <div onClick={() => {
+                        <li key={item.id}
+                          onClick={() => {
                             this.props.selectLaboratory({
                               date: item.reportTime,
                               laboratoryId: item.id
                             })
                             Router.push('/report/laboratory_detail?laboratoryId=' + item.id + '&date=' + item.reportTime)
                           }}>
-                            <div className={'itemContentView'}>
-                              <div className={'itemText'}>{item.inspectName}</div>
-                            </div>
-                          </div>
-                        </div>
+                          {item.inspectName}
+                        </li>
                       ))
                     }
-                  </div>
+                  </ul>
                 </div>
               )
             })
@@ -248,7 +253,7 @@ class ReportScreen extends Component {
   render () {
     if (this.props.loading || this.state.isInit) {
       return (
-        <div>loading...</div>
+        <div><Loading showLoading>loading...</Loading></div>
       )
     }
     if (this.props.error) {
@@ -259,6 +264,7 @@ class ReportScreen extends Component {
     return (
       <div>
         <div style={{width: '100%'}}>
+          {this.renderModal()}
           {this.renderPatientList()}
           {/*<RangeDemo />*/}
           {
@@ -266,46 +272,26 @@ class ReportScreen extends Component {
           }
         </div>
         <style jsx global>{`
-          .tabBarUnderlineStyle {
-            background-color: #3CA0FF;
-          }
-          .tabBarTextStyle {
-            font-size: 15px;
-            font-weight: bold;
-            margin-top: 5px;
-          }
-          .itemTitleView {
-            display: flex;
-            margin-bottom: 3px;
-            padding: 10px;
-            padding-horizontal: 10px;
-            padding-vertical: 5px;
-            align-items: center;
-            flex-direction: row;
-            background-color: #FBFBFB;
-          }
-          .dateTitleText {
-            float: right;
-            font-size: 12px
-            color: #B4B4B4;
-          }
           .itemView {
             margin-bottom: 10px;
-            flex-direction: column;
+            background: #fff;
           }
-          .itemContentsView {
-            background-color: white;
+          .itemTitleView {
+            background: #fff;
+            color: ${theme.nfontcolor};
+            font-size: ${theme.nfontsize};
+            border-top: 1px solid ${theme.bordercolor};
+            border-bottom: 1px solid ${theme.bordercolor};
+            padding: .06rem ${theme.lrmargin};
+            justify-content: space-between;
           }
-          .itemContentView {
-            padding: 5px 10px;
-            background-color: white;
-            justify-content: center;
-            padding-horizontal: 10px;
-            border-bottom: solid 1px #eeeeee;
+          .itemContentsView li {
+            line-height: .42rem;
+            padding: 0 ${theme.lrmargin};
+            color: ${theme.mainfontcolor};
           }
-          .itemText {
-            font-size: 15px;
-            color: #505050;
+          .itemContentsView li:nth-of-type(2n+1) {
+            background: #f9f9f9;
           }
         `}</style>
       </div>

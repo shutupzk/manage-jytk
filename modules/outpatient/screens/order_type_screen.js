@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import {theme} from 'components'
 
 // import { isEmptyObject } from '../../../utils'
 import Router from 'next/router'
@@ -20,25 +21,48 @@ class OrderTypeScreen extends Component {
   }
   render () {
     return (
-      <div>
+      <div className='bottomView'>
         <div
-          style={{backgroundColor: '#fff', marginBottom: 1, padding: '10px 15px', display: 'flex'}}
           onClick={() => {
             this.toPage('appointment')
-          }}
-        >
-          <div style={{flex: 10}}>挂号费诊金费用</div>
-          <div style={{flex: 2, textAlign: 'right'}}>></div>
+          }}>
+          <a className='flex tb-flex'>
+            <p className='flex tb-flex'>
+              挂号费诊金费用
+            </p>
+            <i className='back-left'></i>
+          </a>
         </div>
         <div
-          style={{backgroundColor: '#fff', marginBottom: 1, padding: '10px 15px', display: 'flex'}}
           onClick={() => {
             this.toPage('outpatient')
-          }}
-        >
-          <div style={{flex: 10}}>门诊费用</div>
-          <div style={{flex: 2, textAlign: 'right'}}>></div>
+          }}>
+          <a className='flex tb-flex'>
+            <p className='flex tb-flex'>
+              门诊费用
+            </p>
+            <i className='back-left'></i>
+          </a>
         </div>
+        <style jsx>{`
+          .bottomView {
+            border-top: 1px solid ${theme.bordercolor};
+            background: #fff;
+            margin-top: ${theme.tbmargin};
+          }
+          .bottomView a{
+            border-bottom: 1px solid ${theme.bordercolor};
+            padding: 0 .15rem;
+            justify-content: space-between;
+          }
+          .bottomView p{
+            color: ${theme.mainfontcolor};
+            line-height: 44px;
+          }
+          .bottomView i{
+            transform: rotate(135deg);
+          }
+        `}</style>
       </div>
     )
   }

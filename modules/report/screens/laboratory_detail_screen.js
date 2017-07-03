@@ -5,6 +5,8 @@ import {
   queryLaboratoryItems
 } from '../../../ducks'
 import {isEmptyObject} from '../../../utils'
+import {theme} from 'components'
+
 class LaboratoryDetailScreen extends Component {
   constructor (props) {
     super(props)
@@ -61,24 +63,16 @@ class LaboratoryDetailScreen extends Component {
         <div>
           {
             laboratory.inspectionItems.map((item, i) => (
-              <div key={item.id} style={{padding: '0px 10px', display: 'flex', backgroundColor: i % 2 === 0 ? '#F8F8F8' : 'white'}}>
+              <div key={item.id} className={'itemTitleContainerView itemTitleContainerViewCon'}>
                 {/*<div className='itemTitleView' style={{flex: 1, borderLeftWidth: 0}}>
                   <div className={'itemText'}>{i + 1}</div>
                 </div>*/}
-                <div className='itemTitleView' style={{flex: 4, borderLeftWidth: 0}}>
-                  <div className={'itemText'}>{item.itemName}</div>
-                </div>
-                <div className='itemTitleView' style={{flex: 3}}>
-                  <div style={{fontSize: 14, textAlign: 'center', color: item.abnormalSign === '正常' ? '#505050' : 'white', backgroundColor: item.abnormalSign === '低' ? 'green' : (item.abnormalSign === '正常' ? '#ffffff' : '#E94C47')}}>
-                    {item.resultValue}{item.abnormalSign === '低' ? '↓' : (item.abnormalSign === '正常' ? '' : '↑')}
-                  </div>
-                </div>
-                <div className='itemTitleView' style={{flex: 2}}>
-                  <div className={'itemText'}>{item.unit}</div>
-                </div>
-                <div className='itemTitleView' style={{flex: 3}}>
-                  <div className={'itemText'}>{item.minValue}-{item.maxValue}</div>
-                </div>
+                <li className={'left'} style={{width: '40%'}}>{item.itemName}</li>
+                <li className={'left'} style={{width: '20%'}} style={{color: item.abnormalSign === '正常' ? '#505050' : 'white', backgroundColor: item.abnormalSign === '低' ? 'green' : (item.abnormalSign === '正常' ? '#ffffff' : '#E94C47')}}>
+                  {item.resultValue}{item.abnormalSign === '低' ? '↓' : (item.abnormalSign === '正常' ? '' : '↑')}
+                </li>
+                <li className={'left'} style={{width: '18%'}}>{item.unit}</li>
+                <li className={'left'} style={{width: '20%'}}>{item.minValue}-{item.maxValue}</li>
                 {/*<div className='itemTitleView' style={{flex: 3}}>
                   <div className={'itemText'}>{item.abnormalSign}</div>
                 </div>*/}
@@ -110,7 +104,7 @@ class LaboratoryDetailScreen extends Component {
               <div style={{alignItems: 'flex-end'}}>
                 <div className={'titleText'}>{laboratory.inspectName}</div>
               </div>
-              <div style={{textAlign: 'center'}}>检验：{laboratory.inspectTime} &nbsp;报告：{laboratory.reportTime}</div>
+              <div style={{textAlign: 'center', fontSize: theme.nfontsize, color: theme.fontcolor}}>检验：{laboratory.inspectTime} &nbsp;报告：{laboratory.reportTime}</div>
               {/*<div className={'titleTextView'}>
                 <div className={'userText'}>姓名: {patients[Object.keys(patients)[0]].name}</div>
                 <div className={'userText'}>性别: {patients[Object.keys(patients)[0]].sex === '1' ? '男' : '女'}</div>
@@ -118,26 +112,16 @@ class LaboratoryDetailScreen extends Component {
               </div>*/}
             </div>
             <div style={{backgroundColor: '#ffffff', padding: '10px'}}>样本： {laboratory.sampleName}</div>
-            <div className={'itemTitleContainerView'}>
-              {/*<div className='itemTitleView' style={{flex: 1}}>
-                <div className={'itemTitleText'}>序号</div>
-              </div>*/}
-              <div className='itemTitleView' style={{flex: 4}}>
-                <div className={'itemTitleText'}>检测项目</div>
-              </div>
-              <div className='itemTitleView' style={{flex: 3}}>
-                <div className={'itemTitleText'}>检测值</div>
-              </div>
-              <div className='itemTitleView' style={{flex: 2}}>
-                <div className={'itemTitleText'}>单位</div>
-              </div>
-              <div className='itemTitleView' style={{flex: 3}}>
-                <div className={'itemTitleText'}>参考值</div>
-              </div>
+            <ul className={'itemTitleContainerView itemTitleContainerViewHeader'}>
+              <li className={'left'} style={{width: '40%'}}>检测项目</li>
+              <li className={'left'} style={{width: '20%'}}>检测值</li>
+              <li className={'left'} style={{width: '18%'}}>单位</li>
+              <li className={'left'} style={{width: '20%', border: 'none'}}>参考值</li>
+              <li className='clearfix'></li>
               {/*<div className='itemTitleView' style={{flex: 2}}>
                 <div className={'itemTitleText'}>结果</div>
               </div>*/}
-            </div>
+            </ul>
             {
               this._renderItems(laboratory)
             }
@@ -166,6 +150,27 @@ class LaboratoryDetailScreen extends Component {
             </div>
           </div>
           <style jsx global>{`
+            .itemTitleContainerView{
+              background: #fff;
+              line-height: .3rem;
+              color: ${theme.fontcolor};
+              font-size: ${theme.nfontsize};
+              border-top:1px solid ${theme.bordercolor};
+              border-bottom: 1px solid ${theme.bordercolor};
+            }
+            .itemTitleContainerViewHeader li:not(:last-child){
+              border-right: 1px solid ${theme.bordercolor};
+              text-indent: 6px;
+            }
+            .itemTitleContainerViewHeader{
+              
+            }
+            .itemTitleContainerViewCon:nth-of-type(2n) {
+              backgoround: #f8f8f8;
+              line-height: .4rem;
+              color: ${theme.fontcolor};
+              font-size: ${theme.fontsize};
+            }
             .itemTitleView {
               justify-content: center;
               border-color: #B4B4B4;
@@ -178,9 +183,9 @@ class LaboratoryDetailScreen extends Component {
             }
             .titleText {
               text-align: center;
-              font-size: 17px;
-              font-weight: bold;
-              color: #505050
+              font-size: .17rem;
+              color: ${theme.mainfontcolor};
+              padding: 0rem 0 .1rem;
             }
             .titleTextView {
               flex: 1;
