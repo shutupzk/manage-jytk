@@ -1,8 +1,7 @@
 import React, {Component } from 'react'
 import { connect } from 'react-redux'
 import Link from 'next/link'
-import {Loading, CardWhite} from 'components'
-import theme from 'components/theme'
+import {Loading, CardWhite, ErrCard, theme} from 'components'
 import { signin, queryUser, queryPatients, signout, clearPateints } from '../../../ducks'
 
 class ProfileScreen extends Component {
@@ -150,7 +149,7 @@ class ProfileScreen extends Component {
     const token = this.props.token
     const user = this.props.user
     if (this.props.error) {
-      return <div className='container'>error...</div>
+      return <div className='container'><ErrCard /></div>
     }
     if (this.props.loading) {
       return <Loading showLoading={this.props.loading || this.state.isInit} />

@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import QuestionList from '../components/question_list'
 import { queryQuestions } from '../../../ducks'
 import { isEmptyObject } from '../../../utils'
-import {theme, Loading} from 'components'
+import {theme, Loading, ErrCard} from 'components'
 class QuestionsScreen extends Component {
   constructor (props) {
     super(props)
@@ -27,7 +27,7 @@ class QuestionsScreen extends Component {
     if (this.props.error) {
       return (
         <div>
-          error...
+          <ErrCard />
         </div>
       )
     }

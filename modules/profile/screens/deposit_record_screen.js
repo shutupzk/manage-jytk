@@ -5,7 +5,7 @@ import localforage from 'localforage'
 // import Link from 'next/link'
 import { queryPatients, selectPatient, queryDeposits, selectDeposit } from '../../../ducks'
 import { isEmptyObject } from '../../../utils'
-import {theme, Loading} from 'components'
+import {theme, Loading, ErrCard} from 'components'
 class DepositRecordScreen extends Component {
   constructor (props) {
     super(props)
@@ -50,7 +50,7 @@ class DepositRecordScreen extends Component {
     if (this.props.error) {
       return (
         <div>
-          error...
+          <ErrCard />
         </div>
       )
     }

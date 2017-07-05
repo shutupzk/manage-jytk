@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Link from 'next/link'
 import { connect } from 'react-redux'
 import Router from 'next/router'
-import { CardWhite, Loading } from '../../../components'
+import { CardWhite, Loading, ErrCard } from 'components'
 import {
   queryHospitals,
   queryNewsGroups,
@@ -137,7 +137,7 @@ class Home extends Component {
                 'loading...'
               :
                 (this.props.newsError ?
-                  'error'
+                  <ErrCard />
                 :
                   <ul>
                     {

@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import _ from 'lodash'
 import Link from 'next/link'
 import { queryDepartmentTypes } from '../../../ducks'
+import {Loading, ErrCard} from 'components'
 
 class DepartmentTypeScreen extends Component {
   constructor (props) {
@@ -25,14 +26,14 @@ class DepartmentTypeScreen extends Component {
     if (departmentType.loading && !this.toDetail) {
       return (
         <div>
-          <h1>loading...</h1>
+          <h1><Loading showLoading={true} /></h1>
         </div>
       )
     }
     if (departmentType.error && !this.toDetail) {
       return (
         <div>
-          <h1>error...</h1>
+          <h1><ErrCard /></h1>
         </div>
       )
     }

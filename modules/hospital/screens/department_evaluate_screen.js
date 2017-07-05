@@ -4,6 +4,7 @@ import Router from 'next/router'
 import moment from 'moment'
 import {queryDepartmentDetail} from '../../../ducks'
 import { isEmptyObject } from '../../../utils'
+import {Loading, ErrCard} from 'components'
 class DepartmentEvaluateScreen extends Component {
   componentWillMount () {
     var departmentId = this.props.departmentId || this.props.url.query.departmentId
@@ -60,14 +61,14 @@ class DepartmentEvaluateScreen extends Component {
     if (this.props.loading) {
       return (
         <div>
-          <h1>loading...</h1>
+          <h1><Loading showLoading={true} /></h1>
         </div>
       )
     }
     if (this.props.error) {
       return (
         <div>
-          <h1>error...</h1>
+          <h1><ErrCard /></h1>
         </div>
       )
     }

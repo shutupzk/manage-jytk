@@ -9,6 +9,7 @@ import localforage from 'localforage'
 import DepartmentList from '../../hospital/components/department_list'
 import { signin, queryUser, queryPatients, queryDepartments, selectDepartment } from '../../../ducks'
 import { isEmptyObject, convertPinyin, convertPinyinFirst, replaceSearchKey } from '../../../utils'
+import {Loading, ErrCard, RequireLoginCard} from 'components'
 
 class AppointmentDepartmentListScreen extends Component {
   constructor (props) {
@@ -56,21 +57,21 @@ class AppointmentDepartmentListScreen extends Component {
     if (!this.props.token) {
       return (
         <div>
-          <span>请先登录...</span>
+          <span><RequireLoginCard /></span>
         </div>
       )
     }
     if (this.props.loading && !this.toDetail) {
       return (
         <div>
-          <span>loading...</span>
+          <span><Loading showLoading={true} /></span>
         </div>
       )
     }
     if (this.props.error && !this.toDetail) {
       return (
         <div>
-          <span>error...</span>
+          <span><ErrCard /></span>
         </div>
       )
     }

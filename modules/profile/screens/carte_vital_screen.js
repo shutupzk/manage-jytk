@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import {theme, Prompt} from 'components'
+import {theme, Prompt, ErrCard, Loading} from 'components'
 
 import { updatePatient } from '../../../ducks'
 
@@ -61,12 +61,12 @@ class CarteVitalScreen extends Component {
   render () {
     // if (this.props.error) {
     //   return (
-    //     <div>error...</div>
+    //      <div><ErrCard /></div>
     //   )
     // }
     if (this.props.loading) {
       return (
-        <div>loading...</div>
+        <div><Loading showLoading={true} /></div>
       )
     }
     // const patient = this.getSelfPatient(this.props.patients)

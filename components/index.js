@@ -9,6 +9,8 @@ import {Modal, ModalHeader, ModalFooter, FilterTimeResult} from './Modal'
 import TabHeader from './TabHeader'
 import NoDataCard from './NoDataCard'
 import LoadErrCard from './LoadErrCard'
+import ErrCard from './ErrCard'
+import RequireLoginCard from './RequireLoginCard'
 
 export {
     List,
@@ -26,7 +28,9 @@ export {
     FilterTimeResult,
     TabHeader,
     NoDataCard,
-    LoadErrCard
+    LoadErrCard,
+    ErrCard,
+    RequireLoginCard
 }
 
 

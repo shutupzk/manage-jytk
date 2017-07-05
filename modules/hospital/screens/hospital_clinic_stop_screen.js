@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { queryClinicStops } from '../../../ducks'
-
+import {ErrCard, Loading, theme} from 'components'
 
 class HospitalClinicStop extends Component {
   constructor (props) {
@@ -21,12 +21,12 @@ class HospitalClinicStop extends Component {
   render () {
     if (this.props.loading || this.state.isInit) {
       return (
-        <div>loading...</div>
+        <div><Loading showLoading={true} /></div>
       )
     }
     if (this.props.error) {
       return (
-        <div>error...</div>
+        <div><ErrCard /></div>
       )
     }
     const clinicStops = this.props.clinicStops

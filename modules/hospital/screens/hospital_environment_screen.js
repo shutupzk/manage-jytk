@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import {ErrCard, theme, Loading} from 'components'
 
 import {
   queryHospitals,
@@ -25,12 +26,12 @@ class HospitalEnvironmentScreen extends Component {
   render () {
     if (this.props.loading) {
       return (
-        <div>loading...</div>
+        <div><Loading showLoading={true} /></div>
       )
     }
     if (this.props.error) {
       return (
-        <div>error...</div>
+        <div><ErrCard /></div>
       )
     }
     const hospital = this.getHospital(this.props.hospitals)

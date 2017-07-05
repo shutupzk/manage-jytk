@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import localforage from 'localforage'
 import Router from 'next/router'
 import _ from 'lodash'
-import {Loading, FilterCard, FilterSelect, FilterTime, Modal, ModalHeader, ModalFooter, FilterTimeResult, theme, TabHeader} from 'components'
+import {Loading, FilterCard, FilterSelect, FilterTime, Modal, ModalHeader, ModalFooter, FilterTimeResult, theme, TabHeader, ErrCard} from 'components'
 
 import {
   queryPatients,
@@ -120,7 +120,7 @@ class InpatientScreen extends Component {
       return (<div><Loading showLoading={true} /></div>)
     }
     if (this.props.error) {
-      return (<div>error...</div>)
+      return (<div><ErrCard /></div>)
     }
     const patientsData = this.props.patientsData
     const selectInpatientId = this.props.selectInpatientId

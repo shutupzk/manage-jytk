@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import localforage from 'localforage'
 import moment from 'moment'
 import _ from 'lodash'
-import {Loading, FilterCard, FilterSelect, FilterTime, Modal, ModalHeader, ModalFooter, FilterTimeResult, theme, TabHeader} from 'components'
+import {Loading, FilterCard, FilterSelect, FilterTime, Modal, ModalHeader, ModalFooter, FilterTimeResult, theme, TabHeader, ErrCard} from 'components'
 
 import {queryOutpatient, queryPatients} from '../../../ducks'
 import { isEmptyObject } from '../../../utils'
@@ -151,7 +151,7 @@ class OutpatientScreen extends Component {
       return (<div><Loading showLoading>loading...</Loading></div>)
     }
     if (this.props.error) {
-      return (<div>error...</div>)
+      return (<div><ErrCard /></div>)
     }
     var outpatients = this.getOutPatientArr(this.props.outpatient, this.state.payStatus, this.state.selectedId)
     const types = [{text: '未缴费', value: false}, {text: '已缴费', value: true}]

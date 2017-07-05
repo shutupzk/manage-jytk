@@ -3,7 +3,7 @@ import Router from 'next/router'
 import { connect } from 'react-redux'
 import localforage from 'localforage'
 // import swal from 'sweetalert2'
-import {theme, Loading} from 'components'
+import {theme, Loading, ErrCard} from 'components'
 
 import { signin, queryUser, selectAppointment, queryPatients, queryAppointmentDetail, updateAppointment, selectDepartment, selectDoctor } from '../../../ducks'
 import { isEmptyObject } from '../../../utils'
@@ -102,7 +102,7 @@ class AppointmentDetailScreen extends Component {
       return (<div><Loading showLoading={true} /></div>)
     }
     if (this.props.error) {
-      return (<div>error...</div>)
+      return (<div><ErrCard /></div>)
     }
     const { patients, appointments, appointmentId } = this.props
     const appointment = appointments[appointmentId]

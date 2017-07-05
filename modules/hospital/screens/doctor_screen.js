@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Router from 'next/router'
 import localforage from 'localforage'
+import {Loading, ErrCard} from 'components'
 // import _ from 'lodash'
 
 import DoctorList from '../components/doctor_list'
@@ -62,14 +63,14 @@ class DoctorScreen extends Component {
     if (this.props.loading || this.state.isInit) {
       return (
         <div>
-          <h1>loading...</h1>
+          <h1><Loading showLoading={true} /></h1>
         </div>
       )
     }
     if (this.props.error) {
       return (
         <div>
-          <h1>error...</h1>
+          <h1><ErrCard /></h1>
         </div>
       )
     }
