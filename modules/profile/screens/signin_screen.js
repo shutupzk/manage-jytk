@@ -11,6 +11,8 @@ class SigninScreen extends Component {
     super(props)
     this.state = {
       animating: false,
+      autoClose: true,
+      closeTime: 2,
       isShow: false,
       promptContent: ''
     }
@@ -96,7 +98,7 @@ class SigninScreen extends Component {
           </Link>
         </footer>
         <img src={`/static/icons/loginlogo.png`} alt="" className="loginpagelogo" />
-        <Prompt isShow={this.state.isShow}>{this.state.promptContent}</Prompt>
+        <Prompt isShow={this.state.isShow} autoClose={this.state.autoClose} closeTime={this.state.closeTime}>{this.state.promptContent}</Prompt>
         <style jsx>{`
           .registerbtn{
             margin-top: ${theme.lrmargin};

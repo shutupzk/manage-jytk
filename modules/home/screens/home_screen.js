@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import Router from 'next/router'
 import { CardWhite, Loading } from '../../../components'
 import {
+  queryHospitals,
   queryNewsGroups,
   queryNews,
   selectNews
@@ -26,6 +27,7 @@ class Home extends Component {
   async queryNews () {
     this.setState({isInit: true})
     await this.props.queryNewsGroups(this.props.client)
+    await this.props.queryHospitals(this.props.client)
     // let newses = this.props.newses
     // let newNewses = this.getNewses(newses) || []
     // if (newNewses.length > 0) {
@@ -44,6 +46,9 @@ class Home extends Component {
     }
     return newNewses
   }
+  getHospital (hospitals) {
+    return hospitals[Object.keys(hospitals)[0]]
+  }
   gotoDetail (news) {
     selectNews({newsGroupId: news.groupId, newsId: news.id})
     Router.push('/hospital/news_detail?newsId=' + news.id + '&newsGroupId=' + news.groupId)
@@ -54,8 +59,12 @@ class Home extends Component {
     Router.push('/hospital')
   }
   render () {
+    if (this.props.loading || this.state.isInit) {
+      return (<div>Loading</div>)
+    }
     let newses = this.props.newses
     let newNewses = this.getNewses(newses)
+    let hospital = this.getHospital(this.props.hospitals)
     return (
       <div>
         <img src='/static/icons/banner3.png' style={{width: '100%'}} />
@@ -106,8 +115,8 @@ class Home extends Component {
             <img src='/static/icons/hospital_bg_image.png' alt='' className='hosbgimg' />
             <section>
               <img src='/static/icons/hospital_logo.png' alt='' />
-              <p>广东省广州市中山二路106号</p>
-              <p>联系电话：020-83827812</p>
+              <p>{hospital.address || '广东省广州市中山二路106号'}</p>
+              <p>联系电话：{hospital.phone || '020-83827812'}</p>
             </section>
             <article className='back-left flex tb-flex'>&nbsp;</article>
           </CardWhite>
@@ -124,10 +133,10 @@ class Home extends Component {
           </dl>
           <ul>
             {
-              this.props.loading || this.state.isInit ?
+              this.props.newsLoadding || this.state.isInit ?
                 'loading...'
               :
-                (this.props.error ?
+                (this.props.newsError ?
                   'error'
                 :
                   <ul>
@@ -272,11 +281,15 @@ class Home extends Component {
 function mapStateToProps (state) {
   return {
     newses: state.news.data,
+    hospitals: state.hospitals.data,
     loading: state.hospitals.loading,
-    error: state.hospitals.error
+    error: state.hospitals.error,
+    newsLoadding: state.news.loading,
+    newsError: state.news.error
   }
 }
 export default connect(mapStateToProps, {
+  queryHospitals,
   queryNewsGroups,
   queryNews,
   selectNews})(Home)

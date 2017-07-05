@@ -56,6 +56,7 @@ export function user (state = initState, action = {}) {
     case PROFILE_USER_SIGNOUT_FAIL:
     case PROFILE_USER_QUERYUSER_FAIL:
     case PROFILE_USER_UPDATEPASSWORD_FAIL:
+    case PROFILE_FORGOT_PASSWORD_FAIL:
       return Object.assign({}, state, { loading: false, error: action.error })
     case PROFILE_USER_SIGNUP_SUCCESS:
       return Object.assign({}, state, { loading: false, error: null })
@@ -402,16 +403,34 @@ export const checkVerifyCode = (client, {phone, code}) => async dispatch => {
     return e.message
   }
 }
-
-export const forgotPassword = ({phone, password}) => async dispatch => {
+const FORGETPASSWORD = gql`
+  mutation($phone: String!, $password: String!, $code: String!){
+    updatePassword(phone: $phone, input: {verifyCode: $code, newPassword: $password}){
+      id
+    }
+  }
+`
+export const forgotPassword = (client, {phone, password, code}) => async dispatch => {
   dispatch({
     type: PROFILE_FORGOT_PASSWORD
   })
   try {
+    let data = await client.mutate({
+      mutation: FORGETPASSWORD,
+      variables: { phone, password, code }
+    })
+    if (data.errors) {
+      dispatch({
+        type: CHECK_VERIFY_CODE_FAIL,
+        error: data.errors[0].message
+      })
+      return data.error[0].message
+    }
     dispatch({
       type: PROFILE_FORGOT_PASSWORD_SUCCESS,
-      data: phone
+      data: data.data.updatePassword
     })
+    return null
   } catch (e) {
     dispatch({
       type: PROFILE_FORGOT_PASSWORD_FAIL,

@@ -18,6 +18,8 @@ class SignupScreen extends Component {
       verCode: '',
       buttonTitle: '获取',
       clickable: false,
+      closeTime: 2,
+      autoClose: true,
       isShow: false,
       promptContent: ''
     }
@@ -29,16 +31,18 @@ class SignupScreen extends Component {
     await this.props.sendVerifyCode(this.props.client, {phone: this.state.phone})
     if (this.props.error) {
       this.setState({
+        closeTime: 2,
+        autoClose: true,
         isShow: true,
         promptContent: '发送失败'
       })
-      this.interval = setInterval(() => {
-        if (n === 0) {
-          clearInterval(this.interval)
-          this.setState({ isShow: false, promptContent: '' })
-        }
-        n--
-      }, 1000)
+      // this.interval = setInterval(() => {
+      //   if (n === 0) {
+      //     clearInterval(this.interval)
+      //     this.setState({ isShow: false, promptContent: '' })
+      //   }
+      //   n--
+      // }, 1000)
       return
     }
     let i = 10
@@ -62,45 +66,51 @@ class SignupScreen extends Component {
     const repassword = this.state.repassword
     if (!phone) {
       this.setState({
+        closeTime: 2,
+        autoClose: true,
         isShow: true,
         promptContent: '请输入手机号'
       })
-      this.interval = setInterval(() => {
-        if (i === 0) {
-          clearInterval(this.interval)
-          this.setState({ isShow: false, promptContent: '' })
-        }
-        i--
-      }, 1000)
+      // this.interval = setInterval(() => {
+      //   if (i === 0) {
+      //     clearInterval(this.interval)
+      //     this.setState({ isShow: false, promptContent: '' })
+      //   }
+      //   i--
+      // }, 1000)
       return
       // return console.log('', '请输入手机号')
     }
     if (phone.length !== 11) {
       this.setState({
+        closeTime: 2,
+        autoClose: true,
         isShow: true,
         promptContent: '手机号格式不正确'
       })
-      this.interval = setInterval(() => {
-        if (i === 0) {
-          clearInterval(this.interval)
-          this.setState({ isShow: false, promptContent: '' })
-        }
-        i--
-      }, 1000)
+      // this.interval = setInterval(() => {
+      //   if (i === 0) {
+      //     clearInterval(this.interval)
+      //     this.setState({ isShow: false, promptContent: '' })
+      //   }
+      //   i--
+      // }, 1000)
       return
     }
     if (!code) {
       this.setState({
+        closeTime: 2,
+        autoClose: true,
         isShow: true,
         promptContent: '请输入验证码'
       })
-      this.interval = setInterval(() => {
-        if (i === 0) {
-          clearInterval(this.interval)
-          this.setState({ isShow: false, promptContent: '' })
-        }
-        i--
-      }, 1000)
+      // this.interval = setInterval(() => {
+      //   if (i === 0) {
+      //     clearInterval(this.interval)
+      //     this.setState({ isShow: false, promptContent: '' })
+      //   }
+      //   i--
+      // }, 1000)
       return
     }
     // if (code !== '1234') {
@@ -119,59 +129,67 @@ class SignupScreen extends Component {
     // }
     if (!password) {
       this.setState({
+        closeTime: 2,
+        autoClose: true,
         isShow: true,
         promptContent: '请输入密码'
       })
-      this.interval = setInterval(() => {
-        if (i === 0) {
-          clearInterval(this.interval)
-          this.setState({ isShow: false, promptContent: '' })
-        }
-        i--
-      }, 1000)
+      // this.interval = setInterval(() => {
+      //   if (i === 0) {
+      //     clearInterval(this.interval)
+      //     this.setState({ isShow: false, promptContent: '' })
+      //   }
+      //   i--
+      // }, 1000)
       return
     }
     if (password.length < 8) {
       this.setState({
+        closeTime: 2,
+        autoClose: true,
         isShow: true,
         promptContent: '密码长度不能小于8位'
       })
-      this.interval = setInterval(() => {
-        if (i === 0) {
-          clearInterval(this.interval)
-          this.setState({ isShow: false, promptContent: '' })
-        }
-        i--
-      }, 1000)
+      // this.interval = setInterval(() => {
+      //   if (i === 0) {
+      //     clearInterval(this.interval)
+      //     this.setState({ isShow: false, promptContent: '' })
+      //   }
+      //   i--
+      // }, 1000)
       return
     }
     if (password !== repassword) {
       this.setState({
+        closeTime: 2,
+        autoClose: true,
         isShow: true,
         promptContent: '密码输入不一致，请重新输入'
       })
-      this.interval = setInterval(() => {
-        if (i === 0) {
-          clearInterval(this.interval)
-          this.setState({ isShow: false, promptContent: '' })
-        }
-        i--
-      }, 1000)
+      // this.interval = setInterval(() => {
+      //   if (i === 0) {
+      //     clearInterval(this.interval)
+      //     this.setState({ isShow: false, promptContent: '' })
+      //   }
+      //   i--
+      // }, 1000)
       return
     }
     const error = await props.checkVerifyCode(props.client, {phone, code})
     if (error) {
       this.setState({
+        closeTime: 2,
+        autoClose: true,
         isShow: true,
         promptContent: error
       })
-      this.interval = setInterval(() => {
-        if (i === 0) {
-          clearInterval(this.interval)
-          this.setState({ isShow: false, promptContent: '' })
-        }
-        i--
-      }, 1000)
+      // this.interval = setInterval(() => {
+      //   if (i === 0) {
+      //     clearInterval(this.interval)
+      //     this.setState({ isShow: false, promptContent: '' })
+      //   }
+      //   i--
+      // }, 1000)
       return
     }
     props.savePhone({ phone, password })
@@ -217,7 +235,7 @@ class SignupScreen extends Component {
           onClick={() => this.submit(this.props)}>下一步</button>
       </footer>
       {/* <Popup ref={popup => { this.popup = popup }} /> */}
-      <Prompt isShow={this.state.isShow}>{this.state.promptContent}</Prompt>
+      <Prompt isShow={this.state.isShow} autoClose={this.state.autoClose} closeTime={this.state.closeTime}>{this.state.promptContent}</Prompt>
       <style jsx>{`
           .loginPageText{
             background: #fff;
@@ -264,6 +282,7 @@ function mapStateToProps (state) {
     token: state.user.data.token,
     userId: state.user.data.id,
     user: state.user.data,
+    code: state.user.data.code,
     loading: state.user.loading,
     error: state.user.error
   }

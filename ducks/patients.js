@@ -218,8 +218,8 @@ export const removePatient = (client, { patientId }) => async dispatch => {
 }
 
 const UPDATE_PATIENT = gql`
-  mutation ($patientId: ObjID!, $name: String, $phone: String, $relationship: String, $carteVital: String, $certificateNo: String, $birthday: String, $sex: String, $default: Boolean) {
-    updatePatient(id: $patientId, input: {name: $name, phone: $phone, relationship: $relationship, carteVital: $carteVital, certificateNo: $certificateNo, birthday: $birthday, sex: $sex default: $default}) {
+  mutation ($patientId: ObjID!, $phone: String, $relationship: String, $carteVital: String, $default: Boolean) {
+    updatePatient(id: $patientId, input: {phone: $phone, relationship: $relationship, carteVital: $carteVital, default: $default}) {
       id
       name
       phone
@@ -242,21 +242,21 @@ const UPDATE_PATIENT = gql`
   }
 `
 // 修改就诊人
-export const updatePatient = (client, { patientId, name, phone, relationship, carteVital, certificateNo, birthday, sex, isDefault }) => async dispatch => {
+export const updatePatient = (client, params) => async dispatch => {
   dispatch({
     type: PROFILE_PATIENTS_UPDATE
   })
   try {
     let data = await client.mutate({
       mutation: UPDATE_PATIENT,
-      variables: { patientId, name, phone, relationship, carteVital, certificateNo, birthday, sex, default: isDefault }
+      variables: params
     })
-    if (data.error) {
+    if (data.errors) {
       dispatch({
         type: PROFILE_PATIENTS_UPDATE_FAILE,
-        error: data.error.message
+        error: data.errors[0].message
       })
-      return (data.error.message)
+      return data.errors[0].message
     }
     const doc = data.data.updatePatient
     let patients = {[doc.id]: doc}
@@ -271,7 +271,7 @@ export const updatePatient = (client, { patientId, name, phone, relationship, ca
       type: PROFILE_PATIENTS_UPDATE_FAILE,
       error: e.message
     })
-    return (e.message)
+    return e.message
   }
 }
 // 更新默认就诊人

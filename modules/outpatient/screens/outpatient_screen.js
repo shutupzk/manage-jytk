@@ -25,6 +25,12 @@ class OutpatientScreen extends Component {
     if (isEmptyObject(this.props.outpatient)) {
       this.setState({isInit: true})
       this.queryOutPatient()
+    } else {
+      if (!isEmptyObject(this.props.patients)) {
+        const key = Object.keys(this.props.patients)[0]
+        console.log(key)
+        this.setState({selectedId: key})
+      }
     }
   }
 
@@ -33,10 +39,9 @@ class OutpatientScreen extends Component {
     await this.props.queryOutpatient(this.props.client, {userId})
     await this.props.queryPatients(this.props.client, {userId})
     if (!isEmptyObject(this.props.patients)) {
-      for (let key in this.props.patients) {
-        this.setState({selectedId: key})
-        break
-      }
+      const key = Object.keys(this.props.patients)[0]
+      console.log(key)
+      this.setState({selectedId: key})
     }
     this.setState({isInit: false})
   }
@@ -101,21 +106,24 @@ class OutpatientScreen extends Component {
       modalHtml = <Modal showModalState={this.state.showTipModal || this.state.showFilterModal}>
         <ModalHeader>请选择起止时间</ModalHeader>
         <div className='flex' style={{padding: 20}}>
-          <input type='date'
-            onChange={(e) => { this.setState({startDate: e.target.value}) }}
+          <input type='date' ref='startDate' defaultValue={this.state.startDate}
             style={{border: '1px solid #ccc', flex: 6}} name='startDate' max={this.state.maxDate} />
           <span style={{flex: 1, padding: 5, textAlign: 'center'}}> - </span>
-          <input type='date'
-            onChange={(e) => { this.setState({endDate: e.target.value}) }}
+          <input type='date' ref='endDate' defaultValue={this.state.endDate}
             style={{border: '1px solid #ccc', flex: 6}} name='endDate' max={this.state.maxDate} />
         </div>
         <ModalFooter>
           <button className='modalBtn modalBtnBorder' onClick={(e) => {this.setState({showFilterModal: false})}}>取消</button>
-          <button className='modalBtn modalMainBtn' onClick={(e) => {this.setState({showFilterModal: false})}}>确定</button>
+          <button className='modalBtn modalMainBtn' onClick={(e) => {
+            this.setState({startDate: this.refs.startDate.value})
+            this.setState({endDate: this.refs.endDate.value})
+            this.setState({showFilterModal: false})
+          }}
+          >确定</button>
         </ModalFooter>
       </Modal>
     }
-    return modalHtml;
+    return modalHtml
   }
 
   renderPatientList () {
@@ -158,7 +166,7 @@ class OutpatientScreen extends Component {
           outpatients.length > 0 ? outpatients.map((outpatient) => {
             let buttonClass = 'btnBorder btnBorderMain'
             let buttonText = '去缴费'
-            if (outpatient.visitSchedule.visitDate !== moment().format('YYYY-MM-DD')) {
+            if (outpatient.visitSchedule.visitDate < moment().format('YYYY-MM-DD')) {
               buttonClass = 'btnBorder btnBorderDisabled'
               buttonText = '已过期'
             }
@@ -167,8 +175,8 @@ class OutpatientScreen extends Component {
                 <ul className='listTop'>
                   <li className='flex'><span>就诊科室</span><i>{outpatient.department.deptName}</i></li>
                   <li className='flex'><span>医生姓名</span><i>{outpatient.doctor.doctorName}</i></li>
-                  <li className='flex'><span>>就诊人</span><i>{outpatient.patientName}</i></li>
-                  <li className='flex'><span>>就诊时间</span><i>{outpatient.visitSchedule.visitDate} {outpatient.visitSchedule.amPm === 'a' ? '上午' : '下午'}</i></li>
+                  <li className='flex'><span>就诊人</span><i>{outpatient.patientName}</i></li>
+                  <li className='flex'><span>就诊时间</span><i>{outpatient.visitSchedule.visitDate} {outpatient.visitSchedule.amPm === 'a' ? '上午' : '下午'}</i></li>
                   <li className='totleFee flex'><span></span><i>¥{this.props.url.query.key === 'outpatient' ? outpatient.treatFee : outpatient.registerFee}</i></li>
                   {/*<li className='totleFeeArticle flex'><span></span><i>(医保 0.00  自费 ¥0.00)</i></li>*/}
                   <li className='clearfix'>&nbsp;</li>
@@ -259,6 +267,7 @@ class OutpatientScreen extends Component {
 }
 
 function mapStateToProps (state) {
+  console.log(state)
   return {
     outpatient: state.outpatient.data,
     patients: state.patients.data,

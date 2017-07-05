@@ -20,6 +20,8 @@ class PatientAddScreen extends Component {
       sexText: '性别',
       default: false,
       animating: false,
+      autoClose: true,
+      closeTime: 2,
       isShow: false,
       promptContent: ''
     }
@@ -42,13 +44,13 @@ class PatientAddScreen extends Component {
         isShow: true,
         promptContent: '姓名不能为空'
       })
-      this.interval = setInterval(() => {
-        if (i === 0) {
-          clearInterval(this.interval)
-          this.setState({ isShow: false, promptContent: '' })
-        }
-        i--
-      }, 1000)
+      // this.interval = setInterval(() => {
+      //   if (i === 0) {
+      //     clearInterval(this.interval)
+      //     this.setState({ isShow: false, promptContent: '' })
+      //   }
+      //   i--
+      // }, 1000)
       return console.log('', '')
     }
     if (!certificateNo) {
@@ -56,13 +58,13 @@ class PatientAddScreen extends Component {
         isShow: true,
         promptContent: '身份证不能为空'
       })
-      this.interval = setInterval(() => {
-        if (i === 0) {
-          clearInterval(this.interval)
-          this.setState({ isShow: false, promptContent: '' })
-        }
-        i--
-      }, 1000)
+      // this.interval = setInterval(() => {
+      //   if (i === 0) {
+      //     clearInterval(this.interval)
+      //     this.setState({ isShow: false, promptContent: '' })
+      //   }
+      //   i--
+      // }, 1000)
       return
     }
     if (certificateNo.length !== 18) {
@@ -70,13 +72,13 @@ class PatientAddScreen extends Component {
         isShow: true,
         promptContent: '身份证格式不正确'
       })
-      this.interval = setInterval(() => {
-        if (i === 0) {
-          clearInterval(this.interval)
-          this.setState({ isShow: false, promptContent: '' })
-        }
-        i--
-      }, 1000)
+      // this.interval = setInterval(() => {
+      //   if (i === 0) {
+      //     clearInterval(this.interval)
+      //     this.setState({ isShow: false, promptContent: '' })
+      //   }
+      //   i--
+      // }, 1000)
       return
     }
     if (!phone) {
@@ -84,13 +86,13 @@ class PatientAddScreen extends Component {
         isShow: true,
         promptContent: '手机号不能为空'
       })
-      this.interval = setInterval(() => {
-        if (i === 0) {
-          clearInterval(this.interval)
-          this.setState({ isShow: false, promptContent: '' })
-        }
-        i--
-      }, 1000)
+      // this.interval = setInterval(() => {
+      //   if (i === 0) {
+      //     clearInterval(this.interval)
+      //     this.setState({ isShow: false, promptContent: '' })
+      //   }
+      //   i--
+      // }, 1000)
       return
     }
     if (phone.length !== 11) {
@@ -98,13 +100,13 @@ class PatientAddScreen extends Component {
         isShow: true,
         promptContent: '手机号格式不正确'
       })
-      this.interval = setInterval(() => {
-        if (i === 0) {
-          clearInterval(this.interval)
-          this.setState({ isShow: false, promptContent: '' })
-        }
-        i--
-      }, 1000)
+      // this.interval = setInterval(() => {
+      //   if (i === 0) {
+      //     clearInterval(this.interval)
+      //     this.setState({ isShow: false, promptContent: '' })
+      //   }
+      //   i--
+      // }, 1000)
       return
     }
     // if (!relationship) {
@@ -124,13 +126,13 @@ class PatientAddScreen extends Component {
             isShow: true,
             promptContent: error3
           })
-          this.interval = setInterval(() => {
-            if (i === 0) {
-              clearInterval(this.interval)
-              this.setState({ isShow: false, promptContent: '' })
-            }
-            i--
-          }, 1000)
+          // this.interval = setInterval(() => {
+          //   if (i === 0) {
+          //     clearInterval(this.interval)
+          //     this.setState({ isShow: false, promptContent: '' })
+          //   }
+          //   i--
+          // }, 1000)
           return console.log(error3)
         }
       })
@@ -141,13 +143,13 @@ class PatientAddScreen extends Component {
         isShow: true,
         promptContent: error.error
       })
-      this.interval = setInterval(() => {
-        if (i === 0) {
-          clearInterval(this.interval)
-          this.setState({ isShow: false, promptContent: '' })
-        }
-        i--
-      }, 1000)
+      // this.interval = setInterval(() => {
+      //   if (i === 0) {
+      //     clearInterval(this.interval)
+      //     this.setState({ isShow: false, promptContent: '' })
+      //   }
+      //   i--
+      // }, 1000)
       return
     }
     return this.props.url.back()// Router.push('/profile/patient_list')
@@ -244,7 +246,7 @@ class PatientAddScreen extends Component {
             </div>
           </div>
         </div> */}
-        <Prompt isShow={this.state.isShow}>{this.state.promptContent}</Prompt>
+        <Prompt isShow={this.state.isShow} autoClose={this.state.autoClose} closeTime={this.state.closeTime}>{this.state.promptContent}</Prompt>
         <style jsx>{`
           .list {
             margin-top: 20px;

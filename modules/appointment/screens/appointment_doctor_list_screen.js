@@ -299,7 +299,7 @@ class AppointmentDoctorListScreen extends Component {
     let doctor = {}
     if (selectDoctors.length > 0) {
       doctorId = this.props.doctorId || selectDoctors[0].id
-      this.props.selectDoctor({ doctorId: selectDoctors[0] ? selectDoctors[0].id : null })
+      this.props.selectDoctor({ doctorId })
       doctor = doctors[doctorId]
     }
     const types = [{text: '全部日期', value: false}, {text: '按日期挂号', value: true}]

@@ -14,7 +14,7 @@ const initState = {
 }
 
 export function doctorEvaluates (state = initState, action = {}) {
-  console.log('action', action)
+  // console.log('action', action)
   switch (action.type) {
     case DOCTOR_EVALUATE_ADD:
     case DOCTOR_EVALUATE_QUERY:

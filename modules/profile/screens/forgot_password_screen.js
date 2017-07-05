@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import Router from 'next/router'
 import {theme, Prompt} from 'components'
 
-import { forgotPassword } from '../../../ducks'
+import { forgotPassword, sendVerifyCode, checkVerifyCode } from '../../../ducks'
 import { connect } from 'react-redux'
 
 /**
@@ -14,6 +14,8 @@ class ForgotPasswordScreen extends Component {
     super(props)
     this.state = {
       animating: false,
+      phone: '',
+      verCode: '',
       buttonTitle: '获取',
       clickable: false,
       isShow: false,
@@ -22,7 +24,23 @@ class ForgotPasswordScreen extends Component {
   }
 
   // 发送验证码
-  sendCode () {
+  async sendCode () {
+    let n = 2
+    await this.props.sendVerifyCode(this.props.client, {phone: this.state.phone})
+    if (this.props.error) {
+      this.setState({
+        isShow: true,
+        promptContent: '发送失败'
+      })
+      this.interval = setInterval(() => {
+        if (n === 0) {
+          clearInterval(this.interval)
+          this.setState({ isShow: false, promptContent: '' })
+        }
+        n--
+      }, 1000)
+      return
+    }
     let i = 10
     this.setState({ buttonTitle: `${i}s`, clickable: true })
     this.interval = setInterval(() => {
@@ -36,10 +54,10 @@ class ForgotPasswordScreen extends Component {
   }
 
   // 提交
-  submit (props) {
+  async submit (props) {
     let i = 2
     const password = this.state.password
-    const verCode = this.state.verCode
+    const code = this.state.verCode
     const phone = this.state.phone
     const repassword = this.state.repassword
     if (!phone) {
@@ -71,24 +89,10 @@ class ForgotPasswordScreen extends Component {
       }, 1000)
       return
     }
-    if (!verCode) {
+    if (!code) {
       this.setState({
         isShow: true,
-        promptContent: '手机号格式不正确'
-      })
-      this.interval = setInterval(() => {
-        if (i === 0) {
-          clearInterval(this.interval)
-          this.setState({ isShow: false, promptContent: '' })
-        }
-        i--
-      }, 1000)
-      return console.log('', '请输入验证码')
-    }
-    if (verCode !== '1234') {
-      this.setState({
-        isShow: true,
-        promptContent: '验证码输入错误'
+        promptContent: '请输入验证码'
       })
       this.interval = setInterval(() => {
         if (i === 0) {
@@ -99,6 +103,20 @@ class ForgotPasswordScreen extends Component {
       }, 1000)
       return
     }
+    // if (verCode !== '1234') {
+    //   this.setState({
+    //     isShow: true,
+    //     promptContent: '验证码输入错误'
+    //   })
+    //   this.interval = setInterval(() => {
+    //     if (i === 0) {
+    //       clearInterval(this.interval)
+    //       this.setState({ isShow: false, promptContent: '' })
+    //     }
+    //     i--
+    //   }, 1000)
+    //   return
+    // }
     if (!password) {
       this.setState({
         isShow: true,
@@ -141,7 +159,36 @@ class ForgotPasswordScreen extends Component {
       }, 1000)
       return
     }
-    // props.forgotPassword({ phone, password })
+    // const error = await props.checkVerifyCode(props.client, {phone, code})
+    // if (error) {
+    //   this.setState({
+    //     isShow: true,
+    //     promptContent: error
+    //   })
+    //   this.interval = setInterval(() => {
+    //     if (i === 0) {
+    //       clearInterval(this.interval)
+    //       this.setState({ isShow: false, promptContent: '' })
+    //     }
+    //     i--
+    //   }, 1000)
+    //   return
+    // }
+    const error = this.props.forgotPassword(this.props.client, {phone, password, code})
+    if (error) {
+      this.setState({
+        isShow: true,
+        promptContent: error
+      })
+      this.interval = setInterval(() => {
+        if (i === 0) {
+          clearInterval(this.interval)
+          this.setState({ isShow: false, promptContent: '' })
+        }
+        i--
+      }, 1000)
+      return
+    }
     Router.push('/sigin')
   }
 
@@ -233,4 +280,4 @@ function mapStateToProps (state) {
   }
 }
 
-export default connect(mapStateToProps, { forgotPassword })(ForgotPasswordScreen)
+export default connect(mapStateToProps, { forgotPassword, sendVerifyCode, checkVerifyCode })(ForgotPasswordScreen)

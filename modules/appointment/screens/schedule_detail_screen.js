@@ -1,10 +1,9 @@
 import React, { Component } from 'react'
-import { signin, queryHospitals, queryUser, queryPatients, queryDoctors, selectPatient, selectDoctor, addAppointment, selectSchedule, queryPatientTypes, selectPatientType, queryScheduleDetail, queryDoctorDetail } from '../../../ducks'
+import { signin, queryHospitals, queryUser, queryPatients, queryDoctors, selectPatient, selectDoctor, addAppointment, selectSchedule, queryPatientTypes, selectPatientType, queryScheduleDetail, queryDoctorDetail, selectAppointment } from '../../../ducks'
 import { connect } from 'react-redux'
 import Router from 'next/router'
 import _ from 'lodash'
-import {theme, Loading} from 'components'
-// import swal from 'sweetalert2'
+import {theme, Loading, Prompt} from 'components'
 
 import { isEmptyObject } from '../../../utils'
 /**
@@ -21,7 +20,11 @@ class ScheduleDetailScreen extends Component {
       patientTypeId: undefined,
       visitScheduleTimeId: undefined,
       selectTimeRangeShow: false,
-      selectPayTypeShow: false
+      selectPayTypeShow: false,
+      isShow: false,
+      autoClose: true,
+      closeTime: 2,
+      promptContent: ''
     }
   }
 
@@ -132,12 +135,25 @@ class ScheduleDetailScreen extends Component {
       patientTypeId = this.state.patientTypeId
     }
     if (!patientCardId) {
-      return console.log('', '请选择就诊人')
+      return this.setState({
+        isShow: true,
+        autoClose: true,
+        closeTime: 2,
+        promptContent: '请选择就诊人'
+      })
     }
     this.setState({animating: true})
     var appointmentId = await props.addAppointment(props.client, { scheduleId, patientCardId, visitScheduleTimeId, patientTypeId, visitNo })
+    this.props.selectAppointment({appointmentId})
     this.setState({animating: false})
-    if (this.props.addError) return console.log('', this.props.addError)
+    if (this.props.addError) {
+      return this.setState({
+        isShow: true,
+        autoClose: true,
+        closeTime: 2,
+        promptContent: this.props.addError
+      })
+    }
     // return this.props.url.back()
     if (!this.props.addLoading) return Router.push('/appointment/appointment_success?appointmentId=' + appointmentId)
   }
@@ -296,7 +312,7 @@ class ScheduleDetailScreen extends Component {
           this.state.selectPayTypeShow ? this.selectPayTypeRender(schedule) : ''
         }
       </div>*/}
-      {/*<Popup ref={popup => { this.popup = popup }} />*/}
+      <Prompt isShow={this.state.isShow} autoClose={this.state.autoClose} closeTime={this.state.closeTime}>{this.state.promptContent}</Prompt>
       <style jsx>{`
         select {
           direction: rtl;
@@ -426,4 +442,4 @@ function mapStateToProps (state) {
   }
 }
 
-export default connect(mapStateToProps, { signin, queryHospitals, queryUser, queryPatients, queryDoctors, selectPatient, selectDoctor, addAppointment, selectSchedule, queryPatientTypes, selectPatientType, queryScheduleDetail, queryDoctorDetail })(ScheduleDetailScreen)
+export default connect(mapStateToProps, { signin, queryHospitals, queryUser, queryPatients, queryDoctors, selectPatient, selectDoctor, addAppointment, selectSchedule, queryPatientTypes, selectPatientType, queryScheduleDetail, queryDoctorDetail, selectAppointment })(ScheduleDetailScreen)

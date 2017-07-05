@@ -41,6 +41,11 @@ class AppointmentSuccessScreen extends Component {
     this.setState({isInit: false})
   }
 
+  gotoPay (appointment) {
+    this.props.selectAppointment({appointmentId: appointment.id})
+    Router.push('/appointment/select_pay_way')
+  }
+
   render () {
     if (this.state.isInit || this.props.loading) {
       return (<div><Loading showLoading={true} /></div>)
@@ -149,11 +154,12 @@ class AppointmentSuccessScreen extends Component {
           <button
             style={{backgroundColor: buttonColor, color: theme.maincolor, width: '20%', display: 'block', float: 'right', border: 'solid 1px #cccccc', marginLeft: 10, marginRight: 10, borderColor: theme.maincolor, lineHeight: '28px', padding: '0', borderRadius: '4px'}}
             onClick={() => {
+              this.gotoPay(appointment)
             }} >去支付</button>
           <button
             style={{backgroundColor: buttonColor, color: theme.fontcolor, width: '20%', display: 'block', float: 'right', border: 'solid 1px #ccc', borderColor: theme.fontcolor, lineHeight: '28px', padding: '0', borderRadius: '4px'}}
             onClick={() => {
-              Router.push('/appointment/appointment_list')
+              Router.push('/')
             }} >稍后支付</button>
         </div>
         {/*<Popup ref={popup => { this.popup = popup }} />*/}

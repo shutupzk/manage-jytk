@@ -12,6 +12,8 @@ class UpdatePasswordScreen extends Component {
     super(props)
     this.state = {
       animating: false,
+      autoClose: true,
+      closeTime: 2,
       isShow: false,
       promptContent: ''
     }
@@ -19,7 +21,7 @@ class UpdatePasswordScreen extends Component {
 
   // 提交
   async submit (props) {
-    let i = 1
+    // let i = 1
     const password = props.user.password
     const oldpassword = this.state.oldpassword
     const newpassword = this.state.newpassword
@@ -29,13 +31,13 @@ class UpdatePasswordScreen extends Component {
         isShow: true,
         promptContent: '原密码错误'
       })
-      this.interval = setInterval(() => {
-        if (i === 0) {
-          clearInterval(this.interval)
-          this.setState({ isShow: false, promptContent: '' })
-        }
-        i--
-      }, 1000)
+      // this.interval = setInterval(() => {
+      //   if (i === 0) {
+      //     clearInterval(this.interval)
+      //     this.setState({ isShow: false, promptContent: '' })
+      //   }
+      //   i--
+      // }, 1000)
       return
     }
     if (!newpassword || newpassword.length < 6) {
@@ -43,13 +45,13 @@ class UpdatePasswordScreen extends Component {
         isShow: true,
         promptContent: '密码不能小于6位'
       })
-      this.interval = setInterval(() => {
-        if (i === 0) {
-          clearInterval(this.interval)
-          this.setState({ isShow: false, promptContent: '' })
-        }
-        i--
-      }, 1000)
+      // this.interval = setInterval(() => {
+      //   if (i === 0) {
+      //     clearInterval(this.interval)
+      //     this.setState({ isShow: false, promptContent: '' })
+      //   }
+      //   i--
+      // }, 1000)
       return
     }
     if (newpassword !== repassword) {
@@ -57,13 +59,13 @@ class UpdatePasswordScreen extends Component {
         isShow: true,
         promptContent: '新密码输入不一致，请重新输入'
       })
-      this.interval = setInterval(() => {
-        if (i === 0) {
-          clearInterval(this.interval)
-          this.setState({ isShow: false, promptContent: '' })
-        }
-        i--
-      }, 1000)
+      // this.interval = setInterval(() => {
+      //   if (i === 0) {
+      //     clearInterval(this.interval)
+      //     this.setState({ isShow: false, promptContent: '' })
+      //   }
+      //   i--
+      // }, 1000)
       return
     }
     this.setState({animating: true})
@@ -96,7 +98,7 @@ class UpdatePasswordScreen extends Component {
           className='btnBG btnBGMain loginPageBtnItem'
           onClick={() => this.submit(this.props)}>完成</button>
       </footer>
-      <Prompt isShow={this.state.isShow}>{this.state.promptContent}</Prompt>
+      <Prompt isShow={this.state.isShow} autoClose={this.state.autoClose} closeTime={this.state.closeTime}>{this.state.promptContent}</Prompt>
       <style jsx>{`
         .loginPageText{
           background: #fff;

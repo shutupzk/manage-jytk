@@ -17,6 +17,8 @@ class SignupCompletionScreen extends Component {
       sex: '性别',
       birthday: '出生日期',
       animating: false,
+      autoClose: true,
+      closeTime: 2,
       isShow: false,
       promptContent: ''
     }
@@ -135,7 +137,7 @@ class SignupCompletionScreen extends Component {
           title='完成'
           onClick={() => this.submit()}>完成</button>
       </footer>
-      <Prompt isShow={this.state.isShow}>{this.state.promptContent}</Prompt>
+      <Prompt isShow={this.state.isShow} autoClose={this.state.autoClose} closeTime={this.state.closeTime}>{this.state.promptContent}</Prompt>
       <style jsx>{`
         .loginPageText{
           background: #fff;

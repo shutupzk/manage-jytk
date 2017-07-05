@@ -489,7 +489,7 @@ export const querySchedules = (client, { departmentId }) => async dispatch => {
     let schedules = {}
     const doctors = data.data.department.doctors
     for (let doctor of doctors) {
-      const visitSchedules = schedulesEg // doctor.visitSchedules
+      const visitSchedules = doctor.visitSchedules
       for (let schedule of visitSchedules) {
         schedules[schedule.id] = Object.assign({}, schedule, { departmentId, doctorId: doctor.id })
         // if (new Date(schedule.visitDate) > new Date()) {
@@ -572,7 +572,7 @@ const times = [
     'totalNum': 10
   }
 ]
-// 获取排版详情
+// 获取排班详情
 export const queryScheduleDetail = (client, { scheduleId }) => async dispatch => {
   dispatch({
     type: APPOINTMENT_SCHEDULES_QUERYDETAIL
@@ -587,7 +587,7 @@ export const queryScheduleDetail = (client, { scheduleId }) => async dispatch =>
     }
     let schedule = data.data.visitSchedule
     let schedules = {}
-    schedules[schedule.id] = Object.assign({}, schedule, { visitScheduleTimes: times, departmentId: schedule.department.id, doctorId: schedule.doctor.id })
+    schedules[schedule.id] = Object.assign({}, schedule, { visitScheduleTimes: schedule.visitScheduleTimes, departmentId: schedule.department.id, doctorId: schedule.doctor.id })
     dispatch({
       type: APPOINTMENT_SCHEDULES_QUERYDETAIL_SUCCESS,
       schedules
