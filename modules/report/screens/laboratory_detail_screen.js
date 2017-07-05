@@ -5,7 +5,7 @@ import {
   queryLaboratoryItems
 } from '../../../ducks'
 import {isEmptyObject} from '../../../utils'
-import {theme} from 'components'
+import {theme, Loading, ErrCard} from 'components'
 
 class LaboratoryDetailScreen extends Component {
   constructor (props) {
@@ -87,10 +87,10 @@ class LaboratoryDetailScreen extends Component {
   }
   render () {
     if (this.props.laboratoryLoading || this.state.isInit) {
-      return <div>loading...</div>
+      return <div><Loading showLoading={true} /></div>
     }
     if (this.props.error) {
-      return <div>error...</div>
+      return <div><ErrCard /></div>
     }
     let laboratory = this.getData()
     // let patients = this.props.patients

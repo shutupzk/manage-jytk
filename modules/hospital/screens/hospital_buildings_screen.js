@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Router from 'next/router'
+import {ErrCard, Loading, theme} from 'components'
 import {
   queryHospitals,
   selectHospital,
@@ -39,14 +40,14 @@ class IndoorNavigationScreen extends Component {
     if (this.props.loading) {
       return (
         <div>
-          <div>loading...</div>
+          <div><Loading showLoading={true} /></div>
         </div>
       )
     }
     if (this.props.error) {
       return (
         <div>
-          <div>error...</div>
+          <div><ErrCard /></div>
         </div>
       )
     }

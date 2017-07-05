@@ -6,7 +6,7 @@ import Router from 'next/router'
 import {queryDepartments, selectDepartment, setQueryFlag} from '../../../ducks'
 import DepartmentList from '../components/department_list'
 import { replaceSearchKey } from '../../../utils'
-import {Loading} from 'components'
+import {Loading, ErrCard} from 'components'
 // import Link from 'next/link'
 
 class DepartmentScreen extends Component {
@@ -42,7 +42,7 @@ class DepartmentScreen extends Component {
     if (department.error && !this.toDetail) {
       return (
         <div>
-          <h1>error...</h1>
+          <h1><ErrCard /></h1>
         </div>
       )
     }

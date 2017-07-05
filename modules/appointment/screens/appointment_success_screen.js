@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Router from 'next/router'
 import { connect } from 'react-redux'
-import {Loading, theme} from 'components'
+import {Loading, theme, ErrCard} from 'components'
 
 import { signin, queryUser, queryPatients, queryAppointments, queryAppointmentDetail, updateAppointment, selectAppointment } from '../../../ducks'
 import { isEmptyObject } from '../../../utils'
@@ -46,7 +46,7 @@ class AppointmentSuccessScreen extends Component {
       return (<div><Loading showLoading={true} /></div>)
     }
     if (this.props.error) {
-      return (<div>error...</div>)
+      return (<div><ErrCard /></div>)
     }
     const { patients, appointments, appointmentId } = this.props
     const appointment = appointments[appointmentId] || {}

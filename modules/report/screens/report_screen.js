@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import localforage from 'localforage'
 import _ from 'lodash'
 import moment from 'moment'
-import {Loading, FilterCard, FilterSelect, FilterTime, Modal, ModalHeader, ModalFooter, FilterTimeResult, theme, TabHeader, CardWhite} from 'components'
+import {Loading, FilterCard, FilterSelect, FilterTime, Modal, ModalHeader, ModalFooter, FilterTimeResult, theme, TabHeader, CardWhite, ErrCard} from 'components'
 // import RangeDemo from '../components/date_rang'
 
 import {
@@ -258,7 +258,7 @@ class ReportScreen extends Component {
     }
     if (this.props.error) {
       return (
-        <div>error...</div>
+        <div><ErrCard /></div>
       )
     }
     return (

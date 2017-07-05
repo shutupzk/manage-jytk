@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 // import Router from 'next/router'
 import localforage from 'localforage'
 // import Link from 'next/link'
-import {theme} from 'components'
+import {theme, Loading, ErrCard} from 'components'
 import { queryUser, queryHospitals, addHospitalEvaluate } from '../../../ducks'
 import { isEmptyObject } from '../../../utils'
 import EvaluationItem from '../components/evaluation_item'
@@ -69,12 +69,12 @@ class EvaluationScreen extends Component {
   render () {
     if (this.props.loading) {
       return (
-        <div>loading...</div>
+        <div><Loading showLoading={true} /></div>
       )
     }
     if (this.props.error) {
       return (
-        <div>error...</div>
+        <div><ErrCard /></div>
       )
     }
     var arr = [

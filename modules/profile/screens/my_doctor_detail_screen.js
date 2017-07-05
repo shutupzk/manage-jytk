@@ -5,6 +5,7 @@ import localforage from 'localforage'
 import { signin, queryUser, queryMyDoctors, createUserHasDoctor, removeUserHasDoctor } from '../../../ducks'
 import {DoctorDetail} from '../../hospital/components'
 import { isEmptyObject } from '../../../utils'
+import {ErrCard, Loading, theme} from 'components'
 class DoctorDetailScreen extends Component {
   constructor (props) {
     super(props)
@@ -48,12 +49,12 @@ class DoctorDetailScreen extends Component {
   render () {
     if (this.props.error) {
       return (
-        <div className='container'>error...</div>
+        <div className='container'><ErrCard /></div>
       )
     }
     if (this.props.loading || this.state.toDetail) {
       return (
-        <div className='container'>loading...</div>
+        <div className='container'><Loading showLoading={true} /></div>
       )
     }
     const doctorId = this.props.doctorId || this.props.url.query.doctorId

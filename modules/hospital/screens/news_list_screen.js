@@ -7,7 +7,7 @@ import {
   selectNews
 } from '../../../ducks'
 import NewsItem from '../components/news_item'
-import {Loading, theme} from 'components'
+import {Loading, theme, ErrCard} from 'components'
 class NewsListScreen extends Component {
   constructor (props) {
     super(props)
@@ -73,7 +73,7 @@ class NewsListScreen extends Component {
     if (this.props.error) {
       return (
         <div>
-          <div>error...</div>
+          <div><ErrCard /></div>
         </div>
       )
     }

@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 
 import { queryNewsDetail } from '../../../ducks'
 import { isEmptyObject } from '../../../utils'
-import {theme, Loading} from 'components'
+import {theme, Loading, ErrCard} from 'components'
 const filterNews = (newses, selectNewsId) => {
   let news = newses.filter((news) => {
     if (selectNewsId === news.id) {
@@ -39,7 +39,7 @@ class NewsDetailScreen extends Component {
     }
     if (this.props.error) {
       return (
-        <div>error...</div>
+        <div><ErrCard /></div>
       )
     }
     let newses = this.props.newses

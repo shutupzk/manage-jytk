@@ -8,7 +8,7 @@ import localforage from 'localforage'
 import DoctorDetail from '../components/doctor_detail'
 import { isEmptyObject } from '../../../utils'
 import { queryDoctors, selectDoctor, selectDepartment, removeSelectDoctor, querySchedules, selectSchedule, createUserHasDoctor, removeUserHasDoctor } from '../../../ducks'
-import {TabHeader, Loading, theme} from 'components'
+import {TabHeader, Loading, theme, ErrCard} from 'components'
 
 const filterDepartments = (departmentIds, departmentId) => {
   let ids = departmentIds.filter((id) => {
@@ -288,7 +288,7 @@ class AppointmentDoctorListScreen extends Component {
     }
     // 多加判断防止状态为error时，所有的界面都是error
     if (this.props.error) {
-      return <div>error...</div>
+      return <div><ErrCard /></div>
     }
     console.log(this.props)
     let departmentId = this.props.departmentId

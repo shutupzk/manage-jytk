@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import {ErrCard, Loading} from 'components'
 
 import {
   queryHospitalGuides,
@@ -75,14 +76,14 @@ class GuideDetailScreen extends Component {
     if (this.props.loading || this.state.isInit) {
       return (
         <div>
-          <div>loading...</div>
+          <div><Loading showLoading={true} /></div>
         </div>
       )
     }
     if (this.props.error) {
       return (
         <div>
-          <div>error...</div>
+          <div><ErrCard /></div>
         </div>
       )
     }

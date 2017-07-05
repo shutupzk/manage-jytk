@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import Link from 'next/link'
 import {queryDepartmentDetail} from '../../../ducks'
 import { replaceStr } from '../../../utils'
+import {Loading, ErrCard} from 'components'
 class DepartmentDetailScreen extends Component {
   constructor (props) {
     super(props)
@@ -28,12 +29,12 @@ class DepartmentDetailScreen extends Component {
     var department = this.props.department[departmentId]
     if (this.props.error) {
       return (
-        <div className='container'>error...</div>
+        <div className='container'><ErrCard /></div>
       )
     }
     if (this.props.loading) {
       return (
-        <div className='container'>loading...</div>
+        <div className='container'><Loading showLoading={true} /></div>
       )
     }
     let evaluates = department.departmentEvaluates ? department.departmentEvaluates.slice(0, 3) : []

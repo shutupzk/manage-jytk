@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 import localforage from 'localforage'
 import { queryUser, queryPatients, updateUser, updatePatient, selectPatient } from '../../../ducks'
 import { isEmptyObject, phone, certificateNo, getSex, ages } from '../../../utils'
-import {theme} from 'components'
+import {theme, Loading, ErrCard} from 'components'
 
 function getSelfPatient (patients) {
   for (let key in patients) {
@@ -42,10 +42,10 @@ class UserInfoScreen extends Component {
   }
   render () {
     if (this.props.error) {
-      return <div className=''>error...</div>
+      return <div className=''><ErrCard /></div>
     }
     if (this.props.loading) {
-      return <div className=''>loading...</div>
+      return <div className=''><Loading showLoading={true} /></div>
     }
     const patient = getSelfPatient(this.props.patients)
     // let btnText = '编辑信息'

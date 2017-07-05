@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Router from 'next/router'
 import _ from 'lodash'
-import {Loading, FilterCard, FilterSelect, FilterTime, Modal, ModalHeader, ModalFooter, FilterTimeResult, theme, TabHeader} from 'components'
+import {Loading, FilterCard, FilterSelect, FilterTime, Modal, ModalHeader, ModalFooter, FilterTimeResult, theme, TabHeader, ErrCard} from 'components'
 
 import {
   signin,
@@ -213,7 +213,7 @@ class AppointmentListScreen extends Component {
       return <div><Loading showLoading={true}></Loading></div>
     }
     if (this.props.error) {
-      return <div>error...</div>
+      return <div><ErrCard /></div>
     }
     const { appointments, selectAppointment } = this.props
     const dataList = getListData(this.state, appointments, this.state.selectedId)
