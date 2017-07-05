@@ -7,6 +7,7 @@ import {
   selectNews
 } from '../../../ducks'
 import NewsItem from '../components/news_item'
+import {Loading, theme} from 'components'
 class NewsListScreen extends Component {
   constructor (props) {
     super(props)
@@ -65,7 +66,7 @@ class NewsListScreen extends Component {
     if (this.props.loading || this.state.isInit) {
       return (
         <div>
-          <div>loading...</div>
+          <div><Loading showLoading={true} /></div>
         </div>
       )
     }
@@ -81,7 +82,9 @@ class NewsListScreen extends Component {
     if (newNewses.length > 0) {
       return (
         <div>
-          <div style={{display: 'flex', padding: '10px', backgroundColor: '#ffffff', border: 'solid 1px #eeeeee'}}>{
+          <div style={{display: 'flex', lineHeight: '40px',
+            backgroundColor: '#fff', borderBottom: 'solid 1px #eeeeee',
+            borderColor: theme.bordercolor}}>{
             newNewses.map((item, i) => {
               return (
                 <div key={i} onClick={() => {
@@ -89,10 +92,22 @@ class NewsListScreen extends Component {
                     this.props.queryNews(this.props.client, {groupId: newNewses[i].id})
                   }
                   this.setState({groupId: newNewses[i].id})
-                }} style={{width: '25%', textAlign: 'center'}}>{item.type}</div>
+                }} className={this.state.groupId === newNewses[i].id ? 'tabItem tabItemCur' : 'tabItem'}>{item.type}</div>
               )
             })
           }</div>
+          <style jsx>{`
+            .tabItem{
+              width: 25%;
+              text-align: center;
+              border-bottom: 2px solid #fff;
+              color: ${theme.nfontcolor};
+            }
+            .tabItem.tabItemCur{
+              border-bottom: 2px solid ${theme.maincolor};
+              color: ${theme.maincolor};
+            }
+          `}</style>
           {
             this.renderNew(this.props.selectNews)
           }

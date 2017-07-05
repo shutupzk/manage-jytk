@@ -1,3 +1,4 @@
+import {theme} from 'components'
 /**
  * 医生介绍
  */
@@ -9,20 +10,17 @@ function Major (props) {
       <div className='contentText'>{doc.major || '功能性胃肠病、胃食管反流病等消化疾病。'}</div>
       <style jsx>{`
         .majorView {
-          flex: 7px;
-          background-color: white;
+          padding: ${theme.lrmargin} 0 0;
         }
         .titleText {
-          font-size: 14px;
-          margin: 5px;
-          margin-left: 10px;
-          color: #B4B4B4;
+          font-size: ${theme.nfontsize};
+          color: ${theme.fontcolor};
+          line-height: .2rem;
         }
         .contentText {
-          font-size: 14px;
-          margin: 5px;
-          margin-left: 10px;
-          color: #505050;
+          font-size: ${theme.fontsize};
+          line-height: .26rem;
+          color: ${theme.mainfontcolor};
         }
       `}</style>
     </div>

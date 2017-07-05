@@ -5,6 +5,7 @@ import localforage from 'localforage'
 // import Link from 'next/link'
 import { queryPatients, selectPatient, queryDeposits, selectDeposit } from '../../../ducks'
 import { isEmptyObject } from '../../../utils'
+import {theme, Loading} from 'components'
 class DepositRecordScreen extends Component {
   constructor (props) {
     super(props)
@@ -42,7 +43,7 @@ class DepositRecordScreen extends Component {
     if (this.props.loading) {
       return (
         <div>
-          loading...
+          <Loading showLoading={true} />
         </div>
       )
     }
@@ -65,14 +66,14 @@ class DepositRecordScreen extends Component {
         { depositArr.length > 0 ? depositArr.map((deposit, i) => {
           return (
             <div key={deposit.id}
-              style={{backgroundColor: '#ffffff', padding: 10, marginBottom: 1}}
+              style={{backgroundColor: '#fff', padding: theme.lrmargin, borderBottom: '1px solid #fff', borderColor: theme.bordercolor}}
               onClick={() => {
                 this.props.selectDeposit(deposit.id)
                 Router.push('/profile/deposit_detail?depositId=' + deposit.id)
               }}
             >
-              <div style={{fontSize: 14}}>{'挂号缴费'}<span style={{float: 'right'}}>-{deposit.charge}</span></div>
-              <div>{deposit.date}</div>
+              <div style={{fontSize: theme.fontsize, color: theme.mainfontcolor, marginBottom: 6}}>{'挂号缴费'}<span style={{float: 'right', fontWeight: '600', color: theme.mainfontcolor, fontSize: 18}}>-{deposit.charge}</span></div>
+              <div style={{fontSize: theme.nfontsize, color: theme.nfontcolor}}>{deposit.date}</div>
             </div>
           )
         }) : 'no data'

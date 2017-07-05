@@ -7,6 +7,8 @@ import Prompt from './prompt'
 import {FilterCard, FilterSelect, FilterTime} from './FilterCard'
 import {Modal, ModalHeader, ModalFooter, FilterTimeResult} from './Modal'
 import TabHeader from './TabHeader'
+import NoDataCard from './NoDataCard'
+import LoadErrCard from './LoadErrCard'
 
 export {
     List,
@@ -22,7 +24,9 @@ export {
     ModalHeader,
     ModalFooter,
     FilterTimeResult,
-    TabHeader
+    TabHeader,
+    NoDataCard,
+    LoadErrCard
 }
 
 

@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Router from 'next/router'
 import _ from 'lodash'
+import {Loading, FilterCard, FilterSelect, FilterTime, Modal, ModalHeader, ModalFooter, FilterTimeResult, theme, TabHeader} from 'components'
 
 import {
   signin,
@@ -22,7 +23,8 @@ class AppointmentListScreen extends Component {
       isInit: false,
       selectedId: '',
       startDate: undefined,
-      endDate: undefined
+      endDate: undefined,
+      showFilterModal: false,
     }
   }
 
@@ -117,7 +119,7 @@ class AppointmentListScreen extends Component {
           <span className={'topText'}>{`就诊时间：${appointment.visitSchedule.visitDate}  ${appointment.visitSchedule.amPm === 'a' ? '上午' : '下午'}`}</span>
           <span className={statusStyle}>{status}</span>
         </div>
-        <div>
+        <div style={{padding: theme.lrmargin, borderBottom: '1px solid #e6e6e6'}}>
           <div style={{width: '20%', float: 'left'}}>
             <img src='/static/icons/doctor_head.png' className={'avatarStyle'} />
           </div>
@@ -132,7 +134,7 @@ class AppointmentListScreen extends Component {
           <div style={{float: 'right'}}>
             {
               appointment.visitStatus === '02' ? <button
-                style={{backgroundColor: '#fff', color: '#B4B4B4', width: '70px', display: 'block', border: 'solid 1px #ddd'}}
+                style={{backgroundColor: '#fff', color: theme.fontcolor, display: 'block', border: 'solid 1px #ddd',borderColor: theme.fontcolor}}
                 onClick={(e) => {
                   e.stopPropagation()
                   this.gotoSchedule()
@@ -140,19 +142,19 @@ class AppointmentListScreen extends Component {
               : <div>{
                 appointment.visitStatus === '01'
                   ? <div style={{display: 'flex'}}><button
-                    style={{backgroundColor: '#fff', color: '#B4B4B4', width: '70px', display: 'block', border: 'solid 1px #ddd', marginRight: 15}}
+                    style={{backgroundColor: '#fff', color: theme.fontcolor, display: 'block', border: 'solid 1px #ddd',borderColor: theme.fontcolor, marginRight: 15}}
                     onClick={(e) => {
                       e.stopPropagation()
                       this.cancelAppointment()
                     }} >取消挂号</button>
                     <button
-                      style={{backgroundColor: '#fff', color: '#0087F4', width: '70px', display: 'block', border: 'solid 1px #ddd'}}
+                      style={{backgroundColor: '#fff', color: theme.maincolor, display: 'block', border: 'solid 1px #ddd', borderColor: theme.maincolor}}
                       onClick={(e) => {
                         e.stopPropagation()
                         this.gotoPay()
                       }} >去缴费</button></div>
                   : <button
-                    style={{backgroundColor: '#fff', color: '#B4B4B4', width: '70px', display: 'block', border: 'solid 1px #ddd'}}
+                    style={{backgroundColor: '#fff', color: theme.fontcolor, display: 'block', border: 'solid 1px #ddd',borderColor: theme.fontcolor}}
                     onClick={(e) => {
                       e.stopPropagation()
                       this.退费()
@@ -165,6 +167,27 @@ class AppointmentListScreen extends Component {
     )
   }
 
+  renderModal() {
+    let modalHtml;
+    modalHtml = <Modal showModalState={this.state.showTipModal || this.state.showFilterModal}>
+      <ModalHeader>请选择起止时间</ModalHeader>
+      <div className='flex' style={{padding: 20}}>
+        <input type='date'
+          onChange={(e) => { this.setState({startDate: e.target.value}) }}
+          style={{border: '1px solid #ccc', flex: 6}} name='startDate' max={this.state.maxDate} />
+        <span style={{flex: 1, padding: 5, textAlign: 'center'}}> - </span>
+        <input type='date'
+          onChange={(e) => { this.setState({endDate: e.target.value}) }}
+          style={{border: '1px solid #ccc', flex: 6}} name='endDate' max={this.state.maxDate} />
+      </div>
+      <ModalFooter>
+        <button className='modalBtn modalBtnBorder' onClick={(e) => {this.setState({showFilterModal: false})}}>取消</button>
+        <button className='modalBtn modalMainBtn' onClick={(e) => {this.setState({showFilterModal: false})}}>确定</button>
+      </ModalFooter>
+    </Modal>
+    return modalHtml;
+  }
+
   renderPatientList () {
     const patients = this.props.patients
     let patientArr = []
@@ -172,44 +195,22 @@ class AppointmentListScreen extends Component {
       patientArr.push(patient)
     })
     return (
-      <div style={{padding: 10, overflow: 'hidden', backgroundColor: '#fff', marginBottom: 15}}>
-        <div style={{border: '1px solid #ccc', display: 'flex'}}>
-          <select style={{flex: 11, height: 30, padding: 5, border: 'none', backgroundColor: '#fff'}}
-            ref='patientSelect'
-            onChange={(e) => {
-              this.setState({selectedId: e.target.value})
-            }}
-          >{
-            patientArr.map((patient) => {
-              return (
-                <option key={patient.id} style={{textAlign: 'center', font: 15}} value={patient.id}>
-                  {patient.name}
-                </option>
-              )
-            })
-          }
-          </select>
-          {/*<img onClick={() => {
-            const select = this.refs.patientSelect
-            select.click()
-          }} style={{flex: 1, float: 'right', width: 8, height: 15, padding: 8}} src='/static/icons/down.png' />*/}
-        </div>
-        <div style={{marginTop: 10, display: 'flex'}}>
-          <input type='date'
-            onChange={(e) => { this.setState({startDate: e.target.value}) }}
-            style={{border: '1px solid #ccc', flex: 6}} name='startDate' max={this.state.maxDate} />
-          <span style={{flex: 1, padding: 5, textAlign: 'center'}}> - </span>
-          <input type='date'
-            onChange={(e) => { this.setState({endDate: e.target.value}) }}
-            style={{border: '1px solid #ccc', flex: 6}} name='endDate' max={this.state.maxDate} />
-        </div>
-      </div>
+      <FilterCard>
+        <FilterSelect
+          changePatientSelect={(e) => {
+            console.log('------changePatientSelect', e.target.value);
+            this.setState({selectedId: e.target.value})
+          }}
+          patientArr = {patientArr}
+        />
+        <FilterTime clickShowFilterModal={() => {this.setState({showFilterModal: true})}} />
+      </FilterCard>
     )
   }
 
   render () {
     if (this.props.loading || this.state.isInit) {
-      return <div>loading...</div>
+      return <div><Loading showLoading={true}></Loading></div>
     }
     if (this.props.error) {
       return <div>error...</div>
@@ -221,7 +222,9 @@ class AppointmentListScreen extends Component {
     // var height = window.innerHeight - 50
     return (
       <div>
+        {this.renderModal()}
         {this.renderPatientList()}
+        <FilterTimeResult startDate={this.state.startDate} endDate={this.state.endDate} />
         {
           dataList.map((item) => {
             return (
@@ -238,36 +241,28 @@ class AppointmentListScreen extends Component {
         }
         <style jsx global>{`
           .listItem {
-            padding-top: 10px;
-            width: 100%;
-            height: 170px;
+            margin-top: ${theme.tbmargin};
             background-color: #ffffff;
-            margin-bottom: 10px;
           }
           .itemTopView {
             background-color: #FBFBFB;
-            height: 40px;
-            margin-bottom: 5px;
-            margin-left: 15px;
-            flex-direction: row;
+            line-height: 40px;
+            padding-left: ${theme.lrmargin};
             align-items: center;
           }
           .topText {
-            color: #797979;
-            flex: 2;
-            font-size: 15px;
+            color: ${theme.fontcolor};
           }
           .unCancelText {
-            color: #0087F4;
-            font-size: 14px;
+            color: ${theme.maincolor};
             float: right;
-            margin-right: 15px;
+            margin-right: ${theme.lrmargin};
           }
           .cancelText {
-            color: #B4B4B4;
+            color:${theme.fontcolor};
             font-rize: 14px;
             float: right;
-            margin-right: 15px;
+            margin-right: ${theme.lrmargin};
           }
           .subView {
             width: 75%;
@@ -283,14 +278,18 @@ class AppointmentListScreen extends Component {
           .avatarStyle {
             height: 60px;
             width: 60px;
-            margin-left: 10px;
           }
           .itemBottomView {
-            height: 40px;
-            margin-right: 15px;
-            margin-top: 5px;
-            flex-direction: row;
+            height: 30px;
+            padding: 6px ${theme.lrmargin};
             align-items: center;
+          }
+          .itemBottomView button{
+            height: 28px;
+            line-height: 28px;
+            padding: 0;
+            width: 70px;
+            border-radius: 3px;
           }
         `}</style>
       </div>

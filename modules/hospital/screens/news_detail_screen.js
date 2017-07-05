@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 
 import { queryNewsDetail } from '../../../ducks'
 import { isEmptyObject } from '../../../utils'
+import {theme, Loading} from 'components'
 const filterNews = (newses, selectNewsId) => {
   let news = newses.filter((news) => {
     if (selectNewsId === news.id) {
@@ -33,7 +34,7 @@ class NewsDetailScreen extends Component {
   render () {
     if (this.props.loading || this.state.isInit) {
       return (
-        <div>loading...</div>
+        <div><Loading showLoading={true} /></div>
       )
     }
     if (this.props.error) {
@@ -51,7 +52,7 @@ class NewsDetailScreen extends Component {
           {
             news.image ? <img className={'image'} src={news.image} /> : null
           }
-          <div className={'titleText'}>{news.title}</div>
+          <div className={'titleText textoverflow1'}>{news.title}</div>
           <div className={'timeText'}>{news.time}</div>
           <div className={'contentText'}>{news.content}</div>
         </div>
@@ -62,19 +63,21 @@ class NewsDetailScreen extends Component {
           }
           .titleText {
             font-size: 18px;
-            padding: 10px;
-            color: #505050;
+            padding: ${theme.lrmargin} ${theme.lrmargin} 0;
+            color: ${theme.mainfontcolor};
           }
           .timeText {
-            font-size: 12px;
-            padding-left: 10px;
-            color: #B4B4B4;
+            font-size: ${theme.nfontsize};
+            padding: 10px 15px 0;
+            color: ${theme.nfontcolor};
+            text-align: right;
           }
           .contentText {
             font-size: 14px;
-            color: #505050;
-            padding: 15px;
-            margin-top: 5px;
+            color: ${theme.fontcolor};
+            padding: 10px 15px 15px;
+            line-height: .26rem;
+            text-indent: 2em;
           }
         `}</style>
       </div>

@@ -74,6 +74,14 @@ export function styles() {
         border-top: .03rem solid #C7C7CC;
         border-left: .03rem solid #C7C7CC;
       }
+      .sanjiao{
+        display: inline-block;
+        width: 0;
+        height: 0;
+        border-left: .06rem solid transparent;
+        border-right: .06rem solid transparent;
+        border-top: .06rem solid ${theme.maincolor};
+      }
       input:-webkit-autofill, textarea:-webkit-autofill, select:-webkit-autofill {background: transparent !important;}
       /*textoverflow*/
       .textoverflow1{
@@ -173,7 +181,7 @@ export function styles() {
       }
 
       /*select*/
-      input[type=date]{
+      input[type=date], select{
         //去除select右边默认的图标
         appearance:none;
         -moz-appearance:none;

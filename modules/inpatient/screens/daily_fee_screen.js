@@ -4,8 +4,9 @@ import moment from 'moment'
 import * as actions from '../../../ducks'
 import {
   DailyFeeListItem,
-  CalendarsList
+  CalendarsList,
 } from '../components'
+import {theme} from 'components'
 
 const MONTH = 1
 const filterDailyfees = (dailyfees = [], date) => {
@@ -66,7 +67,7 @@ class DailyFeeScreen extends Component {
           .spliteLine {
             background-color: #E6E6E6;
             width: 100%;
-            height: 1.5px;
+            height: 1px;
           }
           .spliteLineWhite {
             width: 100%;
@@ -78,20 +79,16 @@ class DailyFeeScreen extends Component {
           .topView {
             padding: 15px;
             flex-direction: row;
-            background-color: #3CA0FF;
+            background-color: ${theme.maincolor};
             height: 104px;
             display: flex;
             align-items: center;
           }
           .calendar {
-            background-color: #3CA0FF;
-            flex-direction: row;
-            align-items: center;
-            text-align: center;
-            justify-content: center;
-            padding-top: 10px;
-            padding-bottom: 10px;
-            display: flex;
+            background-color: ${theme.maincolor};
+            height: .4rem;
+            line-height: .4rem;
+            color: #fff;
           }
           .centerTips {
             justify-content: center;
@@ -134,12 +131,12 @@ const topView = (dailyfees, calendar) => {
           }
         }
       }>
-        <div style={{
+        <div className='flex tb-flex' style={{
           color: moment(calendar.state.date).format('YYYY-MM-DD') === moment().subtract(MONTH, 'months').format('YYYY-MM-DD') ? '#D8D8D8' : '#ffffff',
           fontSize: 13,
           marginRight: 5
         }}>
-          <span style={{margin: '0px 5px'}}>{'<'}</span>前一天
+          <p className='back-left' style={{transform: 'rotate(-45deg)', borderTop: '.03rem solid #fff', borderLeft: '.03rem solid #fff'}}></p>前一天
         </div>
       </div>
       <div style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
@@ -156,12 +153,12 @@ const topView = (dailyfees, calendar) => {
           }
         }
       }>
-        <div style={{
+        <div className='flex tb-flex' style={{
           color: moment(calendar.state.date).format('YYYY-MM-DD') === moment().add(MONTH, 'months').format('YYYY-MM-DD') ? '#D8D8D8' : '#ffffff',
           fontSize: 13,
           marginRight: 5
         }}>
-          后一天<span style={{margin: '0px 5px'}}>{'>'}</span>
+          后一天<p className='back-left' style={{transform: 'rotate(135deg)', borderTop: '.03rem solid #fff', borderLeft: '.03rem solid #fff'}}></p>
         </div>
       </div>
     </div>
@@ -182,9 +179,10 @@ const calendar = (props, state, calendar) => {
         calendar.refs.calendar.click()
         console.log(calendar.refs.calendar.value)
       }}>
-      <div className={'calendar'}>
-        <span style={{padding: '0px 10px'}}>📅</span>
-        <div style={{color: '#ffffff', fontSize: 15}}><input id='date' type='date' ref='calendar' value={state.date} onChange={(e) => { calendar.setState({date: e.target.value})}} /></div>
+      <div className={'calendar flex tb-flex lr-flex'}>
+        <img style={{height: '16px', marginRight: '10px'}} src={'/static/icons/calendar.png'} />
+        <label htmlFor='date'>{state.date}</label>
+        <input style={{display: 'none'}} id='date' type='date' ref='calendar' value={state.date} onChange={(e) => { calendar.setState({date: e.target.value})}} />
       </div>
     </div>
 

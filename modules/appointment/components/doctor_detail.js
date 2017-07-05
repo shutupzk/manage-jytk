@@ -3,6 +3,7 @@ import DoctorIntro from '../../hospital/components/doctor_intro'
 import DoctorScheduleList from '../../hospital/components/doctor_schedule_list'
 import DoctorDescription from '../../hospital/components/doctor_description'
 import DoctorAwards from '../../hospital/components/doctor_awards'
+import {theme} from 'components'
 
 export default (props) => {
   let doctor = props.doctor
@@ -13,7 +14,7 @@ export default (props) => {
   let height = window.innerHeight - 100
   let width = window.innerWidth - 90
   return (
-    <div className='container' style={{height: height, overflow: 'auto', marginRight: -10, paddingRight: 10, width: width}}>
+    <div className='container' style={{paddingTop: theme.tbmargin, paddingBottom: theme.tbmargin, paddingLeft: theme.lrmargin, paddingRight: theme.lrmargin, background: '#fff'}}>
       <div>
         <DoctorTitleCard doctor={doctor} isMyDoc={isMyDoc} toMyDoctor={toMyDoctor} />
         <DoctorIntro doctor={doctor} />
@@ -21,14 +22,6 @@ export default (props) => {
         <DoctorDescription doctor={doctor} />
         <DoctorAwards doctor={doctor} />
       </div>
-      <style jsx>{`
-        .container {
-          {/*height: 520px;*/}
-          overflow: auto;
-          flex: 7;
-          background-color: white;
-        }
-      `}</style>
     </div>
   )
 }

@@ -84,12 +84,19 @@ class AppointmentDepartmentListScreen extends Component {
       }
       return (
         <div>
-          <div
-            style={{margin: '10px 15px', alignItems: 'center', backgroundColor: '#fff', height: 20, padding: 5, textAlign: 'center'}}
-            onClick={() => { Router.push('/appointment/search') }}
-          >
-            {/*<SearchBar departments={this.props.departments} searchDep={(theData, term) => { this.searchDept(theData, term) }} />*/}
-            <img src='/static/icons/search.png' style={{width: 15, height: 15, marginRight: 10}} /><span>搜索科室或医生</span>
+          <div style={{background: '#e6e6e6', padding: '6px 15px'}}>
+            <div
+              className='flex tb-flex lr-flex'
+              style={{alignItems: 'center', border: '1px solid #d8d8d8',
+              borderRadius: '3px',
+              color: '#b4b4b4',
+              backgroundColor: '#fff', height: 20, padding: 5, textAlign: 'center'}}
+              onClick={() => { Router.push('/appointment/search') }}
+            >
+              {/*<SearchBar departments={this.props.departments} searchDep={(theData, term) => { this.searchDept(theData, term) }} />*/}
+              <img src='/static/icons/search.png' style={{height: 15, marginRight: 10}} />
+              <span>搜索科室或医生</span>
+            </div>
           </div>
           <DepartmentList deps={deps} selectDepartment={(dep) => { this.selectDepartment(dep) }} searchKey={(text) => { return replaceSearchKey(text, 'undefind') }} />
         </div>

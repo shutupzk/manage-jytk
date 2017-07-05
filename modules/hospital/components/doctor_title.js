@@ -1,60 +1,53 @@
+import {theme} from 'components'
+
 function TitleCard (props) {
   const doc = props.doctor
   const isMyDoc = props.isMyDoc
   const toMyDoctor = props.toMyDoctor
   return (
-    <div className='cardContainer'>
-      <div style={{float: 'left', width: '25%'}}><img src='/static/icons/doctor_head.png' /></div>
-      <div style={{hight: 60, width: '75%', float: 'right'}}>
-        <div style={{float: 'left', width: '70%', height: 60}}>
-          <div>{doc.doctorName}</div>
-          <div>{doc.title || '主任医师'}</div>
+    <div className='cardContainer flex' style={{display: '-webkit-box', justifyContent: 'space-between'}}>
+      <img src='/static/icons/doctor_head.png' />
+      <div className='rightCard flex tb-flex' style={{justifyContent: 'space-between'}}>
+        <div>
+          <div style={{color: theme.mainfontcolor, fontWeight: '500', fontSize: theme.fontsize}}>{doc.doctorName}</div>
+          <div style={{color: theme.fontcolor, fontSize: theme.nfontsize, marginTop: '.04rem'}}>{doc.title || '主任医师'}</div>
         </div>
-        <div style={{float: 'right', width: '20%', height: 60, color: '#505050', padding: 5}} onClick={() => toMyDoctor()}>
+        <div onClick={() => toMyDoctor()}>
           {
-            isMyDoc ? <div style={{alignItems: 'center'}}><li className='light' ><a /></li><div>已收藏</div></div> : <div><li><a /></li><div>收藏</div></div>
+            isMyDoc ?
+              <dl style={{alignItems: 'center'}}>
+                <img src={'/static/icons/collected.png'} />
+                <dd>已收藏</dd>
+              </dl>
+            :
+              <dl style={{alignItems: 'center'}}>
+                <img src={'/static/icons/collect.png'} />
+                <dd>收藏</dd>
+              </dl>
           }
         </div>
       </div>
-      <div className='.clearfix'>&nbsp;</div>
       <style jsx>{`
         .cardContainer {
           flex: 7px;
           background-color: white;
         }
-        img {
-          border-radius: 0px;
-          height: 60px;
-          width: 60px;
+        .cardContainer img{
+          height: .46rem;
+          margin-right: 10px;
         }
-        .nameDiv {
-          margin: 5px;
-          marginTop: 10px;
-          align-items: center;
-          font-size: 18px;
-          color: #505050;
+        .rightCard {
+          -webkit-box-flex: 1
         }
-        .titleDiv {
-          margin: 5px;
-          align-items: center;
-          font-size: 13px;
-          color: #B4B4B4;
+        .rightCard dl {
+          font-size: 12px;
+          color: ${theme.fontcolor};
+          text-align: center;
         }
-        li {
-          {/*float: left;*/}
-          list-style: none;
-          width: 27px;
-          height: 27px;
-          background: url(/static/icons/stars.gif)
-        }
-        li a {
-          display: block;
-          width: 100%;
-          padding-top: 27px;
-          overflow: hidden;
-        }
-        li.light {
-          background-position: 0 -29px;
+        .rightCard dl img{
+          height: 20px;
+          margin-right: 0;
+          display: inline-block;
         }
       `}</style>
     </div>

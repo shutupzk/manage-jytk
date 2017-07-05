@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import div from 'next/link'
+import {theme} from 'components'
+
 class DepartmentList extends Component {
   render () {
     var deps = this.props.deps
@@ -9,13 +11,23 @@ class DepartmentList extends Component {
           deps.map((dep) => {
             return (
               <div
-                style={{marginLeft: 15}}
                 key={dep.id} onClick={(deps) => {
                   this.props.selectDepartment(dep)
-                }}>
-                <div style={{ verticalAlign: 'center', height: '2em', fontSize: '14px', borderBottom: '1px solid #ccc' }}>
-                  <div dangerouslySetInnerHTML={{__html: this.props.searchKey(dep.deptName)}} />
-                </div>
+                }}
+                className='item'>
+                <div dangerouslySetInnerHTML={{__html: this.props.searchKey(dep.deptName)}} />
+                <style jsx>{`
+                  .item{
+                    margin-left: ${theme.lrmargin};
+                    border-bottom: 1px solid ${theme.bordercolor};
+                    line-height: .4rem;
+                    color: ${theme.mainfontcolor};
+                    font-size: ${theme.fontsize};
+                  }
+                  .item:last-child{
+                    border-bottom: 0px solid ${theme.bordercolor};
+                  }
+                `}</style>
               </div>
             )
           })

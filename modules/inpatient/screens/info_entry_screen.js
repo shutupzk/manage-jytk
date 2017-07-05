@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { updateInpatientRecord } from '../../../ducks'
+import {theme} from 'components'
 
 class InfoEntryScreen extends Component {
   filterRecord (inpatientRecordArray, selectInpatientId) {
@@ -75,8 +76,8 @@ class InfoEntryScreen extends Component {
           }
         </div>
 
-        {1 === 1 ? <div style={{margin: '10px'}}>
-          <button style={{width: '100%', backgroundColor: '#3CA0FF', display: 'block', borderRadius: 10, padding: 10, textAlign: 'center'}} onClick={() => { this.updateInpatientRecord(inpatientRecord.id, inpatientRecord.inpatientCardId) }}>提交</button>
+        {1 === 1 ? <div>
+          <button className='fullWidthFixed fullWidthBtn fullWidthBtnMain' onClick={() => { this.updateInpatientRecord(inpatientRecord.id, inpatientRecord.inpatientCardId) }}>提交</button>
         </div> : ''}
       </div>
     )
@@ -87,23 +88,23 @@ const topInfo = (inpatientRecord, props) => {
   const patient = props.patientsData[inpatientRecord.patientId]
   return (
     <div>
-      <div style={{ padding: 10, marginBottom: 1, backgroundColor: '#ffffff', fontSize: 15 }}>{ inpatientRecord.name }</div>
-      <div style={{ padding: 10, backgroundColor: '#ffffff' }}>
-        <div style={{ display: 'flex', padding: '2px 0px' }}>
-          <div style={{flex: '2'}}>性 &nbsp;别</div>
-          <div style={{flex: '10'}}>{patient.sex === '1' ? '男' : '女'}</div>
+      <div style={{ padding: '10px 15px', marginBottom: 1, backgroundColor: '#ffffff', fontSize: 18, color: theme.mainfontcolor }}>{ inpatientRecord.name }</div>
+      <div style={{ padding: '10px 15px', backgroundColor: '#ffffff', fontSize: '14px' }}>
+        <div style={{ display: 'flex', lineHeight: '30px' }}>
+          <div style={{color: theme.fontcolor, paddingRight: theme.tbmargin}}>性&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;别</div>
+          <div style={{color: theme.mainfontcolor}}>{patient.sex === '1' ? '男' : '女'}</div>
         </div>
-        <div style={{ display: 'flex', padding: '2px 0px' }}>
-          <div style={{flex: '2'}}>出生日期</div>
-          <div style={{flex: '10'}}>{patient.birthday}</div>
+        <div style={{ display: 'flex', lineHeight: '30px' }}>
+          <div style={{color: theme.fontcolor, paddingRight: theme.tbmargin}}>出生日期</div>
+          <div style={{color: theme.mainfontcolor}}>{patient.birthday}</div>
         </div>
-        <div style={{ display: 'flex', padding: '2px 0px' }}>
-          <div style={{flex: '2'}}>联系电话</div>
-          <div style={{flex: '10'}}>{patient.phone}</div>
+        <div style={{ display: 'flex', lineHeight: '30px' }}>
+          <div style={{color: theme.fontcolor, paddingRight: theme.tbmargin}}>联系电话</div>
+          <div style={{color: theme.mainfontcolor}}>{patient.phone}</div>
         </div>
-        <div style={{ display: 'flex', padding: '2px 0px' }}>
-          <div style={{flex: '2'}}>身份证号</div>
-          <div style={{flex: '10'}}>{patient.certificateNo}</div>
+        <div style={{ display: 'flex', lineHeight: '30px' }}>
+          <div style={{color: theme.fontcolor, paddingRight: theme.tbmargin}}>身份证号</div>
+          <div style={{color: theme.mainfontcolor}}>{patient.certificateNo}</div>
         </div>
       </div>
     </div>
@@ -130,21 +131,26 @@ const bottomSetInfo = (inpatientRecord, props) => {
     {key: '联系人地址', name: 'contactAddress', value: inpatientRecord.contactAddress}
   ]
   return (
-    <div style={{marginTop: '10px'}}>
+    <div style={{marginTop: '10px', marginBottom: '60px'}}>
       {/*inpatientRecord.recordInfo === '99'*/}
       {1 === 1 ? dataArr.map((item, i) => {
         console.log(item.value)
         return (
-          <div key={i} style={{display: 'flex', backgroundColor: '#ffffff', marginBottom: 1}}>
-            <div style={{flex: 3, padding: '10px 10px 10px 15px'}}>{item.key}</div>
-            <div style={{flex: 8, paddingRight: 15, alignItems: 'right'}}>{item.isEdit
-              ? <select style={{textAlign: 'right', height: 35, width: '100%'}} ref={item.name} defaultValue={item.value || ''}>
-                {item.options.map((item2) => {
-                  return (
-                    <option key={item2.id} value={item2.name}>{item2.name}</option>
-                  )
-                })}
-              </select> : <input defaultValue={item.value} style={{border: 'none', textAlign: 'right', height: 30, width: '100%'}} ref={item.name} />}</div>
+          <div key={i} style={{display: 'flex', justifyContent: 'space-between', backgroundColor: '#ffffff', marginBottom: 1, padding: '0 15px', lineHeight: '40px'}}>
+            <div style={{fontSize: '14px', color: theme.fontcolor}}>{item.key}</div>
+            <div className='select flex tb-flex' style={{alignItems: 'right', border: 'none', width: 'auto', padding: 0}}>{item.isEdit
+              ?
+              <div className='flex tb-flex' style={{width: '100%'}}>
+                <select style={{textAlign: 'right', height: 40, lineHeight: '40px', color: theme.mainfontcolor, fontSize: theme.fontsize, fontWeight: 300, paddingRight: 6}} ref={item.name} defaultValue={item.value || ''}>
+                  {item.options.map((item2) => {
+                    return (
+                      <option key={item2.id} value={item2.name}>{item2.name}</option>
+                    )
+                  })}
+                </select>
+                <p className='back-left' style={{transform: 'rotate(135deg)'}}></p>
+              </div>
+              : <input defaultValue={item.value} style={{border: 'none', textAlign: 'right', height: 40, lineHeight: '40px', color: theme.mainfontcolor, fontSize: theme.fontsize, fontWeight: 300, paddingRight: 6, width: '100%'}} ref={item.name} />}</div>
           </div>
         )
       })

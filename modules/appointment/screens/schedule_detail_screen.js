@@ -3,6 +3,7 @@ import { signin, queryHospitals, queryUser, queryPatients, queryDoctors, selectP
 import { connect } from 'react-redux'
 import Router from 'next/router'
 import _ from 'lodash'
+import {theme, Loading} from 'components'
 // import swal from 'sweetalert2'
 
 import { isEmptyObject } from '../../../utils'
@@ -143,7 +144,7 @@ class ScheduleDetailScreen extends Component {
   render () {
     if (this.state.isInit) {
       return (
-        <div>loading...</div>
+        <div><Loading showLoading={true} /></div>
       )
     }
     const {doctors, doctorId, schedules, scheduleId, patients, selectPatient} = this.props
@@ -164,26 +165,26 @@ class ScheduleDetailScreen extends Component {
     return (<div style={{flex: 1}}>
       <div className={'list'}>
         <div>
-          <div className={'subView'}>
+          <div className={'subView flex tb-flex'}>
             <img src='/static/icons/doctor_head.png' style={{width: 30, height: 30, borderRadius: '15px'}} />
             <span className={'bigName'}>{doctor.doctorName}</span>
             <span className={'titleText'}>{doctor.title}</span>
           </div>
         </div>
-        <div style={{marginBottom: 10, padding: 10, backgroundColor: '#fff'}}>
-          <div>
+        <div style={{marginBottom: 10, padding: theme.lrmargin, backgroundColor: '#fff'}}>
+          <div className='flex tb-flex'>
             <span className={'textLeft'}>就诊科室</span>
             <span className={'textRight'}>{schedule.department.deptName}</span>
           </div>
-          <div>
+          <div className='flex tb-flex'>
             <span className={'textLeft'}>门诊类型</span>
             <span className={'textRight'}>{schedule.clinicType || ''}</span>
           </div>
-          <div>
+          <div className='flex tb-flex'>
             <span className={'textLeft'}>就诊时间</span>
             <span className={'textRight'}>{schedule.visitDate}</span>
           </div>
-          <div>
+          <div className='flex tb-flex'>
             <span className={'textLeft'}>挂号费用</span>
             <span className={'textRight'}>{schedule.registerFee}</span>
           </div>
@@ -192,17 +193,17 @@ class ScheduleDetailScreen extends Component {
           <span className={'textLeft'}>{'就诊人'}</span>
           <div className={'rightView'} onClick={() => { Router.push('/appointment/select_patient') }}>
             <span className={'textRight'}>{patient.name}</span>
-            <img src='/static/icons/arrow_right.png' style={{width: 10, height: 12}} />
+            <i className='back-left'></i>
           </div>
         </div>
         <div className={'item2'} key={'amPm'}>
           <span className={'left'}>{'就诊时间'}</span>
-          <div className={'right'} onClick={() => {
+          <div className={'flex tb-flex'} onClick={() => {
             {/*this.setState({selectTimeRangeShow: true})*/}
           }}>
             {/*<span className={'textRight'}> {beginTime || (schedule.amPm === 'a' ? '8:00' : '13:00')} - {endTime || (schedule.amPm === 'a' ? '9:00' : '14:00')} </span>*/}
             {/*<img src='/static/icons/arrow_right.png' style={{width: 10, height: 12}} />*/}
-            <select style={{display: '', height: 40, width: '100%', fontSize: 15, color: '#505050'}}>
+            <select style={{display: '', height: 30, width: '100%', fontSize: 15, color: '#505050'}}>
               {
                 schedule.visitScheduleTimes.map((scheduleTime) => {
                   return <option
@@ -215,6 +216,7 @@ class ScheduleDetailScreen extends Component {
                 })
               }
             </select>
+            <i className='back-left'></i>
           </div>
         </div>
         {/*<div className={'item'} key={'clinicType'}>
@@ -240,13 +242,13 @@ class ScheduleDetailScreen extends Component {
         </div>*/}
         <div className={'item2'} key={'payType2'}>
           <span className={'left'}>{'患者类型'}</span>
-          <div className={'right'} onClick={() => {
+          <div className={'flex tb-flex'} onClick={() => {
             {/*this.setState({selectPayTypeShow: true})*/}
             this.refs.patientTypeSelect.click()
           }}>
             {/*<span className={'textRight'}>{this.state.payType}</span>*/}
             {/*<img src='/static/icons/arrow_right.png' style={{width: 10, height: 12}} />*/}
-            <select ref='patientTypeSelect' style={{display: '', height: 40, width: '100%', fontSize: 15, color: '#505050'}}>
+            <select ref='patientTypeSelect' style={{display: '', height: 30, width: '100%', fontSize: 15, color: '#505050'}}>
               {
                 patientTypes.map((type) => {
                   return (
@@ -262,6 +264,7 @@ class ScheduleDetailScreen extends Component {
                 })
               }
             </select>
+            <i className='back-left'></i>
           </div>
         </div>
         {/*<div className={item} key={'registerFee'}>
@@ -273,17 +276,18 @@ class ScheduleDetailScreen extends Component {
         <div className={'item'} key={'carteVital'}>
           <span className={'textLeft'}>{'就诊卡号'}</span>
           <div className={'rightView'}>
-            <span className={'textRight'}><input ref='visitNo' defaultValue={patient.patientCards[0] ? patient.patientCards[0].visitNo : ''} /></span>
+            <span className={'textRight'}><input ref='visitNo' placeholder='请输入就诊卡号' defaultValue={patient.patientCards[0] ? patient.patientCards[0].visitNo : ''} /></span>
           </div>
         </div>
       </div>
-      <button
-        style={{width: '92%', display: 'block', margin: '4%'}}
-        className='blockPrimaryBtn'
-        onClick={() => this.submit(this.props)}
-      >
-        确定
-      </button>
+      <footer style={{margin: '20px 15px'}}>
+        <button
+          className='btnBG btnBGMain'
+          onClick={() => this.submit(this.props)}
+        >
+          确定
+        </button>
+      </footer>
       {/*<div style={{position: 'fixed', bottom: '20px', width: '100%'}}>
         {
           this.state.selectTimeRangeShow ? this.selectTimeRangeRender(schedule) : ''
@@ -296,6 +300,7 @@ class ScheduleDetailScreen extends Component {
       <style jsx>{`
         select {
           direction: rtl;
+          border: none;
         }
         select option {
           direction: ltr;
@@ -310,7 +315,7 @@ class ScheduleDetailScreen extends Component {
           padding: 0px 15px;
           background-color: #ffffff;
           justify-content: space-between;
-          margin-bottom: 2px;
+          margin-bottom: 1px;
           display: flex;
         }
         .left {
@@ -324,6 +329,11 @@ class ScheduleDetailScreen extends Component {
           align-items: right;
           text-align: right;
         }
+        .back-left {
+          display: inline-block;
+          transform: rotate(135deg);
+          margin-left: .06rem;
+        }
         .item {
           padding: 10px 15px;
           {/*height: 30px;*/}
@@ -333,24 +343,30 @@ class ScheduleDetailScreen extends Component {
           flex-direction: row;
           background-color: #ffffff;
           justify-content: space-between;
-          margin-bottom: 2px;
+          margin-bottom: 1px;
         }
         .textLeft {
-          flex: 1;
-          font-size: 15px;
-          color: #797979;
-          margin-right: 25px;
-        }
-        .rightView {
-          flex: 3;
-          flex-direction: row;
-          align-items: center;
-          float: right;
+          font-size: ${theme.fontsize};
+          color: ${theme.fontcolor};
+          padding-right: ${theme.lrmargin};
+          line-height: .3rem;
         }
         .textRight {
-          font-size: 15px;
-          color: #505050;
-          margin-right: 10px;
+          color: ${theme.mainfontcolor};
+          line-height: .3rem;
+        }
+        .textRight input{
+          line-height: .3rem;
+          text-align: right;
+          padding: 0;
+          margin: 0;
+          border: none;
+          font-size: ${theme.fontsize};
+          color: ${theme.fontcolor};
+        }
+        .rightView {
+          color: ${theme.mainfontcolor};
+          float: right;
         }
         .buttonStyle {
           margin-top: 35px;
@@ -361,21 +377,20 @@ class ScheduleDetailScreen extends Component {
           height: 80px;
         }
         .bigName {
-          font-size: 18px;
-          color: #505050;
-          margin-left: 10px;
+          font-size: .17rem;
+          color: ${theme.mainfontcolor};
+          margin: 0 10px;
+          font-weight: bold;
         }
         .titleText {
-          font-size: 14px;
-          color: #797979;
-          margin-left: 10px;
+          font-size: ${theme.nfontsize};
+          color: ${theme.fontcolor};
         }
         .subView {
-          padding: 10px;
+          padding: ${theme.tbmargin} ${theme.lrmargin};
           background-color: #fff;
-          margin-bottom: 1px;
-          flex-direction: row;
           align-items: center;
+          border-bottom: 1px solid #e6e6e6;
         }
       `}</style>
     </div>)

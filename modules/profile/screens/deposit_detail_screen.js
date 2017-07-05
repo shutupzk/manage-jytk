@@ -5,6 +5,7 @@ import localforage from 'localforage'
 // import Link from 'next/link'
 import { queryPatients, selectPatient, queryDeposits, selectDeposit } from '../../../ducks'
 import { isEmptyObject } from '../../../utils'
+import {theme, Loading} from 'components'
 class DepositDetailScreen extends Component {
   constructor (props) {
     super(props)
@@ -42,7 +43,7 @@ class DepositDetailScreen extends Component {
     if (this.props.loading) {
       return (
         <div>
-          loading...
+          <Loading showLoading={true} />
         </div>
       )
     }
@@ -57,35 +58,35 @@ class DepositDetailScreen extends Component {
     const depositId = this.props.depositId || this.props.url.query.depositId
     const deposit = deposits[depositId]
     return (
-      <div>
-        <div style={{textAlign: 'center', backgroundColor: '#ffffff', padding: 20, marginBottom: 1}}>
-          <div style={{color: '#3CA0FF', fontSize: 16}}>-¥ {deposit.charge}</div>
-          <div>支付成功</div>
+      <div style={{padding: theme.tbmargin, background: '#fff', color: theme.fontcolor}}>
+        <div style={{textAlign: 'center', padding: '10px 0 20px', borderBottom: '1px dashed #fff', borderColor: theme.bordercolor}}>
+          <div style={{color: theme.maincolor, fontSize: 26, fontWeight: 'bold'}}>-¥ {deposit.charge}</div>
+          <div style={{fontSize: theme.nfontsize}}>支付成功</div>
         </div>
-        <div style={{backgroundColor: '#ffffff', padding: 10, marginBottom: 1}}>
-          <div style={{display: 'flex', padding: 5}}>
+        <div style={{borderBottom: '1px dashed #fff', borderColor: theme.bordercolor, lineHeight: '26px', padding: '10px 0'}}>
+          <div style={{display: 'flex'}}>
             <div style={{flex: '1'}}>费用类别</div>
             <div>{'挂号缴费'}</div>
           </div>
-          <div style={{display: 'flex', padding: 5}}>
+          <div style={{display: 'flex'}}>
             <div style={{flex: '1'}}>交易时间</div>
             <div>{deposit.date}</div>
           </div>
-          <div style={{display: 'flex', padding: 5}}>
+          <div style={{display: 'flex'}}>
             <div style={{flex: '1'}}>交易方式</div>
             <div>{deposit.payWay}</div>
           </div>
-          <div style={{display: 'flex', padding: 5}}>
+          <div style={{display: 'flex'}}>
             <div style={{flex: '1'}}>凭证单号</div>
             <div>{deposit.tradeNo}</div>
           </div>
         </div>
-        <div style={{backgroundColor: '#ffffff', padding: 10, marginBottom: 1}}>
-          <div style={{display: 'flex', padding: 5}}>
+        <div style={{lineHeight: '26px', paddingTop: theme.tbmargin}}>
+          <div style={{display: 'flex'}}>
             <div style={{flex: '1'}}>就诊人姓名</div>
             <div>{deposit.patientName}</div>
           </div>
-          <div style={{display: 'flex', padding: 5}}>
+          <div style={{display: 'flex'}}>
             <div style={{flex: '1'}}>就诊人ID</div>
             <div>{deposit.patientId}</div>
           </div>

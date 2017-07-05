@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import Router from 'next/router'
 import { connect } from 'react-redux'
 import moment from 'moment'
+import {theme} from 'components'
 
 import { selectDeposit } from '../../../ducks'
 
@@ -57,32 +58,33 @@ class PaidListScreen extends Component {
 
 const title = (item, i) => {
   return (
-    <div style={{margin: 10, backgroundColor: '#ffffff', borderRadius: 10, padding: 10}}>
-      <div style={{color: '#505050', fontSize: 16}}>{'预缴金缴纳记录'}</div>
-      <div style={{color: '#797979', fontSize: 13, marginTop: 6}}>{moment(item.createdAt).format('MM月DD日 HH:mm')}</div>
-      <div style={{flexDirection: 'row', justifyContent: 'center', marginTop: 14, marginBottom: 20}}>
-        <div style={{color: '#797979', fontSize: 30, textAlign: 'center'}}>{`￥  ${item.charge}`}</div>
+    <div style={{margin: 10, backgroundColor: '#ffffff', borderRadius: 4, padding: '10px 0', border: '1px solid #fff', borderColor: theme.bordercolor}}>
+      <div style={{color: theme.mainfontcolor, fontSize: 16, fontWeight: '500', paddingLeft: theme.lrmargin, margin: '6px 0'}}>{'预缴金缴纳记录'}</div>
+      <div style={{color: theme.fontcolor, fontSize: theme.nfontsize, paddingLeft: theme.lrmargin}}>{moment(item.createdAt).format('MM月DD日 HH:mm')}</div>
+      <div style={{flexDirection: 'row',fontSize: 30, textAlign: 'center', borderBottom: '1px dashed #eee', margin: '0 .1rem', lineHeight: '80px', color: theme.mainfontcolor}}>
+        {`￥  ${item.charge}`}
       </div>
-      <div style={{flexDirection: 'row', display: 'flex'}}>
-        <div style={{color: '#797979', fontSize: 13, flex: '2'}}>支付方式</div>
-        <div style={{color: '#505050', fontSize: 13, flex: '9'}}>{item.payWay}</div>
-      </div>
-      <div style={{flexDirection: 'row', marginTop: 7, display: 'flex'}}>
-        <div style={{color: '#797979', fontSize: 13, flex: '2'}}>凭证单号</div>
-        <div style={{color: '#505050', fontSize: 13, flex: '9'}}>{item.tradeNo}</div>
-      </div>
-      <div style={{flexDirection: 'row', marginTop: 7, display: 'flex'}}>
-        <div style={{color: '#797979', fontSize: 13, flex: '2'}}>住院号</div>
-        <div style={{color: '#505050', fontSize: 13, marginLeft: 5, flex: '9'}}>{item.inpatientNo}</div>
+      <div style={{padding: '10px 15px'}}>
+        <div style={{flexDirection: 'row', display: 'flex'}}>
+          <div style={{color: theme.fontcolor, fontSize: theme.nfontsize, flex: '2'}}>支付方式</div>
+          <div style={{color: theme.mainfontcolor, fontSize: theme.nfontsize, flex: '9'}}>{item.payWay}</div>
+        </div>
+        <div style={{flexDirection: 'row', marginTop: 7, display: 'flex'}}>
+          <div style={{color: theme.fontcolor, fontSize: theme.nfontsize, flex: '2'}}>凭证单号</div>
+          <div style={{color: theme.mainfontcolor, fontSize: theme.nfontsize, flex: '9'}}>{item.tradeNo}</div>
+        </div>
+        <div style={{flexDirection: 'row', marginTop: 7, display: 'flex'}}>
+          <div style={{color: theme.fontcolor, fontSize: theme.nfontsize, flex: '2'}}>住院号</div>
+          <div style={{color: theme.mainfontcolor, fontSize: theme.nfontsize, marginLeft: 5, flex: '9'}}>{item.inpatientNo}</div>
+        </div>
       </div>
       <div className='spliteLine'>&nbsp;</div>
-      <div style={{marginTop: 5}}>{subtitle()}</div>
+      <div style={{marginTop: theme.tbmargin}}>{subtitle()}</div>
       <style jsx>{`
         .spliteLine {
           background-color: #E6E6E6;
           width: 100%;
           height: 1px;
-          margin-top: 10px;
         }
       `}</style>
     </div>
@@ -91,10 +93,9 @@ const title = (item, i) => {
 
 const subtitle = () => {
   return (
-    <div>
-      <div style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <div style={{ fontSize: 14, color: '#505050' }} >查看详情<span style={{float: 'right'}}>></span></div>
-      </div>
+    <div className='flex tb-flex' style={{ justifyContent: 'space-between', padding: '0 .15rem' }}>
+      <span style={{ fontSize: 14, color: theme.mainfontcolor }}>查看详情</span>
+      <p className='back-left' style={{transform: 'rotate(135deg)'}}></p>
     </div>
   )
 }

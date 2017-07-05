@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import QuestionList from '../components/question_list'
 import { queryQuestions } from '../../../ducks'
 import { isEmptyObject } from '../../../utils'
+import {theme, Loading} from 'components'
 class QuestionsScreen extends Component {
   constructor (props) {
     super(props)
@@ -19,7 +20,7 @@ class QuestionsScreen extends Component {
     if (this.props.loading) {
       return (
         <div>
-          loading...
+          <Loading showLoading={true} />
         </div>
       )
     }
@@ -32,7 +33,7 @@ class QuestionsScreen extends Component {
     }
     const questions = this.props.questions
     return (
-      <div style={{marginTop: 10}}>
+      <div>
         { questions && questions.length > 0 ? questions.map((question, i) => {
           return <QuestionList question={question} num={i + 1} />
         }) : 'no data'

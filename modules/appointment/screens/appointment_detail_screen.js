@@ -3,6 +3,7 @@ import Router from 'next/router'
 import { connect } from 'react-redux'
 import localforage from 'localforage'
 // import swal from 'sweetalert2'
+import {theme, Loading} from 'components'
 
 import { signin, queryUser, selectAppointment, queryPatients, queryAppointmentDetail, updateAppointment, selectDepartment, selectDoctor } from '../../../ducks'
 import { isEmptyObject } from '../../../utils'
@@ -98,7 +99,7 @@ class AppointmentDetailScreen extends Component {
   }
   render () {
     if (this.state.isInit || this.props.loading) {
-      return (<div>loading...</div>)
+      return (<div><Loading showLoading={true} /></div>)
     }
     if (this.props.error) {
       return (<div>error...</div>)
@@ -136,7 +137,7 @@ class AppointmentDetailScreen extends Component {
             <div style={{color: '#000000', marginBottom: 3}}><b>挂号信息</b></div>
             <div className={'itemView'}>
               <span className={'itemLeft'}>{'科        室'}</span>
-              <span className={'sitemRight'}>{appointment.visitSchedule.department.deptName}</span>
+              <span className={'itemRight'}>{appointment.visitSchedule.department.deptName}</span>
             </div>
             <div className={'itemView'}>
               <span className={'itemLeft'}>{'医        生'}</span>
@@ -195,27 +196,29 @@ class AppointmentDetailScreen extends Component {
           </div>
 
         </div>
-        <div style={{margin: '20px 10px'}}>
+        <div>
           {
             appointment.visitStatus === '02' ? <button
-              style={{backgroundColor: '#3CA0FF', color: '#fff', width: '100%', display: 'block', padding: 5}}
+              className='fullWidthFixed fullWidthBtn fullWidthBtnMain'
               onClick={() => {
                 this.gotoSchedule()
               }} >再次预约</button>
             : <div>{
               appointment.visitStatus === '01'
-                ? <div style={{display: 'flex'}}><button
-                  style={{backgroundColor: '#fff', color: '#E45252', width: '50%', display: 'block', padding: 5}}
+                ? <div style={{display: 'flex'}} className='fullWidthFixed'><button
+                  className='fullWidthBtn fullWidthBtnBackWhite'
+                  style={{width: '50%'}}
                   onClick={() => {
                     this.cancelAppointment()
                   }} >取消挂号</button>
                   <button
-                    style={{backgroundColor: '#3CA0FF', color: '#fff', width: '50%', display: 'block', padding: 5}}
+                    className='fullWidthBtn fullWidthBtnMain'
+                    style={{width: '50%'}}
                     onClick={() => {
                       this.gotoPay()
                     }} >去缴费</button></div>
                 : <button
-                  style={{backgroundColor: '#fff', color: '#E45252', width: '100%', display: 'block', padding: 5}}
+                  className='fullWidthFixed fullWidthBtn fullWidthBtnBackWhite'
                   onClick={() => {
                     this.退费()
                   }} >退号退费</button>
@@ -235,22 +238,19 @@ class AppointmentDetailScreen extends Component {
           .detailView {
             margin: 10px;
             background-color: #FFFFFF;
-            padding-bottom: 15px;
-            padding-left: 10px;
-            padding-right: 10px;
             font-size: 13px;
           }
           .itemTopView {
-            margin-left: 10px;
-            padding-top: 15px;
+            padding-left: ${theme.lrmargin};
             {/*background-color: #FFFFFFpx;*/}
-            height: 30px;
+            line-height: 30px;
+            background: #fbfbfb;
             align-items: center;
           }
           .unCancelText {
             float: right;
-            color: #0087F4;
-            margin-right: 10px;
+            color: ${theme.maincolor};
+            margin-right: ${theme.lrmargin};
           }
           .cancelText {
             float: right;
@@ -259,19 +259,19 @@ class AppointmentDetailScreen extends Component {
           }
           .subView {
             justify-content: center;
-            margin-left: 10px;
-            margin-top: 20px;
+            padding: ${theme.lrmargin};
           }
           .itemView {
             flex-direction: row;
             margin-top: 10px;
           },
           .itemLeft {
-            color: #797979;
+            color: ${theme.nfontcolor};
+            margin-left: 10px;
           }
           .itemRight {
             float: right;
-            color: #505050;
+            color: ${theme.fontcolor};
             margin-right: 10px;
           }
         `}</style>

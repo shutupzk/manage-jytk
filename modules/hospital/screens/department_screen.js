@@ -6,6 +6,7 @@ import Router from 'next/router'
 import {queryDepartments, selectDepartment, setQueryFlag} from '../../../ducks'
 import DepartmentList from '../components/department_list'
 import { replaceSearchKey } from '../../../utils'
+import {Loading} from 'components'
 // import Link from 'next/link'
 
 class DepartmentScreen extends Component {
@@ -34,7 +35,7 @@ class DepartmentScreen extends Component {
     if (department.loading && !this.toDetail) {
       return (
         <div>
-          <h1>loading...</h1>
+          <h1><Loading showLoading={true} /></h1>
         </div>
       )
     }

@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import Router from 'next/router'
 import { connect } from 'react-redux'
+import {Loading, theme} from 'components'
 
 import { signin, queryUser, queryPatients, queryAppointments, queryAppointmentDetail, updateAppointment, selectAppointment } from '../../../ducks'
 import { isEmptyObject } from '../../../utils'
@@ -42,13 +43,13 @@ class AppointmentSuccessScreen extends Component {
 
   render () {
     if (this.state.isInit || this.props.loading) {
-      return (<div>loading...</div>)
+      return (<div><Loading showLoading={true} /></div>)
     }
     if (this.props.error) {
       return (<div>error...</div>)
     }
     const { patients, appointments, appointmentId } = this.props
-    const appointment = appointments[appointmentId]
+    const appointment = appointments[appointmentId] || {}
     const patient = patients[appointment.patientId]
     let buttonColor = '#FFFFFF'
     if (appointment.visitStatus === '02') {
@@ -59,8 +60,8 @@ class AppointmentSuccessScreen extends Component {
       <div>
         <div style={{height: height, overflow: 'auto'}}>
           <div className={'detailView'}>
-            <div className={'itemTopView'}>
-              <div style={{fontSize: 20, textAlign: 'center'}}>挂号成功</div>
+            <div className={'itemTopView flex tb-flex lr-flex'}>
+              <img src='/static/icons/appointsuccess.png' />挂号成功!
             </div>
             <div className={'subView'}>
               <div style={{color: '#000000', marginBottom: 3}}><b>挂号信息</b></div>
@@ -136,21 +137,21 @@ class AppointmentSuccessScreen extends Component {
               </div>
             </div>
           </div>
-          <div style={{margin: 10}}>
-            <h3>*重要提示：</h3>
+          <div style={{margin: 10, fontSize: theme.nfontsize, color: theme.fontcolor, lineHeight: '20px'}}>
+            <h3 style={{fontSize: theme.nfontsize, color: theme.fontcolor}}>*重要提示：</h3>
             <div>1.东川门诊预约患者，请于预约当天预约时段前10分钟到自助报到机/人工台报到，报到后到指定诊间外候诊。如未能在预约时段后半小时内报到，系统将自动取消此次预约。</div>
             <div>2.英东/老研所/惠福/平洲/合群门诊部预约患者，请于当天预约时段内携相关有效证件到挂号台或自助机取号，或在支付界面缴费后凭短信直接到医生诊间外候诊。</div>
             <div>3.此信息不作为报销凭证。</div>
           </div>
         </div>
-        <div style={{position: 'fixed', bottom: '20px', width: '100%', backgroundColor: '#ffffff', height: '30px', padding: '10px 0px'}}>
+        <div style={{position: 'fixed', bottom: '0px', width: '100%', backgroundColor: '#ffffff', height: '30px', padding: '10px 0px'}}>
         {/*<div style={{bottom: 15, position: 'fixed', width: '100%', backgroundColor: '#ffffff', height: 30, padding: 10}}>*/}
           <button
-            style={{backgroundColor: buttonColor, color: '#3CA0FF', width: '20%', display: 'block', float: 'right', border: 'solid 1px #cccccc', marginLeft: 10, marginRight: 10}}
+            style={{backgroundColor: buttonColor, color: theme.maincolor, width: '20%', display: 'block', float: 'right', border: 'solid 1px #cccccc', marginLeft: 10, marginRight: 10, borderColor: theme.maincolor, lineHeight: '28px', padding: '0', borderRadius: '4px'}}
             onClick={() => {
             }} >去支付</button>
           <button
-            style={{backgroundColor: buttonColor, color: '#505050', width: '20%', display: 'block', float: 'right', border: 'solid 1px #cccccc'}}
+            style={{backgroundColor: buttonColor, color: theme.fontcolor, width: '20%', display: 'block', float: 'right', border: 'solid 1px #ccc', borderColor: theme.fontcolor, lineHeight: '28px', padding: '0', borderRadius: '4px'}}
             onClick={() => {
               Router.push('/appointment/appointment_list')
             }} >稍后支付</button>
@@ -158,15 +159,19 @@ class AppointmentSuccessScreen extends Component {
         {/*<Popup ref={popup => { this.popup = popup }} />*/}
         <style jsx>{`
         .detailView {
-          margin: 10px;
           font-size: 13px;
         }
         .itemTopView {
-          padding: 20px;
-          margin-bottom: 1px;
-          background-color: #FFFFFF;
-          height: 30px;
+          padding: 40px 0;
+          background-color: ${theme.maincolor};
+          font-size: 20px;
+          color: #fff;
           align-items: center;
+          margin-bottom: 10px;
+        }
+        .itemTopView img{
+          width: .22rem;
+          padding-right: .06rem;
         }
         .unCancelText {
           float: right;
@@ -181,8 +186,9 @@ class AppointmentSuccessScreen extends Component {
         .subView {
           background-color: #FFFFFF;
           justify-content: center;
-          padding: 10px;
+          margin: 0 10px;
           margin-bottom: 1px;
+          padding: 10px;
         }
         .itemView {
           padding-left: 5px;
@@ -190,11 +196,12 @@ class AppointmentSuccessScreen extends Component {
           margin-top: 10px;
         },
         .itemLeft {
-          color: #797979;
+          font-size: ${theme.fontsize};
+          color: ${theme.nfontcolor};
         }
         .itemRight {
           float: right;
-          color: #505050;
+          color: ${theme.fontcolor};
           margin-right: 10px;
         }
       `}</style>

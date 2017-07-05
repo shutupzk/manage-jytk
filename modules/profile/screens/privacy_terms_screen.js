@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 // import { connect } from 'react-redux'
+import {theme} from 'components'
 /**
  * 隐私条例
  */
@@ -19,18 +20,20 @@ class PrivacyTermsScreen extends Component {
         <style jsx>{`
           .termTitle {
             text-align: center;
-            font-size: 16px;
-            padding: 5px;
-            font-weight: bold;
+            font-size: 18px;
+            color: ${theme.mainfontcolor};
+            font-weight: 500;
+            line-height: 40px;
           }
           .termDate {
             text-align: center;
-            font-size: 13px;
-            color: #D0D0D0;
+            font-size: ${theme.nfontsize};
+            color: ${theme.nfontcolor};
           }
           .termContent {
             margin-top: 20px;
             font-size: 14px;
+            line-height: 24px;
           }
         `}</style>
       </div>

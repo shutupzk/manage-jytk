@@ -8,6 +8,7 @@ import localforage from 'localforage'
 import DoctorDetail from '../components/doctor_detail'
 import { isEmptyObject } from '../../../utils'
 import { queryDoctors, selectDoctor, selectDepartment, removeSelectDoctor, querySchedules, selectSchedule, createUserHasDoctor, removeUserHasDoctor } from '../../../ducks'
+import {TabHeader, Loading, theme} from 'components'
 
 const filterDepartments = (departmentIds, departmentId) => {
   let ids = departmentIds.filter((id) => {
@@ -129,29 +130,27 @@ class AppointmentDoctorListScreen extends Component {
   tabRender (selectDoctors, doctor) {
     var departmentId = this.props.departmentId
     if (!doctor) {
-      return <div>loading</div>
+      return <div><Loading showLoading={true} /></div>
     }
     var doctorId = doctor.id
     return (
-      <div style={{width: '100%'}}>
-        <div style={{float: 'left', width: '20%'}}>
-          <ul id='tab_nav' className={'tab_nav'}>
-            {
-              selectDoctors.length > 0 ? selectDoctors.map((doc) => {
-                return (
-                  <li className={this.props.doctorId === doc.id ? 'tab_nav_li active' : 'tab_nav_li'} key={doc.id} onClick={() => {
-                    this.props.selectDoctor({doctorId: doc.id})
-                    this.setState({isMyDoctor: this.props.doctors[doc.id].isMyDoctor})
-                    this.props.querySchedules(this.props.client, { departmentId, doctorId: doc.id })
-                  }}>
-                    <a className={'tab_nav_a active'}>{doc.doctorName}</a>
-                  </li>
-                )
-              }) : ''
-            }
-          </ul>
-        </div>
-        <div id='tab_content' style={{backgroundColor: '#ffffff', width: '80%', float: 'right'}}>
+      <div style={{display: '-webkit-box'}}>
+        <ul id='tab_nav' className={'tab_nav'}>
+          {
+            selectDoctors.length > 0 ? selectDoctors.map((doc) => {
+              return (
+                <li className={this.props.doctorId === doc.id ? 'flex tb-flex lr-flex active' : 'flex lr-flex tb-flex'} key={doc.id} onClick={() => {
+                  this.props.selectDoctor({doctorId: doc.id})
+                  this.setState({isMyDoctor: this.props.doctors[doc.id].isMyDoctor})
+                  this.props.querySchedules(this.props.client, { departmentId, doctorId: doc.id })
+                }}>
+                  <i className='sanjiao'></i><span>{doc.doctorName}</span>
+                </li>
+              )
+            }) : ''
+          }
+        </ul>
+        <div id='tab_content' className='tab_content'>
           <div id={`tab_${doctorId}`} style={{overflow: 'hidden'}}>
             <DoctorDetail isMyDoc={this.state.isMyDoctor} toMyDoctor={() => { this.saveOrCancelMyDoctor(this.state.isMyDoctor) }} doctor={doctor} schedules={this.props.schedules} departmentId={this.props.departmentId} goDetail={(schedule) => {
               this.props.selectSchedule(schedule.id)
@@ -159,7 +158,6 @@ class AppointmentDoctorListScreen extends Component {
             }} />
           </div>
         </div>
-        <div className='clearfix'>&nbsp;</div>
       </div>
     )
   }
@@ -270,8 +268,8 @@ class AppointmentDoctorListScreen extends Component {
               }
             }
             return <div key={date.date} style={todayClass} onClick={() => { this.setState({selectedDate: moment(date.date).format('YYYY-MM-DD')}) }}>
-              <div style={{marginBottom: 5}}>{isToday ? '今天' : weekdayStr}</div>
-              <div>{date.day}</div>
+              <div style={{marginBottom: 5, fontSize: '.12rem'}}>{isToday ? '今天' : weekdayStr}</div>
+              <div style={{fontSize: '.16rem'}}>{date.day}</div>
             </div>
           })
         }
@@ -286,7 +284,7 @@ class AppointmentDoctorListScreen extends Component {
   }
   render () {
     if (this.state.toDetail || this.props.loading) {
-      return <div>loading...</div>
+      return <div><Loading showLoading={true} /></div>
     }
     // 多加判断防止状态为error时，所有的界面都是error
     if (this.props.error) {
@@ -304,13 +302,24 @@ class AppointmentDoctorListScreen extends Component {
       this.props.selectDoctor({ doctorId: selectDoctors[0] ? selectDoctors[0].id : null })
       doctor = doctors[doctorId]
     }
+    const types = [{text: '全部日期', value: false}, {text: '按日期挂号', value: true}]
     return (
       <div className=''>
-        <div style={{display: 'flex', textAlign: 'center', backgroundColor: '#ffffff', marginBottom: 1.5}}>
-          <li style={{textAlign: 'center', width: '50%', float: 'left', height: '25px', fontSize: '16px', padding: 10}} className={this.state.isDateTab ? '' : 'top_nav_active'} onClick={() => { this.setState({isDateTab: false, selectedDate: '', firstDate: moment().format('YYYY-MM-DD')}) }}>全部日期</li>
-          <li style={{textAlign: 'center', width: '50%', float: 'right', height: '25px', fontSize: '16px', padding: 10}} className={this.state.isDateTab ? 'top_nav_active' : ''} onClick={() => { this.setState({isDateTab: true}) }}>按日期挂号</li>
-        </div>
-        <div style={{padding: '0px 5px', backgroundColor: '#ffffff', marginBottom: 1.5}}>
+        {/*<div style={{display: 'flex', textAlign: 'center', backgroundColor: '#ffffff', marginBottom: 1.5}}>
+          <li
+          onClick={() => {  }}>全部日期</li>
+          <li className={this.state.isDateTab ? 'top_nav_active' : ''}
+          onClick={() => {  }}>按日期挂号</li>
+        </div>*/}
+        <TabHeader types={types} curPayStatue={this.state.isDateTab}
+          clickTab={(type) => {
+            if (type) {
+              this.setState({isDateTab: type})
+            } else {
+              this.setState({isDateTab: type, selectedDate: '', firstDate: moment().format('YYYY-MM-DD')})
+            }
+          }} />
+        <div style={{backgroundColor: '#fff', borderBottom: '1px solid #d8d8d8'}}>
           {
             this.state.isDateTab ? this.renderDate() : ''
           }
@@ -320,28 +329,31 @@ class AppointmentDoctorListScreen extends Component {
         }
         <style jsx global>{`
           .tab_nav {
-            margin: 0px;
-            padding: 0px;
-            height: 30px;
+            min-width: 1rem;
           }
-          .tab_nav_li {
-            padding-top: 5px;
-            margin: 0px 0px;
-            border-bottom: 1px solid #ddd;
-            height: 25px;
+          .tab_nav li {
+            border-bottom: 1px solid ${theme.bordercolor};
+            line-height: .4rem;
             width: 100%;
             text-align: center;
+            color: ${theme.fontcolor};
+            position: relative;
           }
-          .active {
+          .tab_nav li i.sanjiao{
+            transform: rotate(-90deg);
+            border-top: .06rem solid #fff;
+            position: absolute;
+            left: 10px;
+          }
+          .tab_nav li.active {
             background-color: #FFF;
-            color: #3CA0FF !important;
+            color: ${theme.maincolor};
           }
-          .top_nav_active {
-            border-bottom: solid 1.5px #3CA0FF
+          .tab_nav li.active i.sanjiao {
+            border-top: .06rem solid ${theme.maincolor};
           }
-          .tab_nav_a {
-            color: #A4A4A4;
-            text-decoration: none;
+          .tab_content{
+            -webkit-box-flex: 1;
           }
         `}</style>
       </div>

@@ -16,8 +16,8 @@ class SelectPatientScreen extends Component {
     return (
       <div className='container'>
         <PatientList patients={this.props.patients} gotoDetail={(patientId) => { this.gotoDetail(patientId) }} />
-        <button className='blockPrimaryBtn' style={{width: '90%', display: 'block', bottom: 20, position: 'absolute'}} onClick={() => Router.push('/profile/patient_add')}>
-          <span>添加</span>
+        <button className='fullWidthBtn fullWidthFixed fullWidthBtnMain' onClick={() => Router.push('/profile/patient_add')}>
+          添加
         </button>
       </div>
     )

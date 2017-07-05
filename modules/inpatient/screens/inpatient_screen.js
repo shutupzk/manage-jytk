@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import localforage from 'localforage'
 import Router from 'next/router'
 import _ from 'lodash'
+import {Loading, FilterCard, FilterSelect, FilterTime, Modal, ModalHeader, ModalFooter, FilterTimeResult, theme, TabHeader} from 'components'
 
 import {
   queryPatients,
@@ -16,7 +17,8 @@ class InpatientScreen extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      selectInpatientId: null
+      selectInpatientId: null,
+      showFilterModal: false,
     }
   }
 
@@ -73,6 +75,27 @@ class InpatientScreen extends Component {
     return inpatientRecord[0]
   }
 
+  renderModal() {
+    let modalHtml;
+    modalHtml = <Modal showModalState={this.state.showTipModal || this.state.showFilterModal}>
+      <ModalHeader>请选择起止时间</ModalHeader>
+      <div className='flex' style={{padding: 20}}>
+        <input type='date'
+          onChange={(e) => { this.setState({startDate: e.target.value}) }}
+          style={{border: '1px solid #ccc', flex: 6}} name='startDate' max={this.state.maxDate} />
+        <span style={{flex: 1, padding: 5, textAlign: 'center'}}> - </span>
+        <input type='date'
+          onChange={(e) => { this.setState({endDate: e.target.value}) }}
+          style={{border: '1px solid #ccc', flex: 6}} name='endDate' max={this.state.maxDate} />
+      </div>
+      <ModalFooter>
+        <button className='modalBtn modalBtnBorder' onClick={(e) => {this.setState({showFilterModal: false})}}>取消</button>
+        <button className='modalBtn modalMainBtn' onClick={(e) => {this.setState({showFilterModal: false})}}>确定</button>
+      </ModalFooter>
+    </Modal>
+    return modalHtml;
+  }
+
   renderPatientList () {
     const patients = this.props.patientsData
     let patientArr = []
@@ -80,36 +103,21 @@ class InpatientScreen extends Component {
       patientArr.push(patient)
     })
     return (
-      <div style={{padding: 10, overflow: 'hidden', backgroundColor: '#fff', marginBottom: 15}}>
-        <div style={{border: '1px solid #ccc', display: 'flex'}}>
-          <select style={{flex: 11, height: 30, padding: 5, border: 'none', backgroundColor: '#fff'}}
-            ref='patientSelect'
-            onChange={(e) => {
-              console.log(e.target.value)
-              this.props.selectInpatient(e.target.value)
-            }}
-          >{
-            patientArr.map((patient) => {
-              return (
-                <option key={patient.id} style={{textAlign: 'center', font: 15}} value={patient.id}>
-                  {patient.name}
-                </option>
-              )
-            })
-          }
-          </select>
-          {/*<img onClick={() => {
-            const select = this.refs.patientSelect
-            select.click()
-          }} style={{flex: 1, float: 'right', width: 8, height: 15, padding: 8}} src='/static/icons/down.png' />*/}
-        </div>
-      </div>
+      <FilterCard>
+        <FilterSelect
+          changePatientSelect={(e) => {
+            console.log('------changePatientSelect', e.target.value);
+            this.setState({selectedId: e.target.value})
+          }}
+          patientArr = {patientArr}
+        />
+      </FilterCard>
     )
   }
 
   render () {
     if (this.props.loading) {
-      return (<div>loading...</div>)
+      return (<div><Loading showLoading={true} /></div>)
     }
     if (this.props.error) {
       return (<div>error...</div>)
@@ -126,6 +134,7 @@ class InpatientScreen extends Component {
     if (inpatientRecordArray && inpatientRecordArray.length > 0 && this.filterRecord(inpatientRecordArray, selectInpatientId)) {
       return (
         <div>
+          {this.renderModal()}
           {this.renderPatientList()}
           <div>
             {topView(patientsData[selectInpatientId], this.filterRecord(inpatientRecordArray, selectInpatientId), patientsData, this.props)}
@@ -135,23 +144,16 @@ class InpatientScreen extends Component {
           <style jsx global>{`
             .topView {
               background-color: #ffffff;
-              margin-bottom: 5px;
+              margin-bottom: ${theme.tbmargin};
             }
             .topViewTittle {
-              margin-left: 15px;
-              margin-right: 15px;
-              flex-wrap: nowrap;
-              flex-direction: row;
+              padding: 0 ${theme.lrmargin};
               align-items: center;
+              line-height: 45px;
+              border-bottom: 1px dashed #eee;
             }
             .topViewInfor {
-              margin-left: 15px;
-              margin-right: 15px;
-              margin-top: 20px;
-              padding-bottom: 15px;
-              margin-bottom: 15px;
-              flex-wrap: wrap;
-              flex-direction: column;
+              padding: ${theme.tbmargin} ${theme.lrmargin};
               align-items: flex-start;
             }
             .txtGray {
@@ -173,14 +175,14 @@ class InpatientScreen extends Component {
               height: 0.5px;
             }
             .payButton {
-              padding: 5px;
-              border: solid 1px #3CA0FF;
-              border-radius: 20px;
+              padding: 0;
+              border: solid 1px ${theme.maincolor};
+              border-radius: 10px;
               border-width: 0.5px;
               align-items: center;
               justify-content: center;
-              height: 20px;
-              width: 60px;
+              line-height: 26px;
+              width: 80px;
             }
           `}</style>
         </div>
@@ -214,10 +216,8 @@ const topView = (patient, inpatientRecord, patientsData, props) => {
   return (
     <div className={'topView'}>
       <div className={'topViewTittle'}>
-        <div style={{ flex: 1, flexDirection: 'row', alignItems: 'center', padding: '5px 0px' }}>
-          <span style={{ fontSize: 19, color: '#505050', marginTop: 15, marginBottom: 15 }} >{ name }</span>
-          <span style={{ fontSize: 14, color: '#B4B4B4', marginLeft: 10 }}>{ '住院号：' + inpatientNo}</span>
-        </div>
+        <span style={{ fontSize: 16, color: theme.mainfontcolor, paddingRight: '.06rem' }} >{ name }</span>
+        <span style={{ fontSize: 14, color: theme.fontcolor }}>{ '住院号：' + inpatientNo}</span>
         {/* <ModalPicker
           data={patientsPickerData}
           onChange={async (option) => {
@@ -265,16 +265,21 @@ const middleList = (inpatientRecord, props) => {
   const status = inpatientRecord.status // 是否出院
   const totalConsumption = inpatientRecord.totalConsumption // 总消费
   return (
-    <div style={{padding: 5, backgroundColor: '#ffffff', marginBottom: 10}}>
+    <div style={{borderBottom: '1px solid', borderTop: '1px solid', borderColor: theme.bordercolor, backgroundColor: '#ffffff', marginBottom: 10}}>
       {balanceItem(balance, status)}
       <div
-        style={{display: 'flex', padding: 5, borderTop: 'solid 1px #eeeeee'}}
+        style={{display: 'flex', borderTop: 'solid 1px #eeeeee'}}
       >
-        <div style={{flex: 6, alignItems: 'center'}} onClick={() => { Router.push('/inpatient/paid_list') }}>
-          <div style={{fontSize: 16, color: '#505050', textAlign: 'center'}} >预缴金记录</div>
-          <div style={{fontSize: 13, color: '#B4B4B4', marginBottom: 2, textAlign: 'center'}} >{totalPayment + '元'}</div>
+        <div style={{width: '50%'}} onClick={() => { Router.push('/inpatient/paid_list') }}>
+          <div className='flex lr-flex' style={{borderRight: '1px solid #eee', padding: '15px 0'}}>
+            <p style={{width: 20, height: 20, lineHeight: '20px', background: '#6B9FEC', textAlign: 'center', color: '#fff', borderRadius: '100%', fontSize: '12px', marginRight: 6}}>预</p>
+            <dl>
+              <dt style={{fontSize: theme.fontSize, color: theme.mainfontcolor}} >预缴金记录</dt>
+              <dd style={{fontSize: theme.nfontsize, color: theme.nfontcolor}} >{totalPayment + '元'}</dd>
+            </dl>
+          </div>
         </div>
-        <div style={{flex: 6}}>{totalItem(totalConsumption)}</div>
+        {totalItem(totalConsumption)}
       </div>
     </div>
   )
@@ -285,13 +290,13 @@ const balanceItem = (balance, status) => {
   //   return null
   // }
   return (
-    <div style={{ borderBottomWidth: 0.5, borderBottomColor: '#E6E6E6' }}>
-      <div style={{ marginLeft: 15, marginRight: 15, fontSize: 13, color: '#797979', marginTop: 20 }} >预交金余额（元）</div>
-      <div style={{ marginLeft: 15, marginRight: 15, marginBottom: 19, display: 'flex', flexDirection: 'row', alignItems: 'center', marginTop: 13 }}>
-        <div style={{ fontSize: 28, color: '#505050', flex: 6 }} >{balance}</div>
+    <div style={{ borderBottomWidth: 0.5, borderBottomColor: '#E6E6E6', padding: '20px 15px 20px 20px' }}>
+      <div style={{fontSize: theme.nfontsize, color: theme.fontcolor }} >预交金余额（元）</div>
+      <div style={{display: 'flex', alignItems: 'center', marginTop: 6, justifyContent: 'space-between' }}>
+        <div style={{ fontSize: 28, color: theme.mainfontcolor }} >{balance}</div>
         <div onClick={() => { Router.push('/inpatient/payment') }}>
           <div className={'payButton'}>
-            <div style={{color: '#3CA0FF', textAlign: 'center'}}>充值</div>
+            <div style={{color: theme.maincolor, textAlign: 'center'}}>充值</div>
           </div>
         </div>
       </div>
@@ -301,9 +306,12 @@ const balanceItem = (balance, status) => {
 
 const totalItem = (totalConsumption) => {
   return (
-    <div>
-      <div style={{fontSize: 16, color: '#505050', textAlign: 'center'}}>住院总费用</div>
-      <div style={{fontSize: 13, color: '#B4B4B4', marginBottom: 2, textAlign: 'center'}}>{totalConsumption + '元'}</div>
+    <div className='flex lr-flex' style={{width: '50%', padding: '15px 0'}}>
+      <p style={{width: 20, height: 20, lineHeight: '20px', background: '#72C7FF', textAlign: 'center', color: '#fff', borderRadius: '100%', fontSize: '12px', marginRight: 6}}>院</p>
+      <dl>
+        <dt style={{fontSize: theme.fontSize, color: theme.mainfontcolor}} >住院总费用</dt>
+        <dd style={{fontSize: theme.nfontsize, color: theme.nfontcolor}} >{totalConsumption + '元'}</dd>
+      </dl>
     </div>
   )
 }
@@ -350,13 +358,13 @@ const buttomList = (inpatientRecord, props, id) => {
       {
         array2.map((item, i) => {
           return (
-            <div style={{padding: 15, marginBottom: 1, backgroundColor: '#ffffff'}} key={i} onClick={() => {
+            <div style={{padding: 15, borderBottom: '1px solid #d8d8d8', color: theme.mainfontcolor, backgroundColor: '#ffffff'}} key={i} onClick={() => {
               if (item.title === '一日清单') {
                 props.selectInpatientRecord({patientRecordId: id})
               }
               Router.push('/inpatient/' + item.navKey)
             }}>
-              <div>{item.title}<span style={{float: 'right'}}>></span></div>
+              <div className='flex' style={{ justifyContent: 'space-between'}}>{item.title}<span className='back-left' style={{display: 'inline-block', transform: 'rotate(135deg)'}}></span></div>
             </div>
           )
         })

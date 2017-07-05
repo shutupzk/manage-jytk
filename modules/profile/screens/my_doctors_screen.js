@@ -6,6 +6,7 @@ import _ from 'lodash'
 import { queryMyDoctors, setQueryFlag } from '../../../ducks'
 import { DoctorList } from '../../hospital/components'
 import { isEmptyObject } from '../../../utils'
+import {NoDataCard, Loading, theme} from 'components'
 
 // const filterUsers = (userIds, userId) => {
 //   let ids = userIds.filter((id) => {
@@ -49,7 +50,7 @@ class MyDoctorsScreen extends Component {
   render () {
     // const userId = this.state.userId
     if (this.props.loading || this.state.isInit) {
-      return <div>loading...</div>
+      return <div><Loading showLoading={true} /></div>
     }
     console.log(this.props)
     var mydoctors = []
