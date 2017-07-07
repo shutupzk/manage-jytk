@@ -2,9 +2,10 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { HospitalFunctionList } from '../components'
 import { HOSPITAL_FUNCTION_LIST } from '../../../config'
-import { List } from '../../../components'
+import { List, theme } from '../../../components'
 import { queryHospitals } from '../../../ducks'
 import { isEmptyObject } from '../../../utils'
+import Router from 'next/router'
 
 class HospitalScreen extends React.Component {
   compomentWillMount () {
@@ -13,24 +14,98 @@ class HospitalScreen extends React.Component {
     }
   }
 
+  goNextpage(itemhref) {
+    const href = '/hospital/' + itemhref;
+    Router.push(href);
+  }
+
   render () {
+    const topItem = HOSPITAL_FUNCTION_LIST.slice(0, 4);
+    const bottomItem = HOSPITAL_FUNCTION_LIST.slice(4, 10);
     return (
       <div>
-        <div>
-          <img className='bgImage' src='/static/icons/hospital_bg_image.png' />
+        <div style={{textAlign: 'center', background: theme.maincolor, padding: '.35rem 0'}}>
+          <img style={{height: '.35rem'}} src='/static/icons/hospital_bg_image.png' />
         </div>
-        <div>
-          <List component={HospitalFunctionList} items={HOSPITAL_FUNCTION_LIST} />
-        </div>
-        <style jsx>{`
-          .ScrollDiv {
-            overflow-y:auto;
+        <ul className='hospitalItem'>
+          {
+            topItem && topItem.map((item, iKey) => {
+              return (
+                <li className='left' key={iKey} onClick={() => this.goNextpage(item.navigateName)}>
+                  <section className=''>
+                    <article className='left itemimg'><img style={{width: item.width}} src={item.avatar} /></article>
+                    <dl className='left'>
+                      <dt>{item.title}</dt>
+                      <dd>{item.subTitle}</dd>
+                    </dl>
+                    <div className='clearfix'>&nbsp;</div>
+                  </section>
+                </li>
+              )
+            })
           }
-          .bgImage {
-            height: 180px;
-            width: 100%;
+          <div className='clearfix'>&nbsp;</div>
+          {/*<List component={HospitalFunctionList} items={HOSPITAL_FUNCTION_LIST} />*/}
+        </ul>
+        <ul className='hospitalItem'>
+          {
+            bottomItem && bottomItem.map((item, iKey) => {
+              return (
+                <li className='left' key={iKey}>
+                  <section className=''>
+                    <article className='left itemimg'><img style={{width: item.width}} src={item.avatar} /></article>
+                    <dl className='left'>
+                      <dt>{item.title}</dt>
+                      <dd>{item.subTitle}</dd>
+                    </dl>
+                    <div className='clearfix'>&nbsp;</div>
+                  </section>
+                </li>
+              )
+            })
           }
-        `}</style>
+          <li className='left'></li>
+          <div className='clearfix'>&nbsp;</div>
+        </ul>
+        <style jsx>
+          {`
+            .hospitalItem{
+              background: #fff;
+              margin-top: ${theme.tbmargin};
+            }
+            .hospitalItem li{
+              height: 90px;
+              width: 50%;
+              border-top: 1px solid #e6e6e6;
+            }
+            .hospitalItem li section{
+              height: 50px;
+              padding: 20px 0 20px 14%;
+            }
+            .itemimg{
+              width: .24rem;
+              text-align: center;
+              padding-top: .02rem;
+              padding-right: .06rem;
+            }
+            .hospitalItem li:nth-of-type(1), .hospitalItem li:nth-of-type(2) {
+              border-top: 1px solid #fff;
+            }
+            .hospitalItem li:nth-of-type(2n + 1) section{
+              border-right: 1px solid #e6e6e6;
+            }
+            .hospitalItem li dt{
+              font-size: 16px;
+              color: ${theme.mainfontcolor};
+              font-weight: 500;
+            }
+            .hospitalItem li dd{
+              font-size: ${theme.nfontsize};
+              color: ${theme.nfontcolor};
+              padding-top: .06rem;
+            }
+          `}
+        </style>
       </div>
     )
   }

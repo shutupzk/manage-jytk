@@ -3,14 +3,15 @@ import { connect } from 'react-redux'
 import localforage from 'localforage'
 import Router from 'next/router'
 import _ from 'lodash'
-import {Loading, FilterCard, FilterSelect, FilterTime, Modal, ModalHeader, ModalFooter, FilterTimeResult, theme, TabHeader, ErrCard} from 'components'
+import {Loading, FilterCard, FilterSelect, FilterTime, Modal, ModalHeader, ModalFooter, FilterTimeResult, theme, TabHeader, ErrCard, RequireLoginCard} from 'components'
 
 import {
   queryPatients,
   queryInpatient,
   selectInpatient,
   selectInpatientRecord,
-  queryDeposits
+  queryDeposits,
+  signin
  } from '../../../ducks'
 import { judge } from '../../../utils'
 class InpatientScreen extends Component {
@@ -23,7 +24,17 @@ class InpatientScreen extends Component {
   }
 
   componentWillMount () {
-    this.inpatient(this.props)
+    this.autoSignin()
+  }
+
+  // 自动登陆 刷新token,用户信息,就诊人信息，
+  async autoSignin () {
+    const error = await this.props.signin({ username: null, password: null })
+    if (error) return console.log(error)
+    const userId = this.props.userId
+    if (userId) {
+      this.inpatient(this.props)
+    }
   }
 
   componentWillReceiveProps (nextProps) {
@@ -116,6 +127,13 @@ class InpatientScreen extends Component {
   }
 
   render () {
+    if (!this.props.token) {
+      return (
+        <div>
+          <span><RequireLoginCard /></span>
+        </div>
+      )
+    }
     if (this.props.loading) {
       return (<div><Loading showLoading={true} /></div>)
     }
@@ -392,6 +410,7 @@ export default connect(
     queryInpatient,
     selectInpatient,
     selectInpatientRecord,
-    queryDeposits
+    queryDeposits,
+    signin
   }
 )(InpatientScreen)

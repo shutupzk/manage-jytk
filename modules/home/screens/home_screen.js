@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Link from 'next/link'
 import { connect } from 'react-redux'
 import Router from 'next/router'
-import { CardWhite, Loading, ErrCard } from 'components'
+import { CardWhite, Loading, ErrCard, theme } from 'components'
 import {
   queryHospitals,
   queryNewsGroups,
@@ -60,7 +60,7 @@ class Home extends Component {
   }
   render () {
     if (this.props.loading || this.state.isInit) {
-      return (<div>Loading</div>)
+      return (<div><Loading showLoading={true} /></div>)
     }
     let newses = this.props.newses
     let newNewses = this.getNewses(newses)
@@ -68,57 +68,50 @@ class Home extends Component {
     return (
       <div>
         <img src='/static/icons/banner3.png' style={{width: '100%'}} />
-        <Loading showLoading={this.props.loading || this.state.isInit} />
         <CardWhite classChild='nav'>
           <Link href='/appointment/department_list'><a>
             <section className='navLeft'>
               <h3>预约挂号</h3>
-              <p>预约挂号</p>
-              <svg className='hosapmIcon' viewBox='62 541 146 131' version='1.1' xmlns='http://www.w3.org/2000/svg'>{hosApmHomeIcon}</svg>
+              <svg className='hosapmIcon' viewBox="62 541 146 131" version="1.1" xmlns="http://www.w3.org/2000/svg">{hosApmHomeIcon}</svg>
             </section>
           </a></Link>
           <section className='navRight'>
             <Link href='/outpatient/order_type'><a>
-              <article>
-                <svg className='patientPayIcon' viewBox='48 -1 78 59' version='1.1' xmlns='http://www.w3.org/2000/svg'>{patientPayHomeIcon}</svg>
+              <article style={{borderBottom: '1px solid #fff', borderColor: theme.bordercolor}}>
+                <svg className='patientPayIcon' viewBox="355 394 78 59" version="1.1" xmlns="http://www.w3.org/2000/svg">{patientPayHomeIcon}</svg>
                 <h3>门诊缴费</h3>
-                <p>在线缴费不排队</p>
               </article>
             </a></Link>
             <Link href=''><a>
               <article>
-                <svg className='selfExamineIcon' viewBox='39 -4 72 73' version='1.1' xmlns='http://www.w3.org/2000/svg'>{selfExamineHomeIcon}</svg>
+                <svg className='selfExamineIcon' viewBox="359 604 71 71" version="1.1" xmlns="http://www.w3.org/2000/svg">{selfExamineHomeIcon}</svg>
                 <h3>疾病自查</h3>
-                <p>智能引导就诊</p>
               </article>
             </a></Link>
           </section>
           <section className='navRight'>
             <Link href='/report'><a>
-              <article>
-                <svg className='reportIcon' viewBox='600 381 62 57' version='1.1' xmlns='http://www.w3.org/2000/svg'>{reportHomeIcon}</svg>
+              <article style={{borderBottom: '1px solid #fff', borderColor: theme.bordercolor}}>
+                <svg className='reportIcon' viewBox="600 399 62 57" version="1.1" xmlns="http://www.w3.org/2000/svg">{reportHomeIcon}</svg>
                 <h3>查询报告</h3>
-                <p>在线查看检验报告</p>
               </article>
             </a></Link>
             <Link href='/inpatient'><a>
               <article>
-                <svg className='inHosIcon' viewBox='600 594 62 55' version='1.1' xmlns='http://www.w3.org/2000/svg'>{inHosHomeIcon}</svg>
+                <svg className='inHosIcon' viewBox="600 614 62 55" version="1.1" xmlns="http://www.w3.org/2000/svg">{inHosHomeIcon}</svg>
                 <h3>住院跟踪</h3>
-                <p>查询住院信息</p>
               </article>
             </a></Link>
           </section>
         </CardWhite>
         <div onClick={() => { this.goHospitalPage() }}>
-          <CardWhite classChild='hospitalCenter'>
-            <img src='/static/icons/hospital_bg_image.png' alt='' className='hosbgimg' />
+          <CardWhite classChild='hospitalCenter flex tb-flex'>
+            <img src='/static/icons/homepage_hospitalname.png' alt='' className='hosbgimg' />
             <section>
-              <img src='/static/icons/hospital_logo.png' alt='' />
-              <p>{hospital.address || '广东省广州市中山二路106号'}</p>
-              <p>联系电话：{hospital.phone || '020-83827812'}</p>
+              <p style={{fontSize: 16, color: theme.mainfontcolor, fontWeight: 500}}>{'走进省医'}</p>
+              <p style={{fontSize: theme.nfontsize, marginTop: 3}}>医生介绍/就诊指南/停诊信息</p>
             </section>
-            <article className='back-left flex tb-flex'>&nbsp;</article>
+            <article className='back-left'>&nbsp;</article>
           </CardWhite>
         </div>
         <CardWhite classChild='consultList'>
@@ -163,7 +156,7 @@ class Home extends Component {
             color: #505050;
             font-size: .16rem;
             font-weight: normal;
-            margin: .06rem 0 0;
+            margin: .1rem 0 0;
           }
           .nav p{
             color: #b4b4b4;
@@ -187,16 +180,13 @@ class Home extends Component {
             border-left: 1px solid #d8d8d8;
           }
           .navRight article{
-            height: 1.05rem;
+            height: .85rem;
           }
           .navRight h3{
           }
           .navRight svg{
             display:block;
-            margin: .15rem auto 0;
-          }
-          .navRight article:nth-of-type(1) {
-            border-bottom: 1px solid #d8d8d8;
+            margin: .25rem auto 0;
           }
           .patientPayIcon{
             width: .38rem;
@@ -215,20 +205,23 @@ class Home extends Component {
             height: .32rem;
           }
           .hospitalCenter{
-            padding: .1rem .15rem;
+            padding: 0;
             display: -webkit-box;
+            height: 1rem;
+            position: relative;
+            background: #fff;
+            padding-right: .15rem;
           }
           .hospitalCenter .hosbgimg{
-            width: .7rem;
-            height: .7rem;
+            height: 1rem;
+            {/*position: absolute;
+            top: 0;
+            left: 0;*/}
           }
           .hospitalCenter section{
             -webkit-box-flex: 1;
-            padding-left: .15rem;
+            {/*padding-left: .15rem;*/}
             color: #797979;
-          }
-          .hospitalCenter section img{
-            width: 1.2rem;
           }
           .hospitalCenter section p{
             line-height: 20px;
@@ -237,7 +230,6 @@ class Home extends Component {
           .hospitalCenter article{
             display: block;
             transform: rotate(135deg);
-            margin-top: .3rem;
           }
 
           .consultList{
