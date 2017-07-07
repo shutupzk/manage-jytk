@@ -18,6 +18,7 @@ import { questions, queryQuestions } from './questions'
 import { deposit, queryDeposits, selectDeposit } from './deposit'
 import { addHospitalEvaluate } from './hospital_evaluate'
 import { patientTypes, queryPatientTypes, selectPatientType } from './patient_types'
+import { messages, lastMessages, queryMessageTypes, queryMessages, selectMessageType, readMessage, queryLastMessage } from './messages'
 
 // key
 export {
@@ -39,7 +40,9 @@ export {
     dailyfee,
     questions,
     deposit,
-    patientTypes
+    patientTypes,
+    messages,
+    lastMessages
 }
 
 // action
@@ -115,5 +118,10 @@ export {
     selectDeposit,
     addHospitalEvaluate,
     queryPatientTypes,
-    selectPatientType
+    selectPatientType,
+    queryMessageTypes,
+    queryMessages,
+    selectMessageType,
+    readMessage,
+    queryLastMessage
 }
