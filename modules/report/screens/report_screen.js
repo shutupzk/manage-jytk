@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import localforage from 'localforage'
 import _ from 'lodash'
 import moment from 'moment'
-import {Loading, FilterCard, FilterSelect, FilterTime, Modal, ModalHeader, ModalFooter, FilterTimeResult, theme, TabHeader, CardWhite, ErrCard} from 'components'
+import {Loading, FilterCard, FilterSelect, FilterTime, Modal, ModalHeader, ModalFooter, theme, Prompt, CardWhite, ErrCard, NoDataCard} from 'components'
 // import RangeDemo from '../components/date_rang'
 
 import {
@@ -29,6 +29,11 @@ class ReportScreen extends Component {
       startDate: undefined,
       endDate: undefined,
       showFilterModal: false,
+      isValidation: false,
+      isShow: false,
+      autoClose: true,
+      closeTime: 2,
+      promptContent: ''
     }
   }
   componentWillMount () {
@@ -138,10 +143,9 @@ class ReportScreen extends Component {
       return <div>no data</div>
     }
   }
-  dateRangeFilterLabs (laboratorieData) {
-    console.log(this.state.startDate)
+  filterLabs (laboratorieData) {
     let labs = []
-    if (this.state.startDate || this.state.startDate) {
+    if (this.state.startDate || this.state.endDate) {
       for (let lab of laboratorieData) {
         if (this.state.startDate && this.state.endDate) {
           if ((new Date(Object.keys(lab)[0]) >= new Date(this.state.startDate)) && (new Date(Object.keys(lab)[0]) <= new Date(this.state.endDate))) {
@@ -149,7 +153,6 @@ class ReportScreen extends Component {
           }
         } else {
           if (this.state.startDate) {
-            console.log(lab)
             if (new Date(Object.keys(lab)[0]) >= new Date(this.state.startDate)) {
               labs.push(lab)
             }
@@ -178,12 +181,19 @@ class ReportScreen extends Component {
       <FilterCard>
         <FilterSelect
           changePatientSelect={(e) => {
-            console.log('------changePatientSelect', e.target.value);
-            this.setState({selectedId: e.target.value})
+            console.log('------changePatientSelect', e.target.value)
+            this.props.selectPatient({patientId: e.target.value})
+            this.setState({
+              startDate: undefined,
+              endDate: undefined,
+              isValidation: false
+            })
           }}
           patientArr = {patientArr}
         />
-        <FilterTime clickShowFilterModal={() => {this.setState({showFilterModal: true})}} />
+        {
+          this.state.isValidation ? <FilterTime clickShowFilterModal={() => {this.setState({showFilterModal: true})}} /> : ''
+        }
       </FilterCard>
     )
   }
@@ -193,17 +203,19 @@ class ReportScreen extends Component {
     modalHtml = <Modal showModalState={this.state.showTipModal || this.state.showFilterModal}>
       <ModalHeader>请选择起止时间</ModalHeader>
       <div className='flex' style={{padding: 20}}>
-        <input type='date'
-          onChange={(e) => { this.setState({startDate: e.target.value}) }}
+        <input type='date' defaultValue={this.state.startDate} ref='startDate'
           style={{border: '1px solid #ccc', flex: 6}} name='startDate' max={this.state.maxDate} />
         <span style={{flex: 1, padding: 5, textAlign: 'center'}}> - </span>
-        <input type='date'
-          onChange={(e) => { this.setState({endDate: e.target.value}) }}
+        <input type='date' defaultValue={this.state.endDate} ref='endDate'
           style={{border: '1px solid #ccc', flex: 6}} name='endDate' max={this.state.maxDate} />
       </div>
       <ModalFooter>
         <button className='modalBtn modalBtnBorder' onClick={(e) => {this.setState({showFilterModal: false})}}>取消</button>
-        <button className='modalBtn modalMainBtn' onClick={(e) => {this.setState({showFilterModal: false})}}>确定</button>
+        <button className='modalBtn modalMainBtn' onClick={(e) => {
+          this.setState({startDate: this.refs.startDate.value || undefined})
+          this.setState({endDate: this.refs.endDate.value || undefined})
+          this.setState({showFilterModal: false})
+        }}>确定</button>
       </ModalFooter>
     </Modal>
     return modalHtml;
@@ -211,7 +223,7 @@ class ReportScreen extends Component {
 
   renderLaboratory () {
     let laboratorieData = this.props.laboratories
-    const laboratories = this.dateRangeFilterLabs(laboratorieData)
+    const laboratories = this.filterLabs(laboratorieData, this.state.selectPatientId)
     if (!isEmptyObject(laboratories)) {
       return (
         <div>
@@ -246,8 +258,35 @@ class ReportScreen extends Component {
         </div>
       )
     } else {
-      return <div>没有记录</div>
+      return <div><NoDataCard /></div>
     }
+  }
+
+  renderPassword () {
+    return (
+      <div style={{backgroundColor: '#fff', padding: 50}}>
+        <div style={{textAlign: 'center'}}>请输入服务密码</div>
+        <div><input ref='reportPassword' type='password' maxLength='6'
+          style={{letterSpacing: '30', marginTop: 20, borderTop: 'none', borderLeft: 'none', borderRight: 'none', borderBottom: 'solid 1px #aaa', height: 30, width: '100%'}}
+          onChange={(e) => {
+            if (e.target.value.length === 6) {
+              if (e.target.value === '123456') {
+                this.setState({
+                  isValidation: true
+                })
+              } else {
+                this.setState({
+                  promptContent: '密码错误！',
+                  isShow: true,
+                  closeTime: 1
+                })
+              }
+            }
+          }}
+        /></div>
+        <div style={{marginTop: 30}}>如果还未获取服务密码，请在检查预约人工窗口获取。</div>
+      </div>
+    )
   }
 
   render () {
@@ -266,11 +305,13 @@ class ReportScreen extends Component {
         <div style={{width: '100%'}}>
           {this.renderModal()}
           {this.renderPatientList()}
-          {/*<RangeDemo />*/}
           {
-           this.renderLaboratory()
+            this.state.isValidation
+            ? this.renderLaboratory()
+            : this.renderPassword()
           }
         </div>
+        <Prompt isShow={this.state.isShow} autoClose={this.state.autoClose} closeTime={this.state.closeTime}>{this.state.promptContent}</Prompt>
         <style jsx global>{`
           .itemView {
             margin-bottom: 10px;

@@ -3,42 +3,18 @@ import { connect } from 'react-redux'
 import Router from 'next/router'
 import localforage from 'localforage'
 // import Link from 'next/link'
-import { queryPatients, selectPatient, queryDeposits, selectDeposit } from '../../../ducks'
+import { queryPatients, selectPatient, queryPayments, selectPayment } from '../../../ducks'
 import { isEmptyObject } from '../../../utils'
-import {theme, Loading, ErrCard} from 'components'
+import {theme, Loading, ErrCard, NoDataCard} from 'components'
 class DepositRecordScreen extends Component {
   constructor (props) {
     super(props)
     this.state = {}
   }
   componentWillMount () {
-    const patientId = this.props.patientId
-    if (patientId) {
-      if (isEmptyObject(this.props.deposits)) {
-        this.props.queryDeposits(this.props.client, {patientId})
-      }
-    } else {
-      this.queryPatient(this.props)
-    }
+    this.props.queryPayments(this.props.client)
   }
 
-  async queryPatient () {
-    const patients = this.props.patientsData
-    if (isEmptyObject(patients)) {
-      var userId = await localforage.getItem('userId')
-      await this.props.queryPatients(this.props.client, {userId})
-    }
-    let array = []
-    for (let i in this.props.patientsData) {
-      if (this.props.patientsData[i] && this.props.patientsData[i].id) {
-        array.push(this.props.patientsData[i])
-      }
-    }
-    if (array.length > 0) {
-      this.props.selectPatient({patientId: array[0].id})
-      this.props.queryDeposits(this.props.client, {patientId: array[0].id})
-    }
-  }
   render () {
     if (this.props.loading) {
       return (
@@ -54,29 +30,27 @@ class DepositRecordScreen extends Component {
         </div>
       )
     }
-    const deposits = this.props.deposits
-    var depositArr = []
-    if (deposits) {
-      for (var i in deposits) {
-        depositArr.push(deposits[i])
-      }
+    const payments = this.props.payments
+    var paymentArr = []
+    for (var i in payments) {
+      paymentArr.push(payments[i])
     }
     return (
       <div>
-        { depositArr.length > 0 ? depositArr.map((deposit, i) => {
+        { paymentArr.length > 0 ? paymentArr.map((payment, i) => {
           return (
-            <div key={deposit.id}
+            <div key={payment.id}
               style={{backgroundColor: '#fff', padding: theme.lrmargin, borderBottom: '1px solid #fff', borderColor: theme.bordercolor}}
               onClick={() => {
-                this.props.selectDeposit(deposit.id)
-                Router.push('/profile/deposit_detail?depositId=' + deposit.id)
+                this.props.selectPayment(payment.id)
+                Router.push('/profile/deposit_detail?payment=' + payment.id)
               }}
             >
-              <div style={{fontSize: theme.fontsize, color: theme.mainfontcolor, marginBottom: 6}}>{'挂号缴费'}<span style={{float: 'right', fontWeight: '600', color: theme.mainfontcolor, fontSize: 18}}>-{deposit.charge}</span></div>
-              <div style={{fontSize: theme.nfontsize, color: theme.nfontcolor}}>{deposit.date}</div>
+              <div style={{fontSize: theme.fontsize, color: theme.mainfontcolor, marginBottom: 6}}>{payment.typeName}<span style={{float: 'right', fontWeight: '600', color: theme.mainfontcolor, fontSize: 18}}>-{payment.totalCharge}</span></div>
+              <div style={{fontSize: theme.nfontsize, color: theme.nfontcolor}}>{payment.createdAt}</div>
             </div>
           )
-        }) : 'no data'
+        }) : <NoDataCard />
         }
       </div>
     )
@@ -85,12 +59,10 @@ class DepositRecordScreen extends Component {
 
 function mapStateToProps (state) {
   return {
-    deposits: state.deposit.data,
-    patientsData: state.patients.data,
-    patientId: state.patients.selectId,
-    loading: state.patients.loading || state.deposit.loading,
-    error: state.patients.error || state.deposit.error
+    payments: state.payments.data,
+    loading: state.payments.loading,
+    error: state.payments.error
   }
 }
 
-export default connect(mapStateToProps, { queryPatients, selectPatient, queryDeposits, selectDeposit })(DepositRecordScreen)
+export default connect(mapStateToProps, { queryPatients, selectPatient, queryPayments, selectPayment })(DepositRecordScreen)

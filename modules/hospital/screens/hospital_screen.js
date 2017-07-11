@@ -14,9 +14,12 @@ class HospitalScreen extends React.Component {
     }
   }
 
-  goNextpage(itemhref) {
-    const href = '/hospital/' + itemhref;
-    Router.push(href);
+  goNextpage (item) {
+    let href = '/hospital/' + item.navigateName
+    if (item.params.toScreenKey) {
+      href = '/hospital/' + item.navigateName + '?toScreenKey=' + item.params.toScreenKey
+    }
+    Router.push(href)
   }
 
   render () {
@@ -31,7 +34,7 @@ class HospitalScreen extends React.Component {
           {
             topItem && topItem.map((item, iKey) => {
               return (
-                <li className='left' key={iKey} onClick={() => this.goNextpage(item.navigateName)}>
+                <li className='left' key={iKey} onClick={() => this.goNextpage(item)}>
                   <section className=''>
                     <article className='left itemimg'><img style={{width: item.width}} src={item.avatar} /></article>
                     <dl className='left'>

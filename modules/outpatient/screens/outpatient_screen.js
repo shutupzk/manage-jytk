@@ -3,9 +3,10 @@ import { connect } from 'react-redux'
 import localforage from 'localforage'
 import moment from 'moment'
 import _ from 'lodash'
-import {Loading, FilterCard, FilterSelect, FilterTime, Modal, ModalHeader, ModalFooter, FilterTimeResult, theme, TabHeader, ErrCard} from 'components'
+import Router from 'next/router'
+import {Loading, FilterCard, FilterSelect, FilterTime, Modal, ModalHeader, ModalFooter, FilterTimeResult, theme, TabHeader, ErrCard, NoDataCard} from 'components'
 
-import {queryOutpatient, queryPatients} from '../../../ducks'
+import {queryOutpatient, queryPatients, queryOutpatientDetail, selectOutpatient} from '../../../ducks'
 import { isEmptyObject } from '../../../utils'
 class OutpatientScreen extends Component {
   constructor (props) {
@@ -47,7 +48,7 @@ class OutpatientScreen extends Component {
   }
   getOutPatientArr (outpatient, payStatus, patientId) {
     var outpatients = []
-    if (this.state.startDate || this.state.startDate) {
+    if (this.state.startDate || this.state.endDate) {
       for (let key in outpatient) {
         if (this.state.startDate && this.state.endDate) {
           if ((new Date(outpatient[key].visitSchedule.visitDate) >= new Date(this.state.startDate)) && (new Date(outpatient[key].visitSchedule.visitDate) <= new Date(this.state.endDate))) {
@@ -115,8 +116,8 @@ class OutpatientScreen extends Component {
         <ModalFooter>
           <button className='modalBtn modalBtnBorder' onClick={(e) => {this.setState({showFilterModal: false})}}>取消</button>
           <button className='modalBtn modalMainBtn' onClick={(e) => {
-            this.setState({startDate: this.refs.startDate.value})
-            this.setState({endDate: this.refs.endDate.value})
+            this.setState({startDate: this.refs.startDate.value || undefined})
+            this.setState({endDate: this.refs.endDate.value || undefined})
             this.setState({showFilterModal: false})
           }}
           >确定</button>
@@ -137,7 +138,11 @@ class OutpatientScreen extends Component {
         <FilterSelect
           changePatientSelect={(e) => {
             console.log('------changePatientSelect', e.target.value);
-            this.setState({selectedId: e.target.value})
+            this.setState({
+              selectedId: e.target.value,
+              startDate: undefined,
+              endDate: undefined
+            })
           }}
           patientArr = {patientArr}
         />
@@ -171,7 +176,10 @@ class OutpatientScreen extends Component {
               buttonText = '已过期'
             }
             return (
-              <div key={outpatient.id} className='list'>
+              <div key={outpatient.id} className='list' onClick={() => {
+                this.props.selectOutpatient({id: outpatient.id})
+                Router.push('/outpatient/outpatient_detail?outpatientId=' + outpatient.id)
+              }}>
                 <ul className='listTop'>
                   <li className='flex'><span>就诊科室</span><i>{outpatient.department.deptName}</i></li>
                   <li className='flex'><span>医生姓名</span><i>{outpatient.doctor.doctorName}</i></li>
@@ -222,43 +230,7 @@ class OutpatientScreen extends Component {
             )
           })
           : <div>
-            {/*<div style={{padding: '10px 20px', backgroundColor: '#ffffff', marginBottom: 10}}>
-              <div>就诊时间:2017-06-02 {'下午'}
-                <span style={{float: 'right'}}>¥128</span>
-              </div>
-              <div style={{display: 'flex', paddingTop: 5}}>
-                <div>
-                  <img src='/static/icons/doctor_head.png' style={{width: '50px', height: '50px'}} />
-                </div>
-                <div style={{paddingLeft: 10}}>
-                  <div>就诊科室：胸外科门诊</div>
-                  <div>医生姓名：张小娴</div>
-                  <div>就诊人：东东</div>
-                </div>
-              </div>
-              { !this.state.payStatus ? <div><button style={{padding: '3px 5px', border: 'solid 1px #3CA0FF', backgroundColor: '#ffffff', color: '#3CA0FF', float: 'right'}}>去缴费</button>
-                <div className='clearfix'>&nbsp;</div>
-              </div> : ''}
-            </div>
-            <div style={{padding: '10px 20px', backgroundColor: '#ffffff', marginBottom: 10}}>
-              <div>就诊时间:2017-05-31 {'下午'}
-                <span style={{float: 'right'}}>¥128</span>
-              </div>
-              <div style={{display: 'flex', paddingTop: 5}}>
-                <div>
-                  <img src='/static/icons/doctor_head.png' style={{width: '50px', height: '50px'}} />
-                </div>
-                <div style={{paddingLeft: 10}}>
-                  <div>就诊科室：胸外科门诊</div>
-                  <div>医生姓名：张小娴</div>
-                  <div>就诊人：东东</div>
-                </div>
-              </div>
-              { !this.state.payStatus ? <div><button style={{padding: '3px 5px', backgroundColor: '#dddddd', color: '#ffffff', float: 'right'}}>已过期</button>
-                <div className='clearfix'></div>
-              </div> : ''}
-            </div>*/}
-            no data
+            <NoDataCard />
           </div>
         }
       </div>
@@ -276,4 +248,4 @@ function mapStateToProps (state) {
   }
 }
 
-export default connect(mapStateToProps, {queryOutpatient, queryPatients})(OutpatientScreen)
+export default connect(mapStateToProps, {queryOutpatient, queryPatients, queryOutpatientDetail, selectOutpatient})(OutpatientScreen)

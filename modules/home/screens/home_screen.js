@@ -82,7 +82,7 @@ class Home extends Component {
                 <h3>门诊缴费</h3>
               </article>
             </a></Link>
-            <Link href=''><a>
+            <Link href='/diagnosis'><a>
               <article>
                 <svg className='selfExamineIcon' viewBox="359 604 71 71" version="1.1" xmlns="http://www.w3.org/2000/svg">{selfExamineHomeIcon}</svg>
                 <h3>疾病自查</h3>

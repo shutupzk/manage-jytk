@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import Router from 'next/router'
 import localforage from 'localforage'
 // import Link from 'next/link'
-import { queryPatients, selectPatient, queryDeposits, selectDeposit } from '../../../ducks'
+import { queryPayments, selectPayment } from '../../../ducks'
 import { isEmptyObject } from '../../../utils'
 import {theme, Loading, ErrCard} from 'components'
 class DepositDetailScreen extends Component {
@@ -12,33 +12,12 @@ class DepositDetailScreen extends Component {
     this.state = {}
   }
   componentWillMount () {
-    const patientId = this.props.patientId
-    if (!this.props.depositId || isEmptyObject(this.props.deposits)) {
-      if (patientId) {
-        this.props.queryDeposits(this.props.client, {patientId})
-      } else {
-        this.queryPatient(this.props)
-      }
+    if (isEmptyObject(this.props.payments)) {
+      this.props.selectPayment({paymentId: this.props.url.query.paymentId})
+      this.props.queryPatients(this.props.client)
     }
   }
 
-  async queryPatient () {
-    const patients = this.props.patientsData
-    if (isEmptyObject(patients)) {
-      var userId = await localforage.getItem('userId')
-      await this.props.queryPatients(this.props.client, {userId})
-    }
-    let array = []
-    for (let i in this.props.patientsData) {
-      if (this.props.patientsData[i] && this.props.patientsData[i].id) {
-        array.push(this.props.patientsData[i])
-      }
-    }
-    if (array.length > 0) {
-      this.props.selectPatient({patientId: array[0].id})
-      this.props.queryDeposits(this.props.client, {patientId: array[0].id})
-    }
-  }
   render () {
     if (this.props.loading) {
       return (
@@ -54,41 +33,57 @@ class DepositDetailScreen extends Component {
         </div>
       )
     }
-    const deposits = this.props.deposits
-    const depositId = this.props.depositId || this.props.url.query.depositId
-    const deposit = deposits[depositId]
+    const payments = this.props.payments
+    const paymentId = this.props.paymentId || this.props.url.query.paymentId
+    const payment = payments[paymentId]
     return (
       <div style={{padding: theme.tbmargin, background: '#fff', color: theme.fontcolor}}>
         <div style={{textAlign: 'center', padding: '10px 0 20px', borderBottom: '1px dashed #fff', borderColor: theme.bordercolor}}>
-          <div style={{color: theme.maincolor, fontSize: 26, fontWeight: 'bold'}}>-¥ {deposit.charge}</div>
+          <div style={{color: theme.maincolor, fontSize: 26, fontWeight: 'bold'}}>-¥ {payment.chargeTotal}</div>
           <div style={{fontSize: theme.nfontsize}}>支付成功</div>
         </div>
         <div style={{borderBottom: '1px dashed #fff', borderColor: theme.bordercolor, lineHeight: '26px', padding: '10px 0'}}>
           <div style={{display: 'flex'}}>
             <div style={{flex: '1'}}>费用类别</div>
-            <div>{'挂号缴费'}</div>
+            <div>{payment.typeName}</div>
           </div>
           <div style={{display: 'flex'}}>
-            <div style={{flex: '1'}}>交易时间</div>
-            <div>{deposit.date}</div>
-          </div>
-          <div style={{display: 'flex'}}>
-            <div style={{flex: '1'}}>交易方式</div>
-            <div>{deposit.payWay}</div>
+            <div style={{flex: '1'}}>类型详情</div>
+            <div>{payment.typeInfo}</div>
           </div>
           <div style={{display: 'flex'}}>
             <div style={{flex: '1'}}>凭证单号</div>
-            <div>{deposit.tradeNo}</div>
+            <div>{payment.tradeNo}</div>
+          </div>
+          <div style={{display: 'flex'}}>
+            <div style={{flex: '1'}}>流水号</div>
+            <div>{payment.transactionNo}</div>
+          </div>
+          <div style={{display: 'flex'}}>
+            <div style={{flex: '1'}}>交易时间</div>
+            <div>{payment.date}</div>
+          </div>
+          <div style={{display: 'flex'}}>
+            <div style={{flex: '1'}}>交易方式</div>
+            <div>{payment.payWay}</div>
+          </div>
+          <div style={{display: 'flex'}}>
+            <div style={{flex: '1'}}>当前状态</div>
+            <div>{payment.status}</div>
           </div>
         </div>
         <div style={{lineHeight: '26px', paddingTop: theme.tbmargin}}>
           <div style={{display: 'flex'}}>
             <div style={{flex: '1'}}>就诊人姓名</div>
-            <div>{deposit.patientName}</div>
+            <div>{payment.patientName}</div>
           </div>
           <div style={{display: 'flex'}}>
             <div style={{flex: '1'}}>就诊人ID</div>
-            <div>{deposit.patientId}</div>
+            <div>{payment.patientIdNo}</div>
+          </div>
+          <div style={{display: 'flex'}}>
+            <div style={{flex: '1'}}>就诊人手机</div>
+            <div>{payment.phone}</div>
           </div>
         </div>
       </div>
@@ -98,13 +93,11 @@ class DepositDetailScreen extends Component {
 
 function mapStateToProps (state) {
   return {
-    deposits: state.deposit.data,
-    patientsData: state.patients.data,
-    patientId: state.patients.selectId,
-    depositId: state.deposit.selectId,
-    loading: state.patients.loading || state.deposit.loading,
-    error: state.patients.error || state.deposit.error
+    payments: state.payments.data,
+    paymentId: state.payments.selectId,
+    loading: state.payments.loading,
+    error: state.payments.error
   }
 }
 
-export default connect(mapStateToProps, { queryPatients, selectPatient, queryDeposits, selectDeposit })(DepositDetailScreen)
+export default connect(mapStateToProps, { queryPayments, selectPayment })(DepositDetailScreen)

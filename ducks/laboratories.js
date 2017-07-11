@@ -45,7 +45,7 @@ const getLaboratories = (state = {}, actionLaboratory) => {
     let laboratoriesByDate = filterLaboratoriesByDate(state.data, date)[date]
     for (let i = 0; i < laboratoriesByDate.length; i++) {
       if (laboratoriesByDate[i].id === laboratoryId) {
-        laboratoriesByDate[i] = Object.assign({}, laboratoriesByDate[i], {inspectionItems: actionLaboratory.inspectionItems})
+        laboratoriesByDate[i] = Object.assign({}, laboratoriesByDate[i], {laboratoryItems: actionLaboratory.laboratoryItems})
         break
       }
     }
@@ -70,6 +70,9 @@ const QUREY_LABORATORY = gql`
   query ($id: ObjID!) {
   patient(id: $id) {
     id
+    name
+    sex
+    birthday
     patientCards {
       id
       laboratorys {
@@ -147,14 +150,23 @@ export const queryLaboratories = (client, {patientId}) => async dispatch => {
     type: REPORT_LABORATORY_QUERY
   })
   try {
-    let data = await client.query({ query: QUREY_LABORATORY, variables: {id: '58eb7c94c77c0857c9dc5b1e'} })
+    let data = await client.query({ query: QUREY_LABORATORY, variables: {id: patientId} }) // 58eb7c94c77c0857c9dc5b1e
     if (data.error) {
       return dispatch({
         type: REPORT_LABORATORY_FAIL,
         error: data.error.message
       })
     }
-    let laboratories = groupLaboratoriesByTime(laboratorys)// groupLaboratoriesByTime(data.data.patient.patientCards[0].laboratorys)
+    const patient = data.data.patient
+    const pat = {patientId: patient.id, patientName: patient.name, patientBirthday: patient.birthday, patientSex: patient.sex}
+    console.log(patient.patientCards[0].laboratorys)
+    let newLabs = []
+    for (let lab of patient.patientCards[0].laboratorys) {
+      lab = Object.assign({}, lab, pat)
+      newLabs.push(lab)
+    }
+    console.log(newLabs)
+    let laboratories = groupLaboratoriesByTime(newLabs)
     dispatch({
       type: REPORT_LABORATORY_SUCCESS,
       laboratories
@@ -317,7 +329,7 @@ export const queryLaboratoryItems = (client, {laboratoryId}) => async dispatch =
     }
     dispatch({
       type: REPORT_LABORATORY_ITEMS_SUCCESS,
-      laboratory: items// data.data.laboratory
+      laboratory: data.data.laboratory
     })
   } catch (e) {
     console.log(e)
