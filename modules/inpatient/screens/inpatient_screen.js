@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import localforage from 'localforage'
 import Router from 'next/router'
 import _ from 'lodash'
-import {Loading, FilterCard, FilterSelect, FilterTime, Modal, ModalHeader, ModalFooter, FilterTimeResult, theme, TabHeader, ErrCard, RequireLoginCard} from 'components'
+import {Loading, FilterCard, FilterSelect, FilterTime, Modal, ModalHeader, ModalFooter, FilterTimeResult, theme, NoDataCard, ErrCard, RequireLoginCard} from 'components'
 
 import {
   queryPatients,
@@ -38,6 +38,7 @@ class InpatientScreen extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
+    console.log(nextProps)
     if (judge(nextProps.patientsData) && !judge(nextProps.inpatientRecords) && !nextProps.selectInpatientId) {
       this.inpatient(nextProps)
     } else if (this.state.selectInpatientId !== nextProps.selectInpatientId) {
@@ -117,8 +118,8 @@ class InpatientScreen extends Component {
       <FilterCard>
         <FilterSelect
           changePatientSelect={(e) => {
-            console.log('------changePatientSelect', e.target.value);
-            this.setState({selectedId: e.target.value})
+            console.log('------changePatientSelect', e.target.value)
+            this.props.selectInpatient(e.target.value)
           }}
           patientArr = {patientArr}
         />
@@ -152,7 +153,6 @@ class InpatientScreen extends Component {
     if (inpatientRecordArray && inpatientRecordArray.length > 0 && this.filterRecord(inpatientRecordArray, selectInpatientId)) {
       return (
         <div>
-          {this.renderModal()}
           {this.renderPatientList()}
           <div>
             {topView(patientsData[selectInpatientId], this.filterRecord(inpatientRecordArray, selectInpatientId), patientsData, this.props)}
@@ -208,7 +208,7 @@ class InpatientScreen extends Component {
     } else {
       return (<div>
         {this.renderPatientList()}
-        <div>没有住院信息</div>
+        <div><NoDataCard /></div>
       </div>)
     }
   }

@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import {
   queryLaboratoryItems
 } from '../../../ducks'
-import {isEmptyObject} from '../../../utils'
+import {isEmptyObject, ages} from '../../../utils'
 import {theme, Loading, ErrCard} from 'components'
 
 class LaboratoryDetailScreen extends Component {
@@ -58,17 +58,18 @@ class LaboratoryDetailScreen extends Component {
     }
   }
   _renderItems (laboratory) {
-    if (laboratory.inspectionItems && laboratory.inspectionItems.length > 0) {
+    console.log(laboratory)
+    if (laboratory.laboratoryItems && laboratory.laboratoryItems.length > 0) {
       return (
         <div>
           {
-            laboratory.inspectionItems.map((item, i) => (
+            laboratory.laboratoryItems.map((item, i) => (
               <div key={item.id} className={'itemTitleContainerView itemTitleContainerViewCon'}>
                 {/*<div className='itemTitleView' style={{flex: 1, borderLeftWidth: 0}}>
                   <div className={'itemText'}>{i + 1}</div>
                 </div>*/}
                 <li className={'left'} style={{width: '40%'}}>{item.itemName}</li>
-                <li className={'left'} style={{width: '20%'}} style={{color: item.abnormalSign === '正常' ? '#505050' : 'white', backgroundColor: item.abnormalSign === '低' ? 'green' : (item.abnormalSign === '正常' ? '#ffffff' : '#E94C47')}}>
+                <li className={'left'} style={{width: '20%', color: item.abnormalSign === '正常' ? '#505050' : 'white', backgroundColor: item.abnormalSign === '低' ? 'green' : (item.abnormalSign === '正常' ? '#ffffff' : '#E94C47')}}>
                   {item.resultValue}{item.abnormalSign === '低' ? '↓' : (item.abnormalSign === '正常' ? '' : '↑')}
                 </li>
                 <li className={'left'} style={{width: '18%'}}>{item.unit}</li>
@@ -93,7 +94,7 @@ class LaboratoryDetailScreen extends Component {
       return <div><ErrCard /></div>
     }
     let laboratory = this.getData()
-    // let patients = this.props.patients
+    let patients = this.props.patients
     // let nowDate = moment()
     // let thenDate = moment(patients[Object.keys(patients)[0]].birthday)
     if (laboratory) {
@@ -104,17 +105,13 @@ class LaboratoryDetailScreen extends Component {
               <div style={{alignItems: 'flex-end'}}>
                 <div className={'titleText'}>{laboratory.inspectName}</div>
               </div>
-              <div style={{textAlign: 'center', fontSize: theme.nfontsize, color: theme.fontcolor}}>检验：{laboratory.inspectTime} &nbsp;报告：{laboratory.reportTime}</div>
-              {/*<div className={'titleTextView'}>
-                <div className={'userText'}>姓名: {patients[Object.keys(patients)[0]].name}</div>
-                <div className={'userText'}>性别: {patients[Object.keys(patients)[0]].sex === '1' ? '男' : '女'}</div>
-                <div className={'userText'}>年龄: {nowDate.diff(thenDate, 'years')}</div>
-              </div>*/}
+              {/*<div style={{textAlign: 'center', fontSize: theme.nfontsize, color: theme.fontcolor}}>检验：{laboratory.inspectTime} &nbsp;报告：{laboratory.reportTime}</div>*/}
+              <div style={{textAlign: 'center', fontSize: theme.nfontsize, color: theme.fontcolor}}>姓名：{laboratory.patientName} &nbsp;性别：{laboratory.patientSex === '1' ? '男' : '女'} &nbsp;年龄: {ages(laboratory.patientBirthday || '')}</div>
             </div>
-            <div style={{backgroundColor: '#ffffff', padding: '10px'}}>样本： {laboratory.sampleName}</div>
+            {/*<div style={{backgroundColor: '#ffffff', padding: '10px'}}>样本： {laboratory.sampleName}</div>*/}
             <ul className={'itemTitleContainerView itemTitleContainerViewHeader'}>
               <li className={'left'} style={{width: '40%'}}>检测项目</li>
-              <li className={'left'} style={{width: '20%'}}>检测值</li>
+              <li className={'left'} style={{width: '20%'}}>结果</li>
               <li className={'left'} style={{width: '18%'}}>单位</li>
               <li className={'left'} style={{width: '20%', border: 'none'}}>参考值</li>
               <li className='clearfix'></li>
@@ -126,22 +123,21 @@ class LaboratoryDetailScreen extends Component {
               this._renderItems(laboratory)
             }
             <div className={'bottomView'}>
-              <div style={{float: 'left'}}>
-                {/*<div className={'bottomItemView'}>
-                  <div className={'bottomText'}>申请科室：{laboratory.applyDept}</div>
-                  <div className={'bottomText'}>报告编号：{laboratory.reportNo}</div>
-                </div>
-                <div className={'bottomItemView'}>
-                  <div className={'bottomText'}>标本类型：{laboratory.sampleStatus}</div>
-                  <div className={'bottomText'}>采样时间：{laboratory.samplingTime}</div>
-                </div>*/}
-                <div className={'bottomItemView'}>
-                  <div className={'bottomText'}>检验医生：{laboratory.inspectDoctor}</div>
-                  {/*<div className={'bottomText'}>申请时间：{laboratory.inspectTime}</div>*/}
-                </div>
-                <div className={'bottomItemView'}>
-                  <div className={'bottomText'}>报告医生：{laboratory.reportDoctor}</div>
-                  <div className={'bottomText'}>采样时间：{laboratory.samplingTime}</div>
+              <div style={{backgroundColor: '#FFF', padding: '20px'}}>
+                <div className={'bottomText'}>送检科室 {laboratory.applyDept}</div>
+                <div style={{display: 'flex'}}>
+                  <div style={{flex: 1}}>
+                    <div className={'bottomText'}>标本类型：{laboratory.sampleName}</div>
+                    <div className={'bottomText'}>申请医生：{laboratory.applyDoctor}</div>
+                    <div className={'bottomText'}>检验医生：{laboratory.inspectDoctor}</div>
+                    <div className={'bottomText'}>审核医生：{laboratory.reportDoctor}</div>
+                  </div>
+                  <div style={{flex: 1}}>
+                    <div className={'bottomText'}>报告编号：{laboratory.reportNo}</div>
+                    <div className={'bottomText'}>采样时间：{laboratory.samplingTime}</div>
+                    <div className={'bottomText'}>接受时间：{laboratory.inspectTime}</div>
+                    <div className={'bottomText'}>报告时间：{laboratory.reportTime}</div>
+                  </div>
                 </div>
               </div>
               <div className={'warningView'}>
@@ -189,6 +185,8 @@ class LaboratoryDetailScreen extends Component {
             }
             .titleTextView {
               flex: 1;
+              display: flex;
+              text-align: center;
               align-items: center;
               justify-content: center;
               flex-direction: row;
@@ -247,7 +245,6 @@ class LaboratoryDetailScreen extends Component {
               color: #505050;
             }
             .bottomView {
-              padding: 20px 10px;
               height: 100px
               flex-direction: column;
               bottom: 10px;
@@ -264,9 +261,10 @@ class LaboratoryDetailScreen extends Component {
               color: #B4B4B4;
             }
             .warningView {
-              float: rightpx
-              height: 50px
-              align-items: center；
+              margin-top: 30px;
+              height: 50px;
+              text-align: center;
+              align-items: center;
               justify-content: center;
             }
             .warningText {

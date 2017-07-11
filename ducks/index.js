@@ -10,7 +10,7 @@ import { clinicStops, queryClinicStops } from './clinic_stops'
 import { news, queryNewsGroups, queryNews, selectNews, queryNewsDetail } from './news'
 import { examinations, queryExaminations, selectExamination } from './examinations'
 import { laboratories, queryLaboratories, selectLaboratory, queryLaboratoryItems } from './laboratories'
-import { outpatient, queryOutpatient } from './outpatient'
+import { outpatient, queryOutpatient, queryOutpatientDetail, selectOutpatient } from './outpatient'
 import { inpatient, queryInpatient, selectInpatient, updateInpatientRecord } from './inpatient'
 import { billitem, queryBillitems, selectBillitem } from './billitem'
 import { dailyfee, queryDailyfee, selectInpatientRecord } from './dailyfee'
@@ -19,6 +19,7 @@ import { deposit, queryDeposits, selectDeposit } from './deposit'
 import { addHospitalEvaluate } from './hospital_evaluate'
 import { patientTypes, queryPatientTypes, selectPatientType } from './patient_types'
 import { messages, lastMessages, queryMessageTypes, queryMessages, selectMessageType, readMessage, queryLastMessage } from './messages'
+import { payments, queryPayments, selectPayment } from './payments'
 
 // key
 export {
@@ -42,7 +43,8 @@ export {
     deposit,
     patientTypes,
     messages,
-    lastMessages
+    lastMessages,
+    payments
 }
 
 // action
@@ -106,6 +108,8 @@ export {
     queryHospitalGuides,
     selectHospitalGuide,
     queryOutpatient,
+    queryOutpatientDetail,
+    selectOutpatient,
     queryInpatient,
     selectInpatient,
     updateInpatientRecord,
@@ -123,5 +127,7 @@ export {
     queryMessages,
     selectMessageType,
     readMessage,
-    queryLastMessage
+    queryLastMessage,
+    queryPayments,
+    selectPayment
 }

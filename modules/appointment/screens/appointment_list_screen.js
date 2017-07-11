@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Router from 'next/router'
 import _ from 'lodash'
-import {Loading, FilterCard, FilterSelect, FilterTime, Modal, ModalHeader, ModalFooter, FilterTimeResult, theme, TabHeader, ErrCard} from 'components'
+import {Loading, FilterCard, FilterSelect, FilterTime, Modal, ModalHeader, ModalFooter, FilterTimeResult, theme, TabHeader, ErrCard, NoDataCard} from 'components'
 
 import {
   signin,
@@ -24,7 +24,7 @@ class AppointmentListScreen extends Component {
       selectedId: '',
       startDate: undefined,
       endDate: undefined,
-      showFilterModal: false,
+      showFilterModal: false
     }
   }
 
@@ -95,7 +95,9 @@ class AppointmentListScreen extends Component {
     Router.push('/appointment/doctor_list')
   }
 
-  gotoPay () {
+  gotoPay (appointment) {
+    const appointmentId = appointment.id
+    this.props.selectAppointment({appointmentId})
     Router.push('/appointment/select_pay_way')
   }
 
@@ -137,7 +139,7 @@ class AppointmentListScreen extends Component {
                 style={{backgroundColor: '#fff', color: theme.fontcolor, display: 'block', border: 'solid 1px #ddd',borderColor: theme.fontcolor}}
                 onClick={(e) => {
                   e.stopPropagation()
-                  this.gotoSchedule()
+                  this.gotoSchedule(appointment)
                 }} >再次预约</button>
               : <div>{
                 appointment.visitStatus === '01'
@@ -145,19 +147,19 @@ class AppointmentListScreen extends Component {
                     style={{backgroundColor: '#fff', color: theme.fontcolor, display: 'block', border: 'solid 1px #ddd',borderColor: theme.fontcolor, marginRight: 15}}
                     onClick={(e) => {
                       e.stopPropagation()
-                      this.cancelAppointment()
+                      this.cancelAppointment(appointment)
                     }} >取消挂号</button>
                     <button
                       style={{backgroundColor: '#fff', color: theme.maincolor, display: 'block', border: 'solid 1px #ddd', borderColor: theme.maincolor}}
                       onClick={(e) => {
                         e.stopPropagation()
-                        this.gotoPay()
+                        this.gotoPay(appointment)
                       }} >去缴费</button></div>
                   : <button
                     style={{backgroundColor: '#fff', color: theme.fontcolor, display: 'block', border: 'solid 1px #ddd',borderColor: theme.fontcolor}}
                     onClick={(e) => {
                       e.stopPropagation()
-                      this.退费()
+                      this.退费(appointment)
                     }} >退号退费</button>
                 }</div>
             }
@@ -172,17 +174,21 @@ class AppointmentListScreen extends Component {
     modalHtml = <Modal showModalState={this.state.showTipModal || this.state.showFilterModal}>
       <ModalHeader>请选择起止时间</ModalHeader>
       <div className='flex' style={{padding: 20}}>
-        <input type='date'
-          onChange={(e) => { this.setState({startDate: e.target.value}) }}
+        <input type='date' defaultValue={this.state.startDate} ref='startDate'
           style={{border: '1px solid #ccc', flex: 6}} name='startDate' max={this.state.maxDate} />
         <span style={{flex: 1, padding: 5, textAlign: 'center'}}> - </span>
-        <input type='date'
-          onChange={(e) => { this.setState({endDate: e.target.value}) }}
+        <input type='date' defaultValue={this.state.endDate} ref='endDate'
           style={{border: '1px solid #ccc', flex: 6}} name='endDate' max={this.state.maxDate} />
       </div>
       <ModalFooter>
-        <button className='modalBtn modalBtnBorder' onClick={(e) => {this.setState({showFilterModal: false})}}>取消</button>
-        <button className='modalBtn modalMainBtn' onClick={(e) => {this.setState({showFilterModal: false})}}>确定</button>
+        <button className='modalBtn modalBtnBorder' onClick={(e) => {
+          this.setState({showFilterModal: false})
+        }}>取消</button>
+        <button className='modalBtn modalMainBtn' onClick={(e) => {
+          this.setState({startDate: this.refs.startDate.value || undefined})
+          this.setState({endDate: this.refs.endDate.value || undefined})
+          this.setState({showFilterModal: false})
+        }}>确定</button>
       </ModalFooter>
     </Modal>
     return modalHtml;
@@ -199,7 +205,11 @@ class AppointmentListScreen extends Component {
         <FilterSelect
           changePatientSelect={(e) => {
             console.log('------changePatientSelect', e.target.value);
-            this.setState({selectedId: e.target.value})
+            this.setState({
+              selectedId: e.target.value,
+              startDate: undefined,
+              endDate: undefined
+            })
           }}
           patientArr = {patientArr}
         />
@@ -217,7 +227,6 @@ class AppointmentListScreen extends Component {
     }
     const { appointments, selectAppointment } = this.props
     const dataList = getListData(this.state, appointments, this.state.selectedId)
-    console.log(this.state.selectedId)
     // var height = process.browser ? window.innerHeight - 50 : ''
     // var height = window.innerHeight - 50
     return (
@@ -226,7 +235,7 @@ class AppointmentListScreen extends Component {
         {this.renderPatientList()}
         <FilterTimeResult startDate={this.state.startDate} endDate={this.state.endDate} />
         {
-          dataList.map((item) => {
+          dataList.length > 0 ? dataList.map((item) => {
             return (
               <div key={item.id} onClick={() => {
                 selectAppointment({appointmentId: item.id})
@@ -237,7 +246,7 @@ class AppointmentListScreen extends Component {
                 {this.ItemView(item)}
               </div>
             )
-          })
+          }) : <NoDataCard />
         }
         <style jsx global>{`
           .listItem {
@@ -299,7 +308,7 @@ class AppointmentListScreen extends Component {
 
 const getListData = (state, appointments, patientId) => {
   let array = []
-  if (state.startDate || state.startDate) {
+  if (state.startDate || state.endDate) {
     for (let key in appointments) {
       if (state.startDate && state.endDate) {
         if ((new Date(appointments[key].visitSchedule.visitDate) >= new Date(state.startDate)) && (new Date(appointments[key].visitSchedule.visitDate) <= new Date(state.endDate))) {
