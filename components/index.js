@@ -11,6 +11,7 @@ import NoDataCard from './NoDataCard'
 import LoadErrCard from './LoadErrCard'
 import ErrCard from './ErrCard'
 import RequireLoginCard from './RequireLoginCard'
+import {ResultSuccessCard, ResultFailCard} from './ResultCard'
 
 export {
     List,
@@ -30,7 +31,9 @@ export {
     NoDataCard,
     LoadErrCard,
     ErrCard,
-    RequireLoginCard
+    RequireLoginCard,
+    ResultSuccessCard,
+    ResultFailCard
 }
 
 

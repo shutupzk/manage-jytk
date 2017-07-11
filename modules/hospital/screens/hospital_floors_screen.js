@@ -79,14 +79,16 @@ class IndoorNavigationDetailScreen extends Component {
     let buildings = hosiptal.buildings || []
     let building = filterBuildings(buildings, selectBuildingId)
     return (
-      <div style={{margin: '5px 10px'}}>
+      <div>
         <div className={'titleView'}>
-          <div className={'circle'} />
-          <div className={'contentView'}>
-            <div className={'hospitalText'}>{hosiptal.hospitalName}</div>
-            <div className={'text'}>{building.name}</div>
+          <div style={{display: 'flex', justifyContent: 'space-between'}}>
+            <div className={'circle'} />
+            <div className={'rightCircle'} />
           </div>
-          <div className={'circle'} />
+          <div className={'contentView'}>
+            <div style={{fontSize: 15}}>{hosiptal.hospitalName}</div>
+            <div className={'text'} style={{fontWeight: '500', fontSize: 18, paddingTop: 6}}>{building.name}</div>
+          </div>
         </div>
         {
           building.floors.map((item, i) => (
@@ -109,46 +111,42 @@ class IndoorNavigationDetailScreen extends Component {
         }
         <style jsx>{`
           .titleView {
-            height: 70px;
-            border-radius: 10px;
+            border-radius: 6px;
             background-color: white;
-            margin-bottom: 10px;
-            flex-direction: row;
-            display: flex;
+            margin: ${theme.tbmargin} ${theme.lrmargin};
+            border: 1px solid ${theme.bordercolor};
           }
           .circle {
-            height: 6px;
-            width: 6px;
-            border-radius: 3px;
-            background-color: #3CA0FF;
-            margin: 6px;
+            height: 10px;
+            width: 10px;
+            border-radius: 100%;
+            background-color: ${theme.maincolor};
+            margin: 10px;
+          }
+          .rightCircle {
+            height: 10px;
+            width: 10px;
+            border-radius: 100%;
+            background-color: ${theme.maincolor};
+            margin: 10px;
+            float: right;
           }
           .contentView {
             text-align: center;
             flex: 1;
-            margin: 10px;
+            padding: 0px 0 16px;
             align-items: center;
             justify-content: center;
-            flex-direction: column;
-          }
-          .text {
-            text-align: center;
-            margin: 5px;
-            font-size: 18px;
-            color: #505050;
-          }
-          .hospitalText {
-            text-align: center;
-            margin: 5px;
-            font-size: 15px;
-            color: #B4B4B4;
+            color: ${theme.mainfontcolor};
+            
           }
           .floorsView {
-            border-radius: 5px;
+            border-radius: 3px;
             background-color: white;
-            margin-bottom: 10px;
+            margin: ${theme.tbmargin} ${theme.lrmargin};
             flex-direction: row;
             display: flex;
+            border: 1px solid ${theme.bordercolor};
           }
           .floorsLeftView {
             padding-top: 3px;

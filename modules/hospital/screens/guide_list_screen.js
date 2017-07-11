@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Router from 'next/router'
-import {ErrCard, Loading} from 'components'
+import {ErrCard, Loading, theme} from 'components'
 
 import {
   queryHospitalGuides,
@@ -68,7 +68,9 @@ class GuideListScreen extends Component {
                     {
                       group.visitNotices.map((item) => {
                         return (
-                          <div style={{backgroundColor: '#ffffff', marginBottom: 1, padding: 10}}
+                          <div
+                            className='flex tb-flex'
+                            style={{borderBottom: '1px solid #fff', borderColor: theme.bordercolor, padding: '10px 15px', justifyContent: 'space-between'}}
                             key={item.id}
                             onClick={() => {
                               this.props.selectHospitalGuide({noticeGroupId: group.id, noticeId: item.id})
@@ -76,7 +78,7 @@ class GuideListScreen extends Component {
                               Router.push('/hospital/guide_detail?noticeGroupId=' + group.id + '&noticeId=' + item.id)
                             }}>
                             {item.title}
-                            <img src='/static/icons/arrow_right.png' style={{width: 8, height: 10, float: 'right'}} />
+                            <p className='back-left' style={{transform: 'rotate(135deg)'}}></p>
                           </div>
                         )
                       })
@@ -89,17 +91,17 @@ class GuideListScreen extends Component {
           <style jsx>{`
             .contentView {
               margin-bottom: 10px;
+              background: #fff
             }
             .topView {
-              height: 30px;
+              line-height: 40px;
               background-color: #FFF;
               align-items: center;
-              padding-top: 10px;
-              marginB-bottom: 1px;
+              border-bottom: 1px solid ${theme.bordercolor};
             }
             .titleText {
               font-size: 16px;
-              color: #3CA0FF;
+              color: ${theme.maincolor};
               padding: 10px;
             },
           `}</style>

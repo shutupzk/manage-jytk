@@ -5,7 +5,7 @@ import Router from 'next/router'
 import _ from 'lodash'
 
 import { queryMessageTypes, queryMessages, selectMessageType, queryLastMessage } from 'ducks'
-import { Loading, ErrCard } from 'components'
+import { Loading, ErrCard, theme } from 'components'
 
 class MessageTypesScreen extends Component {
   constructor (props) {
@@ -43,18 +43,38 @@ class MessageTypesScreen extends Component {
     const messageTypes = this.getMessages(this.props.messages)
     console.log(messageTypes)
     return (
-      <div>
+      <div style={{background: '#fff', borderTop: '1px solid #fff', borderColor: theme.bordercolor, marginTop: theme.tbmargin}}>
         {
           messageTypes.map((type) => {
+            const imgUrl = '/static/icons/megtype' + type.code + '.png'
             return (
-              <div key={type.id} style={{marginBottom: 2, backgroundColor: '#FFF', padding: 10}}
+              <div key={type.id}
+                style={{borderBottom: '1px solid #fff', borderColor: theme.bordercolor,
+                  padding: '10px 15px',
+                  color: theme.nfontcolor,
+                  display: '-webkit-box'}}
                 onClick={() => {
                   this.props.selectMessageType({typeId: type.id})
                   Router.push('/message_types/messages?typeId=' + type.id)
                 }}
               >
-                <div>{type.name}<span style={{float: 'right'}}>{type.read ? '已读' : '未读'}{moment(type.messageTime) < moment(moment().format('YYYY-MM-DD')) ? moment(type.messageTime).format('YYYY-MM-DD') : moment(type.messageTime).format('HH:mm')}</span></div>
-                <div>{type.messages[0].content}</div>
+                <article style={{height: 40, width: 40, paddingRight: theme.tbmargin, position: 'relative'}}>
+                  <img src={imgUrl} style={{height: 40, width: 40}} />
+                  {type.read ? <span style={{position: 'absolute', top: '-2px', left: '36px', width: 8, height: 8, background: '#f00', borderRadius: '100%'}}></span>
+                  : ''}
+                </article>
+                <dl>
+                  <dt>
+                    <span style={{color: theme.mainfontcolor}}>{type.name}</span>
+                    <span style={{float: 'right', fontSize: theme.nfontsize}}>{moment(type.messageTime) < moment(moment().format('YYYY-MM-DD')) ? moment(type.messageTime).format('YYYY-MM-DD') : moment(type.messageTime).format('HH:mm')}</span>
+                  </dt>
+                  <dd className='textoverflow1' style={{fontSize: 14}}>{type.messages[0].content}</dd>
+                </dl>
+                <style jsx>{`
+                  dl{
+                   -webkit-box-flex: 1;
+                  }
+                `}</style>
               </div>
             )
           })

@@ -28,7 +28,7 @@ class OrderTypeScreen extends Component {
           }}>
           <a className='flex tb-flex'>
             <p className='flex tb-flex'>
-              挂号费诊金费用
+              诊察费诊金费用
             </p>
             <i className='back-left'></i>
           </a>

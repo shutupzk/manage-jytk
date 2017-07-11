@@ -3,11 +3,12 @@ import Link from 'next/link'
 import { connect } from 'react-redux'
 import Router from 'next/router'
 import { CardWhite, Loading, ErrCard, theme } from 'components'
-import {
-  queryHospitals,
-  queryNewsGroups,
-  queryNews,
-  selectNews
+import moment from 'moment'
+import _ from 'lodash'
+import { queryMessageTypes,
+  queryMessages,
+  selectMessageType,
+  queryLastMessage
 } from '../../../ducks'
 import NewsItem from '../../hospital/components/news_item'
 import {hosApmHomeIcon, patientPayHomeIcon, selfExamineHomeIcon, reportHomeIcon, inHosHomeIcon} from '../../../static/icons/svgIcon'
@@ -21,37 +22,23 @@ class Home extends Component {
     }
   }
   componentWillMount () {
-    this.queryNews()
+    this.props.queryLastMessage(this.props.client, {limit: 0})
   }
-
-  async queryNews () {
-    this.setState({isInit: true})
-    await this.props.queryNewsGroups(this.props.client)
-    await this.props.queryHospitals(this.props.client)
-    // let newses = this.props.newses
-    // let newNewses = this.getNewses(newses) || []
-    // if (newNewses.length > 0) {
-    //   this.setState({groupId: newNewses[0].id})
-    //   this.props.queryNews(this.props.client, {groupId: newNewses[0].id})
-    // }
-    this.setState({isInit: false})
-  }
-  getNewses (newses) {
-    let newNewses = []
-    for (var news in newses) {
-      for (let newss of newses[news].newss) {
-        let thenews = Object.assign({}, newss, { groupId: newses[news].id, type: newses[news].type })
-        newNewses.push(thenews)
-      }
+  getmessageTypeList (messageTypes) {
+    let messageTypeArr = []
+    for (let key in messageTypes) {
+      messageTypeArr.push(messageTypes[key])
     }
-    return newNewses
+    return messageTypeArr
   }
-  getHospital (hospitals) {
-    return hospitals[Object.keys(hospitals)[0]]
-  }
-  gotoDetail (news) {
-    selectNews({newsGroupId: news.groupId, newsId: news.id})
-    Router.push('/hospital/news_detail?newsId=' + news.id + '&newsGroupId=' + news.groupId)
+  getMessages (messages) {
+    const messageGroup = _.groupBy(messages, 'messageTypeId')
+    let messageArr = []
+    _.each(_.keys(messageGroup), function (key) {
+      let messageType = Object.assign({}, { id: key, name: messageGroup[key][0].messageType.name, code: messageGroup[key][0].messageType.code, messages: messageGroup[key], read: messageGroup[key][0].read, messageTime: messageGroup[key][0].createdAt })
+      messageArr.push(messageType)
+    })
+    return messageArr
   }
 
   goHospitalPage () {
@@ -62,9 +49,10 @@ class Home extends Component {
     if (this.props.loading || this.state.isInit) {
       return (<div><Loading showLoading={true} /></div>)
     }
-    let newses = this.props.newses
-    let newNewses = this.getNewses(newses)
-    let hospital = this.getHospital(this.props.hospitals)
+    const messageTypes = this.getMessages(this.props.messages)
+    if (this.props.newsError) {
+      return (<ErrCard />)
+    }
     return (
       <div>
         <img src='/static/icons/banner3.png' style={{width: '100%'}} />
@@ -82,7 +70,7 @@ class Home extends Component {
                 <h3>门诊缴费</h3>
               </article>
             </a></Link>
-            <Link href=''><a>
+            <Link href='/diagnosis'><a>
               <article>
                 <svg className='selfExamineIcon' viewBox="359 604 71 71" version="1.1" xmlns="http://www.w3.org/2000/svg">{selfExamineHomeIcon}</svg>
                 <h3>疾病自查</h3>
@@ -114,38 +102,48 @@ class Home extends Component {
             <article className='back-left'>&nbsp;</article>
           </CardWhite>
         </div>
-        <CardWhite classChild='consultList'>
-          <dl>
-            <dt className='left'>健康资讯</dt>
-            <dd className='right' onClick={() => { Router.push('/hospital/news_list') }}>
-              <span className='left'>更多</span>
+        <CardWhite>
+          <dl className='consultListheader'>
+            <dt className='left'>最新消息</dt>
+            <dd className='right' onClick={() => { Router.push('/message_types') }}>
+              <span className='left'>全部</span>
               <article className='back-left right'>&nbsp;</article>
               <div className='clearfix'>&nbsp;</div>
             </dd>
             <div className='clearfix'>&nbsp;</div>
           </dl>
-          <ul>
+          <div style={{background: '#fff', borderTop: '1px solid #fff', borderColor: theme.bordercolor}}>
             {
-              this.props.newsLoadding || this.state.isInit ?
-                'loading...'
-              :
-                (this.props.newsError ?
-                  <ErrCard />
-                :
-                  <ul>
-                    {
-                      newNewses.map((item, index) => {
-                        return (
-                          <div key={index}>
-                            <NewsItem news={item} gotoDetail={(news) => { this.gotoDetail(news) }} />
-                          </div>
-                        )
-                      })
-                    }
-                  </ul>
+              messageTypes.map((type) => {
+                const imgUrl = '/static/icons/megtype' + type.code + '.png'
+                return (
+                  <div key={type.id}
+                    style={{borderBottom: '1px solid #fff', borderColor: theme.bordercolor,
+                      padding: '10px 15px',
+                      color: theme.nfontcolor,
+                      display: '-webkit-box'}}
+                    onClick={() => {
+                      this.props.selectMessageType({typeId: type.id})
+                      Router.push('/message_types/messages?typeId=' + type.id)
+                    }}
+                  >
+                    <article style={{height: 40, width: 40, paddingRight: theme.tbmargin, position: 'relative'}}>
+                      <img src={imgUrl} style={{height: 40, width: 40}} />
+                      {type.read ? <span style={{position: 'absolute', top: '-2px', left: '36px', width: 8, height: 8, background: '#f00', borderRadius: '100%'}}></span>
+                      : ''}
+                    </article>
+                    <dl className='consultListitem'>
+                      <dt>
+                        <span style={{color: theme.mainfontcolor}}>{type.name}</span>
+                        <span style={{float: 'right', fontSize: theme.nfontsize}}>{moment(type.messageTime) < moment(moment().format('YYYY-MM-DD')) ? moment(type.messageTime).format('YYYY-MM-DD') : moment(type.messageTime).format('HH:mm')}</span>
+                      </dt>
+                      <dd className='textoverflow1' style={{fontSize: 14}}>{type.messages[0].content}</dd>
+                    </dl>
+                  </div>
                 )
+              })
             }
-          </ul>
+          </div>
         </CardWhite>
         <style jsx global>{`
           .nav{
@@ -231,20 +229,17 @@ class Home extends Component {
             display: block;
             transform: rotate(135deg);
           }
-
-          .consultList{
-
-          }
-          .consultList dl{
+          .consultListheader{
             padding: .1rem .15rem;
             height: .2rem;
             line-height: .2rem;
             color: #505050;
             text-indent: 6px;
           }
-          .consultList dl dt{
+          .consultListheader dt{
+            font-weight: 500;
           }
-          .consultList dl dt:after{
+          .consultListheader dt:after{
             content: '';
             display: block;
             float: left;
@@ -253,17 +248,20 @@ class Home extends Component {
             background: #257BDE;
             border-radius: .03rem;
           }
-          .consultList dl dd{
+          .consultListheader dd{
             color: #b4b4b4;
             font-size: .13rem;
           }
-          .consultList dl dd article{
+          .consultListheader dd article{
             width: .06rem;
             height: .06rem;
             border-top: .02rem solid #C7C7CC;
             border-left: .02rem solid #C7C7CC;
             transform: rotate(135deg);
             margin-top: .06rem;
+          }
+          .consultListitem{
+            -webkit-box-flex: 1;
           }
         `}</style>
       </div>
@@ -272,16 +270,9 @@ class Home extends Component {
 }
 function mapStateToProps (state) {
   return {
-    newses: state.news.data,
-    hospitals: state.hospitals.data,
-    loading: state.hospitals.loading,
-    error: state.hospitals.error,
-    newsLoadding: state.news.loading,
-    newsError: state.news.error
+    loading: state.lastMessages.loading,
+    error: state.lastMessages.error,
+    messages: state.lastMessages.data
   }
 }
-export default connect(mapStateToProps, {
-  queryHospitals,
-  queryNewsGroups,
-  queryNews,
-  selectNews})(Home)
+export default connect(mapStateToProps, {queryMessageTypes, queryMessages, selectMessageType, queryLastMessage})(Home)

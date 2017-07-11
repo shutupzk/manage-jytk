@@ -8,7 +8,7 @@ class NewsItem extends Component {
     let imagUrl = item.image ? item.image : '/static/icons/doctor_head.png'
     return (
       <div key={item.id} onClick={() => { this.props.gotoDetail(item) }}>
-        <li className={'flex tb-flex newsItem'} key={item.id} onClick={() => { this.props.gotoDetail(item) }}>
+        <li className={'flex tb-flex newsItem'} style={{background: '#fff'}} key={item.id} onClick={() => { this.props.gotoDetail(item) }}>
           <img src={imagUrl} alt='' />
           <section>
             <article>{item.time}</article>

@@ -60,11 +60,13 @@ class IndoorNavigationScreen extends Component {
     return (
       <div>
         <div className={'titleView'}>
-          <div className={'circle'} />
-          <div className={'contentView'}>
-            <span className={'text'}>{hosiptal.hospitalName}</span>
+          <div style={{display: 'flex', justifyContent: 'space-between'}}>
+            <div className={'circle'} />
+            <div className={'rightCircle'} />
           </div>
-          <div className={'rightCircle'} />
+          <div className={'contentView'} style={{fontWeight: '500'}}>
+            {hosiptal.hospitalName}
+          </div>
         </div>
         {
           buildings.map((item, i) => (
@@ -73,8 +75,8 @@ class IndoorNavigationScreen extends Component {
               this.props.selectHospitalBuildings({buildingId: item.id})
             }}>
               <div className={'titleView'}>
-                <div className={'contentView'}>
-                  <span className={'text'}>{item.name}</span>
+                <div className={'contentView'} style={{padding: '17px 0', fontSize: 17}}>
+                  {item.name}
                 </div>
               </div>
             </div>
@@ -82,39 +84,34 @@ class IndoorNavigationScreen extends Component {
         }
         <style jsx>{`
           .titleView {
-            height: 50px;
-            border-radius: 5px;
+            border-radius: 6px;
             background-color: white;
-            margin: 5px;
-            flex-direction: row;
-            display: flex;
+            margin: ${theme.tbmargin} ${theme.lrmargin};
+            border: 1px solid ${theme.bordercolor};
           }
           .circle {
-            height: 6px;
-            width: 6px;
-            border-radius: 3px;
-            background-color: #3CA0FF;
-            margin: 6px;
+            height: 10px;
+            width: 10px;
+            border-radius: 100%;
+            background-color: ${theme.maincolor};
+            margin: 10px;
           }
           .rightCircle {
-            height: 6px;
-            width: 6px;
-            border-radius: 3px;
-            background-color: #3CA0FF;
-            margin: 6px;
+            height: 10px;
+            width: 10px;
+            border-radius: 100%;
+            background-color: ${theme.maincolor};
+            margin: 10px;
             float: right;
           }
           .contentView {
             text-align: center;
             flex: 1;
-            margin: 10px;
+            padding: 0px 0 20px;
             align-items: center;
             justify-content: center;
-          }
-          .text {
-            text-align: center;
-            font-size: 15px;
-            color: #505050;
+            color: ${theme.mainfontcolor};
+            
           }
         `}</style>
       </div>

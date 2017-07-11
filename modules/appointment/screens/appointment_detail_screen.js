@@ -182,7 +182,7 @@ class AppointmentDetailScreen extends Component {
           <div className={'subView'}>
             <div style={{color: '#000000', marginBottom: 3}}><b>订单信息</b></div>
             <div className={'itemView'}>
-              <span className={'itemLeft'}>{'挂号费'}</span>
+              <span className={'itemLeft'}>{'诊察费'}</span>
               <span className={'itemRight'}>{appointment.visitSchedule.registerFee}</span>
             </div>
             <div className={'itemView'}>

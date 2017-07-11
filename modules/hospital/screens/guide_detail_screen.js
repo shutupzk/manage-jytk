@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import {ErrCard, Loading} from 'components'
+import {ErrCard, Loading, theme} from 'components'
 
 import {
   queryHospitalGuides,
@@ -93,7 +93,7 @@ class GuideDetailScreen extends Component {
     let guide = filterGuides(guides, selectGuideIds)
     return (
       <div>
-        <div style={{color: '#505050', fontSize: 15, padding: 10, backgroundColor: 'white'}}>
+        <div style={{color: '#505050', fontSize: 15, padding: 15, backgroundColor: 'white', lineHeight: '28px', textIndent: '2em'}}>
           {guide.content}
         </div>
       </div>

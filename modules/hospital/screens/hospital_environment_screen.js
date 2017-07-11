@@ -38,8 +38,12 @@ class HospitalEnvironmentScreen extends Component {
     const imgUrl = hospital.image || '/static/icons/hospital_bg_image.png'
     return (
       <div>
-        <div style={{margin: 20, backgroundColor: '#ffffff'}}>
-          <div style={{textAlign: 'center'}}>医院外观</div>
+        <div>
+          <div className='flex tb-flex' style={{padding: '15px 30px', marginTop: theme.tbmargin, justifyContent: 'space-between'}}>
+            <p style={{height: 1, background: theme.bordercolor, width: '30%'}}></p>
+            <span style={{width: '25%', color: theme.mainfontcolor, textAlign: 'center'}}>医院外观</span>
+            <p style={{height: 1, background: theme.bordercolor, width: '30%'}}></p>
+          </div>
           <img src={imgUrl} style={{width: '100%', height: 'auto'}} />
         </div>
       </div>

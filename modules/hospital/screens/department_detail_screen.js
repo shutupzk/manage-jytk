@@ -45,23 +45,20 @@ class DepartmentDetailScreen extends Component {
       <div>
         <div>
           <div>
-            <div style={{backgroundColor: '#fff', margin: '10px 0px', padding: 10, height: 30}}>
-              <span style={{fontSize: 15}}>{department.deptName}</span>
-              <span style={{fontSize: 14, marginLeft: 5, color: '#D4D4D4'}}>{ department.position || '病理医学部'}</span>
+            <div style={{backgroundColor: '#fff', padding: '0 15px', lineHeight: '40px', borderBottom: '1px solid #fff', borderColor: theme.bordercolor}}>
+              <span style={{fontSize: 18, color: theme.mainfontcolor}}>{department.deptName}</span>
+              <span style={{fontSize: theme.nfontsize, marginLeft: 6, color: theme.nfontcolor}}>{ department.position || '病理医学部'}</span>
             </div>
-            <div style={{backgroundColor: '#fff', marginBottom: 10, padding: '10px 15px', overflow: 'auto'}}>
-              <div style={{fontSize: 15, marginBottom: 15, display: 'flex'}}>
-                <div style={{backgroundColor: '#3CA0FF', width: 5, marginRight: 5, height: 18}} />
+            <div style={{backgroundColor: '#fff',  margin: '10px 0px', overflow: 'auto', color: theme.fontcolor, fontSize: 14}}>
+              <div style={{fontSize: 15, padding: '0 15px', color: theme.mainfontcolor, lineHeight: '40px', display: 'flex', borderTop: '1px solid #fff', borderBottom: '1px solid #fff', borderColor: theme.bordercolor}}>
                 科室介绍
               </div>
-              <div>
-                <div style={{minHeight: 50, fontSize: 14}}>
-                  {
-                    this.state.descriptionAll ? description : replaceStr(description, 100, description.length, '...')
-                  }
-                </div>
-                { description.length > 100 ? <div style={{color: '#3CA0FF', textAlign: 'right', marginBottom: 10}} onClick={() => { this.setState({descriptionAll: !this.state.descriptionAll}) }}>{this.state.descriptionAll ? '收起▲' : '展开▼'}</div> : '' }
+              <div style={{padding: '10px 15px', lineHeight: '24px'}}>
+                {
+                  this.state.descriptionAll ? description : replaceStr(description, 100, description.length, '...')
+                }
               </div>
+              { description.length > 100 ? <div style={{color: '#3CA0FF', textAlign: 'right', marginBottom: 10}} onClick={() => { this.setState({descriptionAll: !this.state.descriptionAll}) }}>{this.state.descriptionAll ? '收起▲' : '展开▼'}</div> : '' }
             </div>
             <div style={{backgroundColor: '#fff', marginBottom: 10, padding: '10px 15px', overflow: 'auto'}}>
               <div style={{fontSize: 15, marginBottom: 15, display: 'flex'}}>

@@ -4,7 +4,7 @@ import moment from 'moment'
 
 import {BlankLayout} from 'modules/common'
 import { readMessage, queryMessages, selectMessageType } from 'ducks'
-import { Loading, ErrCard } from 'components'
+import { Loading, ErrCard, theme } from 'components'
 import { isEmptyObject } from 'utils'
 
 class MessagesScreen extends Component {
@@ -45,11 +45,11 @@ class MessagesScreen extends Component {
           {
             messages.map((msg) => {
               return (
-                <div style={{marginBottom: 20}} key={msg.id}>
-                  <div style={{textAlign: 'center'}}>{moment(msg.createdAt) < moment(moment().format('YYYY-MM-DD')) ? moment(msg.createdAt).format('YYYY-MM-DD') : moment(msg.createdAt).format('HH:mm')}</div>
-                  <div style={{backgroundColor: '#fff', marginTop: 5, padding: 10, borderRadius: 5}}>
-                    <div style={{fontSize: 16, padding: '5px 0px', fontWeight: 'bold'}}>{msg.messageType.name}</div>
-                    {msg.content}
+                <div style={{marginBottom: 10}} key={msg.id}>
+                  <div style={{textAlign: 'center', color: theme.nfontcolor, fontSize: theme.nfontsize, lineHeight: '30px'}}>{moment(msg.createdAt) < moment(moment().format('YYYY-MM-DD')) ? moment(msg.createdAt).format('YYYY-MM-DD') : moment(msg.createdAt).format('HH:mm')}</div>
+                  <div style={{backgroundColor: '#fff', padding: '0 15px 10px', borderRadius: 6, border: '1px solid #e6e6e6', color: theme.mainfontcolor}}>
+                    <div style={{fontSize: 16, fontWeight: 'bold', padding: '15px 0 10px'}}>{msg.messageType.name}</div>
+                    <p style={{lineHeight: '20px'}}>{msg.content}</p>
                   </div>
                 </div>
               )

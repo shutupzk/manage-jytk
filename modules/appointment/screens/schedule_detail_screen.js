@@ -201,7 +201,7 @@ class ScheduleDetailScreen extends Component {
             <span className={'textRight'}>{schedule.visitDate}</span>
           </div>
           <div className='flex tb-flex'>
-            <span className={'textLeft'}>挂号费用</span>
+            <span className={'textLeft'}>诊察费用</span>
             <span className={'textRight'}>{schedule.registerFee}</span>
           </div>
         </div>
