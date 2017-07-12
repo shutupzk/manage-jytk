@@ -37,10 +37,10 @@ class ProfileScreen extends Component {
   topView (user) {
     const title = user.name ? '个人信息' : '去登录'
     const name = user.name || '请登录'
-    const token = user.token
+    // const token = user.token
     const navigateUrl = 'profile/user_info'
     let href = '/signin'
-    if (token) {
+    if (user.name) {
       href = '/' + navigateUrl
     }
     return (
@@ -59,7 +59,7 @@ class ProfileScreen extends Component {
     )
   }
 
-  buttomList (token) {
+  buttomList (user) {
     const array = [
       { title: '就诊人管理', icon: 'familyIcon', type: 'simple-line-icon', navigateUrl: 'profile/patient_list' },
       { title: '我的医生', icon: 'doctors', type: 'simple-line-icon', navigateUrl: 'profile/my_doctors' },
@@ -82,7 +82,7 @@ class ProfileScreen extends Component {
           {
             array.map((item, i) => {
               var href = 'signin'
-              if (token) {
+              if (user.name) {
                 href = '/' + item.navigateUrl
               }
               return (
@@ -108,7 +108,7 @@ class ProfileScreen extends Component {
           {
             array2.map((item, i) => {
               var href = '/signin'
-              if (token) {
+              if (user.name) {
                 href = '/' + item.navigateUrl
               }
               if (item.navigateUrl === 'logout') {
@@ -119,7 +119,7 @@ class ProfileScreen extends Component {
                     <a className='flex tb-flex'>
                       <dl className='flex tb-flex'>
                         <dt><img src={`/static/icons/${item.icon}.png`} type={item.type} className='left' /></dt>
-                        <dd>{token ? item.title : '未登录'}</dd>
+                        <dd>{user.name ? item.title : '未登录'}</dd>
                       </dl>
                     </a>
                   </div>
@@ -146,7 +146,7 @@ class ProfileScreen extends Component {
     )
   }
   render () {
-    const token = this.props.token
+    // const token = this.props.token
     const user = this.props.user
     if (this.props.error) {
       return <div className='container'><ErrCard /></div>
@@ -157,7 +157,7 @@ class ProfileScreen extends Component {
     return (
       <div className='container'>
         { this.topView(user) }
-        { this.buttomList(token) }
+        { this.buttomList(user) }
         <style jsx global>{`
           .topView {
             text-align: center;

@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import {HOME_PAGE} from 'config'
 import {hosApmHomeIcon} from '../../../static/icons/svgIcon'
 
 const Navigation = (props) => {
@@ -8,7 +9,19 @@ const Navigation = (props) => {
   return (
     <div className='footer'>
       <section>
-        <Link href='/' prefetch>
+        {
+          HOME_PAGE.bottomLabel.map((label) => {
+            return (
+              <Link href={label.url} prefetch>
+                <dl className={url === label.url ? 'tabBarIcon' + label.i + 'Cur' : ''}>
+                  <dt></dt>
+                  <dd>{label.title}</dd>
+                </dl>
+              </Link>
+            )
+          })
+        }
+        {/*<Link href='/' prefetch>
           <dl className={url === '/' ? 'tabBarIcon1Cur' : ''}>
             <dt></dt>
             <dd>首页</dd>
@@ -25,7 +38,7 @@ const Navigation = (props) => {
             <dt></dt>
             <dd>我的</dd>
           </dl>
-        </Link>
+        </Link>*/}
         <div className='clearfix'>&nbsp;</div>
       </section>
       <style jsx>{`

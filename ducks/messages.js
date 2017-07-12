@@ -253,8 +253,14 @@ export const queryLastMessage = (client, {limit}) => async dispatch => {
         error: data.errors[0].message
       })
     }
+    if (!data.data.user) {
+      return dispatch({
+        type: HOME_LAST_MESSAGES_FAIL,
+        error: '请登陆'
+      })
+    }
     const newMessage = []
-    const messages = data.data.user.messages
+    const messages = data.data.user ? data.data.user.messages : []
     for (let message of messages) {
       message = Object.assign({}, message, {messageTypeId: message.messageType.id})
       newMessage.push(message)

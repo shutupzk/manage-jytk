@@ -1,10 +1,12 @@
-import 'isomorphic-fetch'
+// import 'isomorphic-fetch'
 import React from 'react'
+import Router from 'next/router'
 import { ApolloProvider, getDataFromTree } from 'react-apollo'
 import { initClient, initStore } from './store'
+import localforage from 'localforage'
 
-export default (Component) => (
-  class extends React.Component {
+export default function (Component) {
+  class Auth extends React.Component {
     static async getInitialProps (ctx) {
       const headers = ctx.req ? ctx.req.headers : {}
       const client = initClient(headers)
@@ -39,6 +41,28 @@ export default (Component) => (
       this.store = initStore(this.client, this.props.initialState)
     }
 
+    async componentWillMount () {
+      const ua = window.navigator.userAgent.toLowerCase()
+      if (ua.match(/MicroMessenger/i) === 'micromessenger') {
+        // window.alert('在微信里打开')
+      } else if (ua.match(/AlipayClient/i) === 'alipayclient') {
+        // window.alert('在支付宝里打开')
+      } else {
+        // window.alert('在浏览器打开')
+      }
+      // if (/(iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent)) {
+      //   window.alert('这是IOS')
+      // } else if (/(Android)/i.test(navigator.userAgent)) {
+      //   window.alert('这是Android')
+      // } else {
+      //   window.alert('这是PC')
+      // }
+      // let token = await localforage.getItem('token')
+      // if (this.props.url.pathname !== '/' && this.props.url.pathname !== '/signin' && this.props.url.pathname !== '/signup' && this.props.url.pathname !== '/signup/signup_compelete' && this.props.url.pathname !== '/hospital' && !token) {
+      //   Router.push('/signin')
+      // }
+    }
+
     render () {
       return (
         <ApolloProvider client={this.client} store={this.store}>
@@ -47,4 +71,5 @@ export default (Component) => (
       )
     }
   }
-)
+  return Auth
+}

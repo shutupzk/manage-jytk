@@ -5,6 +5,7 @@ import Router from 'next/router'
 import { CardWhite, theme, Prompt } from 'components'
 import { signin, queryUser, queryPatients } from '../../../ducks'
 import { connect } from 'react-redux'
+import { HOSPITALINFO } from 'config'
 
 class SigninScreen extends Component {
   constructor (props) {
@@ -97,7 +98,7 @@ class SigninScreen extends Component {
             <a className='registerbtn'>没有账号？去注册→</a>
           </Link>
         </footer>
-        <img src={`/static/icons/loginlogo.png`} alt="" className="loginpagelogo" />
+        <img src={HOSPITALINFO.hospital_loginlogo} alt="" className="loginpagelogo" />
         <Prompt isShow={this.state.isShow} autoClose={this.state.autoClose} closeTime={this.state.closeTime}>{this.state.promptContent}</Prompt>
         <style jsx>{`
           .registerbtn{

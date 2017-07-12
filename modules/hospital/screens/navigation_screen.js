@@ -44,10 +44,10 @@ class NavigationScreen extends Component {
         <div style={{marginBottom: 20, backgroundColor: '#fff', fontSize: 14}}>
           <div style={{padding: '15px', fontSize: 16, borderBottom: 'solid 1px #eeeeee', borderColor: theme.bordercolor, color: theme.maincolor}}>周边交通</div>
           <div style={{padding: '10px 15px 0', color: theme.mainfontcolor}}>公交
-            <div style={{color: '#505050'}}>xx路</div>
+            <div style={{color: '#505050'}}>{hospital.bus || '无'}</div>
           </div>
           <div style={{padding: '10px 15px 20px', color: theme.mainfontcolor}}>地铁
-            <div style={{color: '#505050'}}>xx号线</div>
+            <div style={{color: '#505050'}}>{hospital.subway || '无'}</div>
           </div>
         </div>
         <div style={{margin: 15}}>

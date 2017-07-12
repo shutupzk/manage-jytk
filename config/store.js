@@ -3,6 +3,7 @@ import { createStore, combineReducers, applyMiddleware, compose } from 'redux'
 import { persistStore, autoRehydrate } from 'redux-persist'
 import thunk from 'redux-thunk'
 import localforage from 'localforage'
+import {API_SERVER} from 'config'
 
 import {
   hospitals,
@@ -30,8 +31,6 @@ import {
 } from '../ducks'
 // 服务地址
 // export const API_SERVER = 'localhost:3000'
-export const API_SERVER = '120.92.57.18:9200'
-
 let apolloClient = null
 
 function _initClient (headers, initialState) {

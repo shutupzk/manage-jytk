@@ -159,13 +159,11 @@ export const queryLaboratories = (client, {patientId}) => async dispatch => {
     }
     const patient = data.data.patient
     const pat = {patientId: patient.id, patientName: patient.name, patientBirthday: patient.birthday, patientSex: patient.sex}
-    console.log(patient.patientCards[0].laboratorys)
     let newLabs = []
     for (let lab of patient.patientCards[0].laboratorys) {
       lab = Object.assign({}, lab, pat)
       newLabs.push(lab)
     }
-    console.log(newLabs)
     let laboratories = groupLaboratoriesByTime(newLabs)
     dispatch({
       type: REPORT_LABORATORY_SUCCESS,

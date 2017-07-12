@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { HospitalFunctionList } from '../components'
-import { HOSPITAL_FUNCTION_LIST } from '../../../config'
+import { HOSPITAL_FUNCTION_LIST, HOSPITALINFO } from '../../../config'
 import { List, theme } from '../../../components'
 import { queryHospitals } from '../../../ducks'
 import { isEmptyObject } from '../../../utils'
@@ -29,7 +29,7 @@ class HospitalScreen extends React.Component {
     return (
       <div>
         <div style={{textAlign: 'center', background: theme.maincolor, padding: '.35rem 0'}}>
-          <img style={{height: '.35rem'}} src='/static/icons/hospital_bg_image.png' />
+          <img style={{height: '.35rem'}} src={HOSPITALINFO.hospital_image} />
         </div>
         <ul className='hospitalItem'>
           {
@@ -55,7 +55,7 @@ class HospitalScreen extends React.Component {
           {
             bottomItem && bottomItem.map((item, iKey) => {
               return (
-                <li className='left' key={iKey} onClick={() => this.goNextpage(item.navigateName)}>
+                <li className='left' key={iKey} onClick={() => this.goNextpage(item)}>
                   <section className=''>
                     <article className='left itemimg'><img style={{width: item.width}} src={item.avatar} /></article>
                     <dl className='left'>

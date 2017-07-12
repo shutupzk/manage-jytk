@@ -4,7 +4,8 @@ import { connect } from 'react-redux'
 import localforage from 'localforage'
 import _ from 'lodash'
 import moment from 'moment'
-import {Loading, FilterCard, FilterSelect, FilterTime, Modal, ModalHeader, ModalFooter, theme, Prompt, CardWhite, ErrCard, NoDataCard} from 'components'
+import {REPORT} from 'config'
+import {Loading, FilterCard, FilterSelect, FilterTime, Modal, ModalHeader, ModalFooter, TabHeader, theme, Prompt, CardWhite, ErrCard, NoDataCard} from 'components'
 // import RangeDemo from '../components/date_rang'
 
 import {
@@ -25,6 +26,7 @@ class ReportScreen extends Component {
     this.state = {
       isInit: false,
       selectPatientId: '',
+      type: 'lab',
       maxDate: moment().format('YYYY-MM-DD'),
       startDate: undefined,
       endDate: undefined,
@@ -99,48 +101,43 @@ class ReportScreen extends Component {
     }
   }
   renderExamination () {
-    let examinations = this.props.examinations
+    let examinationData = this.props.examinations
+    const examinations = this.filterLabs(examinationData)
     if (!isEmptyObject(examinations)) {
       return (
-        <div
-          removeClippedSubviews={false}
-          alwaysBounceVertical={false}
-          data={examinations}
-          keyExtractor={(item, i) => item[Object.keys(item)[0]] + i}
-          initialNumToRender={5}
-          ItemSeparatorComponent={() => { return <div style={{height: 5}} /> }}
-          renderItem={
-            ({item}) =>
-              <div className={'itemView'}>
-                <div className={'itemTitleView'}>
-                  <div className={{ flex: 1 }}>{Object.keys(item)[0]}</div>
-                  <div className={'dateTitleText'}>[{item[Object.keys(item)[0]].length}项]</div>
+        <div>
+          {
+            examinations.map((item, i) => {
+              return (
+                <div className={'itemView'} key={i}>
+                  <div className={'itemTitleView flex'}>
+                    <span>{Object.keys(item)[0]}</span>
+                    <span>[{item[Object.keys(item)[0]].length}项]</span>
+                  </div>
+                  <ul className={'itemContentsView'}>
+                    {
+                      item[Object.keys(item)[0]].map((item, i) => (
+                        <li key={item.id}
+                          onClick={() => {
+                            this.props.selectExamination({
+                              date: item.reportTime,
+                              examinationId: item.id
+                            })
+                            Router.push('/report/examination_detail?examinationId=' + item.id + '&date=' + item.reportTime)
+                          }}>
+                          {item.exammineName}
+                        </li>
+                      ))
+                    }
+                  </ul>
                 </div>
-                <div className={'itemContentsView'}>
-                  {
-                    item[Object.keys(item)[0]].map((item, i) => (
-                      <div key={i}>
-                        <div onClick={() => {
-                          this.props.selectExamination({
-                            date: item.reportTime,
-                            examinationId: item.id
-                          })
-                          this.props.navigation.navigate('examination_detail')
-                        }}>
-                          <div className={'itemContentView'}>
-                            <div className={'itemText'}>{item.exammineName}</div>
-                          </div>
-                        </div>
-                      </div>
-                    ))
-                  }
-                </div>
-              </div>
+              )
+            })
           }
-        />
+        </div>
       )
     } else {
-      return <div>no data</div>
+      return <div><NoDataCard /></div>
     }
   }
   filterLabs (laboratorieData) {
@@ -192,7 +189,7 @@ class ReportScreen extends Component {
           patientArr = {patientArr}
         />
         {
-          this.state.isValidation ? <FilterTime clickShowFilterModal={() => {this.setState({showFilterModal: true})}} /> : ''
+          !REPORT.needPassword || this.state.isValidation ? <FilterTime clickShowFilterModal={() => {this.setState({showFilterModal: true})}} /> : ''
         }
       </FilterCard>
     )
@@ -300,14 +297,26 @@ class ReportScreen extends Component {
         <div><ErrCard /></div>
       )
     }
+    const types = REPORT.reportType
     return (
       <div>
         <div style={{width: '100%'}}>
           {this.renderModal()}
           {this.renderPatientList()}
           {
-            this.state.isValidation
-            ? this.renderLaboratory()
+            !REPORT.needPassword || this.state.isValidation
+            ? <div>
+              {
+              REPORT.reportType.length > 1
+              ? <div>
+                <TabHeader types={types} curPayStatue={this.state.type}
+                  clickTab={(type) => { this.setState({type: type}) }} />
+                {
+                  this.state.type === 'lab' ? this.renderLaboratory() : this.renderExamination()
+                }
+              </div>
+              : this.renderLaboratory()
+            }</div>
             : this.renderPassword()
           }
         </div>

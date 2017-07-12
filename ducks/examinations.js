@@ -36,6 +36,9 @@ const QUREY_EXAMINATION = gql`
   query ($id: ObjID!){
     patient (id: $id){
       id
+      name
+      birthday
+      sex
       patientCards {
         id
         examinations {
@@ -68,7 +71,15 @@ export const queryExaminations = (client, {patientId}) => async dispatch => {
         error: data.error.message
       })
     }
-    let examinations = groupExaminationsByTime(data.data.patient.patientCards[0].examinations)
+    // let examinations = groupExaminationsByTime(data.data.patient.patientCards[0].examinations)
+    const patient = data.data.patient
+    const pat = {patientId: patient.id, patientName: patient.name, patientBirthday: patient.birthday, patientSex: patient.sex}
+    let newExam = []
+    for (let lab of patient.patientCards[0].examinations) {
+      lab = Object.assign({}, lab, pat)
+      newExam.push(lab)
+    }
+    let examinations = groupExaminationsByTime(newExam)
     dispatch({
       type: REPORT_EXAMINATION_SUCCESS,
       examinations

@@ -152,6 +152,7 @@ class OutpatientScreen extends Component {
   }
 
   render () {
+    console.log(this.props)
     if (this.props.loading || this.state.isInit) {
       return (<div><Loading showLoading>loading...</Loading></div>)
     }

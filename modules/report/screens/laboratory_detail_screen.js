@@ -5,7 +5,7 @@ import {
   queryLaboratoryItems
 } from '../../../ducks'
 import {isEmptyObject, ages} from '../../../utils'
-import {theme, Loading, ErrCard} from 'components'
+import {theme, Loading, ErrCard, NoDataCard} from 'components'
 
 class LaboratoryDetailScreen extends Component {
   constructor (props) {
@@ -126,13 +126,13 @@ class LaboratoryDetailScreen extends Component {
               <div style={{backgroundColor: '#FFF', padding: '20px'}}>
                 <div className={'bottomText'}>送检科室 {laboratory.applyDept}</div>
                 <div style={{display: 'flex'}}>
-                  <div style={{flex: 1}}>
+                  <div style={{flex: 5}}>
                     <div className={'bottomText'}>标本类型：{laboratory.sampleName}</div>
                     <div className={'bottomText'}>申请医生：{laboratory.applyDoctor}</div>
                     <div className={'bottomText'}>检验医生：{laboratory.inspectDoctor}</div>
                     <div className={'bottomText'}>审核医生：{laboratory.reportDoctor}</div>
                   </div>
-                  <div style={{flex: 1}}>
+                  <div style={{flex: 8}}>
                     <div className={'bottomText'}>报告编号：{laboratory.reportNo}</div>
                     <div className={'bottomText'}>采样时间：{laboratory.samplingTime}</div>
                     <div className={'bottomText'}>接受时间：{laboratory.inspectTime}</div>
@@ -275,7 +275,7 @@ class LaboratoryDetailScreen extends Component {
         </div>
       )
     } else {
-      return <div>no data</div>
+      return <div><NoDataCard /></div>
     }
   }
 }
