@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import localforage from 'localforage'
 // import swal from 'sweetalert2'
 // import moment from 'moment'
+import {theme} from 'components'
 import {addDoctorEvaluate} from '../../../ducks'
 import Stars from '../components/stars'
 class AddDoctorEvaluateScreen extends Component {
@@ -43,25 +44,25 @@ class AddDoctorEvaluateScreen extends Component {
     // var doctorId = this.props.doctorId || this.props.url.query.doctorId
     return (
       <div>
-        <div style={{backgroundColor: '#ffffff', padding: 15}}>
-          <div style={{marginBottom: 10}}>
-            <span style={{marginRight: 15}}>服务态度</span>
+        <div style={{backgroundColor: '#ffffff', padding: '25px 15px', borderBottom: '1px solid #fff', borderColor: theme.bordercolor}}>
+          <div style={{marginBottom: 20}} className='flex tb-flex'>
+            <span style={{marginRight: 15, color: theme.mainfontcolor}}>服务态度</span>
             <Stars scoreType='serviceScore' getScore={(scoreType, score) => { this.getScore(scoreType, score) }} />
           </div>
-          <div style={{marginBottom: 10}}>
-            <span style={{marginRight: 15}}>诊疗技术</span>
+          <div style={{marginBottom: 20}} className='flex tb-flex'>
+            <span style={{marginRight: 15, color: theme.mainfontcolor}}>诊疗技术</span>
             <Stars scoreType='technologyScore' getScore={(scoreType, score) => { this.getScore(scoreType, score) }} />
           </div>
-          <div style={{marginBottom: 10}}>其他建议</div>
+          <div style={{marginBottom: 15, color: theme.mainfontcolor}}>其他建议</div>
           <textarea placeholder='请填写您的建议或意见，以帮助我们改进。' rows='5'
-            style={{width: '100%', backgroundColor: '#eeeeee', border: 'none'}}
+            style={{width: '100%', backgroundColor: '#f2f2f2', border: 'none', borderRadius: '2px', padding: '10px 0', textIndent: '10px', fontSize: theme.fontsize}}
             onChange={(e) => { this.setState({advice: e.target.value}) }}
           />
         </div>
         <div style={{margin: 20}}>
           <button
             onClick={() => { this.submitEvaluate() }}
-            style={{width: '100%', display: 'block', backgroundColor: '#3CA0FF', height: '40px', borderRadius: '10px', fontSize: 16}}
+            className='btnBG btnBGMain'
           >提交</button>
         </div>
       </div>

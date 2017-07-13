@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import Link from 'next/link'
 import {queryDepartmentDetail} from '../../../ducks'
 import { replaceStr } from '../../../utils'
-import {Loading, ErrCard} from 'components'
+import {Loading, ErrCard, theme} from 'components'
 class DepartmentDetailScreen extends Component {
   constructor (props) {
     super(props)
@@ -58,31 +58,31 @@ class DepartmentDetailScreen extends Component {
                   this.state.descriptionAll ? description : replaceStr(description, 100, description.length, '...')
                 }
               </div>
-              { description.length > 100 ? <div style={{color: '#3CA0FF', textAlign: 'right', marginBottom: 10}} onClick={() => { this.setState({descriptionAll: !this.state.descriptionAll}) }}>{this.state.descriptionAll ? '收起▲' : '展开▼'}</div> : '' }
+              { description.length > 100 ? <div style={{color: theme.maincolor, textAlign: 'right', marginBottom: 10}} onClick={() => { this.setState({descriptionAll: !this.state.descriptionAll}) }}>{this.state.descriptionAll ? '收起▲' : '展开▼'}</div> : '' }
             </div>
-            <div style={{backgroundColor: '#fff', marginBottom: 10, padding: '10px 15px', overflow: 'auto'}}>
-              <div style={{fontSize: 15, marginBottom: 15, display: 'flex'}}>
-                <div style={{backgroundColor: '#3CA0FF', width: 5, marginRight: 5, height: 18}} />
+            <div style={{backgroundColor: '#fff', marginBottom: 10, overflow: 'auto'}}>
+              <div style={{fontSize: 15, marginBottom: 15, display: 'flex', padding: '10px 15px', borderBottom: '1px solid #fff', borderColor: theme.bordercolor}}>
+                <div style={{backgroundColor: theme.maincolor, width: 5, marginRight: 5, height: 18}} />
                 特色诊疗
               </div>
-              <div>
+              <div style={{padding: '0 15px'}}>
                 <div style={{minHeight: 50, fontSize: 14}}>
                   {
                     this.state.featuresAll ? features : replaceStr(features, 100, features.length, '...')
                   }
                 </div>
-                { features.length > 100 ? <div style={{color: '#3CA0FF', textAlign: 'right', marginBottom: 10}} onClick={() => { this.setState({featuresAll: !this.state.featuresAll}) }}>{this.state.featuresAll ? '收起▲' : '展开▼'}</div> : '' }
+                { features.length > 100 ? <div style={{color: theme.maincolor, textAlign: 'right', marginBottom: 10}} onClick={() => { this.setState({featuresAll: !this.state.featuresAll}) }}>{this.state.featuresAll ? '收起▲' : '展开▼'}</div> : '' }
               </div>
             </div>
-            <div style={{backgroundColor: '#fff', padding: '10px 15px'}}>
-              <div style={{fontSize: 15, marginBottom: 15, display: 'flex'}}>
+            <div style={{backgroundColor: '#fff'}}>
+              <div style={{fontSize: 15, display: 'flex', padding: '10px 15px', borderBottom: '1px solid #fff', borderColor: theme.bordercolor}}>
                 <div style={{flex: 1, display: 'flex'}}>
-                  <div style={{backgroundColor: '#3CA0FF', width: 5, marginRight: 5, height: 18}} />
+                  <div style={{backgroundColor: theme.maincolor, width: 5, marginRight: 5, height: 18}} />
                   科室评价
                 </div>
-                <Link href={goEvaluateUrl}><a style={{textAlign: 'right', color: '#D4D4D4', fontSize: 13, flex: 1}}>更多>></a></Link>
+                <Link href={goEvaluateUrl}><a style={{textAlign: 'right', color: theme.nfontcolor, fontSize: theme.nfontsize}} className='flex tb-flex'>更多<p style={{transform: 'rotate(135deg)'}} className='back-left'></p></a></Link>
               </div>
-              <div style={{fontSize: 14}}>
+              <div style={{fontSize: 14}} style={{padding: '15px'}}>
                 <ul style={{padding: 0, margin: 0}}>
                   {
                     evaluates.length > 0 ? evaluates.map((evaluate) => {
@@ -99,7 +99,7 @@ class DepartmentDetailScreen extends Component {
             </div>
           </div>
           {/*<div style={{position: 'absolute', bottom: '15px', width: '90%', height: '40px'}}>
-            <button style={{width: '100%', display: 'block', backgroundColor: '#3CA0FF', height: '40px', borderRadius: '10px', fontSize: 16}}>我要评价</button>
+            <button style={{width: '100%', display: 'block', backgroundColor: theme.maincolor, height: '40px', borderRadius: '10px', fontSize: 16}}>我要评价</button>
           </div>*/}
         </div>
       </div>

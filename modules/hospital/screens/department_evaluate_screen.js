@@ -4,7 +4,7 @@ import Router from 'next/router'
 import moment from 'moment'
 import {queryDepartmentDetail} from '../../../ducks'
 import { isEmptyObject } from '../../../utils'
-import {Loading, ErrCard} from 'components'
+import {Loading, ErrCard, NoDataCard, theme} from 'components'
 class DepartmentEvaluateScreen extends Component {
   componentWillMount () {
     var departmentId = this.props.departmentId || this.props.url.query.departmentId
@@ -19,7 +19,7 @@ class DepartmentEvaluateScreen extends Component {
   renderStar (score) {
     return (
       <div>
-        <ul>
+        <ul className='flex tb-flex'>
           {
             [1, 2, 3, 4, 5].map((i) => {
               if (i > score) {
@@ -38,20 +38,22 @@ class DepartmentEvaluateScreen extends Component {
             overflow: hidden;
           }
           ul li {
-            float: left;
             list-style: none;
-            width: 27px;
-            height: 27px;
-            background: url(/static/icons/stars.gif)
+            width: 18px;
+            height: 18px;
+            background-image: url(/static/icons/collect.png);
+            background-size: 18px;
+            margin-right: 3px;
           }
           ul li a {
             display: block;
             width: 100%;
-            padding-top: 27px;
+            text-indent: -9999px;
+            outline: none;
             overflow: hidden;
           }
           ul li.light {
-            background-position: 0 -29px;
+            background-image: url(/static/icons/collected.png)
           }
         `}</style>
       </div>
@@ -82,24 +84,36 @@ class DepartmentEvaluateScreen extends Component {
           {
             evaluates.length > 0 ? evaluates.map((evaluate) => {
               return (
-                <div key={evaluate.id} style={{backgroundColor: '#ffffff', padding: '10px 15px', marginBottom: 2}}>
-                  <div style={{marginBottom: 5, color: '#505050'}}>{evaluate.user.name} <span style={{float: 'right'}}>{moment(evaluate.createdAt).format('YYYY-MM-DD')}</span></div>
-                  <div style={{display: 'flex', fontSize: 14, color: '#505050'}}>
-                    <div style={{width: '50%'}}>技术水平 {this.renderStar(evaluate.technologyScore)}</div>
-                    <div>候诊秩序 {this.renderStar(evaluate.orderlyScore)}</div>
+                <div key={evaluate.id} style={{background: '#fff', padding: '10px 15px', borderBottom: '1px solid #fff', borderColor: theme.bordercolor}}>
+                  <div style={{color: theme.mainfontcolor, padding: '2px 0 10px'}}>
+                    {evaluate.user.name}
+                    <span style={{float: 'right', color: theme.nfontcolor}}>{moment(evaluate.createdAt).format('YYYY-MM-DD')}</span>
                   </div>
-                  <div style={{color: '#505050'}}>{evaluate.advice}</div>
+                  <div style={{display: 'flex', fontSize: 14, color: theme.nfontcolor}}>
+                    <div style={{width: '50%'}} className='flex tb-flex'>
+                      <span style={{color: theme.nfontcolor, marginRight: theme.tbmargin}}>技术水平</span>
+                      {this.renderStar(evaluate.technologyScore)}
+                    </div>
+                    <div style={{width: '50%'}} className='flex tb-flex'>
+                      <span style={{color: theme.nfontcolor, marginRight: theme.tbmargin}}>候诊秩序</span>
+                      {this.renderStar(evaluate.orderlyScore)}
+                    </div>
+                  </div>
+                  <div style={{color: theme.mainfontcolor, lineHeight: '24px', padding: '6px 0 6px'}}>{evaluate.advice}</div>
                 </div>
               )
-            }) : <div>暂无评价</div>
+            }) : <NoDataCard tip='还没有相关内容哦' />
           }
         </div>
-        <div style={{position: 'absolute', bottom: '15px', width: '90%', height: '40px', margin: '0px 20px'}}>
+        <div className='fullWidthFixed'>
           <button
             onClick={() => { Router.push('/hospital/departments/add_department_evaluate?departmentId=' + departmentId) }}
-            style={{width: '100%', display: 'block', backgroundColor: '#3CA0FF', height: '40px', borderRadius: '10px', fontSize: 16}}
+            className='fullWidthBtn fullWidthBtnMain'
+            style={{width: '100%'}}
           >我要评价</button>
         </div>
+        <style jsx>{`
+        `}</style>
       </div>
     )
   }

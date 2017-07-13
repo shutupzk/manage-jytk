@@ -35,18 +35,21 @@ class Stars extends Component {
           ul li {
             float: left;
             list-style: none;
-            width: 27px;
-            height: 27px;
-            background: url(/static/icons/stars.gif)
+            width: 20px;
+            height: 19px;
+            background-image: url(/static/icons/collect.png);
+            background-size: 20px;
+            margin-right: 10px;
           }
           ul li a {
             display: block;
             width: 100%;
-            padding-top: 27px;
             overflow: hidden;
+            text-indent: -9999px;
+            outline: none;
           }
           ul li.light {
-            background-position: 0 -29px;
+            background-image: url(/static/icons/collected.png);
           }
         `}</style>
       </div>

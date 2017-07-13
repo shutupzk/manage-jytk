@@ -197,17 +197,16 @@ class AppointmentDoctorListScreen extends Component {
       }
     ]
     return (
-      <div style={{display: 'flex'}}>
-        <div key={date.date} style={{margin: '10px 5px 10px 10px', paddingTop: 15}} onClick={() => {
-          var oldDate = this.state.firstDate
-          this.setState({firstDate: moment(oldDate).add(-6, 'day').format('YYYY-MM-DD')})
-        }}>
-          {
-            new Date(this.state.firstDate) > new Date()
-              ? <img src='/static/icons/arrow_right.png' style={{width: 10, height: 10, marginTop: 4, transform: 'rotateY(180deg)'}} />
-              : ''
+      <div className='flex tb-flex lr-flex' style={{padding: '.1rem 0', justifyContent: 'spance-between',  borderTop: '1px solid #d8d8d8'}}>
+        {
+            new Date(this.state.firstDate) > new Date() ?
+              <div key={date.date} className='canlendarBack flex lr-flex' onClick={() => {
+                var oldDate = this.state.firstDate
+                this.setState({firstDate: moment(oldDate).add(-6, 'day').format('YYYY-MM-DD')})}}>
+                <p className='back-left' style={{transform: 'rotate(-45deg'}}></p>
+              </div>
+            : ''
           }
-        </div>
         {
           dateList.map((date) => {
             let weekdayStr = ''
@@ -240,18 +239,16 @@ class AppointmentDoctorListScreen extends Component {
             let todayClass = {
               color: 'inherit',
               backgroundColor: '#FFF',
-              margin: 5,
-              padding: 5,
-              width: 44,
+              minWidth: '.5rem',
+              minHeight: '.5rem',
               textAlign: 'center'
             }
             if (moment().format('YYYY-MM-DD') === moment(date.date).format('YYYY-MM-DD')) {
               todayClass = {
-                color: '#3CA0FF',
+                color: theme.maincolor,
                 backgroundColor: '#FFF',
-                margin: 5,
-                padding: 5,
-                width: 44,
+                minWidth: '.5rem',
+                minHeight: '.5rem',
                 textAlign: 'center'
               }
               isToday = true
@@ -259,26 +256,35 @@ class AppointmentDoctorListScreen extends Component {
             if (moment(date.date).format('YYYY-MM-DD') === this.state.selectedDate) {
               todayClass = {
                 color: '#FFF',
-                backgroundColor: '#3CA0FF',
-                borderRadius: 22,
-                margin: 5,
-                padding: 5,
-                width: 44,
+                backgroundColor: theme.maincolor,
+                borderRadius: '100%',
+                minWidth: '.5rem',
+                minHeight: '.5rem',
                 textAlign: 'center'
               }
             }
             return <div key={date.date} style={todayClass} onClick={() => { this.setState({selectedDate: moment(date.date).format('YYYY-MM-DD')}) }}>
-              <div style={{marginBottom: 5, fontSize: '.12rem'}}>{isToday ? '今天' : weekdayStr}</div>
+              <div style={{paddingTop: '.06rem', fontSize: '.12rem'}}>{isToday ? '今天' : weekdayStr}</div>
               <div style={{fontSize: '.16rem'}}>{date.day}</div>
             </div>
           })
         }
-        <div key={date.date} style={{margin: '10px 10px 10px 5px', paddingTop: 15}} onClick={() => {
+        <div key={date.date} className='canlendarBack flex lr-flex' onClick={() => {
           var oldDate = this.state.firstDate
           this.setState({firstDate: moment(oldDate).add(6, 'day').format('YYYY-MM-DD')})
         }}>
-          <img src='/static/icons/arrow_right.png' style={{width: 10, height: 10, marginTop: 4}} />
+          <p className='back-left' style={{transform: 'rotate(135deg'}} />
         </div>
+        <style jsx>{`
+          .canlendarBack{
+            display: flex;
+            width: 26px;
+            text-align: center;
+          }
+          .canlendarBack p{
+            display: inline-block;
+          }
+        `}</style>
       </div>
     )
   }
@@ -341,7 +347,7 @@ class AppointmentDoctorListScreen extends Component {
           }
           .tab_nav li i.sanjiao{
             transform: rotate(-90deg);
-            border-top: .06rem solid #fff;
+            border-top: .06rem solid #f2f2f2;
             position: absolute;
             left: 10px;
           }
