@@ -117,6 +117,7 @@ const SIGNUP = gql`
   }
 `
 export const signup = (client, { phone, password, certificateNo, name }, callback) => async dispatch => {
+  console.log('-----------signUp', phone, password, certificateNo, name)
   dispatch({
     type: PROFILE_USER_SIGNUP
   })
@@ -130,6 +131,7 @@ export const signup = (client, { phone, password, certificateNo, name }, callbac
         name: name
       }
     })
+    console.log('--------signUp---data-----', data)
     if (data.errors) {
       dispatch({
         type: PROFILE_USER_SIGNUP_FAIL,
@@ -370,6 +372,7 @@ const CHECKVERIFYCODE = gql`
 `
 
 export const checkVerifyCode = (client, {phone, code}) => async dispatch => {
+  console.log('---checkVerifyCode', phone, code)
   dispatch({
     type: CHECK_VERIFY_CODE
   })
@@ -385,7 +388,8 @@ export const checkVerifyCode = (client, {phone, code}) => async dispatch => {
       })
       return data.error[0].message
     }
-    const verifyCode = data.data.createVerifyCode
+    console.log('--------data', data)
+    const verifyCode = data.data.checkVerifyCode
     dispatch({
       type: CHECK_VERIFY_CODE_SUCCESS,
       code: verifyCode

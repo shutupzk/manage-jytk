@@ -127,6 +127,7 @@ class LuZhongHome extends Component {
                 :
                     <ul>
                     {
+											newNewses.length > 0 ?
                         newNewses.map((item, index) => {
                         return (
                             <div key={index}>
@@ -134,6 +135,7 @@ class LuZhongHome extends Component {
                             </div>
                         )
                         })
+												: <li style={{paddingLeft: theme.lrmargin, lineHeight: '40px', borderTop: '1px solid #fff', borderColor: theme.bordercolor}}>暂无数据</li>
                     }
                     </ul>
                 )

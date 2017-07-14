@@ -27,6 +27,7 @@ export default class Prompt extends Component {
   render () {
   // const width = window.screen.availHeight
   // const height = window.screen.availWidth
+    // console.log('-----prompt', this.props.children)
     return (
       <div className={`promptDiv ${this.state.isShow === true ? 'show' : ''}`}>
         {

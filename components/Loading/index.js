@@ -8,7 +8,7 @@ function Loading (props) {
         props.showLoading ?
           <div>
             <div className='loading'>
-              loading...
+              <img src='/static/icons/loading.gif' width='100' />
             </div>
             <style jsx>{`
               .loading {
@@ -23,7 +23,8 @@ function Loading (props) {
                 line-height: 77px;
                 margin: 0 auto;
                 margin-left: -45px;
-                background: ${theme.maincolor};
+                {/*background: ${theme.maincolor};*/}
+                background: transparent;
                 border-radius: 7px;
                 z-index: 100;
               }

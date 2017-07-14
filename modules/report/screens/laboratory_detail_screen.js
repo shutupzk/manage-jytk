@@ -145,6 +145,65 @@ class LaboratoryDetailScreen extends Component {
               </div>
             </div>
           </div>
+
+          <div>
+            <div className={'titleView'}>
+              <div style={{alignItems: 'flex-end'}}>
+                <div className={'titleText'}>123</div>
+              </div>
+              {/*<div style={{textAlign: 'center', fontSize: theme.nfontsize, color: theme.fontcolor}}>检验：{laboratory.inspectTime} &nbsp;报告：{laboratory.reportTime}</div>*/}
+              <div style={{textAlign: 'center', fontSize: theme.nfontsize, color: theme.fontcolor}}>姓名：123 &nbsp;性别：男 &nbsp;年龄: 22</div>
+            </div>
+            {/*<div style={{backgroundColor: '#ffffff', padding: '10px'}}>样本： {laboratory.sampleName}</div>*/}
+            <ul className={'itemTitleContainerView itemTitleContainerViewHeader'}>
+              <li className={'left'} style={{width: '40%'}}>检测项目</li>
+              <li className={'left'} style={{width: '20%'}}>结果</li>
+              <li className={'left'} style={{width: '18%'}}>单位</li>
+              <li className={'left'} style={{width: '20%', border: 'none'}}>参考值</li>
+              <li className='clearfix'></li>
+              {/*<div className='itemTitleView' style={{flex: 2}}>
+                <div className={'itemTitleText'}>结果</div>
+              </div>*/}
+            </ul>
+            <div>
+              <div className={'itemTitleContainerView itemTitleContainerViewCon'}>
+                {/*<div className='itemTitleView' style={{flex: 1, borderLeftWidth: 0}}>
+                  <div className={'itemText'}>{i + 1}</div>
+                </div>*/}
+                <li className={'left'} style={{width: '40%'}}>123</li>
+                <li className={'left'} style={{width: '20%', color: '#505050', backgroundColor: 'green'}}>
+                  {123}{'↓'}
+                </li>
+                <li className={'left'} style={{width: '18%'}}>24</li>
+                <li className={'left'} style={{width: '20%'}}>0.5-0.8</li>
+                {/*<div className='itemTitleView' style={{flex: 3}}>
+                  <div className={'itemText'}>{item.abnormalSign}</div>
+                </div>*/}
+              </div>
+            </div>
+            <div className={'bottomView'}>
+              <div style={{backgroundColor: '#FFF', padding: '20px'}}>
+                <div className={'bottomText'}>送检科室 123</div>
+                <div style={{display: 'flex'}}>
+                  <div style={{flex: 5}}>
+                    <div className={'bottomText'}>标本类型：123</div>
+                    <div className={'bottomText'}>申请医生：123</div>
+                    <div className={'bottomText'}>检验医生：123</div>
+                    <div className={'bottomText'}>审核医生：123</div>
+                  </div>
+                  <div style={{flex: 8}}>
+                    <div className={'bottomText'}>报告编号：21</div>
+                    <div className={'bottomText'}>采样时间：34</div>
+                    <div className={'bottomText'}>接受时间：44</div>
+                    <div className={'bottomText'}>报告时间：123</div>
+                  </div>
+                </div>
+              </div>
+              <div className={'warningView'}>
+                <div className={'warningText'}>* 本报告仅供参考</div>
+              </div>
+            </div>
+          </div>
           <style jsx global>{`
             .itemTitleContainerView{
               background: #fff;

@@ -3,7 +3,7 @@ import _ from 'lodash'
 // import Router from 'next/router'
 import localforage from 'localforage'
 // import swal from 'sweetalert2'
-import { Prompt } from 'components'
+import { Prompt, theme } from 'components'
 import { ages, getBirthday, getSex, checkPhoneNumber, checkIdCard } from '../../../utils'
 import { addPatient, queryPatients, updatePatientDefault } from '../../../ducks'
 import { connect } from 'react-redux'
@@ -111,13 +111,13 @@ class PatientAddScreen extends Component {
     return (
       <div>
         <div className='list'>
-          <div className='item' key={'name'}>
-            <span className='textLeft'>&nbsp;姓&nbsp; 名&nbsp;</span>
+          <div className='item flex tb-flex' key={'name'}>
+            <span className='textLeft'>姓&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;名</span>
             <input placeholder={'输入您的真实姓名'} className='textInput itemViewRight'
               onChange={(e) => this.setState({ name: e.target.value, isShow: false })} />
           </div>
-          <div className='item' key={'certificateNo'}>
-            <span className='textLeft'> 身份证号 </span>
+          <div className='item flex tb-flex' key={'certificateNo'}>
+            <span className='textLeft'>身份证号</span>
             <input placeholder={'输入身份证号'} className='textInput itemViewRight'
               onChange={(e) => {
                 var certificateNo = e.target.value
@@ -133,16 +133,16 @@ class PatientAddScreen extends Component {
                 }
               }} />
           </div>
-          <div className='item' key={'sex'}>
-            <span className='textLeft'>&nbsp;性&nbsp; 别&nbsp;</span>
+          <div className='item flex tb-flex' key={'sex'}>
+            <span className='textLeft'>性&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;别</span>
             <input placeholder={this.state.sexText} className='textInput itemViewRight' disabled />
           </div>
-          <div className='item' key={'birthday'}>
-            <span className='textLeft'> 出生日期 </span>
+          <div className='item flex tb-flex' key={'birthday'}>
+            <span className='textLeft'>出生日期</span>
             <input placeholder={this.state.birthday} className='textInput itemViewRight' disabled />
           </div>
-          <div className='item' key={'phone'}>
-            <span className='textLeft'> 手 机 号 </span>
+          <div className='item flex tb-flex' key={'phone'}>
+            <span className='textLeft'>手&nbsp;&nbsp;机&nbsp;号</span>
             <input placeholder={'输入手机号'} className='textInput itemViewRight'
               onChange={(e) => this.setState({ phone: e.target.value, isShow: false })} />
           </div>
@@ -160,19 +160,19 @@ class PatientAddScreen extends Component {
               </div>
             </div>
           </div> */}
-          {/*<div className='item' key={'carteVital'}>
+          {/*<div className='item flex tb-flex' key={'carteVital'}>
             <span className='textLeft'> 医保卡号 </span>
             <input placeholder={'非医保卡号可不填写'} className='textInput itemViewRight'
               onChange={(e) => this.setState({ carteVital: e.target.value })} />
           </div>*/}
           <div style={{marginTop: 20}}>
-            <div className='item'>
+            <div className='item flex tb-flex'>
               <span className='textLeft'>设为默认就诊人</span>
               <input type='checkbox' style={{float: 'right', zoom: '160%', marginRight: 12}} onClick={(e) => { this.changeCheckbox(e) }} />
             </div>
           </div>
         </div>
-        <div style={{margin: '20px'}}><button className='blockPrimaryBtn' style={{display: 'block', width: '100%', color: '#fff'}} onClick={() => { this.addPatientSubmit() }} >完 成</button></div>
+        <div style={{margin: '20px'}}><button className='btnBG btnBGMain' style={{display: 'block', width: '100%', color: '#fff'}} onClick={() => { this.addPatientSubmit() }} >完 成</button></div>
         <div style={{padding: 25}}>
           *如已在医院建档，请填写该就诊人在医院预留的手机号
         </div>
@@ -200,18 +200,13 @@ class PatientAddScreen extends Component {
         <Prompt isShow={this.state.isShow} autoClose={this.state.autoClose} closeTime={this.state.closeTime}>{this.state.promptContent}</Prompt>
         <style jsx>{`
           .list {
-            margin-top: 20px;
-            margin-bottom: 5px;
+            margin: ${theme.tbmargin} 0;
           }
           .dialogList {
             marginTop: 0px;
           }
           .item {
-            display: flex;
-            height: 51px;
-            flex-wrap: nowrap;
-            align-items: center;
-            flex-direction: row;
+            height: .46rem;
             background-color: #ffffff;
             margin-bottom: 1px;
           }
@@ -224,16 +219,18 @@ class PatientAddScreen extends Component {
           }
           .textLeft {
             flex: 3;
-            fontSize: 16px;
-            color: #797979;
-            margin-left: 20px;
+            font-size: ${theme.fontsize};
+            color: ${theme.fontcolor};
+            margin-left: .15rem;
           }
           .itemViewRight {
             width: 58%;
             flex: 8;
             border: 0px;
             float: right;
-            margin-right: 20px;
+            font-size: ${theme.fontsize};
+            color: ${theme.mainfontcolor};
+            margin-right: .15rem;
           }
           .selectButton {
             height: 51px;

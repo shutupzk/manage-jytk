@@ -64,6 +64,7 @@ class SignupScreen extends Component {
     const code = this.state.verCode
     const phone = this.state.phone
     const repassword = this.state.repassword
+    console.log('----code', password, code, phone, repassword)
     if (!phone) {
       this.setState({
         closeTime: 2,
@@ -203,13 +204,13 @@ class SignupScreen extends Component {
     return (<div>
       <div className='loginPageText'>
         <section className={'flex tb-flex'} key={'username'}>
-          <span className={'textLeft'}> &nbsp;账&nbsp; 号: </span>
+          <span className={'textLeft'}>账&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;号:</span>
           <input placeholder={'请输入您的手机号'} className='textInput'
             onChange={(e) => this.setState({ phone: e.target.value })} value={this.state.phone} />
         </section>
         <section className={'flex tb-flex towBtn'} key={'verCode'}>
           <article className='flex tb-flex'>
-            <span className={'textLeft'}>验 证 码: </span>
+            <span className={'textLeft'}>验&nbsp;&nbsp;证&nbsp;码:</span>
             <input placeholder={'请输入验证码'} className='textInput'
               onChange={(e) => this.setState({ verCode: e.target.value })} value={this.state.verCode} />
           </article>
@@ -219,12 +220,12 @@ class SignupScreen extends Component {
           </button>
         </section>
         <section className={'flex tb-flex'} key={'password'}>
-          <span className={'textLeft'}> &nbsp;密&nbsp; 码: </span>
+          <span className={'textLeft'}>密&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;码:</span>
           <input placeholder={'8-18位，同时包含数字和字母'} className='textInput' type='password'
             onChange={(e) => this.setState({ password: e.target.value })} value={this.state.password} />
         </section>
         <section className={'flex tb-flex'} key={'repassword'}>
-          <span className={'textLeft'}>再次输入: </span>
+          <span className={'textLeft'}>再次输入:</span>
           <input placeholder={'再次输入密码'} className='textInput' type='password'
             onChange={(e) => this.setState({ repassword: e.target.value })} value={this.state.repassword} />
         </section>

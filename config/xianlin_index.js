@@ -5,6 +5,8 @@ import withData from './withData'
 // 医院名称
 const HOSPITAL_NAME = '泰康仙林鼓楼医院'
 const API_SERVER = '120.92.57.18:9199' // 泰康仙林
+const PORT = '9180' // 前端端口
+const CARTEVITAL = true // 是开通医保卡
 
 // 一维码格式
 const BAR_FORMART = 'CODE128'
@@ -102,5 +104,7 @@ export {
   REPORT,
   HOSPITALINFO,
   MAINCOLOR,
-  PROFILE_FUNCTION_LIST
+  PROFILE_FUNCTION_LIST,
+  CARTEVITAL,
+  PORT
 }

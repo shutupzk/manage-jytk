@@ -4,6 +4,7 @@ import Link from 'next/link'
 import {Loading, CardWhite, ErrCard, theme} from 'components'
 import { signin, queryUser, queryPatients, signout, clearPateints } from '../../../ducks'
 import {PROFILE_FUNCTION_LIST} from 'config'
+import {MAINCOLOR} from 'config'
 
 class ProfileScreen extends Component {
   constructor (props) {
@@ -78,6 +79,7 @@ class ProfileScreen extends Component {
                 <article
                   className='left'
                   style={{width: middleViewItemWidth}}
+                  key={i}
                 >
                   <Link
                     key={i}
@@ -105,6 +107,7 @@ class ProfileScreen extends Component {
                 return (
                   <div
                     onClick={() => { this.doSignout() }}
+                    key={i}
                   >
                     <a className='flex tb-flex'>
                       <dl className='flex tb-flex'>
@@ -142,7 +145,7 @@ class ProfileScreen extends Component {
       return <div className='container'><ErrCard /></div>
     }
     if (this.props.loading) {
-      return <Loading showLoading={this.props.loading || this.state.isInit} />
+      return <Loading showLoading={true} />
     }
     return (
       <div className='container'>

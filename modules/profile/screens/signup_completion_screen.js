@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import Router from 'next/router'
 // import swal from 'sweetalert2'
+import {CARTEVITAL} from 'config'
 
 import { signup } from '../../../ducks'
 import { connect } from 'react-redux'
@@ -90,6 +91,7 @@ class SignupCompletionScreen extends Component {
       }, 1000)
       return
     }
+    console.log('--------will target-----')
     Router.push('/signin')
   }
   render () {
@@ -125,11 +127,15 @@ class SignupCompletionScreen extends Component {
             disabled
             />
         </section>
-        <section className={'flex tb-flex'} key={'carteVital'}>
-          <span>{'医保卡号'}</span>
-          <input placeholder={'非医保用户可不填'}
-            onChange={(e) => this.setState({ carteVital: e.target.value })} />
-        </section>
+        {
+          CARTEVITAL ?
+            <section className={'flex tb-flex'} key={'carteVital'}>
+              <span>{'医保卡号'}</span>
+              <input placeholder={'非医保用户可不填'}
+                onChange={(e) => this.setState({ carteVital: e.target.value })} />
+            </section>
+          : ''
+        }
       </div>
       <footer style={{margin: '10px 15px'}}>
         <button

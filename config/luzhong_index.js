@@ -5,6 +5,8 @@ import withData from './withData'
 // 医院名称
 const HOSPITAL_NAME = '鲁中医院'
 const API_SERVER = '218.58.137.218:9002' // 山东鲁中
+const PORT = '9181' // 前端端口
+const CARTEVITAL = false // 否开通医保卡
 
 // 一维码格式
 const BAR_FORMART = 'CODE128'
@@ -86,7 +88,7 @@ const CONTACT = [
 ]
 
 // 主题颜色
-const MAINCOLOR = '#0066CC'
+const MAINCOLOR = '#355CC2'
 
 
 export {
@@ -103,5 +105,7 @@ export {
   REPORT,
   HOSPITALINFO,
   MAINCOLOR,
-	PROFILE_FUNCTION_LIST
+	PROFILE_FUNCTION_LIST,
+  CARTEVITAL,
+  PORT
 }

@@ -1,6 +1,6 @@
 {
   "apps" : [{
-    "name"        : "hospital-patient-wechat",
+    "name"        : "lz-wechat",
     "script"      : "server.js",
     "watch"       : true,
     "log_date_format": "YYYY-MM-DD HH:mm:ss",
