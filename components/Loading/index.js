@@ -1,5 +1,5 @@
-import React, { Component, PropTypes } from 'react';
-import {theme} from 'components';
+import React, { Component, PropTypes } from 'react'
+import theme from '../theme.js'
 
 function Loading (props) {
   return (
@@ -8,12 +8,12 @@ function Loading (props) {
         props.showLoading ?
           <div>
             <div className='loading'>
-              <i className='fa fa-spinner fa-spin'></i>
+              <img src='/static/icons/loading.gif' width='100' />
             </div>
           </div> : ''
       }
     </div>
-  );
+  )
 }
 
 Loading.propTypes = {
@@ -21,3 +21,4 @@ Loading.propTypes = {
 }
 
 export default Loading
+

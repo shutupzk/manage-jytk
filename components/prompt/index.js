@@ -29,32 +29,10 @@ export default class Prompt extends Component {
   // const height = window.screen.availWidth
     // console.log('-----prompt', this.props.children)
     return (
-      <div className={`promptDiv ${this.state.isShow === true ? 'show' : ''}`}>
+      <div>
         {
           this.props.children
         }
-        <style jsx>{`
-          .promptDiv {
-            background-color: #888;
-            color: #fff;
-            padding: 10px;
-            z-index: 999;
-            position: fixed;
-            width:260px;
-            position:absolute;
-            border-radius: 5px;
-            left: 50%;
-            top: 50%;
-            margin-left:-140px;
-            margin-top:-50px;
-            display: none;
-            text-align: center;
-            align-items: center;
-          }
-          .show {
-            display: block !important;
-          }
-        `}</style>
       </div>
     )
   }
