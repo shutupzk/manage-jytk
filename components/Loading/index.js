@@ -10,6 +10,25 @@ function Loading (props) {
             <div className='loading'>
               <img src='/static/icons/loading.gif' width='100' />
             </div>
+            <style jsx>{`
+              .loading {
+                position: absolute;
+                width: 80px;
+                height: 80px;
+                top: 200px;
+                left: 50%;
+                font-size: 27px;
+                color: #337ab7;
+                text-align: center;
+                line-height: 77px;
+                margin: 0 auto;
+                margin-left: -45px;
+                {/*background: ${theme.maincolor};*/}
+                background: transparent;
+                border-radius: 7px;
+                z-index: 100;
+              }
+            `}</style>
           </div> : ''
       }
     </div>
@@ -21,4 +40,3 @@ Loading.propTypes = {
 }
 
 export default Loading
-
