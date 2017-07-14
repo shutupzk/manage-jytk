@@ -3,6 +3,7 @@ import DoctorIntro from './doctor_intro'
 import DoctorScheduleList from './doctor_schedule_list'
 import DoctorDescription from './doctor_description'
 import DoctorAwards from './doctor_awards'
+import {HOSPITAL_NAME} from 'config'
 
 // button: 我要评价
 function renderBottomButton (doc, gotoEvaluate) {
@@ -29,7 +30,10 @@ export default (props) => {
         <DoctorAwards doctor={doctor} />
       </div>
       {
-        renderBottomButton(doctor, gotoEvaluate)
+        HOSPITAL_NAME.indexOf('鲁中') > -1 ?
+          ''
+        :
+          renderBottomButton(doctor, gotoEvaluate)
       }
       <style jsx>{`
         .container {

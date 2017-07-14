@@ -3,6 +3,7 @@ import Router from 'next/router'
 import { connect } from 'react-redux'
 import localforage from 'localforage'
 // import swal from 'sweetalert2'
+import {HOSPITAL_NAME} from 'config'
 import {theme, Loading, ErrCard} from 'components'
 
 import { signin, queryUser, selectAppointment, queryPatients, queryAppointmentDetail, updateAppointment, selectDepartment, selectDoctor } from '../../../ducks'
@@ -194,6 +195,21 @@ class AppointmentDetailScreen extends Component {
               <span className={'itemRight'}>{appointment.seqNo}</span>
             </div>
           </div>
+          {
+            HOSPITAL_NAME.indexOf('鲁中') > -1 ?
+              <div className={'subView'}>
+                <div style={{color: '#000000', marginBottom: 3}}><b>挂号订单状态</b></div>
+                <div className='flex tb-flex'>
+                  <header style={{textAlign: 'right', width: '26%', marginRight: 6}}>
+                    <strong style={{fontSize: theme.nfontsize}}>12:30</strong>
+                    <p style={{fontSize: 12, color: theme.nfontcolor}}>2018-09-09</p>
+                  </header>
+                  <article style={{background: theme.nfontcolor, width: 10, height: 10, borderRadius: '100%'}}></article>
+                  <section style={{color: theme.mainfontcolor, lineHeight: '20px', marginLeft: 6}}>支付宝缴费成功，付款流水号1234560008910234</section>
+                </div>
+              </div>
+            : ''
+          }
 
         </div>
         <div>
@@ -236,7 +252,7 @@ class AppointmentDetailScreen extends Component {
         </div>
         <style jsx>{`
           .detailView {
-            margin: 10px;
+            margin: 10px 10px 70px 10px;
             background-color: #FFFFFF;
             font-size: 13px;
           }

@@ -10,8 +10,10 @@ import {
   CONTACT,
   HOME_PAGE,
   REPORT,
-  HOSPITALINFO
-} from './guangdong_index'
+  HOSPITALINFO,
+  MAINCOLOR,
+  PROFILE_FUNCTION_LIST
+} from './luzhong_index'
 
 export {
   server,
@@ -25,5 +27,7 @@ export {
   CONTACT,
   HOME_PAGE,
   REPORT,
-  HOSPITALINFO
+  HOSPITALINFO,
+  MAINCOLOR,
+  PROFILE_FUNCTION_LIST
 }

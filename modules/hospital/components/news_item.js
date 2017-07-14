@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import {theme} from 'components'
 
 class NewsItem extends Component {
   // componentDidMount () {
@@ -8,7 +9,7 @@ class NewsItem extends Component {
     let imagUrl = item.image ? item.image : '/static/icons/doctor_head.png'
     return (
       <div key={item.id} onClick={() => { this.props.gotoDetail(item) }}>
-        <li className={'flex tb-flex newsItem'} style={{background: '#fff'}} key={item.id} onClick={() => { this.props.gotoDetail(item) }}>
+        <li className={'newsItem'} style={{background: '#fff'}} key={item.id} onClick={() => { this.props.gotoDetail(item) }}>
           <img src={imagUrl} alt='' />
           <section>
             <article>{item.time}</article>
@@ -18,27 +19,33 @@ class NewsItem extends Component {
         </li>
         <style jsx global>{`
           .newsItem{
-            border-top: 1px solid #d8d8d8;
+            border-top: 1px solid ${theme.bordercolor};
             padding: .12rem .15rem;
             height: .9rem;
             color: #777777;
             font-size: .11rem;
+            position: relative;
           }
           .newsItem img{
             width: .9rem;
             height: .9rem;
-            margin-right: .15rem;
+            position: absolute;
+            top: .12rem;
+            left: ${theme.lrmargin};
           }
           .newsItem p{
-            color: #797979;
+            color: ${theme.fontcolor};
             font-size: .14rem;
             line-height: .2rem;
           }
           .newsItem h3{
-            color: #505050;
+            color: ${theme.mainfontcolor};
             font-weight: 500;
-            font-size: .15rem;
+            font-size: ${theme.fontsize};;
             margin: .06rem 0;
+          }
+          .newsItem section{
+            margin-left: 1.05rem;
           }
         `}</style>
       </div>

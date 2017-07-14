@@ -1,44 +1,28 @@
 import Link from 'next/link'
 import {HOME_PAGE} from 'config'
-import {hosApmHomeIcon} from '../../../static/icons/svgIcon'
+import {theme} from 'components'
 
 const Navigation = (props) => {
   const url = (props.url && props.url.pathname) || '/';
   console.log('navigation', props);
   console.log('---cur url', url);
+  const dlWidth = (100 / HOME_PAGE.bottomLabel.length) + '%';
   return (
     <div className='footer'>
       <section>
         {
-          HOME_PAGE.bottomLabel.map((label) => {
+          HOME_PAGE.bottomLabel.map((label, iKey) => {
+            console.log('----label.url', label.url)
             return (
-              <Link href={label.url} prefetch>
-                <dl className={url === label.url ? 'tabBarIcon' + label.i + 'Cur' : ''}>
-                  <dt></dt>
+              <Link href={label.url} key={iKey} prefetch>
+                <dl style={{width: dlWidth}} className={url === label.url ? 'tabBarIconCur' : ''}>
+                  <dt className='flex tb-flex lr-flex'><img style={label.imgStyle} src={url === label.url ? label.avatar + 'Cur.png' : label.avatar + '.png'} /></dt>
                   <dd>{label.title}</dd>
                 </dl>
               </Link>
             )
           })
         }
-        {/*<Link href='/' prefetch>
-          <dl className={url === '/' ? 'tabBarIcon1Cur' : ''}>
-            <dt></dt>
-            <dd>首页</dd>
-          </dl>
-        </Link>
-        <Link href='/appointment/appointment_list' prefetch>
-          <dl className={url === '/appointment/appointment_list' ? 'tabBarIcon2Cur' : ''}>
-            <dt></dt>
-            <dd>挂号订单</dd>
-          </dl>
-        </Link>
-        <Link href='/profile' prefetch>
-          <dl className={url === '/profile' ? 'tabBarIcon3Cur' : ''}>
-            <dt></dt>
-            <dd>我的</dd>
-          </dl>
-        </Link>*/}
         <div className='clearfix'>&nbsp;</div>
       </section>
       <style jsx>{`
@@ -61,36 +45,15 @@ const Navigation = (props) => {
           padding: 4px 0;
         }
         .footer dl dt{
-          background: url('/static/icons/icon.png');
-          width: 24px;
-          height: 26px;
-          background-position: 2px 4px;
-          background-size: 260px;
+          width: 30px;
+          height: 30px;
           display: inline-block;
         }
-        .footer dl:nth-of-type(2) dt{
-          background-position: 4px -32px;
+        .footer dl dt img{
+          width: 100%;
         }
-        .footer dl:nth-of-type(3) dt{
-          background-position: 2px -68px;
-        }
-        .footer dl.tabBarIcon1Cur{
-          color: #257BDE;
-        }
-        .footer dl.tabBarIcon1Cur dt{
-          background-position: -32px 4px;
-        }
-        .footer dl.tabBarIcon2Cur{
-          color: #257BDE;
-        }
-        .footer dl.tabBarIcon2Cur dt{
-          background-position: -33px -32px;
-        }
-        .footer dl.tabBarIcon3Cur{
-          color: #257BDE;
-        }
-        .footer dl.tabBarIcon3Cur dt{
-          background-position: -31px -32px;
+        .footer dl.tabBarIconCur{
+          color: ${theme.maincolor};
         }
       `}</style>
     </div>

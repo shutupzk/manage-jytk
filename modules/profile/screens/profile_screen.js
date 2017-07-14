@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import Link from 'next/link'
 import {Loading, CardWhite, ErrCard, theme} from 'components'
 import { signin, queryUser, queryPatients, signout, clearPateints } from '../../../ducks'
+import {PROFILE_FUNCTION_LIST} from 'config'
 
 class ProfileScreen extends Component {
   constructor (props) {
@@ -43,39 +44,27 @@ class ProfileScreen extends Component {
     if (user.name) {
       href = '/' + navigateUrl
     }
+    const headerImg = (!user.sex || user.sex !== '0') ? 'user_male' : 'user_female'
     return (
-      <CardWhite classChild='topView'>
-        <img src='/static/icons/user_male.png' />
+      <div className='topView'>
+        <img src={`/static/icons/${headerImg}.png`} />
         <section>
           <p className='nameText'>{name}</p>
           { this.birthdayView(user) }
         </section>
         <Link href={href}>
           <a>
-            <div style={{fontSize: 13, color: '#3CA0FF', textAlign: 'center'}} >{title} ></div>
+            <div style={{fontSize: 13, color: '#fff', textAlign: 'center'}} >{title} ></div>
           </a>
         </Link>
-      </CardWhite>
+      </div>
     )
   }
 
   buttomList (user) {
-    const array = [
-      { title: '就诊人管理', icon: 'familyIcon', type: 'simple-line-icon', navigateUrl: 'profile/patient_list' },
-      { title: '我的医生', icon: 'doctors', type: 'simple-line-icon', navigateUrl: 'profile/my_doctors' },
-      { title: '缴费记录', icon: 'depositRecords', type: 'simple-line-icon', navigateUrl: 'profile/deposit_record' },
-      // { title: '我的随访', icon: 'pencil-square-o', type: 'font-awesome', navigateUrl: 'ehr' },
-      { title: '满意度评价', icon: 'evaluationIcon', type: 'simple-line-icon', navigateUrl: 'profile/evaluation' }
-    ]
-    const array2 = [
-      { title: '医保卡信息', icon: 'cartecardicon', type: 'simple-line-icon', navigateUrl: 'profile/carte_vital' },
-      { title: '修改密码', icon: 'setpassword', type: 'simple-line-icon', navigateUrl: 'profile/setPassword' },
-      { title: '隐私条款', icon: 'prvite', type: 'simple-line-icon', navigateUrl: 'profile/privacy_terms' },
-      { title: '常见问题', icon: 'question', type: 'simple-line-icon', navigateUrl: 'profile/questions' },
-      // { title: '我的报告单', icon: 'doc', type: 'simple-line-icon', navigateUrl: 'favorite_list' },
-      { title: '退出登录', icon: 'logout', type: 'simple-line-icon', navigateUrl: 'logout' }
-      // { title: '设置', icon: 'settings', type: 'simple-line-icon', navigateUrl: 'setting' }
-    ]
+    const array = PROFILE_FUNCTION_LIST.middleView
+    const array2 = PROFILE_FUNCTION_LIST.bottomView
+    const middleViewItemWidth = (100/array.length) + '%'
     return (
       <div className=''>
         <CardWhite classChild='middleView'>
@@ -88,6 +77,7 @@ class ProfileScreen extends Component {
               return (
                 <article
                   className='left'
+                  style={{width: middleViewItemWidth}}
                 >
                   <Link
                     key={i}
@@ -163,6 +153,8 @@ class ProfileScreen extends Component {
             text-align: center;
             margin-top: 0;
             padding: .2rem 0 ${theme.tbmargin};
+            background: ${theme.maincolor};
+            color: #fff;
           }
           .topView img{
             width: .7rem;
@@ -174,7 +166,6 @@ class ProfileScreen extends Component {
           }
           .nameText {
             line-height: .3rem;
-            color: ${theme.mainfontcolor};
             font-size: .18rem;
           }
           .birtdayText {

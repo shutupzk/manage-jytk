@@ -163,7 +163,6 @@ export const signin = ({ username, password }) => async (dispatch) => {
     if (!password) return
     return doSignin(dispatch, {username, password})
   }
-
   password = loacalPassword
   dispatch({
     type: PROFILE_USER_SIGNIN_SUCCESS,

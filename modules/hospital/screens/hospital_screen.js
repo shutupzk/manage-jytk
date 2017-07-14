@@ -68,7 +68,7 @@ class HospitalScreen extends React.Component {
               )
             })
           }
-          <li className='left'></li>
+          {bottomItem.length%2 ? <li className='left'></li> : ''}
           <div className='clearfix'>&nbsp;</div>
         </ul>
         <style jsx>
@@ -91,6 +91,9 @@ class HospitalScreen extends React.Component {
               text-align: center;
               padding-top: .02rem;
               padding-right: .06rem;
+            }
+            .itemimg img{
+              width: .24rem;
             }
             .hospitalItem li:nth-of-type(1), .hospitalItem li:nth-of-type(2) {
               border-top: 1px solid #fff;

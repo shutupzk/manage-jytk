@@ -17,7 +17,7 @@ const HOME_MESSAGES_READ_SUCCESS = 'home/messages/read/success'
 const HOME_MESSAGES_READ_FAIL = 'home/messages/read/fail'
 
 const initState = {
-  data: {},
+  data: [],
   error: null,
   loading: false,
   selectId: {}
@@ -203,7 +203,7 @@ const HOME_LAST_MESSAGES_FAIL = 'home/last/messages/fail'
 export function lastMessages (state = initState, action = {}) {
   switch (action.type) {
     case HOME_LAST_MESSAGES_QUERY:
-      return Object.assign({}, state, { loading: true, error: null })
+      return Object.assign({}, state, { loading: true, error: null, data: [] })
     case HOME_LAST_MESSAGE_SUCCESS:
       return Object.assign({}, state, { data: action.data, loading: false, error: null })
     case HOME_LAST_MESSAGES_FAIL:

@@ -5,6 +5,7 @@ import Link from 'next/link'
 import {queryDepartmentDetail} from '../../../ducks'
 import { replaceStr } from '../../../utils'
 import {Loading, ErrCard, theme} from 'components'
+import {HOSPITAL_NAME} from 'config'
 class DepartmentDetailScreen extends Component {
   constructor (props) {
     super(props)
@@ -74,29 +75,34 @@ class DepartmentDetailScreen extends Component {
                 { features.length > 100 ? <div style={{color: theme.maincolor, textAlign: 'right', marginBottom: 10}} onClick={() => { this.setState({featuresAll: !this.state.featuresAll}) }}>{this.state.featuresAll ? '收起▲' : '展开▼'}</div> : '' }
               </div>
             </div>
-            <div style={{backgroundColor: '#fff'}}>
-              <div style={{fontSize: 15, display: 'flex', padding: '10px 15px', borderBottom: '1px solid #fff', borderColor: theme.bordercolor}}>
-                <div style={{flex: 1, display: 'flex'}}>
-                  <div style={{backgroundColor: theme.maincolor, width: 5, marginRight: 5, height: 18}} />
-                  科室评价
+            {
+              HOSPITAL_NAME.indexOf('鲁中') > -1 ?
+                ''
+              :
+                <div style={{backgroundColor: '#fff'}}>
+                  <div style={{fontSize: 15, display: 'flex', padding: '10px 15px', borderBottom: '1px solid #fff', borderColor: theme.bordercolor}}>
+                    <div style={{flex: 1, display: 'flex'}}>
+                      <div style={{backgroundColor: theme.maincolor, width: 5, marginRight: 5, height: 18}} />
+                      科室评价
+                    </div>
+                    <Link href={goEvaluateUrl}><a style={{textAlign: 'right', color: theme.nfontcolor, fontSize: theme.nfontsize}} className='flex tb-flex'>更多<p style={{transform: 'rotate(135deg)'}} className='back-left'></p></a></Link>
+                  </div>
+                  <div style={{fontSize: 14}} style={{padding: '15px'}}>
+                    <ul style={{padding: 0, margin: 0}}>
+                      {
+                        evaluates.length > 0 ? evaluates.map((evaluate) => {
+                          return (
+                            <li style={{borderBottom: 'solid 1px #dddddd', marginBottom: 5}} key={evaluate.id}>
+                              <div>评价人:{evaluate.user.name}</div>
+                              <div>评价内容:{evaluate.advice}</div>
+                            </li>
+                          )
+                        }) : '暂无评价'
+                      }
+                    </ul>
+                  </div>
                 </div>
-                <Link href={goEvaluateUrl}><a style={{textAlign: 'right', color: theme.nfontcolor, fontSize: theme.nfontsize}} className='flex tb-flex'>更多<p style={{transform: 'rotate(135deg)'}} className='back-left'></p></a></Link>
-              </div>
-              <div style={{fontSize: 14}} style={{padding: '15px'}}>
-                <ul style={{padding: 0, margin: 0}}>
-                  {
-                    evaluates.length > 0 ? evaluates.map((evaluate) => {
-                      return (
-                        <li style={{borderBottom: 'solid 1px #dddddd', marginBottom: 5}} key={evaluate.id}>
-                          <div>评价人:{evaluate.user.name}</div>
-                          <div>评价内容:{evaluate.advice}</div>
-                        </li>
-                      )
-                    }) : '暂无评价'
-                  }
-                </ul>
-              </div>
-            </div>
+            }
           </div>
           {/*<div style={{position: 'absolute', bottom: '15px', width: '90%', height: '40px'}}>
             <button style={{width: '100%', display: 'block', backgroundColor: theme.maincolor, height: '40px', borderRadius: '10px', fontSize: 16}}>我要评价</button>

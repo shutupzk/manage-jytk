@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
-import {theme} from 'components'
+import {theme, RequireLoginCard} from 'components'
+import { connect } from 'react-redux'
+import { signin } from '../../../ducks'
 
 // import { isEmptyObject } from '../../../utils'
 import Router from 'next/router'
@@ -14,12 +16,29 @@ class OrderTypeScreen extends Component {
   }
 
   componentWillMount () {
-
+    this.autoSignin()
   }
+
+  // 自动登陆 刷新token,用户信息,就诊人信息，
+  async autoSignin () {
+    const error = await this.props.signin({ username: null, password: null })
+    if (error) return console.log(error)
+    const userId = this.props.userId
+    if (userId) {
+    }
+  }
+
   toPage (key) {
     Router.push('/outpatient?key=' + key)
   }
   render () {
+    if (!this.props.token) {
+      return (
+        <div>
+          <span><RequireLoginCard /></span>
+        </div>
+      )
+    }
     return (
       <div className='bottomView'>
         <div
@@ -68,4 +87,15 @@ class OrderTypeScreen extends Component {
   }
 }
 
-export default OrderTypeScreen
+function mapStateToProps (state) {
+  console.log(state)
+  return {
+    token: state.user.data.token
+  }
+}
+
+export default connect(
+  mapStateToProps, {
+    signin
+  }
+)(OrderTypeScreen)

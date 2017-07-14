@@ -5,11 +5,11 @@ import localforage from 'localforage'
 import _ from 'lodash'
 import moment from 'moment'
 import {REPORT} from 'config'
-import {Loading, FilterCard, FilterSelect, FilterTime, Modal, ModalHeader, ModalFooter, TabHeader, theme, Prompt, CardWhite, ErrCard, NoDataCard} from 'components'
+import {Loading, FilterCard, FilterSelect, FilterTime, Modal, ModalHeader, ModalFooter, TabHeader, theme, Prompt, CardWhite, ErrCard, NoDataCard, RequireLoginCard} from 'components'
 // import RangeDemo from '../components/date_rang'
 
 import {
-  // signin,
+  signin,
   // queryUser,
   queryPatients,
   selectPatient,
@@ -39,14 +39,17 @@ class ReportScreen extends Component {
     }
   }
   componentWillMount () {
-    // if (isEmptyObject(this.props.patients)) {
-    //   this.setState({isInit: true})
-    //   this.queryPatientReports()
-    // } else {
-    //   this.setState({isInit: true})
-    //   this.queryReport()
-    // }
-    this.queryPatient(this.props)
+    this.autoSignin()
+  }
+
+  // 自动登陆 刷新token,用户信息,就诊人信息，
+  async autoSignin () {
+    const error = await this.props.signin({ username: null, password: null })
+    if (error) return console.log(error)
+    const userId = this.props.userId
+    if (userId) {
+      this.queryPatient(this.props)
+    }
   }
   componentWillReceiveProps (nextProps) {
     if (!isEmptyObject(nextProps.patients) && isEmptyObject(nextProps.laboratories) && !nextProps.selectPatientId) {
@@ -287,6 +290,13 @@ class ReportScreen extends Component {
   }
 
   render () {
+    if (!this.props.token) {
+      return (
+        <div>
+          <span><RequireLoginCard /></span>
+        </div>
+      )
+    }
     if (this.props.loading || this.state.isInit) {
       return (
         <div><Loading showLoading>loading...</Loading></div>
@@ -358,12 +368,13 @@ function mapStateToProps (state) {
     examinationLoading: state.examinations.loading,
     examinationError: state.examinations.error,
     laboratoryLoading: state.laboratories.loading,
-    laboratoryError: state.laboratories.error
+    laboratoryError: state.laboratories.error,
+    token: state.user.data.token
   }
 }
 
 export default connect(mapStateToProps, {
-  // signin,
+  signin,
   // queryUser,
   queryPatients,
   selectPatient,

@@ -246,7 +246,7 @@ class AppointmentListScreen extends Component {
                 {this.ItemView(item)}
               </div>
             )
-          }) : <NoDataCard />
+          }) : <NoDataCard tip='暂无数据' />
         }
         <style jsx global>{`
           .listItem {
