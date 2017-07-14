@@ -1,7 +1,6 @@
 // import 'isomorphic-fetch'
 import React from 'react'
 import Router from 'next/router'
-import {RequireLoginCard} from 'components'
 import { ApolloProvider, getDataFromTree } from 'react-apollo'
 import { initClient, initStore } from './store'
 import localforage from 'localforage'
