@@ -1,5 +1,37 @@
 import PinYin from './pinyin'
 
+export const checkPhoneNumber = (phone) => {
+  const r = /(1([3578][0-9]))\d{8}/
+  return (r.test(phone) && (phone.length === 11))
+}
+
+export const checkIdCard = (num) => {
+  if (num.length !== 18) {
+    return false
+  }
+  const re = new RegExp(/^(\d{6})(\d{4})(\d{2})(\d{2})(\d{3})([0-9]|X)$/)
+  let arrSplit = num.match(re)
+  let dtmBirth = new Date(arrSplit[2] + '/' + arrSplit[3] + '/' + arrSplit[4])
+  let bGoodDay
+  bGoodDay = (dtmBirth.getFullYear() === Number(arrSplit[2])) && ((dtmBirth.getMonth() + 1) === Number(arrSplit[3])) && (dtmBirth.getDate() === Number(arrSplit[4]))
+  if (!bGoodDay) {
+    return false
+  } else {
+    let valnum
+    let arrInt = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2]
+    let arrCh = ['1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2']
+    let nTemp = 0
+    for (let i = 0; i < 17; i++) {
+      nTemp += num.substr(i, 1) * arrInt[i]
+    }
+    valnum = arrCh[nTemp % 11]
+    if (valnum !== num.substr(17, 1)) {
+      return false
+    }
+    return num
+  }
+}
+
 /**
  * 判断对象是否为空对象{}
  * @param {*} obj
@@ -112,17 +144,14 @@ export function ages (str) {
   var d = new Date(r[1], r[3] - 1, r[4])
   if (Number(d.getFullYear()) === Number(r[1]) && Number((d.getMonth() + 1)) === Number(r[3]) && Number(d.getDate()) === Number(r[4])) {
     var Y = new Date().getFullYear()
-    console.log('年龄   =   ' + (Y - r[1]) + '   周岁')
     return ((Y - r[1]))
   }
-  console.log('生日日期==', str)
   return ('生日格式错误！')
 }
 // 隐藏手机号中间四位
 export function phone (str) {
   var reg = /1(\d{2})\d{4}(\d{4})/g
   str = str.replace(reg, '1$1****$2')
-  console.log('phone==', str)
   if (str) {
     return str
   }
@@ -141,7 +170,6 @@ export function getSex (certificateNo) {
 
 // 判断性别
 export function sex (sex) {
-  console.log('sex==', sex)
   switch (sex) {
     case '0':
       return '女'

@@ -129,6 +129,11 @@ export function styles() {
         border: 1px solid ${theme.maincolor};
         color: #fff;
       }
+      .btnBGMainDisable{
+        background: #7FA4C9;
+        border: 1px solid #7FA4C9;
+        color: #fff;
+      }
       .btnBGDisable{
         background: ${theme.bordercolor};
         border: 1px solid ${theme.bordercolor};

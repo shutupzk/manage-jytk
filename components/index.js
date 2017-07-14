@@ -12,6 +12,7 @@ import LoadErrCard from './LoadErrCard'
 import ErrCard from './ErrCard'
 import RequireLoginCard from './RequireLoginCard'
 import {ResultSuccessCard, ResultFailCard} from './ResultCard'
+import PayWay from './PayWay'
 
 export {
     List,
@@ -33,7 +34,8 @@ export {
     ErrCard,
     RequireLoginCard,
     ResultSuccessCard,
-    ResultFailCard
+    ResultFailCard,
+    PayWay
 }
 
 

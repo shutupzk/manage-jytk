@@ -66,9 +66,12 @@ class OutpatientDetailScreen extends Component {
           <div>个人缴纳费用{outpatient.individualPayment}元</div>
           <div>医保记账费用{outpatient.carteVitalPayment}元</div>
         </div>
-        <button
-          className='fullWidthFixed fullWidthBtn fullWidthBtnMain'
-          onClick={() => Router.push('')}>去缴费</button>
+        {
+          outpatient.payStatus ? ''
+          : <button
+            className='fullWidthFixed fullWidthBtn fullWidthBtnMain'
+            onClick={() => Router.push('/outpatient/select_pay_way?outpatientId=' + outpatient.id)}>去缴费</button>
+        }
         <style jsx>{`
           .out-list {
             display: flex;

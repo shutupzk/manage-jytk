@@ -62,6 +62,7 @@ export const queryOutpatient = (client, { userId }) => async dispatch => {
     let array = {}
     for (let patient of patients) {
       let name = patient.name
+      let phone = patient.phone
       let patientId = patient.id
       for (let card of patient.patientCards) {
         if (card.appointments.length > 0) {
@@ -71,10 +72,12 @@ export const queryOutpatient = (client, { userId }) => async dispatch => {
               outpatient.visitSchedule = appoint.visitSchedule
               outpatient.department = appoint.visitSchedule.department
               outpatient.doctor = appoint.visitSchedule.doctor
+              outpatient.seqNo = appoint.seqNo
               outpatient.appointmentFee = appoint.appointmentFee
               outpatient.registerFee = appoint.visitSchedule.registerFee
               outpatient.treatFee = appoint.visitSchedule.treatFee
               outpatient.patientName = name
+              outpatient.patientPhone = phone
               outpatient.patientId = patientId
               let outpatient2 = Object.assign({}, appoint.outPaymentTotal, outpatient)
               // outpatient.outPaymentTotal = appoint.outPaymentTotal
@@ -103,11 +106,13 @@ export const OUTPAYMENTTOTALS = gql`
       patients {
         id
         name
+        phone
         patientCards {
           id
           appointments{
             id
             times
+            seqNo
             appointmentFee
             visitSchedule {
               visitDate
@@ -152,15 +157,18 @@ export const queryOutpatientDetail = (client, { id }) => async dispatch => {
     let outPaymentTotal = data.data.outPaymentTotal
     const appoint = outPaymentTotal.appointment
     const name = appoint.patientCard.patient.name
+    const phone = appoint.patientCard.patient.phone
     const patientId = appoint.patientCard.patient.id
     let outpatient = {}
     outpatient.visitSchedule = appoint.visitSchedule
+    outpatient.seqNo = appoint.seqNo
     outpatient.department = appoint.visitSchedule.department
     outpatient.doctor = appoint.visitSchedule.doctor
     outpatient.appointmentFee = appoint.appointmentFee
     outpatient.registerFee = appoint.visitSchedule.registerFee
     outpatient.treatFee = appoint.visitSchedule.treatFee
     outpatient.patientName = name
+    outpatient.patientPhone = phone
     outpatient.patientId = patientId
     let outData = Object.assign({}, outPaymentTotal, outpatient)
     return dispatch({
@@ -188,6 +196,7 @@ const OUTPAYMENTS = gql`
       appointment{
         id
         times
+        seqNo
         appointmentFee
         visitSchedule {
           visitDate
@@ -207,6 +216,7 @@ const OUTPAYMENTS = gql`
           patient{
             id
             name
+            phone
           }
         }
       }
