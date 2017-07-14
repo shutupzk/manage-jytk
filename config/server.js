@@ -1,6 +1,6 @@
 import {PORT} from 'config'
 const server = {
-  port: 9003
+  port: 9180
 }
 
 export default server
