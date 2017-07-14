@@ -7,15 +7,15 @@ import localforage from 'localforage'
 
 // import SearchBar from '../components/search_bar'
 import DepartmentList from '../../hospital/components/department_list'
-import { signin, queryUser, queryPatients, queryDepartments, selectParentDepartment } from '../../../ducks'
-import { isEmptyObject, replaceSearchKey } from '../../../utils'
-import {Loading, ErrCard, RequireLoginCard, theme, Modal, ModalHeader, ModalFooter, NoDataCard} from 'components'
+import { signin, queryUser, queryPatients, queryChildDepartments, selectDepartment } from '../../../ducks'
+import { isEmptyObject, convertPinyin, convertPinyinFirst, replaceSearchKey } from '../../../utils'
+import {Loading, ErrCard, RequireLoginCard, NoDataCard} from 'components'
 
 class AppointmentDepartmentListScreen extends Component {
   constructor (props) {
     super(props)
     this.toDetail = false
-    this.state = {showTipModal: true}
+    this.state = {showTipModal: true, searchFlag: false, searchResult: []}
   }
   componentWillMount () {
     this.autoSignin()
@@ -41,42 +41,26 @@ class AppointmentDepartmentListScreen extends Component {
   //   this.props.queryUser(this.props.client, { userId })
   // }
   selectDepartment (dep) {
-    this.props.selectParentDepartment({departmentId: dep.id})
-    var href = {pathname: '/appointment/child_department_list', query: {departmentId: dep.id}}
+    this.props.selectDepartment({departmentId: dep.id})
+    var href = {pathname: '/appointment/doctor_list', query: {departmentId: dep.id}}
     Router.push(href)
   }
   getDepartments () {
-    this.props.queryDepartments(this.props.client, {level: '1'})
+    console.log(this.props.parentId)
+    this.props.queryChildDepartments(this.props.client, {departmentId: this.props.parentId})
   }
-  renderModal () {
-    let modalHtml
-    modalHtml = <Modal showModalState={this.state.showTipModal || this.state.showFilterModal}>
-      <ModalHeader classChild='modalheaderTip'>挂号须知</ModalHeader>
-      <div style={{padding: 20, color: theme.fontcolor}}>
-        <p>尊敬的患者：</p>
-        <p>您好，如果您交费后有退费要求时，应根据不同的退费情况提供所需单据。</p>
-        <p>1.退检查、治疗、化验、CT、核磁等费用时需具备：</p>
-        <p>(1)由医生开出的退款凭证；</p>
-        <p>(2)盖过收费章的原交费单。</p>
-        <p>2.退未取药的药费处方需具备：</p>
-        <p>(1)原申请单或处方单。</p>
-        <p>谢谢您的合作！</p>
-      </div>
-      <ModalFooter>
-        <button className='modalBtn modalOnlyBtn' onClick={(e) => { this.setState({showTipModal: false}) }}>确定</button>
-      </ModalFooter>
-    </Modal>
-    return modalHtml
+  searchDept (theData, term) {
+    this.setState({searchFlag: true, searchResult: filterData(theData, term)})
   }
-  filterGroupByFloor (departments) {
+
+  filterByParentId (departments, parentId) {
     let depArr = []
     for (let key in departments) {
-      if (departments[key].level === '1') {
+      if (departments[key].parentId === parentId) {
         depArr.push(departments[key])
       }
     }
-    const floors2 = _.groupBy(depArr, 'floor')
-    return floors2
+    return depArr
   }
   render () {
     let departments = this.props.departments
@@ -102,14 +86,9 @@ class AppointmentDepartmentListScreen extends Component {
       )
     }
     if (!isEmptyObject(departments)) {
-      // let deps = []
-      // _.mapValues(departments, function (dep) {
-      //   deps.push(dep)
-      // })
-      const floors = this.filterGroupByFloor(departments)
+      const deps = this.filterByParentId(departments, this.props.parentId)
       return (
         <div>
-          {this.renderModal()}
           <div style={{background: '#e6e6e6', padding: '6px 15px'}}>
             <div
               className='flex tb-flex lr-flex'
@@ -123,21 +102,12 @@ class AppointmentDepartmentListScreen extends Component {
                 textAlign: 'center'}}
               onClick={() => { Router.push('/appointment/search') }}
             >
+              {/*<SearchBar departments={this.props.departments} searchDep={(theData, term) => { this.searchDept(theData, term) }} /> */}
               <img src='/static/icons/search.png' style={{height: 15, marginRight: 10}} />
               <span>搜索科室或医生</span>
             </div>
           </div>
-          {
-            Object.keys(floors).map((key) => {
-              return (
-                <div>
-                  { key && key !== 'undefined' ? <div style={{padding: '5px 15px'}}>{key}</div> : ''}
-                  <DepartmentList deps={floors[key]} selectDepartment={(dep) => { this.selectDepartment(dep) }} searchKey={(text) => { return replaceSearchKey(text, 'undefind') }} />
-                </div>
-              )
-            })
-          }
-          {/*<DepartmentList deps={deps} selectDepartment={(dep) => { this.selectDepartment(dep) }} searchKey={(text) => { return replaceSearchKey(text, 'undefind') }} />*/}
+          <DepartmentList deps={deps} selectDepartment={(dep) => { this.selectDepartment(dep) }} searchKey={(text) => { return replaceSearchKey(text, 'undefind') }} />
         </div>
       )
     } else {
@@ -147,14 +117,43 @@ class AppointmentDepartmentListScreen extends Component {
 }
 
 function mapStateToProps (state) {
+  // let userId = await localforage.getItem('userId')
+  // let token = await localforage.getItem('token')
+  // let user = {
+  //   userId,
+  //   token
+  // }
+  console.log(state)
   return {
     token: state.user.data.token,
     user: state.user.data,
     patients: state.patients.data,
     departments: state.departments.data,
+    parentId: state.departments.parentId,
     loading: state.departments.loading || state.user.loading,
     error: state.departments.error || state.user.error
   }
 }
-export default connect(mapStateToProps, { signin, queryUser, queryPatients, queryDepartments, selectParentDepartment })(AppointmentDepartmentListScreen)
+export default connect(mapStateToProps, { signin, queryUser, queryPatients, queryChildDepartments, selectDepartment })(AppointmentDepartmentListScreen)
 
+function filterData (theData, term) {
+  let newData = []
+  _.mapValues(theData, (dep) => {
+    if (searchData(dep.deptName, term)) {
+      newData.push(dep)
+    }
+  })
+  return newData
+}
+
+function searchData (dataStr, term) {
+  let reg = new RegExp('[a-zA-Z0-9\\- ]')
+  if (reg.test(term)) {
+    term = term.toUpperCase()
+  }
+  if (dataStr.indexOf(term) > -1 || convertPinyin(dataStr).toUpperCase().indexOf(term) > -1 || convertPinyinFirst(dataStr).indexOf(term) > -1) {
+    return true
+  } else {
+    return false
+  }
+}

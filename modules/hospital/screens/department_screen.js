@@ -21,7 +21,7 @@ class DepartmentScreen extends Component {
   }
 
   getDepartments () {
-    this.props.queryDepartments(this.props.client)
+    this.props.queryDepartments(this.props.client, {level: ''})
   }
 
   selectDepartment (dep) {

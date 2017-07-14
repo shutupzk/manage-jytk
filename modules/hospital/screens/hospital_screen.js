@@ -24,8 +24,8 @@ class HospitalScreen extends React.Component {
 
 
   render () {
-    const topItem = HOSPITAL_FUNCTION_LIST.slice(0, 4);
-    const bottomItem = HOSPITAL_FUNCTION_LIST.slice(4, 10);
+    const topItem = HOSPITAL_FUNCTION_LIST.slice(0, 4)
+    const bottomItem = HOSPITAL_FUNCTION_LIST.slice(4, 10)
     return (
       <div>
         <div style={{textAlign: 'center', background: theme.maincolor, padding: '.35rem 0'}}>
@@ -68,7 +68,7 @@ class HospitalScreen extends React.Component {
               )
             })
           }
-          {bottomItem.length%2 ? <li className='left'></li> : ''}
+          {bottomItem.length % 2 ? <li className='left' /> : ''}
           <div className='clearfix'>&nbsp;</div>
         </ul>
         <style jsx>

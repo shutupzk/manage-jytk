@@ -1,5 +1,5 @@
 import { hospitals, queryHospitals, queryHospitalBuildings, selectHospital, selectHospitalBuildings, queryHospitalGuides, selectHospitalGuide } from './hospitals'
-import { departments, queryDepartments, queryDepartmentDetail, selectDepartment, searchDepartments, removeSearchDepIds, addDepartmentEvaluate } from './departments'
+import { departments, queryDepartments, queryDepartmentDetail, selectDepartment, searchDepartments, removeSearchDepIds, addDepartmentEvaluate, queryChildDepartments, selectParentDepartment } from './departments'
 import { doctors, queryDoctors, queryDoctorDetail, selectDoctor, removeSelectDoctor, queryMyDoctors, createUserHasDoctor, removeUserHasDoctor, searchDoctors, removeSearchDocIds, setQueryFlag } from './doctors'
 import { doctorEvaluates, addDoctorEvaluate } from './doctor_evaluate'
 import { user, signup, signin, signout, queryUser, updatePassword, savePhone, currentUser, forgotPassword, sendVerifyCode, checkVerifyCode } from './user'
@@ -55,6 +55,8 @@ export {
     queryDepartmentDetail,
     searchDepartments,
     removeSearchDepIds,
+    queryChildDepartments,
+    selectParentDepartment,
     addDepartmentEvaluate,
     queryDoctors,
     queryDoctorDetail,

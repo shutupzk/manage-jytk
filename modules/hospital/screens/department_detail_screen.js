@@ -21,8 +21,7 @@ class DepartmentDetailScreen extends Component {
 
   componentWillMount () {
     let departmentId = this.props.url.query.departmentId
-    let departments = this.props.department
-    this.props.queryDepartmentDetail(this.props.client, {departmentId, departments})
+    this.props.queryDepartmentDetail(this.props.client, {departmentId})
   }
 
   render () {
