@@ -23,15 +23,12 @@ class OutpatientScreen extends Component {
   }
 
   componentWillMount () {
-    if (isEmptyObject(this.props.outpatient)) {
+    if (isEmptyObject(this.props.patients) || isEmptyObject(this.props.outpatient)) {
       this.setState({isInit: true})
       this.queryOutPatient()
     } else {
-      if (!isEmptyObject(this.props.patients)) {
-        const key = Object.keys(this.props.patients)[0]
-        console.log(key)
-        this.setState({selectedId: key})
-      }
+      const key = Object.keys(this.props.patients)[0]
+      this.setState({selectedId: key})
     }
   }
 
@@ -41,7 +38,6 @@ class OutpatientScreen extends Component {
     await this.props.queryPatients(this.props.client, {userId})
     if (!isEmptyObject(this.props.patients)) {
       const key = Object.keys(this.props.patients)[0]
-      console.log(key)
       this.setState({selectedId: key})
     }
     this.setState({isInit: false})
@@ -191,10 +187,13 @@ class OutpatientScreen extends Component {
                   <li className='clearfix'>&nbsp;</li>
                 </ul>
                 {
-                  !outpatient.payStatus ?
-                    <div style={{borderTop: '1px solid #d8d8d8', padding: '.06rem .15rem', textAlign: 'right'}}>
-                      <button className={buttonClass}>{buttonText}</button>
-                    </div>
+                  !outpatient.payStatus
+                  ? <div style={{borderTop: '1px solid #d8d8d8', padding: '.06rem .15rem', textAlign: 'right'}}>
+                    <button className={buttonClass} onClick={(e) => {
+                      e.stopPropagation()
+                      Router.push('/outpatient/select_pay_way?outpatientId=' + outpatient.id)
+                    }}>{buttonText}</button>
+                  </div>
                   : ''
                 }
                 <style jsx>{`

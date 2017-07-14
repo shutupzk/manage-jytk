@@ -75,16 +75,6 @@ class AppointmentListScreen extends Component {
     // todo
     const error = await this.props.updateAppointment(this.props.client, { appointmentId, visitStatus })
     console.log(error)
-    // swal({
-    //   text: '确定取消？',
-    //   showCancelButton: true,
-    //   confirmButtonText: 'Yes!',
-    //   cancelButtonText: 'No!'
-    // }).then(async () => {
-    //   const error = await this.props.updateAppointment(this.props.client, { appointmentId, visitStatus })
-    //   if (error) return swal('', error)
-    //   return window.history.back()
-    // })
   }
 
   gotoSchedule (appointment) {
@@ -133,34 +123,45 @@ class AppointmentListScreen extends Component {
           <div className='clearfix'>&nbsp;</div>
         </div>
         <div className={'itemBottomView'}>
-          <div style={{float: 'right'}}>
+          <div style={{textAlign: 'center'}}>
             {
               appointment.visitStatus === '02' ? <button
-                style={{backgroundColor: '#fff', color: theme.fontcolor, display: 'block', border: 'solid 1px #ddd',borderColor: theme.fontcolor}}
+                className='fullWidthBtn'
+                style={{backgroundColor: '#fff', textAlign: 'center', fontWeight: 'bold', color: theme.maincolor, width: '100%'}}
                 onClick={(e) => {
                   e.stopPropagation()
                   this.gotoSchedule(appointment)
                 }} >再次预约</button>
               : <div>{
                 appointment.visitStatus === '01'
-                  ? <div style={{display: 'flex'}}><button
-                    style={{backgroundColor: '#fff', color: theme.fontcolor, display: 'block', border: 'solid 1px #ddd',borderColor: theme.fontcolor, marginRight: 15}}
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      this.cancelAppointment(appointment)
-                    }} >取消挂号</button>
+                  ? <div style={{display: 'flex'}}>
+                    <button
+                      className='fullWidthBtn'
+                      style={{backgroundColor: '#fff', textAlign: 'center', fontWeight: 'bold', color: theme.maincolor, width: '100%'}}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        this.gotoPay(appointment)
+                      }} >去缴费</button>
+                    {/*<button
+                      style={{backgroundColor: '#fff', color: theme.fontcolor, display: 'block', border: 'solid 1px #ddd',borderColor: theme.fontcolor, marginRight: 15}}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        this.cancelAppointment(appointment)
+                      }} >取消挂号</button>
                     <button
                       style={{backgroundColor: '#fff', color: theme.maincolor, display: 'block', border: 'solid 1px #ddd', borderColor: theme.maincolor}}
                       onClick={(e) => {
                         e.stopPropagation()
                         this.gotoPay(appointment)
-                      }} >去缴费</button></div>
-                  : <button
+                      }} >去缴费</button>*/}
+                  </div>
+                  : <div>
+                  {/*<button
                     style={{backgroundColor: '#fff', color: theme.fontcolor, display: 'block', border: 'solid 1px #ddd',borderColor: theme.fontcolor}}
                     onClick={(e) => {
                       e.stopPropagation()
                       this.退费(appointment)
-                    }} >退号退费</button>
+                    }} >退号退费</button>*/}</div>
                 }</div>
             }
           </div>

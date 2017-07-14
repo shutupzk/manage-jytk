@@ -4,20 +4,30 @@ import localforage from 'localforage'
 import Router from 'next/router'
 import _ from 'lodash'
 // import swal from 'sweetalert2'
-
+import { theme, Prompt, Modal, ModalHeader, ModalFooter } from 'components'
 import { ages, isEmptyObject, phone, certificateNo } from '../../../utils'
-import { queryPatients, removePatient, updatePatient, updatePatientDefault } from '../../../ducks'
+import { queryUser, queryPatients, removePatient, updatePatient, updatePatientDefault } from '../../../ducks'
 
 class PatientDetailScreen extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      isEdit: false
+      query: false,
+      isEdit: false,
+      showModal: false,
+      autoClose: true,
+      closeTime: 2,
+      isShow: false,
+      promptContent: ''
     }
   }
   componentWillMount () {
     if (isEmptyObject(this.props.patients)) {
       this.getPatients()
+    } else {
+      if (isEmptyObject(this.props.user) || !this.props.user.name) {
+        this.getUser()
+      }
     }
   }
 
@@ -26,6 +36,14 @@ class PatientDetailScreen extends Component {
       const userId = await localforage.getItem('userId')
       this.setState({query: true})
       this.props.queryPatients(this.props.client, { userId })
+      this.props.queryUser(this.props.client, { userId })
+    }
+  }
+  async getUser () {
+    if (!this.state.query) {
+      const userId = await localforage.getItem('userId')
+      this.setState({query: true})
+      this.props.queryUser(this.props.client, { userId })
     }
   }
 
@@ -34,35 +52,55 @@ class PatientDetailScreen extends Component {
   }
 
   // 删除就诊人
-  async delPatient () {
+  beforeDelPatient () {
     const patients = this.props.patients
     const patient = patients[this.props.selectId]
     if (this.props.user.certificateNo === patient.certificateNo) {
-      return console.log('本人不能删除') //
+      return this.setState({
+        isShow: true,
+        promptContent: '本人不能删除'
+      })
     }
+    this.setState({
+      showModal: true
+    })
+  }
+  async delPatient () {
     const error = await this.props.removePatient(this.props.client, {patientId: this.props.selectId})
-    if (error) return console.log('', error)
+    if (error) {
+      return this.setState({
+        isShow: true,
+        promptContent: error
+      })
+    }
     return window.history.back()
-    // todo
-    // swal({
-    //   text: '确认删除？',
-    //   showCancelButton: true,
-    //   confirmButtonText: 'Yes!',
-    //   cancelButtonText: 'No!'
-    // }).then(async () => {
-    //   const error = await this.props.removePatient(this.props.client, {patientId: this.props.selectId})
-    //   if (error) return swal('', error)
-    //   return window.history.back()
-    // })
+  }
+  renderModal () {
+    let modalHtml
+    modalHtml = <Modal showModalState={this.state.showModal}>
+      <ModalHeader classChild='modalheaderTip'>提示</ModalHeader>
+      <div style={{padding: 20, color: theme.fontcolor, textAlign: 'center'}}>
+        确认删除该患者吗？
+      </div>
+      <ModalFooter>
+        <button className='modalBtn modalBtnBorder' onClick={(e) => { this.setState({showModal: false}) }}>以后再说</button>
+        <button className='modalBtn modalMainBtn' onClick={(e) => {
+          this.delPatient()
+        }}
+        >确定</button>
+      </ModalFooter>
+    </Modal>
+    return modalHtml
   }
   render () {
     return (
       <div>
+        {this.renderModal()}
         {detailList(this.props, this.bindCard)}
         <div className='fullWidthFixed'>
           <button
             className='fullWidthFixed fullWidthBtn fullWidthBtnBackWhite'
-            onClick={() => { this.delPatient(this.props) }}
+            onClick={() => { this.beforeDelPatient() }}
             >删除就诊人</button>
         </div>
         {/*{this.state.isEdit
@@ -84,7 +122,7 @@ class PatientDetailScreen extends Component {
             onClick={() => { this.setState({isEdit: true}) }}
             >编辑就诊人</button>
         </div>}*/}
-        {/* <Popup ref={popup => { this.popup = popup }} /> */}
+        <Prompt isShow={this.state.isShow} autoClose={this.state.autoClose} closeTime={this.state.closeTime}>{this.state.promptContent}</Prompt>
         <style jsx global>{`
           .list {
             border-top: 0px;
@@ -154,14 +192,14 @@ const detailList = (props) => {
   // let relationship = relations[patient.relationship || '01'] || '其他'
   const array = [
     { key: '姓名', value: patient.name },
-    { key: '身份证号', value: certificateNo(patient.certificateNo) },
-    { key: '性别', value: patient.sex === '0' ? '女' : '男' },
-    { key: '年龄', value: `${ages(patient.birthday)}岁` },
+    { key: '身份证号', value: patient.certificateNo ? certificateNo(patient.certificateNo) : '' },
+    { key: '性别', value: patient.sex ? patient.sex === '0' ? '女' : '男' : '' },
+    { key: '年龄', value: patient.birthday ? `${ages(patient.birthday)}岁` : '' },
     // { key: '出生日期', value: patient.birthday },
     // { key: '与本人关系', value: relationship },
     // { key: '就诊号', value: patient.patientCards[0].patientIdNo },
     // { key: '医保卡号', value: patient.carteVital },
-    { key: '手机号', value: phone(patient.phone) }
+    { key: '手机号', value: patient.phone ? phone(patient.phone) : '' }
   ]
   return (
     <div className='list'>
@@ -218,8 +256,8 @@ function mapStateToProps (state) {
     patients: state.patients.data,
     selectId: state.patients.selectId,
     user: state.user.data,
-    loading: state.patients.loading
+    loading: state.patients.loading || state.user.loading
   }
 }
 
-export default connect(mapStateToProps, { queryPatients, removePatient, updatePatient, updatePatientDefault })(PatientDetailScreen)
+export default connect(mapStateToProps, { queryUser, queryPatients, removePatient, updatePatient, updatePatientDefault })(PatientDetailScreen)

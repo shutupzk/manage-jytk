@@ -3,8 +3,7 @@ import Router from 'next/router'
 import { connect } from 'react-redux'
 import localforage from 'localforage'
 // import swal from 'sweetalert2'
-import {theme, Loading, ErrCard} from 'components'
-
+import {theme, Prompt, Loading, ErrCard, Modal, ModalHeader, ModalFooter} from 'components'
 import { signin, queryUser, selectAppointment, queryPatients, queryAppointmentDetail, updateAppointment, selectDepartment, selectDoctor } from '../../../ducks'
 import { isEmptyObject } from '../../../utils'
 
@@ -12,7 +11,12 @@ class AppointmentDetailScreen extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      isInit: false
+      isInit: false,
+      showModal: false,
+      autoClose: true,
+      closeTime: 2,
+      isShow: false,
+      promptContent: ''
     }
   }
 
@@ -55,34 +59,18 @@ class AppointmentDetailScreen extends Component {
   async cancelAppointment () {
     const appointmentId = this.props.appointmentId
     const visitStatus = '02'
+    this.setState({showModal: false})
     const error = await this.props.updateAppointment(this.props.client, { appointmentId, visitStatus })
-    if (error) return console.log('', error)
-    // todo
-    // swal({
-    //   text: '确认删除？',
-    //   showCancelButton: true,
-    //   confirmButtonText: 'Yes!',
-    //   cancelButtonText: 'No!'
-    // }).then(async () => {
-    //   const error = await this.props.updateAppointment(this.props.client, { appointmentId, visitStatus })
-    //   if (error) return console.log(error)// swal('', error)
-    //   return window.history.back()
-    // })
-    return this.props.url.back()
-    // this.popup.confirm({
-    //   content: '确定取消？',
-    //   ok: {
-    //     text: '确定',
-    //     style: { color: 'red' },
-    //     callback: async () => {
-    //       const error = await this.props.updateAppointment(this.props.client, { appointmentId, visitStatus })
-    //       console.log('error', error)
-    //       if (error) return this.popup.alert(error)
-    //       return this.props.url.goBack()
-    //     }
-    //   },
-    //   cancel: {text: '取消', style: {color: 'blue'}}
-    // })
+    if (error) {
+      return this.setState({
+        isShow: true,
+        promptContent: error
+      })
+    }
+    return this.setState({
+      isShow: true,
+      promptContent: '取消成功'
+    })
   }
 
   // 再次预约跳转医生排版
@@ -97,6 +85,25 @@ class AppointmentDetailScreen extends Component {
   gotoPay () {
     Router.push('/appointment/select_pay_way')
   }
+
+  renderModal () {
+    let modalHtml
+    modalHtml = <Modal showModalState={this.state.showModal}>
+      <ModalHeader classChild='modalheaderTip'>提示</ModalHeader>
+      <div style={{padding: 20, color: theme.fontcolor, textAlign: 'center'}}>
+        您确定取消本次挂号？
+      </div>
+      <ModalFooter>
+        <button className='modalBtn modalBtnBorder' onClick={(e) => { this.setState({showModal: false}) }}>以后再说</button>
+        <button className='modalBtn modalMainBtn' onClick={(e) => {
+          this.cancelAppointment()
+        }}
+        >确定</button>
+      </ModalFooter>
+    </Modal>
+    return modalHtml
+  }
+
   render () {
     if (this.state.isInit || this.props.loading) {
       return (<div><Loading showLoading={true} /></div>)
@@ -209,7 +216,7 @@ class AppointmentDetailScreen extends Component {
                   className='fullWidthBtn fullWidthBtnBackWhite'
                   style={{width: '50%'}}
                   onClick={() => {
-                    this.cancelAppointment()
+                    this.setState({showModal: true})
                   }} >取消挂号</button>
                   <button
                     className='fullWidthBtn fullWidthBtnMain'
@@ -234,6 +241,8 @@ class AppointmentDetailScreen extends Component {
               }
             }} >{buttonText}</button>*/}
         </div>
+        {this.renderModal()}
+        <Prompt isShow={this.state.isShow} autoClose={this.state.autoClose} closeTime={this.state.closeTime}>{this.state.promptContent}</Prompt>
         <style jsx>{`
           .detailView {
             margin: 10px;

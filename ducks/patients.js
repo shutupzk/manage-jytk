@@ -42,6 +42,8 @@ export function patients (state = initState, action = {}) {
       return Object.assign({}, state, { loading: false, error: action.error })
     case PROFILE_PATIENTS_REMOVE_SUCCESS:
       let newData = Object.assign({}, state.data)
+      console.log(newData)
+      console.log(action.patientId)
       delete newData[action.patientId]
       return Object.assign({}, state, {data: newData}, { loading: false, error: null, selectId: null })
     case PROFILE_PATIENTS_QUERY_SUCCESS:
@@ -149,13 +151,13 @@ export const addPatient = (client, { userId, name, phone, certificateNo, relatio
       mutation: ADD_PATIENT,
       variables: { userId, name, phone, certificateNo, relationship, carteVital, default: isDefault }
     })
-    if (data.error) {
+    if (data.errors) {
       dispatch({
         type: PROFILE_PATIENTS_ADD_FAIL,
-        error: data.error.message
+        error: data.errors[0].message
       })
       return {
-        error: data.error.error
+        error: data.errors[0].message
       }
     }
     const doc = data.data.createPatient
@@ -168,7 +170,6 @@ export const addPatient = (client, { userId, name, phone, certificateNo, relatio
       data: doc.id
     }
   } catch (e) {
-    console.log(e)
     dispatch({
       type: PROFILE_PATIENTS_ADD_FAIL,
       error: e.message
