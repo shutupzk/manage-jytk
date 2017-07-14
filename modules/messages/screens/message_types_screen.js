@@ -4,8 +4,8 @@ import moment from 'moment'
 import Router from 'next/router'
 import _ from 'lodash'
 
-import { queryMessageTypes, queryMessages, selectMessageType, queryLastMessage } from 'ducks'
-import { Loading, ErrCard, theme } from 'components'
+import { signin, queryMessageTypes, queryMessages, selectMessageType, queryLastMessage } from 'ducks'
+import { Loading, ErrCard, RequireLoginCard, theme } from 'components'
 
 class MessageTypesScreen extends Component {
   constructor (props) {
@@ -16,7 +16,14 @@ class MessageTypesScreen extends Component {
     }
   }
   componentWillMount () {
+    this.autoSignin()
     this.props.queryLastMessage(this.props.client, {limit: 0})
+  }
+  async autoSignin () {
+    if (!this.props.token) {
+      const error = await this.props.signin({ username: null, password: null })
+      if (error) return console.log(error)
+    }
   }
   getmessageTypeList (messageTypes) {
     let messageTypeArr = []
@@ -35,13 +42,19 @@ class MessageTypesScreen extends Component {
     return messageArr
   }
   render () {
+    if (!this.props.token) {
+      return (
+        <div>
+          <span><RequireLoginCard /></span>
+        </div>
+      )
+    }
     if (this.props.loading) {
       return (
         <Loading showLoading={this.props.loading} />
       )
     }
     const messageTypes = this.getMessages(this.props.messages)
-    console.log(messageTypes)
     return (
       <div style={{background: '#fff', borderTop: '1px solid #fff', borderColor: theme.bordercolor, marginTop: theme.tbmargin}}>
         {
@@ -87,10 +100,11 @@ class MessageTypesScreen extends Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
+    token: state.user.data.token,
     loading: state.lastMessages.loading,
     error: state.lastMessages.error,
     messages: state.lastMessages.data
   }
 }
 
-export default connect(mapStateToProps, { queryMessageTypes, queryMessages, selectMessageType, queryLastMessage })(MessageTypesScreen)
+export default connect(mapStateToProps, { signin, queryMessageTypes, queryMessages, selectMessageType, queryLastMessage })(MessageTypesScreen)

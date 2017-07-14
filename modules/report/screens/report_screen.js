@@ -5,11 +5,11 @@ import localforage from 'localforage'
 import _ from 'lodash'
 import moment from 'moment'
 import {REPORT} from 'config'
-import {Loading, FilterCard, FilterSelect, FilterTime, Modal, ModalHeader, ModalFooter, TabHeader, theme, Prompt, CardWhite, ErrCard, NoDataCard} from 'components'
+import {Loading, RequireLoginCard, FilterCard, FilterSelect, FilterTime, Modal, ModalHeader, ModalFooter, TabHeader, theme, Prompt, CardWhite, ErrCard, NoDataCard} from 'components'
 // import RangeDemo from '../components/date_rang'
 
 import {
-  // signin,
+  signin,
   // queryUser,
   queryPatients,
   selectPatient,
@@ -46,7 +46,14 @@ class ReportScreen extends Component {
     //   this.setState({isInit: true})
     //   this.queryReport()
     // }
+    this.autoSignin()
     this.queryPatient(this.props)
+  }
+  async autoSignin () {
+    if (!this.props.token) {
+      const error = await this.props.signin({ username: null, password: null })
+      if (error) return console.log(error)
+    }
   }
   componentWillReceiveProps (nextProps) {
     if (!isEmptyObject(nextProps.patients) && isEmptyObject(nextProps.laboratories) && !nextProps.selectPatientId) {
@@ -287,6 +294,13 @@ class ReportScreen extends Component {
   }
 
   render () {
+    if (!this.props.token) {
+      return (
+        <div>
+          <span><RequireLoginCard /></span>
+        </div>
+      )
+    }
     if (this.props.loading || this.state.isInit) {
       return (
         <div><Loading showLoading>loading...</Loading></div>
@@ -351,6 +365,7 @@ class ReportScreen extends Component {
 
 function mapStateToProps (state) {
   return {
+    token: state.user.data.token,
     patients: state.patients.data,
     selectPatientId: state.patients.selectId,
     examinations: state.examinations.data,
@@ -363,7 +378,7 @@ function mapStateToProps (state) {
 }
 
 export default connect(mapStateToProps, {
-  // signin,
+  signin,
   // queryUser,
   queryPatients,
   selectPatient,

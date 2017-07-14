@@ -1,6 +1,7 @@
 // import 'isomorphic-fetch'
 import React from 'react'
 import Router from 'next/router'
+import {RequireLoginCard} from 'components'
 import { ApolloProvider, getDataFromTree } from 'react-apollo'
 import { initClient, initStore } from './store'
 import localforage from 'localforage'
@@ -8,6 +9,16 @@ import localforage from 'localforage'
 export default function (Component) {
   class Auth extends React.Component {
     static async getInitialProps (ctx) {
+      console.log(process.browser ? document.cookie : '')
+      if (process.browser) {
+        const arrStr = document.cookie.split('; ')
+        for (let i = 0; i < arrStr.length; i++) {
+          var temp = arrStr[i].split('=')
+          if (temp[0] === 'wechatUserCookie ') {
+            window.alert(temp[1])
+          }
+        }
+      }
       const headers = ctx.req ? ctx.req.headers : {}
       const client = initClient(headers)
       const store = initStore(client, client.initialState)
@@ -39,6 +50,7 @@ export default function (Component) {
       super(props)
       this.client = initClient(this.props.headers, this.props.initialState)
       this.store = initStore(this.client, this.props.initialState)
+      this.state = {token: undefined}
     }
 
     async componentWillMount () {
@@ -57,7 +69,8 @@ export default function (Component) {
       // } else {
       //   window.alert('这是PC')
       // }
-      // let token = await localforage.getItem('token')
+      let token = await localforage.getItem('token')
+      this.setState({token})
       // if (this.props.url.pathname !== '/' && this.props.url.pathname !== '/signin' && this.props.url.pathname !== '/signup' && this.props.url.pathname !== '/signup/signup_compelete' && this.props.url.pathname !== '/hospital' && !token) {
       //   Router.push('/signin')
       // }

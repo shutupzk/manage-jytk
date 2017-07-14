@@ -3,8 +3,8 @@ import { connect } from 'react-redux'
 import localforage from 'localforage'
 // import swal from 'sweetalert2'
 // import moment from 'moment'
-import {theme} from 'components'
-import {addDoctorEvaluate} from '../../../ducks'
+import {theme, RequireLoginCard, Prompt} from 'components'
+import {signin, addDoctorEvaluate} from '../../../ducks'
 import Stars from '../components/stars'
 class AddDoctorEvaluateScreen extends Component {
   constructor (props) {
@@ -12,7 +12,20 @@ class AddDoctorEvaluateScreen extends Component {
     this.state = {
       advice: '',
       technologyScore: 5,
-      serviceScore: 5
+      serviceScore: 5,
+      isShow: false,
+      autoClose: true,
+      closeTime: 2,
+      promptContent: ''
+    }
+  }
+  componentWillMount () {
+    this.autoSignin()
+  }
+  async autoSignin () {
+    if (!this.props.token) {
+      const error = await this.props.signin({ username: null, password: null })
+      if (error) return console.log(error)
     }
   }
   async submitEvaluate () {
@@ -22,7 +35,10 @@ class AddDoctorEvaluateScreen extends Component {
     let userId = await localforage.getItem('userId')
     let doctorId = this.props.doctorId || this.props.url.query.doctorId
     if (!advice) {
-      console.log('建议不能为空')
+      this.setState({
+        isShow: true,
+        promptContent: '其他建议不能为空'
+      })
       return
     }
     this.props.addDoctorEvaluate(this.props.client, {userId, doctorId, technologyScore, serviceScore, advice})
@@ -42,6 +58,9 @@ class AddDoctorEvaluateScreen extends Component {
   }
   render () {
     // var doctorId = this.props.doctorId || this.props.url.query.doctorId
+    if (!this.props.token) {
+      return (<div><RequireLoginCard /></div>)
+    }
     return (
       <div>
         <div style={{backgroundColor: '#ffffff', padding: '25px 15px', borderBottom: '1px solid #fff', borderColor: theme.bordercolor}}>
@@ -65,6 +84,7 @@ class AddDoctorEvaluateScreen extends Component {
             className='btnBG btnBGMain'
           >提交</button>
         </div>
+        <Prompt isShow={this.state.isShow} autoClose={this.state.autoClose} closeTime={this.state.closeTime}>{this.state.promptContent}</Prompt>
       </div>
     )
   }
@@ -72,6 +92,7 @@ class AddDoctorEvaluateScreen extends Component {
 
 function mapStateToProps (state) {
   return {
+    token: state.user.data.token,
     doctors: state.doctors.data,
     doctorId: state.doctors.selectId,
     error: state.doctors.error,
@@ -79,4 +100,4 @@ function mapStateToProps (state) {
   }
 }
 
-export default connect(mapStateToProps, { addDoctorEvaluate })(AddDoctorEvaluateScreen)
+export default connect(mapStateToProps, { signin, addDoctorEvaluate })(AddDoctorEvaluateScreen)

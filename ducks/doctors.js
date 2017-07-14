@@ -158,7 +158,28 @@ const QUERY_DOCTORS = gql`
     }
   }
 `
-
+const QUERY_DOCTORS2 = gql`
+  query ($id: ObjID!){
+    department(id: $id) {
+      id,
+      deptName
+      departmentHasDoctors {
+        id,
+        doctor {
+          id,
+          doctorName,
+          title,
+          major,
+          description,
+          remark,
+          recommend,
+          hot,
+          isAppointment
+        }
+      }
+    }
+  }
+`
 // 获取医生列表
 export const queryDoctors = (client, {departmentId}) => async dispatch => {
   dispatch({
@@ -166,29 +187,48 @@ export const queryDoctors = (client, {departmentId}) => async dispatch => {
   })
   try {
     const userId = await localforage.getItem('userId')
-    let data = await client.query({ query: QUERY_DOCTORS, variables: {id: departmentId, userId} })
-    if (data.errors) {
-      return dispatch({
-        type: HOSPITAL_DOCTORS_FAIL,
-        error: data.errors[0].message
-      })
-    }
-    let department = data.data.department
-    let doctors = {}
-    for (let doc of department.departmentHasDoctors) {
-      doctors[doc.doctor.id] = Object.assign({}, doc.doctor, { departmentId: department.id, deptName: department.deptName })
-      for (let user of doc.doctor.userHasDoctors) {
-        if (user.doctor.id === doc.doctor.id) {
-          const userHasDoctorId = user.id
-          const isMyDoctor = true
-          doctors[doc.doctor.id] = Object.assign({}, doc.doctor, { departmentId: department.id, deptName: department.deptName, userHasDoctorId, isMyDoctor })
+    if (userId) {
+      let data = await client.query({ query: QUERY_DOCTORS, variables: {id: departmentId, userId} })
+      if (data.errors) {
+        return dispatch({
+          type: HOSPITAL_DOCTORS_FAIL,
+          error: data.errors[0].message
+        })
+      }
+      let department = data.data.department
+      let doctors = {}
+      for (let doc of department.departmentHasDoctors) {
+        doctors[doc.doctor.id] = Object.assign({}, doc.doctor, { departmentId: department.id, deptName: department.deptName })
+        for (let user of doc.doctor.userHasDoctors) {
+          if (user.doctor.id === doc.doctor.id) {
+            const userHasDoctorId = user.id
+            const isMyDoctor = true
+            doctors[doc.doctor.id] = Object.assign({}, doc.doctor, { departmentId: department.id, deptName: department.deptName, userHasDoctorId, isMyDoctor })
+          }
         }
       }
+      return dispatch({
+        type: HOSPITAL_DOCTORS_SUCCESS,
+        doctors
+      })
+    } else {
+      let data = await client.query({ query: QUERY_DOCTORS2, variables: {id: departmentId} })
+      if (data.errors) {
+        return dispatch({
+          type: HOSPITAL_DOCTORS_FAIL,
+          error: data.errors[0].message
+        })
+      }
+      let department = data.data.department
+      let doctors = {}
+      for (let doc of department.departmentHasDoctors) {
+        doctors[doc.doctor.id] = Object.assign({}, doc.doctor, { departmentId: department.id, deptName: department.deptName, isMyDoctor: false })
+      }
+      return dispatch({
+        type: HOSPITAL_DOCTORS_SUCCESS,
+        doctors
+      })
     }
-    return dispatch({
-      type: HOSPITAL_DOCTORS_SUCCESS,
-      doctors
-    })
   } catch (e) {
     console.log(e)
     return dispatch({

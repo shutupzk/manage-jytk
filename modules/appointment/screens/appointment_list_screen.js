@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Router from 'next/router'
 import _ from 'lodash'
-import {Loading, FilterCard, FilterSelect, FilterTime, Modal, ModalHeader, ModalFooter, FilterTimeResult, theme, TabHeader, ErrCard, NoDataCard} from 'components'
+import {Loading, RequireLoginCard, FilterCard, FilterSelect, FilterTime, Modal, ModalHeader, ModalFooter, FilterTimeResult, theme, TabHeader, ErrCard, NoDataCard} from 'components'
 
 import {
   signin,
@@ -20,6 +20,7 @@ class AppointmentListScreen extends Component {
   constructor (props) {
     super(props)
     this.state = {
+      isLogin: true,
       isInit: false,
       selectedId: '',
       startDate: undefined,
@@ -220,8 +221,11 @@ class AppointmentListScreen extends Component {
   }
 
   render () {
+    if (!this.props.userId) {
+      return <RequireLoginCard />
+    }
     if (this.props.loading || this.state.isInit) {
-      return <div><Loading showLoading={true}></Loading></div>
+      return <div><Loading showLoading /></div>
     }
     if (this.props.error) {
       return <div><ErrCard /></div>

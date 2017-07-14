@@ -13,7 +13,8 @@ class DiagnosisScreen extends Component {
   render () {
     return (
       <div style={{backgroundColor: '#fff'}}>
-        <div style={{padding: 20, textAlign: 'right', fontWeight: 'bold'}}><Link href='/diagnosis/body_parts'><a>列表</a></Link></div>
+        智能导诊
+        {/*<div style={{padding: 20, textAlign: 'right', fontWeight: 'bold'}}><Link href='/diagnosis/body_parts'><a>列表</a></Link></div>
         <div style={{display: 'flex', padding: 20}}>
           <div style={{flex: 2, textAlign: 'right'}}><div onClick={() => { this.setState({gender: !this.state.gender}) }}>{this.state.gender ? '女' : '男'}</div></div>
           <div style={{flex: 7, textAlign: 'center', height: 500}}>{
@@ -30,7 +31,7 @@ class DiagnosisScreen extends Component {
               )
           }</div>
           <div style={{flex: 3, paddingTop: 480}}><div onClick={() => { this.setState({frontBack: !this.state.frontBack}) }}>{this.state.frontBack ? '前' : '后'}</div></div>
-        </div>
+        </div>*/}
       </div>
     )
   }

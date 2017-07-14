@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Router from 'next/router'
 import localforage from 'localforage'
-import {Loading, ErrCard} from 'components'
+import {Loading, ErrCard, NoDataCard} from 'components'
 // import _ from 'lodash'
 
 import DoctorList from '../components/doctor_list'
@@ -84,7 +84,9 @@ class DoctorScreen extends Component {
     // })
     return (
       <div className='container'>
-        <DoctorList doctors={selectDoctors} userId={this.state.userId} toUrl={(docId) => { this.toUrl(docId) }} />
+        {
+          selectDoctors.length > 0 ? <DoctorList doctors={selectDoctors} userId={this.state.userId} toUrl={(docId) => { this.toUrl(docId) }} /> : <NoDataCard />
+        }
         {/* {tab(selectDoctors)} */}
       </div>
     )

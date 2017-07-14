@@ -6,11 +6,18 @@ import localforage from 'localforage'
 import { isEmptyObject } from '../../../utils'
 import {queryDoctors, createUserHasDoctor, removeUserHasDoctor} from '../../../ducks'
 import DoctorDetail from '../components/doctor_detail'
-import {ErrCard, Loading} from 'components'
+import {ErrCard, Loading, Prompt} from 'components'
 class DoctorDetailScreen extends Component {
   constructor (props) {
     super(props)
-    this.state = {toDetail: false, userId: '', isMyDoctor: true}
+    this.state = {toDetail: false,
+      userId: '',
+      isMyDoctor: true,
+      isShow: false,
+      autoClose: true,
+      closeTime: 2,
+      promptContent: ''
+    }
   }
   componentWillMount () {
     this.getUserId()
@@ -45,6 +52,12 @@ class DoctorDetailScreen extends Component {
     let doctorId = this.props.url.query.doctorId
     var doctor = this.props.doctors[doctorId]
     const userId = this.state.userId
+    if (!userId || userId === '') {
+      return this.setState({
+        isShow: true,
+        promptContent: '未登录无法收藏医生'
+      })
+    }
     if (isMyDoc) {
       const data = await this.props.removeUserHasDoctor(this.props.client, {id: doctor.userHasDoctorId, userId, doctorId: doctor.id})
       if (!data.error && data.data.isRemove) {
@@ -77,7 +90,10 @@ class DoctorDetailScreen extends Component {
       )
     }
     return (
-      <DoctorDetail doctor={doctor} isMyDoc={isMyDoc} toMyDoctor={() => { this.saveOrCancelMyDoctor(isMyDoc) }} gotoEvaluate={() => { this.gotoEvaluate() }} />
+      <div>
+        <DoctorDetail doctor={doctor} isMyDoc={isMyDoc} toMyDoctor={() => { this.saveOrCancelMyDoctor(isMyDoc) }} gotoEvaluate={() => { this.gotoEvaluate() }} />
+        <Prompt isShow={this.state.isShow} autoClose={this.state.autoClose} closeTime={this.state.closeTime}>{this.state.promptContent}</Prompt>
+      </div>
     )
   }
 }

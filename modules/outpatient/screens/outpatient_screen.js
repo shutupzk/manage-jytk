@@ -4,9 +4,9 @@ import localforage from 'localforage'
 import moment from 'moment'
 import _ from 'lodash'
 import Router from 'next/router'
-import {Loading, FilterCard, FilterSelect, FilterTime, Modal, ModalHeader, ModalFooter, FilterTimeResult, theme, TabHeader, ErrCard, NoDataCard} from 'components'
+import {Loading, RequireLoginCard, FilterCard, FilterSelect, FilterTime, Modal, ModalHeader, ModalFooter, FilterTimeResult, theme, TabHeader, ErrCard, NoDataCard} from 'components'
 
-import {queryOutpatient, queryPatients, queryOutpatientDetail, selectOutpatient} from '../../../ducks'
+import {signin, queryOutpatient, queryPatients, queryOutpatientDetail, selectOutpatient} from '../../../ducks'
 import { isEmptyObject } from '../../../utils'
 class OutpatientScreen extends Component {
   constructor (props) {
@@ -23,6 +23,9 @@ class OutpatientScreen extends Component {
   }
 
   componentWillMount () {
+    if (!this.props.token) {
+      this.autoSingn()
+    }
     if (isEmptyObject(this.props.patients) || isEmptyObject(this.props.outpatient)) {
       this.setState({isInit: true})
       this.queryOutPatient()
@@ -30,6 +33,11 @@ class OutpatientScreen extends Component {
       const key = Object.keys(this.props.patients)[0]
       this.setState({selectedId: key})
     }
+  }
+
+  async autoSingn () {
+    const error = await this.props.signin({ username: null, password: null })
+    if (error) return console.log(error)
   }
 
   async queryOutPatient () {
@@ -148,7 +156,13 @@ class OutpatientScreen extends Component {
   }
 
   render () {
-    console.log(this.props)
+    if (!this.props.token) {
+      return (
+        <div>
+          <span><RequireLoginCard /></span>
+        </div>
+      )
+    }
     if (this.props.loading || this.state.isInit) {
       return (<div><Loading showLoading>loading...</Loading></div>)
     }
@@ -241,6 +255,7 @@ class OutpatientScreen extends Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
+    token: state.user.data.token,
     outpatient: state.outpatient.data,
     patients: state.patients.data,
     loading: state.outpatient.loading || state.patients.loading,
@@ -248,4 +263,4 @@ function mapStateToProps (state) {
   }
 }
 
-export default connect(mapStateToProps, {queryOutpatient, queryPatients, queryOutpatientDetail, selectOutpatient})(OutpatientScreen)
+export default connect(mapStateToProps, {signin, queryOutpatient, queryPatients, queryOutpatientDetail, selectOutpatient})(OutpatientScreen)

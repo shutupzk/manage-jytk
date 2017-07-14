@@ -3,9 +3,9 @@ import { connect } from 'react-redux'
 import localforage from 'localforage'
 // import swal from 'sweetalert2'
 // import moment from 'moment'
-import {addDepartmentEvaluate} from '../../../ducks'
+import {signin, addDepartmentEvaluate} from '../../../ducks'
 import Stars from '../components/stars'
-import {theme} from 'components'
+import {theme, RequireLoginCard, Prompt} from 'components'
 function fnShow (lis, num) {
   num = num || 0
   for (var i = 0; i < lis.length; i++) {
@@ -18,7 +18,20 @@ class AddDepartmentEvaluateScreen extends Component {
     this.state = {
       advice: '',
       technologyScore: 5,
-      orderlyScore: 5
+      orderlyScore: 5,
+      isShow: false,
+      autoClose: true,
+      closeTime: 2,
+      promptContent: ''
+    }
+  }
+  componentWillMount () {
+    this.autoSignin()
+  }
+  async autoSignin () {
+    if (!this.props.token) {
+      const error = await this.props.signin({ username: null, password: null })
+      if (error) return console.log(error)
     }
   }
   async submitEvaluate () {
@@ -28,7 +41,10 @@ class AddDepartmentEvaluateScreen extends Component {
     let userId = await localforage.getItem('userId')
     let departmentId = this.props.departmentId || this.props.url.query.departmentId
     if (!advice) {
-      console.log('建议不能为空')
+      this.setState({
+        isShow: true,
+        promptContent: '其他建议不能为空'
+      })
       return
     }
     this.props.addDepartmentEvaluate(this.props.client, {userId, departmentId, technologyScore, orderlyScore, advice})
@@ -48,6 +64,9 @@ class AddDepartmentEvaluateScreen extends Component {
   }
   render () {
     // var departmentId = this.props.departmentId || this.props.url.query.departmentId
+    if (!this.props.token) {
+      return (<div><RequireLoginCard /></div>)
+    }
     return (
       <div>
         <div style={{backgroundColor: '#ffffff', padding: '25px 15px', borderBottom: '1px solid #fff', borderColor: theme.bordercolor}}>
@@ -76,6 +95,7 @@ class AddDepartmentEvaluateScreen extends Component {
             className='btnBG btnBGMain'
           >提交</button>
         </div>
+        <Prompt isShow={this.state.isShow} autoClose={this.state.autoClose} closeTime={this.state.closeTime}>{this.state.promptContent}</Prompt>
       </div>
     )
   }
@@ -83,6 +103,7 @@ class AddDepartmentEvaluateScreen extends Component {
 
 function mapStateToProps (state) {
   return {
+    token: state.user.data.token,
     departments: state.departments.data,
     departmentId: state.departments.selectId,
     error: state.departments.error,
@@ -90,4 +111,4 @@ function mapStateToProps (state) {
   }
 }
 
-export default connect(mapStateToProps, { addDepartmentEvaluate })(AddDepartmentEvaluateScreen)
+export default connect(mapStateToProps, { signin, addDepartmentEvaluate })(AddDepartmentEvaluateScreen)
