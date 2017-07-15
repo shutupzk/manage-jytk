@@ -15,7 +15,7 @@ import {
   PROFILE_FUNCTION_LIST,
   CARTEVITAL,
   PORT
-} from './guangdong_index'
+} from './luzhong_index'
 
 export {
   server,
