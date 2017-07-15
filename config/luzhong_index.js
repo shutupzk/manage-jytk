@@ -5,7 +5,7 @@ import withData from './withData'
 // 医院名称
 const HOSPITAL_NAME = '鲁中医院'
 // const API_SERVER = '218.58.137.218:9002' // 山东鲁中
-const API_SERVER = '0.0.0.0:9003' // 山东鲁中
+const API_SERVER = '0.0.0.0:9002' // 山东鲁中
 const PORT = '9003' // 前端端口
 const CARTEVITAL = false // 否开通医保卡
 
