@@ -201,11 +201,11 @@ export const getUserCookie = () => async (dispatch) => {
     console.log(data)
     dispatch({
       type: PROFILE_USER_COOKIE_SUCCESS,
-      data
+      data: data.data
     })
     return null
   } catch (e) {
-    console.log(e)
+    console.log('getcookie========', e.message)
     dispatch({
       type: PROFILE_USER_COOKIE_FAIL,
       error: e.message

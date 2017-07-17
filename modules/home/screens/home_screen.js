@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import {HOSPITAL_NAME} from 'config'
 import {
   XianLinHome,
-	GuangDongHome,
+  GuangDongHome,
   LuZhongHome
 } from '../layouts'
 
@@ -12,7 +12,7 @@ class Home extends Component {
     this.state = {
     }
   }
-  
+
   render () {
     return (
       <div>

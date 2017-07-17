@@ -34,9 +34,9 @@ class GuangDongHome extends Component {
     if (this.props.messageLoading || this.state.isInit) {
       return (<div><Loading showLoading /></div>)
     }
-    if (this.props.error) {
-      return (<ErrCard content={this.props.error} />)
-    }
+    // if (this.props.error) {
+    //   return (<ErrCard content={this.props.error} />)
+    // }
     console.log(this.props.user)
     console.log(this.props.cookie)
     // window.alert(this.props.user)
