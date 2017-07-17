@@ -15,7 +15,7 @@ export default function (Component) {
           window.alert(arrStr[i])
           var temp = arrStr[i].split('=')
           window.alert(temp[0])
-          if (temp[0] === 'wechatUserCookie ') {
+          if (temp[0] === 'wechatUserCookie') {
             window.alert(temp[1])
             console.log(JSON.parse(temp[1]))
             window.alert(JSON.parse(temp[1]))
