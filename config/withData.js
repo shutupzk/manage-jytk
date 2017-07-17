@@ -12,6 +12,7 @@ export default function (Component) {
       if (process.browser) {
         const arrStr = document.cookie.split('; ')
         for (let i = 0; i < arrStr.length; i++) {
+          window.alert(arrStr[i])
           var temp = arrStr[i].split('=')
           if (temp[0] === 'wechatUserCookie ') {
             window.alert(temp[1])

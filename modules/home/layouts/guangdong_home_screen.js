@@ -6,6 +6,7 @@ import moment from 'moment'
 import {HOME_PAGE} from 'config'
 import { CardWhite, Loading, ErrCard, theme, NoDataCard } from 'components'
 import {
+  getUserCookie,
   queryMessageTypes,
   queryMessages,
   selectMessageType,
@@ -23,6 +24,7 @@ class GuangDongHome extends Component {
   }
   componentWillMount () {
     this.props.queryLastMessage(this.props.client, {limit: 3})
+    this.props.getUserCookie()
   }
   goHospitalPage () {
     console.log('====')
@@ -32,9 +34,13 @@ class GuangDongHome extends Component {
     if (this.props.messageLoading || this.state.isInit) {
       return (<div><Loading showLoading /></div>)
     }
-    if (this.props.messageError) {
+    if (this.props.error) {
       return (<ErrCard content={this.props.error} />)
     }
+    console.log(this.props.user)
+    console.log(this.props.cookie)
+    // window.alert(this.props.user)
+    // window.alert(this.props.cookie)
     const messages = this.props.messages || []
     // let hospital = this.getHospital(this.props.hospitals)
     return (
@@ -139,7 +145,10 @@ class GuangDongHome extends Component {
 }
 function mapStateToProps (state) {
   return {
-    messageLoading: state.lastMessages.loading,
+    cookie: state.user.data.cookie,
+    user: state.user.data,
+    error: state.user.error,
+    messageLoading: state.lastMessages.loading || state.user.loading,
     messageError: state.lastMessages.error,
     messages: state.lastMessages.data
   }
@@ -147,4 +156,5 @@ function mapStateToProps (state) {
 export default connect(mapStateToProps, {queryMessageTypes,
   queryMessages,
   selectMessageType,
-  queryLastMessage})(GuangDongHome)
+  queryLastMessage,
+  getUserCookie})(GuangDongHome)

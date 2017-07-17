@@ -32,6 +32,10 @@ const CHECK_VERIFY_CODE = 'profile/check/verify/code'
 const CHECK_VERIFY_CODE_SUCCESS = 'profile/check/verify/code/success'
 const CHECK_VERIFY_CODE_FAIL = 'profile/check/verify/code/fail'
 
+const PROFILE_USER_COOKIE = 'profile/user/cookie'
+const PROFILE_USER_COOKIE_SUCCESS = 'profile/user/cookie/success'
+const PROFILE_USER_COOKIE_FAIL = 'profile/user/cookie/fail'
+
 const initState = {
   data: {
     token: null,
@@ -45,12 +49,14 @@ const initState = {
 export function user (state = initState, action = {}) {
   // console.log('action', action)
   switch (action.type) {
+    case PROFILE_USER_COOKIE:
     case PROFILE_USER_SIGNUP:
     case PROFILE_USER_SIGNIN:
     case PROFILE_USER_SIGNOUT:
     case PROFILE_USER_QUERYUSER:
     case PROFILE_USER_UPDATEPASSWORD:
       return Object.assign({}, state, { loading: true, error: null })
+    case PROFILE_USER_COOKIE_FAIL:
     case PROFILE_USER_SIGNUP_FAIL:
     case PROFILE_USER_SIGNIN_FAIL:
     case PROFILE_USER_SIGNOUT_FAIL:
@@ -101,6 +107,13 @@ export function user (state = initState, action = {}) {
         {},
         state,
         { data: Object.assign({}, state.data, { code: action.code }) },
+        { loading: false, error: null }
+      )
+    case PROFILE_USER_COOKIE_SUCCESS:
+      return Object.assign(
+        {},
+        state,
+        { data: Object.assign({}, state.data, { cookie: action.data }) },
         { loading: false, error: null }
       )
     default:
@@ -174,6 +187,31 @@ export const signin = ({ username, password }) => async (dispatch) => {
     password
   })
   return null
+}
+
+
+export const getUserCookie = () => async (dispatch) => {
+  dispatch({
+    type: PROFILE_USER_COOKIE
+  })
+  // const url = 'http://120.92.57.18:9180/wechat/auth/getUserCookie'
+  const url = 'http://syt.wechat.uthealth.com.cn/wechat/auth/getUserCookie'
+  try {
+    const data = await axios.post(url)
+    console.log(data)
+    dispatch({
+      type: PROFILE_USER_COOKIE_SUCCESS,
+      data
+    })
+    return null
+  } catch (e) {
+    console.log(e)
+    dispatch({
+      type: PROFILE_USER_COOKIE_FAIL,
+      error: e.message
+    })
+    return e.message
+  }
 }
 
 const doSignin = async (dispatch, { username, password }) => {
