@@ -180,7 +180,8 @@ export const signin = ({ username, password }) => async (dispatch) => {
   if (!username && !localUsername) return
   if (username || (username !== localUsername && password)) {
     if (!password) return
-    return doSignin(dispatch, {username, password})
+    const openId = 'oPEWPwX1Q1wGg2wjc9ytBqrkcLbU'
+    return doSignin(dispatch, {username, password, openId})
   }
   password = loacalPassword
   dispatch({
@@ -217,7 +218,7 @@ export const getUserCookie = () => async (dispatch) => {
     return e.message
   }
 }
-const cookieJsons = {
+const cookieJson = {
   refreshToken: 'x39_E6AOyl5f8wZ2vNIUDB_uYdtZOJ0TgCGpXou0cXw5gaqKmMT4WeNCdlNrTG8wfSt9Zc6wHkBZbYJJPftgezIgR3YEXpstHpfidWExJYs',
   accessToken: 'cZpk8ygp2AJOIH6sjqco5bfWo3WDvqCtLEnJ8kRkgllHjK3Y2cdtS6eu5lAHLkzHOkRAqHvFBbKWvF-ILSLwCWGG4sLkyeVjvkCmP8Woypo',
   openid: 'oPEWPwX1Q1wGg2wjc9ytBqrkcLbU'
@@ -233,12 +234,14 @@ export const getUserCookie2 = () => async (dispatch) => {
       var temp = arrStr[i].split('=')
       if (temp[0] === 'wechatUserCookie') {
         const cookieValue = unescape(decodeURI(temp[1]))
-        const cookieJson = cookieJsons // JSON.parse(cookieValue)
+        const cookieJson = JSON.parse(cookieValue)
         cookie = Object.assign({}, cookieJson)
+        window.alert(cookie)
         localforage.setItem('openId', cookieJson.openid)
       }
     }
   }
+  // localforage.setItem('openId', cookieJson.openid)
   dispatch({
     type: PROFILE_USER_COOKIE2_SUCCESS,
     data: cookie
@@ -246,7 +249,7 @@ export const getUserCookie2 = () => async (dispatch) => {
   return null
 }
 
-const doSignin = async (dispatch, { username, password }) => {
+const doSignin = async (dispatch, { username, password, openId }) => {
   dispatch({
     type: PROFILE_USER_SIGNIN
   })
@@ -254,7 +257,8 @@ const doSignin = async (dispatch, { username, password }) => {
   try {
     const data = await axios.post(url, {
       username: username,
-      password: password
+      password: password,
+      openId
     })
     const token = data.data.token
     const userId = data.data.userId

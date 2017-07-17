@@ -57,7 +57,7 @@ const queryGql = gql`
         totalPayment
         balance
         status
-        IPFlag
+        iPFlag
         nationalityID
         raceID
         professioinID
