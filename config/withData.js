@@ -12,15 +12,12 @@ export default function (Component) {
       if (process.browser) {
         const arrStr = document.cookie.split('; ')
         for (let i = 0; i < arrStr.length; i++) {
-          window.alert(arrStr[i])
-          console.log(eval('(' + arrStr[i] + ')'))
           var temp = arrStr[i].split('=')
           if (temp[0] === 'wechatUserCookie ') {
-            window.alert(typeof(temp[1]))
-            var json = (new Function('return ' + temp[1]))()
-            window.alert(json)
+            window.alert(temp[1])
+            console.log(JSON.parse(temp[1]))
             window.alert(JSON.parse(temp[1]))
-            window.alert(eval('(' + temp[1] + ')'))
+            console.log((eval('(' + temp[1] + ')')))
           }
         }
       }
