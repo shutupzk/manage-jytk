@@ -15,9 +15,10 @@ export default function (Component) {
           var temp = arrStr[i].split('=')
           if (temp[0] === 'wechatUserCookie') {
             window.alert(temp[1])
-            window.alert(decodeURI(temp[1]))
+            // window.alert(decodeURI(temp[1]))
+            window.alert(unescape(decodeURI(temp[1])))
             // console.log(JSON.parse(temp[1]))
-            // window.alert(JSON.parse(temp[1]))
+            window.alert(JSON.parse(temp[1]))
           }
         }
       }
