@@ -25,7 +25,7 @@ class GuangDongHome extends Component {
   }
   componentWillMount () {
     this.props.queryLastMessage(this.props.client, {limit: 3})
-    this.props.getUserCookie()
+    // this.props.getUserCookie()
     this.props.getUserCookie2()
   }
   goHospitalPage () {

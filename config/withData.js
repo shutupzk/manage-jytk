@@ -14,11 +14,8 @@ export default function (Component) {
         for (let i = 0; i < arrStr.length; i++) {
           var temp = arrStr[i].split('=')
           if (temp[0] === 'wechatUserCookie') {
-            window.alert(temp[1])
-            window.alert(unescape(decodeURI(temp[1])))
             const cookieValue = unescape(decodeURI(temp[1]))
             const cookieJson = JSON.parse(cookieValue)
-            window.alert(cookieJson.openid)
             localforage.setItem('openId', cookieJson.openid)
           }
         }

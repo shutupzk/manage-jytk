@@ -36,6 +36,9 @@ const PROFILE_USER_COOKIE = 'profile/user/cookie'
 const PROFILE_USER_COOKIE_SUCCESS = 'profile/user/cookie/success'
 const PROFILE_USER_COOKIE_FAIL = 'profile/user/cookie/fail'
 
+const PROFILE_USER_COOKIE2_SUCCESS = 'profile/user/cookie2/success'
+const PROFILE_USER_COOKIE2 = 'profile/user/cookie2'
+
 const initState = {
   data: {
     token: null,
@@ -109,6 +112,7 @@ export function user (state = initState, action = {}) {
         { data: Object.assign({}, state.data, { code: action.code }) },
         { loading: false, error: null }
       )
+    case PROFILE_USER_COOKIE2_SUCCESS:
     case PROFILE_USER_COOKIE_SUCCESS:
       return Object.assign(
         {},
@@ -216,26 +220,23 @@ export const getUserCookie = () => async (dispatch) => {
 
 export const getUserCookie2 = () => async (dispatch) => {
   dispatch({
-    type: PROFILE_USER_COOKIE
+    type: PROFILE_USER_COOKIE2
   })
-  let cookie = ''
+  let cookie = {}
   if (process.browser) {
     const arrStr = document.cookie.split('; ')
     for (let i = 0; i < arrStr.length; i++) {
       var temp = arrStr[i].split('=')
       if (temp[0] === 'wechatUserCookie') {
-        cookie = temp[1]
-        console.log(temp[1])
-        window.alert(temp[1])
-        window.alert(decodeURI(temp[1]))
-        window.alert(unescape(decodeURI(temp[1])))
-        // console.log(JSON.parse(temp[1]))
-        // window.alert(JSON.parse(temp[1]))
+        const cookieValue = unescape(decodeURI(temp[1]))
+        const cookieJson = JSON.parse(cookieValue)
+        cookie = Object.assign({}, cookieJson)
+        localforage.setItem('openId', cookieJson.openid)
       }
     }
   }
   dispatch({
-    type: PROFILE_USER_COOKIE_SUCCESS,
+    type: PROFILE_USER_COOKIE2_SUCCESS,
     data: cookie
   })
   return null
