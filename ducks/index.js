@@ -2,7 +2,7 @@ import { hospitals, queryHospitals, queryHospitalBuildings, selectHospital, sele
 import { departments, queryDepartments, queryDepartmentDetail, selectDepartment, searchDepartments, removeSearchDepIds, addDepartmentEvaluate, queryChildDepartments, selectParentDepartment } from './departments'
 import { doctors, queryDoctors, queryDoctorDetail, selectDoctor, removeSelectDoctor, queryMyDoctors, createUserHasDoctor, removeUserHasDoctor, searchDoctors, removeSearchDocIds, setQueryFlag } from './doctors'
 import { doctorEvaluates, addDoctorEvaluate } from './doctor_evaluate'
-import { user, signup, signin, signout, queryUser, updatePassword, savePhone, currentUser, forgotPassword, sendVerifyCode, checkVerifyCode, getUserCookie } from './user'
+import { user, signup, signin, signout, queryUser, updatePassword, savePhone, currentUser, forgotPassword, sendVerifyCode, checkVerifyCode, getUserCookie, getUserCookie2 } from './user'
 import { patients, queryPatients, addPatient, removePatient, updatePatient, selectPatient, clearPateints, updatePatientDefault } from './patients'
 import { appointments, queryAppointments, queryAppointmentDetail, selectAppointment, addAppointment, updateAppointment } from './appointments'
 import { schedules, querySchedules, queryScheduleDetail, selectSchedule } from './schedules'
@@ -132,5 +132,6 @@ export {
     queryLastMessage,
     queryPayments,
     selectPayment,
-    getUserCookie
+    getUserCookie,
+    getUserCookie2
 }

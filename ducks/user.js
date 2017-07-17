@@ -214,6 +214,33 @@ export const getUserCookie = () => async (dispatch) => {
   }
 }
 
+export const getUserCookie2 = () => async (dispatch) => {
+  dispatch({
+    type: PROFILE_USER_COOKIE
+  })
+  let cookie = ''
+  if (process.browser) {
+    const arrStr = document.cookie.split('; ')
+    for (let i = 0; i < arrStr.length; i++) {
+      var temp = arrStr[i].split('=')
+      if (temp[0] === 'wechatUserCookie') {
+        cookie = temp[1]
+        console.log(temp[1])
+        window.alert(temp[1])
+        window.alert(decodeURI(temp[1]))
+        window.alert(unescape(decodeURI(temp[1])))
+        // console.log(JSON.parse(temp[1]))
+        // window.alert(JSON.parse(temp[1]))
+      }
+    }
+  }
+  dispatch({
+    type: PROFILE_USER_COOKIE_SUCCESS,
+    data: cookie
+  })
+  return null
+}
+
 const doSignin = async (dispatch, { username, password }) => {
   dispatch({
     type: PROFILE_USER_SIGNIN

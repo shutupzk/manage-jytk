@@ -7,6 +7,7 @@ import {HOME_PAGE} from 'config'
 import { CardWhite, Loading, ErrCard, theme, NoDataCard } from 'components'
 import {
   getUserCookie,
+  getUserCookie2,
   queryMessageTypes,
   queryMessages,
   selectMessageType,
@@ -25,6 +26,7 @@ class GuangDongHome extends Component {
   componentWillMount () {
     this.props.queryLastMessage(this.props.client, {limit: 3})
     this.props.getUserCookie()
+    this.props.getUserCookie2()
   }
   goHospitalPage () {
     console.log('====')
@@ -157,4 +159,5 @@ export default connect(mapStateToProps, {queryMessageTypes,
   queryMessages,
   selectMessageType,
   queryLastMessage,
+  getUserCookie2,
   getUserCookie})(GuangDongHome)
