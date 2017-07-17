@@ -26,7 +26,7 @@ class GuangDongHome extends Component {
   }
   componentWillMount () {
     this.props.queryLastMessage(this.props.client, {limit: 3})
-    this.props.getUserCookie()
+    // this.props.getUserCookie()
     this.getUserCookie()
   }
   async getUserCookie () {
@@ -46,10 +46,6 @@ class GuangDongHome extends Component {
     // if (this.props.error) {
     //   return (<ErrCard content={this.props.error} />)
     // }
-    console.log(this.props.user)
-    console.log(this.props.cookie)
-    // window.alert(this.props.user)
-    window.alert(this.props.cookie)
     const messages = this.props.messages || []
     // let hospital = this.getHospital(this.props.hospitals)
     return (
