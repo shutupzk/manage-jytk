@@ -2,6 +2,7 @@ import React, {Component } from 'react'
 import {connect} from 'react-redux'
 import Router from 'next/router'
 import localforage from 'localforage'
+import {Loading, ErrCard} from 'components'
 
 import { queryPatients, selectPatient } from '../../../ducks'
 // import { ages } from '../../../utils'
@@ -33,10 +34,10 @@ class PatientListScreen extends Component {
   }
   render () {
     if (this.props.loading) {
-      return <div>loading</div>
+      return <div><Loading showLoading={true} /></div>
     }
     if (this.props.error) {
-      return <div>error</div>
+      return <div><ErrCard /></div>
     }
     // var height = process.browser ? window.innerHeight - 100 : ''
     return (

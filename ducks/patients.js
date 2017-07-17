@@ -187,7 +187,7 @@ const REMOVE_PATIENT = gql`
 `
 
 export const removePatient = (client, { patientId }) => async dispatch => {
-  console.log(patientId)
+  console.log('----patientId----', patientId)
   dispatch({
     type: PROFILE_PATIENTS_REMOVE
   })

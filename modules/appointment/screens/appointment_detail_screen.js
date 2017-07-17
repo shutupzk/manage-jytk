@@ -204,8 +204,8 @@ class AppointmentDetailScreen extends Component {
           </div>
           {
             HOSPITAL_NAME.indexOf('鲁中') > -1 ?
-              <div className={'subView'}>
-                <div style={{color: '#000000', marginBottom: 3}}><b>挂号订单状态</b></div>
+               <div className={'subView'}>
+                {/* <div style={{color: '#000', marginBottom: 3}}><b>挂号订单状态</b></div>
                 <div className='flex tb-flex'>
                   <header style={{textAlign: 'right', width: '26%', marginRight: 6}}>
                     <strong style={{fontSize: theme.nfontsize}}>12:30</strong>
@@ -213,8 +213,8 @@ class AppointmentDetailScreen extends Component {
                   </header>
                   <article style={{background: theme.nfontcolor, width: 10, height: 10, borderRadius: '100%'}}></article>
                   <section style={{color: theme.mainfontcolor, lineHeight: '20px', marginLeft: 6}}>支付宝缴费成功，付款流水号1234560008910234</section>
-                </div>
-              </div>
+                </div> */}
+              </div> 
             : ''
           }
 

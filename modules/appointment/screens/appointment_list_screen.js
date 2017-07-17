@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Router from 'next/router'
 import _ from 'lodash'
+import {HOSPITAL_NAME} from 'config'
 import {Loading, RequireLoginCard, FilterCard, FilterSelect, FilterTime, Modal, ModalHeader, ModalFooter, FilterTimeResult, theme, TabHeader, ErrCard, NoDataCard} from 'components'
 
 import {
@@ -231,6 +232,7 @@ class AppointmentListScreen extends Component {
       return <div><ErrCard /></div>
     }
     const { appointments, selectAppointment } = this.props
+    console.log('-----appointments', appointments)
     const dataList = getListData(this.state, appointments, this.state.selectedId)
     // var height = process.browser ? window.innerHeight - 50 : ''
     // var height = window.innerHeight - 50
@@ -251,7 +253,7 @@ class AppointmentListScreen extends Component {
                 {this.ItemView(item)}
               </div>
             )
-          }) : <NoDataCard tip='暂无数据' />
+          }) : <NoDataCard tip='此就诊人暂无数据' />
         }
         <style jsx global>{`
           .listItem {

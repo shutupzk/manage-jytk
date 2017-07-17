@@ -7,6 +7,7 @@ import { Prompt, theme } from 'components'
 import { ages, getBirthday, getSex, checkPhoneNumber, checkIdCard } from '../../../utils'
 import { addPatient, queryPatients, updatePatientDefault } from '../../../ducks'
 import { connect } from 'react-redux'
+import {HOSPITAL_NAME} from 'config'
 
 class PatientAddScreen extends Component {
   constructor (props) {
@@ -35,6 +36,7 @@ class PatientAddScreen extends Component {
     const phone = this.state.phone
     const certificateNo = this.state.certificateNo
     const relationship = this.state.relationship
+    console.log('-----relationship', relationship)
     const carteVital = this.state.carteVital
     const isDefault = this.state.default
     if (!name) {
@@ -146,20 +148,46 @@ class PatientAddScreen extends Component {
             <input placeholder={'输入手机号'} className='textInput itemViewRight'
               onChange={(e) => this.setState({ phone: e.target.value, isShow: false })} />
           </div>
-          {/* <div className={'item'} key={'relationship'}>
-            <span className={'textLeft'}>与本人关系</span>
-            <input placeholder={'与本人关系'} className='textInput'
-              onChange={(e) => this.setState({ relationshipText: e.tartet.value })} />
-            <div className={'itemViewRight'}
-              onClick={() => {
-                this.popupDialog.show()
-              }}>
-              <div className={'selectButton'}>
-                <span style={{ color: '#B4B4B4', alignSelf: 'center', fontSize: 16, marginRight: 2 }}>{this.state.relationshipText}</span>
-                <img src='/static/icons/arrow-down' style={{size: 15}} />
+          {
+            HOSPITAL_NAME.indexOf('鲁中') > -1 ?
+              <div
+                key={'relationship'}
+                className='item flex tb-flex'>
+                <span className='textLeft'>选择关系</span>
+                <div className={'select'} style={{flex: 8, border: 'none', padding: 0}}>
+                  <select style={{fontSize: theme.fontsize, color: theme.fontcolor}}
+                    onChange={(e) => {
+                      this.setState({ relationship: e.target.value })
+                      {/* this.popupDialog.dismiss() */}
+                    }}>
+                  {
+                    relations.map((item, i) => (
+                      <option key={item.key} value={item.key}>{item.value}</option>
+                    ))
+                  }
+                  </select>
+                </div>
               </div>
-            </div>
-          </div> */}
+            : ''
+          }
+          {/* {
+            HOSPITAL_NAME.indexOf('鲁中') > -1 ?
+              <div className={'item'} key={'relationship'}>
+                <span className={'textLeft'}>与本人关系</span>
+                <input placeholder={'与本人关系'} className='textInput'
+                  onChange={(e) => this.setState({ relationshipText: e.tartet.value })} />
+                <div className={'itemViewRight'}
+                  onClick={() => {
+                    this.popupDialog.show()
+                  }}>
+                  <div className={'selectButton'}>
+                    <span style={{ color: '#B4B4B4', alignSelf: 'center', fontSize: 16, marginRight: 2 }}>{this.state.relationshipText}</span>
+                    <img src='/static/icons/arrow-down' style={{size: 15}} />
+                  </div>
+                </div>
+              </div>
+            : ''
+          } */}
           {/*<div className='item flex tb-flex' key={'carteVital'}>
             <span className='textLeft'> 医保卡号 </span>
             <input placeholder={'非医保卡号可不填写'} className='textInput itemViewRight'
@@ -176,27 +204,6 @@ class PatientAddScreen extends Component {
         <div style={{padding: 25}}>
           *如已在医院建档，请填写该就诊人在医院预留的手机号
         </div>
-        {/* <div
-          ref={(popupDialog) => { this.popupDialog = popupDialog }}>
-          <div>
-            <div id='title'>选择关系</div>
-            <div style={'dialogList'} >
-              {
-                relations.map((item, i) => (
-                  <div key={item.key}
-                    onClick={() => {
-                      this.setState({ relationship: item.key, relationshipText: item.value })
-                      this.popupDialog.dismiss()
-                    }}>
-                    <div className={'selectItem'}>
-                      <div className={'itemText'} >{item.value}</div>
-                    </div>
-                  </div>
-                ))
-              }
-            </div>
-          </div>
-        </div> */}
         <Prompt isShow={this.state.isShow} autoClose={this.state.autoClose} closeTime={this.state.closeTime}>{this.state.promptContent}</Prompt>
         <style jsx>{`
           .list {

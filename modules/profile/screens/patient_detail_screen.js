@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import localforage from 'localforage'
 import Router from 'next/router'
 import _ from 'lodash'
+import {HOSPITAL_NAME} from 'config'
 // import swal from 'sweetalert2'
 import { theme, Prompt, Modal, ModalHeader, ModalFooter } from 'components'
 import { ages, isEmptyObject, phone, certificateNo } from '../../../utils'
@@ -67,6 +68,7 @@ class PatientDetailScreen extends Component {
   }
   async delPatient () {
     const error = await this.props.removePatient(this.props.client, {patientId: this.props.selectId})
+    console.log('----err', error)
     if (error) {
       return this.setState({
         isShow: true,
@@ -174,33 +176,39 @@ async function changeCheckbox (props, e) {
   }
 }
 
-// const relations = {
-//   '01': '本人',
-//   '02': '家庭成员',
-//   '03': '亲戚',
-//   '04': '朋友',
-//   '05': '其他'
-// }
+const relations = {
+  '01': '本人',
+  '02': '家庭成员',
+  '03': '亲戚',
+  '04': '朋友',
+  '05': '其他'
+}
 
 const detailList = (props) => {
+  console.log('----this.props', props.patients)
   const patients = props.patients
   const selectId = props.selectId || props.url.query.patientId
   if (!selectId) {
     return
   }
   const patient = patients[selectId] || {}
-  // let relationship = relations[patient.relationship || '01'] || '其他'
-  const array = [
+  let relationship = relations[patient.relationship || '01'] || '其他'
+  let array = [
     { key: '姓名', value: patient.name },
     { key: '身份证号', value: patient.certificateNo ? certificateNo(patient.certificateNo) : '' },
     { key: '性别', value: patient.sex ? patient.sex === '0' ? '女' : '男' : '' },
     { key: '年龄', value: patient.birthday ? `${ages(patient.birthday)}岁` : '' },
     // { key: '出生日期', value: patient.birthday },
     // { key: '与本人关系', value: relationship },
-    // { key: '就诊号', value: patient.patientCards[0].patientIdNo },
     // { key: '医保卡号', value: patient.carteVital },
-    { key: '手机号', value: patient.phone ? phone(patient.phone) : '' }
+    { key: '手机号', value: patient.phone ? phone(patient.phone) : '' },
   ]
+  if (HOSPITAL_NAME.indexOf('鲁中') > -1) {
+    array.push(
+      { key: '与本人关系', value: relationship }, 
+      { key: '就诊卡号', value: patient.patientCards && patient.patientCards[0] && patient.patientCards[0].patientIdNo }
+    )
+  }
   return (
     <div className='list'>
       {

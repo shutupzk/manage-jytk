@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Router from 'next/router'
-import {ErrCard, Loading, theme} from 'components'
+import {ErrCard, Loading, theme, NoDataCard} from 'components'
 
 import {
   queryHospitalGuides,
@@ -108,7 +108,7 @@ class GuideListScreen extends Component {
         </div>
       )
     } else {
-      return <div>no data</div>
+      return <NoDataCard tip='暂无数据' />
     }
   }
 }

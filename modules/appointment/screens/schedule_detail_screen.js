@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import Router from 'next/router'
 import _ from 'lodash'
 import {theme, Loading, Prompt} from 'components'
+import {HOSPITAL_NAME} from 'config'
 
 import { isEmptyObject } from '../../../utils'
 /**
@@ -129,7 +130,7 @@ class ScheduleDetailScreen extends Component {
     // const timeRangeOfVist = beginTime + '-' + endTime
     // const payType = this.state.payType
     let patientTypeId = _.findKey(props.patientTypes)
-    const visitNo = this.refs.visitNo.value
+    const visitNo = this.refs.visitNo && this.refs.visitNo.value
     console.log(visitNo)
     if (this.state.patientTypeId) {
       patientTypeId = this.state.patientTypeId
@@ -192,10 +193,15 @@ class ScheduleDetailScreen extends Component {
             <span className={'textLeft'}>就诊科室</span>
             <span className={'textRight'}>{schedule.department.deptName}</span>
           </div>
-          <div className='flex tb-flex'>
-            <span className={'textLeft'}>门诊类型</span>
-            <span className={'textRight'}>{schedule.clinicType || ''}</span>
-          </div>
+          {
+            HOSPITAL_NAME.indexOf('鲁中') > -1 ?
+            ''
+          : 
+            <div className='flex tb-flex'>
+              <span className={'textLeft'}>门诊类型</span>
+              <span className={'textRight'}>{schedule.clinicType || ''}</span>
+            </div>
+          }
           <div className='flex tb-flex'>
             <span className={'textLeft'}>就诊时间</span>
             <span className={'textRight'}>{schedule.visitDate}</span>
@@ -235,12 +241,16 @@ class ScheduleDetailScreen extends Component {
             <i className='back-left'></i>
           </div>
         </div>
-        {/*<div className={'item'} key={'clinicType'}>
-          <span className={'textLeft'}>{'号        别'}</span>
-          <div className={'rightView'}>
-            <span className={'textRight'}>{schedule.clinicType || '普通号'}</span>
+        {
+          HOSPITAL_NAME.indexOf('鲁中') > -1 ?
+          <div className={'item'} key={'clinicType'}>
+            <span className={'textLeft'}>{'号        别'}</span>
+            <div className={'rightView'}>
+              <span className={'textRight'}>{schedule.clinicType || '普通号'}</span>
+            </div>
           </div>
-        </div>*/}
+        : ''
+        }
         {/*<div className={'item'} key={'deptName'}>
           <span className={'textLeft'}>{'就诊科室'}</span>
           <div className={'rightView'}>
@@ -256,45 +266,53 @@ class ScheduleDetailScreen extends Component {
             <img src='/static/icons/arrow_right.png' style={{width: 10, height: 12}} />
           </div>
         </div>*/}
-        <div className={'item2'} key={'payType2'}>
-          <span className={'left'}>{'患者类型'}</span>
-          <div className={'flex tb-flex'} onClick={() => {
-            {/*this.setState({selectPayTypeShow: true})*/}
-            this.refs.patientTypeSelect.click()
-          }}>
-            {/*<span className={'textRight'}>{this.state.payType}</span>*/}
-            {/*<img src='/static/icons/arrow_right.png' style={{width: 10, height: 12}} />*/}
-            <select ref='patientTypeSelect' style={{display: '', height: 30, width: '100%', fontSize: 15, color: '#505050'}}>
-              {
-                patientTypes.map((type) => {
-                  return (
-                    <option
-                      key={type.id}
-                      style={{height: 24, width: '100%', padding: 2, borderBottom: 'solid 1px #dddddd'}}
-                      onClick={() => {
-                        this.setState({selectPayTypeShow: false, payType: type.patientTypeName, patientTypeId: type.id})
-                        this.props.selectPatientType(type.id)
-                      }}
-                    >{type.patientTypeName}</option>
-                  )
-                })
-              }
-            </select>
-            <i className='back-left'></i>
-          </div>
-        </div>
+        {
+          HOSPITAL_NAME.indexOf('广东省人民医院') > -1 ?
+            <div className={'item2'} key={'payType2'}>
+              <span className={'left'}>{'患者类型'}</span>
+              <div className={'flex tb-flex'} onClick={() => {
+                {/*this.setState({selectPayTypeShow: true})*/}
+                this.refs.patientTypeSelect.click()
+              }}>
+                {/*<span className={'textRight'}>{this.state.payType}</span>*/}
+                {/*<img src='/static/icons/arrow_right.png' style={{width: 10, height: 12}} />*/}
+                <select ref='patientTypeSelect' style={{display: '', height: 30, width: '100%', fontSize: 15, color: '#505050'}}>
+                  {
+                    patientTypes.map((type) => {
+                      return (
+                        <option
+                          key={type.id}
+                          style={{height: 24, width: '100%', padding: 2, borderBottom: 'solid 1px #dddddd'}}
+                          onClick={() => {
+                            this.setState({selectPayTypeShow: false, payType: type.patientTypeName, patientTypeId: type.id})
+                            this.props.selectPatientType(type.id)
+                          }}
+                        >{type.patientTypeName}</option>
+                      )
+                    })
+                  }
+                </select>
+                <i className='back-left'></i>
+              </div>
+            </div>
+          : ''
+        }
         {/*<div className={item} key={'registerFee'}>
           <span className={textLeft}>{'支付金额'}</span>
           <div className={rightView}>
             <span className={textRight}>{schedule.registerFee}</span>
           </div>
         </div>*/}
-        <div className={'item'} key={'carteVital'}>
-          <span className={'textLeft'}>{'就诊卡号'}</span>
-          <div className={'rightView'}>
-            <span className={'textRight'}><input ref='visitNo' placeholder='请输入就诊卡号' defaultValue={patient.patientCards[0] ? patient.patientCards[0].visitNo : ''} /></span>
-          </div>
-        </div>
+        {
+          HOSPITAL_NAME.indexOf('广东省人民医院') > -1 ?
+            <div className={'item'} key={'carteVital'}>
+              <span className={'textLeft'}>{'就诊卡号'}</span>
+              <div className={'rightView'}>
+                <span className={'textRight'}><input ref='visitNo' placeholder='请输入就诊卡号' defaultValue={patient.patientCards[0] ? patient.patientCards[0].visitNo : ''} /></span>
+              </div>
+            </div>
+          : ''
+        }
       </div>
       <footer style={{margin: '20px 15px'}}>
         <button

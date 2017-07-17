@@ -64,6 +64,7 @@ class AppointmentDoctorListScreen extends Component {
   }
   componentWillMount () {
     let doctors = this.props.doctors
+    console.log('-----this.props.doctors', this.props.doctors)
     let departmentId = this.props.departmentId
     if (!departmentId) {
       this.props.selectDepartment({departmentId: this.props.url.query.departmentId})

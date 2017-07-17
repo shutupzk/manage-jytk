@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import Router from 'next/router'
 import { connect } from 'react-redux'
 import {Loading, theme, ErrCard} from 'components'
+import {HOSPITAL_NAME} from 'config'
 
 import { signin, queryUser, queryPatients, queryAppointments, queryAppointmentDetail, updateAppointment, selectAppointment } from '../../../ducks'
 import { isEmptyObject } from '../../../utils'
@@ -78,18 +79,26 @@ class AppointmentSuccessScreen extends Component {
                 <span className={'itemLeft'}>{'医        生'}</span>
                 <span className={'itemRight'}>{appointment.visitSchedule.doctor.doctorName}</span>
               </div>
-              <div className={'itemView'}>
-                <span className={'itemLeft'}>{'挂号类型'}</span>
-                <span className={'itemRight'}>{appointment.visitSchedule.clinicType}</span>
-              </div>
-              <div className={'itemView'}>
-                <span className={'itemLeft'}>{'挂号类型'}</span>
-                <span className={'itemRight'}>{appointment.visitPlace}</span>
-              </div>
-              <div className={'itemView'}>
-                <span className={'itemLeft'}>{'就诊日期'}</span>
-                <span className={'itemRight'}>{appointment.visitSchedule.visitDate}</span>
-              </div>
+              {
+                HOSPITAL_NAME.indexOf('广东省人民医院') > -1 ?
+                  <div className={'itemView'}>
+                    <span className={'itemLeft'}>{'挂号类型'}</span>
+                    <span className={'itemRight'}>{appointment.visitSchedule.clinicType}</span>
+                  </div>
+                : ''
+              }
+              {
+                HOSPITAL_NAME.indexOf('广东省人民医院') > -1 ?
+                  <div className={'itemView'}>
+                    <span className={'itemLeft'}>{'挂号类型'}</span>
+                    <span className={'itemRight'}>{appointment.visitPlace}</span>
+                  </div>
+                : ''
+              }
+                  <div className={'itemView'}>
+                    <span className={'itemLeft'}>{'就诊日期'}</span>
+                    <span className={'itemRight'}>{appointment.visitSchedule.visitDate}</span>
+                  </div>
               {/*<div className={'itemView'}>
                 <span className={'itemLeft'}>{'支付类别'}</span>
                 <span className={'itemRight'}>{appointment.payType}</span>

@@ -47,6 +47,7 @@ const getNewOutpatient = (state, action) => {
 
 // fetch & action creators
 export const queryOutpatient = (client, { userId }) => async dispatch => {
+  console.log('----queryOutpatient----', userId)
   dispatch({
     type: OUTPATIENT_OUTPATIENT_QUERY
   })
@@ -58,6 +59,7 @@ export const queryOutpatient = (client, { userId }) => async dispatch => {
         error: data.error.message
       })
     }
+    console.log('------data', data)
     let patients = data.data.user.patients
     let array = {}
     for (let patient of patients) {

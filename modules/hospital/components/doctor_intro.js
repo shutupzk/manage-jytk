@@ -7,7 +7,7 @@ function Major (props) {
   return (
     <div className='majorView'>
       <div className='titleText'>擅长领域</div>
-      <div className='contentText'>{doc.major || '功能性胃肠病、胃食管反流病等消化疾病。'}</div>
+      <div className='contentText'>{doc.major || '暂无'}</div>
       <style jsx>{`
         .majorView {
           padding: ${theme.lrmargin} 0 0;

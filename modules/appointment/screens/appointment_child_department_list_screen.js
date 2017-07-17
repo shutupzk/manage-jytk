@@ -4,10 +4,11 @@ import _ from 'lodash'
 // import localforage from 'localforage'
 import Router from 'next/router'
 import localforage from 'localforage'
+import {HOSPITAL_NAME} from 'config'
 
 // import SearchBar from '../components/search_bar'
 import DepartmentList from '../../hospital/components/department_list'
-import { signin, queryUser, queryPatients, queryChildDepartments, selectDepartment } from '../../../ducks'
+import { signin, queryUser, queryPatients, queryChildDepartments, selectDepartment, queryDepartments } from '../../../ducks'
 import { isEmptyObject, convertPinyin, convertPinyinFirst, replaceSearchKey } from '../../../utils'
 import {Loading, ErrCard, RequireLoginCard, NoDataCard} from 'components'
 
@@ -47,7 +48,11 @@ class AppointmentDepartmentListScreen extends Component {
   }
   getDepartments () {
     console.log(this.props.parentId)
-    this.props.queryChildDepartments(this.props.client, {departmentId: this.props.parentId})
+    if (HOSPITAL_NAME.indexOf('鲁中') > -1) {
+      this.props.queryDepartments(this.props.client, {level: ''})
+    } else {
+      this.props.queryChildDepartments(this.props.client, {departmentId: this.props.parentId})
+    }
   }
   searchDept (theData, term) {
     this.setState({searchFlag: true, searchResult: filterData(theData, term)})
@@ -134,7 +139,7 @@ function mapStateToProps (state) {
     error: state.departments.error || state.user.error
   }
 }
-export default connect(mapStateToProps, { signin, queryUser, queryPatients, queryChildDepartments, selectDepartment })(AppointmentDepartmentListScreen)
+export default connect(mapStateToProps, { signin, queryUser, queryPatients, queryChildDepartments, selectDepartment, queryDepartments })(AppointmentDepartmentListScreen)
 
 function filterData (theData, term) {
   let newData = []

@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import * as actions from '../../../ducks'
 // import { isEmptyObject } from '../../../utils'
 import {theme, Loading, ErrCard} from 'components'
+import {HOSPITAL_NAME} from 'config'
 
 class IntrodectionScreen extends Component {
   componentWillMount () {
@@ -19,24 +20,30 @@ class IntrodectionScreen extends Component {
           <div className={'containerStyle'}>
             <div className={'titleStyle'}>{title}</div>
             <div className={'text'} style={{padding: '10px 15px 20px'}}>
-              {description || '广东省人民医院创建于1946年，是广东省最大的综合性医院，是国内规模最大、综合实力最强的医院之一。医院建筑面积近23万平方米，在职职工5251人，其中卫生技术人员4402人，高级职称人员706人。住院床位数2852张，年出院病人11.06万人次，年手术量达到7.49万台。医院有六个门诊部，2015年门诊量约418.3万人次。'}
+              {description || '暂无'}
             </div>
             <div className={'texttitle'} style={{borderTop: '1px dashed #fff', borderColor: theme.bordercolor, paddingTop: 20}}>联系电话</div>
-            <div className={'text'}>
-              {phone}
-              <div>
-                <span>广东省人民医院东川门诊部</span>
-                <span style={{float: 'right'}}>020-83827812 </span>
-              </div>
-              <div>
-                <span>广东省医院惠福分院</span>
-                <span style={{float: 'right'}}>020-81884713 </span>
-              </div>
-            </div>
+            {
+              HOSPITAL_NAME.indexOf('广东省人民医院') > -1 ?
+                <div className={'text'}>
+                  <div>
+                    <span>广东省人民医院东川门诊部</span>
+                    <span style={{float: 'right'}}>020-83827812 </span>
+                  </div>
+                  <div>
+                    <span>广东省医院惠福分院</span>
+                    <span style={{float: 'right'}}>020-81884713 </span>
+                  </div>
+                </div>
+              :
+                <div className={'text'}>
+                  {phone || '暂无'}
+                </div>
+            }
             <div className={'texttitle'}>医院地址</div>
-            <div className={'text'}>{position}</div>
+            <div className={'text'}>{position  || '暂无'}</div>
             <div className={'texttitle'}>访问官网</div>
-            <div className={'text'}><a href={website || 'http://www.e5413.com'}>{website || 'http://www.e5413.com'}</a></div>
+            <div className={'text'}><a href={website}>{website || '暂无'}</a></div>
           </div>
         }
         <style jsx>{`

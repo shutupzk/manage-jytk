@@ -7,7 +7,7 @@ import {
   selectNews
 } from '../../../ducks'
 import NewsItem from '../components/news_item'
-import {Loading, theme, ErrCard} from 'components'
+import {Loading, theme, ErrCard, NoDataCard} from 'components'
 class NewsListScreen extends Component {
   constructor (props) {
     super(props)
@@ -59,7 +59,7 @@ class NewsListScreen extends Component {
         </div>
       )
     } else {
-      return <div>no data</div>
+      return <NoDataCard tip='暂无数据' />
     }
   }
   render () {
@@ -114,7 +114,7 @@ class NewsListScreen extends Component {
         </div>
       )
     } else {
-      return (<div>no data</div>)
+      return (<NoDataCard tip='暂无数据' />)
     }
   }
 }

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { queryClinicStops } from '../../../ducks'
-import {ErrCard, Loading, theme} from 'components'
+import {ErrCard, Loading, theme, NoDataCard} from 'components'
 
 class HospitalClinicStop extends Component {
   constructor (props) {
@@ -33,21 +33,23 @@ class HospitalClinicStop extends Component {
     return (
       <div>
         {
-          clinicStops.map((clinicStop) => {
-            let imagUrl = clinicStop.departmentHasDoctors.doctor.avatar || '/static/icons/doctor_head.png'
-            return (
-              <div key={clinicStop.id} style={{backgroundColor: '#ffffff', padding: 10, display: 'flex', borderBottom: '1px solid #fff', borderColor: theme.bordercolor}}>
-                <div>
-                  <img src={imagUrl} style={{height: 60, width: 60}} />
+          clinicStops && clinicStops.length > 0 ?
+            clinicStops.map((clinicStop) => {
+              let imagUrl = clinicStop.departmentHasDoctors.doctor.avatar || '/static/icons/doctor_head.png'
+              return (
+                <div key={clinicStop.id} style={{backgroundColor: '#ffffff', padding: 10, display: 'flex', borderBottom: '1px solid #fff', borderColor: theme.bordercolor}}>
+                  <div>
+                    <img src={imagUrl} style={{height: 60, width: 60}} />
+                  </div>
+                  <div style={{marginLeft: theme.tbmargin, color: theme.fontcolor, fontSize: theme.nfontsize}}>
+                    <div style={{color: theme.mainfontcolor}}><span style={{fontSize: 15}}>{clinicStop.departmentHasDoctors.doctor.doctorName}</span><span>{clinicStop.departmentHasDoctors.doctor.title}</span></div>
+                    <div>{clinicStop.departmentHasDoctors.department.deptName}</div>
+                    <div>停诊时间：{clinicStop.date} {clinicStop.amPm === 'a' ? '上午' : '下午'}</div>
+                  </div>
                 </div>
-                <div style={{marginLeft: theme.tbmargin, color: theme.fontcolor, fontSize: theme.nfontsize}}>
-                  <div style={{color: theme.mainfontcolor}}><span style={{fontSize: 15}}>{clinicStop.departmentHasDoctors.doctor.doctorName}</span><span>{clinicStop.departmentHasDoctors.doctor.title}</span></div>
-                  <div>{clinicStop.departmentHasDoctors.department.deptName}</div>
-                  <div>停诊时间：{clinicStop.date} {clinicStop.amPm === 'a' ? '上午' : '下午'}</div>
-                </div>
-              </div>
-            )
-          })
+              )
+            })
+          : <NoDataCard tip='暂无数据' />
         }
       </div>
     )

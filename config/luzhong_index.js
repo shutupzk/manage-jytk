@@ -5,6 +5,7 @@ import withData from './withData'
 // 医院名称
 const HOSPITAL_NAME = '鲁中医院'
 const API_SERVER = '218.58.137.218:9002' // 山东鲁中
+// const API_SERVER = '172.18.96.198:9002'
 // const API_SERVER = '127.0.0.1:9002' // 山东鲁中
 const PORT = '9003' // 前端端口
 const CARTEVITAL = false // 否开通医保卡
@@ -15,7 +16,7 @@ const BAR_FORMART = 'CODE128'
 const HOME_PAGE = { // 山东鲁中
   banner: ['/static/icons/banner3'],
   grid_module: [
-    {title: '预约挂号', avatar: '../static/luzhong/homeAppoint.png', subTitle: '', navigateName: '/appointment/department_list'},
+    {title: '预约挂号', avatar: '../static/luzhong/homeAppoint.png', subTitle: '', navigateName: '/appointment/child_department_list'},
     {title: '门诊缴费', avatar: '../static/luzhong/homeoutpatient.png', subTitle: '', navigateName: '/outpatient/order_type'},
     {title: '查询报告', avatar: '../static/luzhong/homeReport.png', subTitle: '', navigateName: '/report', imgStyle: {width: 32}},
     {title: '候诊提醒', avatar: '../static/luzhong/homeRealTime.png', subTitle: '', navigateName: '/real_time', imgStyle: {width: 26}},

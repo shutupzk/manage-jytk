@@ -97,6 +97,7 @@ const QUERY_APPOINTMENTS = gql`
 
 // 获取挂号列表
 export const queryAppointments = (client, { userId }) => async dispatch => {
+  console.log('----suerId', userId)
   dispatch({
     type: APPOINTMENT_APPOINTMENTS_QUERY
   })
@@ -120,6 +121,7 @@ export const queryAppointments = (client, { userId }) => async dispatch => {
         }
       }
     }
+    console.log('----json', patients, json)
     dispatch({
       type: APPOINTMENT_APPOINTMENTS_QUERY_SUCCESS,
       appointments: json
