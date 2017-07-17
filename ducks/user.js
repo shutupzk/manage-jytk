@@ -217,19 +217,23 @@ export const getUserCookie = () => async (dispatch) => {
     return e.message
   }
 }
-
+const cookieJsons = {
+  refreshToken: 'x39_E6AOyl5f8wZ2vNIUDB_uYdtZOJ0TgCGpXou0cXw5gaqKmMT4WeNCdlNrTG8wfSt9Zc6wHkBZbYJJPftgezIgR3YEXpstHpfidWExJYs',
+  accessToken: 'cZpk8ygp2AJOIH6sjqco5bfWo3WDvqCtLEnJ8kRkgllHjK3Y2cdtS6eu5lAHLkzHOkRAqHvFBbKWvF-ILSLwCWGG4sLkyeVjvkCmP8Woypo',
+  openid: 'oPEWPwX1Q1wGg2wjc9ytBqrkcLbU'
+}
 export const getUserCookie2 = () => async (dispatch) => {
   dispatch({
     type: PROFILE_USER_COOKIE2
   })
-  let cookie = {}
+  let cookie = null
   if (process.browser) {
     const arrStr = document.cookie.split('; ')
     for (let i = 0; i < arrStr.length; i++) {
       var temp = arrStr[i].split('=')
       if (temp[0] === 'wechatUserCookie') {
         const cookieValue = unescape(decodeURI(temp[1]))
-        const cookieJson = JSON.parse(cookieValue)
+        const cookieJson = cookieJsons // JSON.parse(cookieValue)
         cookie = Object.assign({}, cookieJson)
         localforage.setItem('openId', cookieJson.openid)
       }

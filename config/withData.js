@@ -8,18 +8,18 @@ import localforage from 'localforage'
 export default function (Component) {
   class Auth extends React.Component {
     static async getInitialProps (ctx) {
-      console.log(process.browser ? document.cookie : '')
-      if (process.browser) {
-        const arrStr = document.cookie.split('; ')
-        for (let i = 0; i < arrStr.length; i++) {
-          var temp = arrStr[i].split('=')
-          if (temp[0] === 'wechatUserCookie') {
-            const cookieValue = unescape(decodeURI(temp[1]))
-            const cookieJson = JSON.parse(cookieValue)
-            localforage.setItem('openId', cookieJson.openid)
-          }
-        }
-      }
+      // console.log(process.browser ? document.cookie : '')
+      // if (process.browser) {
+      //   const arrStr = document.cookie.split('; ')
+      //   for (let i = 0; i < arrStr.length; i++) {
+      //     var temp = arrStr[i].split('=')
+      //     if (temp[0] === 'wechatUserCookie') {
+      //       const cookieValue = unescape(decodeURI(temp[1]))
+      //       const cookieJson = JSON.parse(cookieValue)
+      //       localforage.setItem('openId', cookieJson.openid)
+      //     }
+      //   }
+      // }
       const headers = ctx.req ? ctx.req.headers : {}
       const client = initClient(headers)
       const store = initStore(client, client.initialState)

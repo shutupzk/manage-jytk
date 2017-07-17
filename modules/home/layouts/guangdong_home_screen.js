@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import Router from 'next/router'
 import moment from 'moment'
 import {HOME_PAGE} from 'config'
+import localforage from 'localforage'
 import { CardWhite, Loading, ErrCard, theme, NoDataCard } from 'components'
 import {
   getUserCookie,
@@ -25,8 +26,14 @@ class GuangDongHome extends Component {
   }
   componentWillMount () {
     this.props.queryLastMessage(this.props.client, {limit: 3})
-    // this.props.getUserCookie()
-    this.props.getUserCookie2()
+    this.props.getUserCookie()
+    this.getUserCookie()
+  }
+  async getUserCookie () {
+    const openId = await localforage.getItem('openId')
+    if (!openId) {
+      this.props.getUserCookie2()
+    }
   }
   goHospitalPage () {
     console.log('====')
@@ -42,7 +49,7 @@ class GuangDongHome extends Component {
     console.log(this.props.user)
     console.log(this.props.cookie)
     // window.alert(this.props.user)
-    // window.alert(this.props.cookie)
+    window.alert(this.props.cookie)
     const messages = this.props.messages || []
     // let hospital = this.getHospital(this.props.hospitals)
     return (
