@@ -19,7 +19,7 @@ import { deposit, queryDeposits, selectDeposit } from './deposit'
 import { addHospitalEvaluate } from './hospital_evaluate'
 import { patientTypes, queryPatientTypes, selectPatientType } from './patient_types'
 import { messages, lastMessages, queryMessageTypes, queryMessages, selectMessageType, readMessage, queryLastMessage } from './messages'
-import { payments, queryPayments, selectPayment } from './payments'
+import { payments, orderInfo, createPayment, queryPayments, selectPayment } from './payments'
 
 // key
 export {
@@ -44,7 +44,8 @@ export {
     patientTypes,
     messages,
     lastMessages,
-    payments
+    payments,
+    orderInfo
 }
 
 // action
@@ -131,6 +132,7 @@ export {
     selectMessageType,
     readMessage,
     queryLastMessage,
+    createPayment,
     queryPayments,
     selectPayment,
     getUserCookie,

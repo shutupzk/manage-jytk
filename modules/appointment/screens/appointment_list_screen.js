@@ -21,6 +21,9 @@ class AppointmentListScreen extends Component {
   constructor (props) {
     super(props)
     this.state = {
+      limit: 5,
+      page: 1,
+      skip: 0,
       isLogin: true,
       isInit: false,
       selectedId: '',
@@ -34,11 +37,39 @@ class AppointmentListScreen extends Component {
     if (!this.props.userId) {
       this.autoSignin()
     } else {
-      this.queryAppointments()
+      this.queryAppointments(this.state.limit, this.state.skip)
     }
   }
 
-  async queryAppointments () {
+  componentDidMount () {
+    // this.loadOrders()
+    // 给页面加监测滚动条滚动事件
+    window.addEventListener('scroll', this.handleScroll.bind(this))
+  }
+
+  componentWillUnmount () {
+    window.removeEventListener('scroll', this.handleScroll.bind(this))
+  }
+
+  // 滚动条滚动触发事件
+  handleScroll () {
+    const scrollTop = document.documentElement.scrollTop || window.pageYOffset || document.body.scrollTop
+    if (document.documentElement.scrollHeight === (document.documentElement.clientHeight + scrollTop)) {
+      // 新获取到数据，长度小于10 就没有必要加载下一页
+      if (this.props.appointments && this.props.appointments.length >= this.state.limit) {
+        const prevPage = this.state.page
+        const skip = prevPage * this.state.limit
+        this.setState({
+          page: prevPage + 1,
+          skip
+        }, () => {
+          this.queryAppointments(prevPage + 1, skip)
+        })
+      }
+    }
+  }
+
+  async queryAppointments (limit, skip) {
     this.setState({isInit: true})
     await this.props.queryAppointments(this.props.client, { userId: this.props.userId })
     await this.props.queryPatients(this.props.client, {userId: this.props.userId})
@@ -97,15 +128,28 @@ class AppointmentListScreen extends Component {
     let status = '预约中'
     let statusStyle = 'unCancelText'
     let buttonText = '取消预约'
+    if (appointment.payStatus) {
+      status = '已缴费'
+    }
     if (appointment.visitStatus === '02') {
       status = '已取消'
       statusStyle = 'cancelText'
       buttonText = '再次预约'
     }
     if (appointment.visitStatus === '03') {
-      status = '已缴费'
+      status = '已取号'
       statusStyle = 'unCancelText'
-      buttonText = '再次预约'
+      buttonText = ''
+    }
+    if (appointment.visitStatus === '04') {
+      status = '已退号'
+      statusStyle = 'unCancelText'
+      buttonText = ''
+    }
+    if (appointment.visitStatus === '05') {
+      status = '已过期'
+      statusStyle = 'unCancelText'
+      buttonText = ''
     }
     return (
       <div className={'listItem'}>
@@ -124,18 +168,18 @@ class AppointmentListScreen extends Component {
           </div>
           <div className='clearfix'>&nbsp;</div>
         </div>
-        <div className={'itemBottomView'}>
+        <div className={''}>
           <div style={{textAlign: 'center'}}>
             {
-              appointment.visitStatus === '02' ? <button
+              appointment.visitStatus === '02' ? <div><button
                 className='fullWidthBtn'
                 style={{backgroundColor: '#fff', textAlign: 'center', fontWeight: 'bold', color: theme.maincolor, width: '100%'}}
                 onClick={(e) => {
                   e.stopPropagation()
                   this.gotoSchedule(appointment)
-                }} >再次预约</button>
+                }} >再次挂号</button></div>
               : <div>{
-                appointment.visitStatus === '01'
+                appointment.visitStatus === '01' && !appointment.payStatus
                   ? <div style={{display: 'flex'}}>
                     <button
                       className='fullWidthBtn'

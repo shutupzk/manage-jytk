@@ -17,6 +17,7 @@ export const Head = (props) => (
     <meta property='og:url' content={props.url || defaultOGURL} />
     <meta property='og:title' content={props.title || ''} />
     <meta property='og:description' content={props.description || defaultDescription} />
+    <script src='https://res.wx.qq.com/open/js/jweixin-1.0.0.js'></script>
     {/*<script src='https://code.jquery.com/jquery-3.2.1.min.js'></script>*/}
     {/*<link href='/static/styles/swal2.css' rel='stylesheet' type='text/css' />*/}
     {/*<script src='https://maps.googleapis.com/maps/api/js'></script>*/}

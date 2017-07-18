@@ -112,24 +112,27 @@ class AppointmentDetailScreen extends Component {
     const { patients, appointments, appointmentId } = this.props
     const appointment = appointments[appointmentId]
     const patient = patients[appointment.patientId]
-    let buttonColor = '#FFFFFF'
     let status = '预约中'
     let statusStyle = 'unCancelText'
-    let buttonText = '取消预约'
-    let buttonTextColor = '#E45252'
+    if (appointment.payStatus) {
+      status = '已缴费'
+      statusStyle = 'unCancelText'
+    }
     if (appointment.visitStatus === '02') {
       status = '已取消'
       statusStyle = 'cancelText'
-      buttonText = '再次预约'
-      buttonColor = '#3CA0FF'
-      buttonTextColor = '#FFFFFF'
     }
     if (appointment.visitStatus === '03') {
-      status = '已缴费'
-      statusStyle = 'cancelText'
-      buttonText = '退号退费'
-      buttonColor = '#3CA0FF'
-      buttonTextColor = '#FFFFFF'
+      status = '已取号'
+      statusStyle = 'unCancelText'
+    }
+    if (appointment.visitStatus === '04') {
+      status = '已退号'
+      statusStyle = 'unCancelText'
+    }
+    if (appointment.visitStatus === '05') {
+      status = '已过期'
+      statusStyle = 'unCancelText'
     }
     return (
       <div>
@@ -222,26 +225,27 @@ class AppointmentDetailScreen extends Component {
               className='fullWidthFixed fullWidthBtn fullWidthBtnMain'
               onClick={() => {
                 this.gotoSchedule()
-              }} >再次预约</button>
+              }} >再次挂号</button>
             : <div>{
               appointment.visitStatus === '01'
-                ? <div style={{display: 'flex'}} className='fullWidthFixed'><button
-                  className='fullWidthBtn fullWidthBtnBackWhite'
-                  style={{width: '50%'}}
-                  onClick={() => {
-                    this.setState({showModal: true})
-                  }} >取消挂号</button>
-                  <button
-                    className='fullWidthBtn fullWidthBtnMain'
+                ? (!appointment.payStatus
+                  ? <div style={{display: 'flex'}} className='fullWidthFixed'><button
+                    className='fullWidthBtn fullWidthBtnBackWhite'
                     style={{width: '50%'}}
                     onClick={() => {
-                      this.gotoPay()
-                    }} >去缴费</button></div>
-                : <button
-                  className='fullWidthFixed fullWidthBtn fullWidthBtnBackWhite'
-                  onClick={() => {
-                    this.退费()
-                  }} >退号退费</button>
+                      this.setState({showModal: true})
+                    }} >取消挂号</button>
+                    <button
+                      className='fullWidthBtn fullWidthBtnMain'
+                      style={{width: '50%'}}
+                      onClick={() => {
+                        this.gotoPay()
+                      }} >去缴费</button></div>
+                  : <button
+                    className='fullWidthFixed fullWidthBtn fullWidthBtnBackWhite'
+                    onClick={() => {
+                    }} >退号退费</button>)
+                : ''
               }</div>
           }
           {/*<button

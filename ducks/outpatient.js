@@ -117,6 +117,7 @@ export const OUTPAYMENTTOTALS = gql`
             seqNo
             appointmentFee
             visitSchedule {
+              id
               visitDate
               amPm
               registerFee
@@ -201,6 +202,7 @@ const OUTPAYMENTS = gql`
         seqNo
         appointmentFee
         visitSchedule {
+          id
           visitDate
           amPm
           registerFee
@@ -215,6 +217,7 @@ const OUTPAYMENTS = gql`
           }
         }
         patientCard{
+          id
           patient{
             id
             name
