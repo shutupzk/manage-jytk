@@ -25,7 +25,7 @@ const getTotalMoney = (dailyData) => {
   }
   return totalMoney.toFixed(2)
 }
-class DailyFeeScreen extends Component {
+class TotalFeeScreen extends Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -253,4 +253,4 @@ function mapStateToProps (state) {
   }
 }
 
-export default connect(mapStateToProps, actions)(DailyFeeScreen)
+export default connect(mapStateToProps, actions)(TotalFeeScreen)

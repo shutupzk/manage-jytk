@@ -18,7 +18,7 @@ class OutpatientScreen extends Component {
       startDate: undefined,
       endDate: undefined,
       showFilterModal: false,
-      showTipModal: true
+      showTipModal: false
     }
   }
 

@@ -17,10 +17,10 @@ const HOME_PAGE = { // 山东鲁中
   banner: ['/static/icons/banner3'],
   grid_module: [
     {title: '预约挂号', avatar: '../static/luzhong/homeAppoint.png', subTitle: '', navigateName: '/appointment/child_department_list'},
-    {title: '门诊缴费', avatar: '../static/luzhong/homeoutpatient.png', subTitle: '', navigateName: '/outpatient/order_type'},
+    {title: '门诊缴费', avatar: '../static/luzhong/homeoutpatient.png', subTitle: '', navigateName: '/outpatient?key=outpatient'},
     {title: '查询报告', avatar: '../static/luzhong/homeReport.png', subTitle: '', navigateName: '/report', imgStyle: {width: 32}},
     {title: '候诊提醒', avatar: '../static/luzhong/homeRealTime.png', subTitle: '', navigateName: '/real_time', imgStyle: {width: 26}},
-    {title: '住院跟踪', avatar: '../static/luzhong/homeInhos.png', subTitle: '', navigateName: '/inpatient', imgStyle: {width: 30}}
+    {title: '住院跟踪', avatar: '../static/luzhong/homeInhos.png', subTitle: '', navigateName: '/inpatient/inpatient_list', imgStyle: {width: 30}}
   ],
   hospital: {
     title: '山东鲁中', avatar: '/static/icons/app.png', subTitle: ['江苏省南京市栖霞区岭山北路182号', '联系电话：40060-95522'], navigateName: ''

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Router from 'next/router'
 import { connect } from 'react-redux'
 import moment from 'moment'
-import {theme} from 'components'
+import {theme, NoDataCard} from 'components'
 
 import { selectDeposit } from '../../../ducks'
 
@@ -37,18 +37,20 @@ class PaidListScreen extends Component {
       <div>
         <div>
           {
-            list.map((item, i) => (
-              <div
-                style={{borderBottomWidth: 10}}
-                key={i}
-                onClick={() => {
-                  this.props.selectDeposit(item.id)
-                  Router.push('/inpatient/paid_detail')
-                }}
-              >
-                <div>{title(item, i)}</div>
-              </div>
-            ))
+            list && list.length > 0 ?
+              list.map((item, i) => (
+                <div
+                  style={{borderBottomWidth: 10}}
+                  key={i}
+                  onClick={() => {
+                    this.props.selectDeposit(item.id)
+                    Router.push('/inpatient/paid_detail')
+                  }}
+                >
+                  <div>{title(item, i)}</div>
+                </div>
+              ))
+            : <NoDataCard />
          }
         </div>
       </div>

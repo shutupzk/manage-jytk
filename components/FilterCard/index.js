@@ -34,7 +34,7 @@ FilterCard.propTypes = {
 export function FilterSelect(props) {
 	const patientArr = props.patientArr || [];
 	return (
-		<div className='select' style={{margin: '.1rem 0 .1rem .15rem'}}>
+		<div className='select filterSelect' style={props.styleFa}>
 			<select onChange={(e) => {props.changePatientSelect(e)}}>
 				{
 					patientArr.map((patient) => {
@@ -46,6 +46,11 @@ export function FilterSelect(props) {
 					})
 				}
 			</select>
+			<style jsx>{`
+				.filterSelect{
+					margin: .1rem 0 .1rem .15rem
+				}
+			`}</style>
 		</div>
 	)
 }

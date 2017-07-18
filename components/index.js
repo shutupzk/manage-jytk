@@ -13,6 +13,7 @@ import ErrCard from './ErrCard'
 import RequireLoginCard from './RequireLoginCard'
 import {ResultSuccessCard, ResultFailCard} from './ResultCard'
 import PayWay from './PayWay'
+import CalendarCard from './CalendarCard'
 
 export {
     List,
@@ -35,7 +36,8 @@ export {
     RequireLoginCard,
     ResultSuccessCard,
     ResultFailCard,
-    PayWay
+    PayWay,
+    CalendarCard
 }
 
 

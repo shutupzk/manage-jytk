@@ -349,6 +349,7 @@ export const updateAppointment = (client, { appointmentId, visitStatus, payStatu
       type: APPOINTMENT_APPOINTMENTS_UPDATE_FAIL,
       error: e.message
     })
+    return e.message
   }
 }
 

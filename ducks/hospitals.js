@@ -23,7 +23,8 @@ const initState = {
   error: null,
   selectId: null,
   selectBuildingId: null,
-  selectGuideIds: {}
+  selectGuideIds: {},
+  noJson: []
 }
 
 export function hospitals (state = initState, action = {}) {
@@ -36,7 +37,7 @@ export function hospitals (state = initState, action = {}) {
     case HOSPITAL_HOSPITALS_GUIDE_QUERY:
       return Object.assign({}, state, { loading: true, error: null })
     case HOSPITAL_HOSPITALS_SUCCESS:
-      return Object.assign({}, state, { data: action.hospitals, loading: false, error: null })
+      return Object.assign({}, state, { data: action.hospitals, noJson: action.noJson, loading: false, error: null })
     case HOSPITAL_HOSPITALS_BUILDING_SUCCESS:
       let buildingHospitals = getBuildingHospitals(state, action.hospital)
       return Object.assign({}, state, { data: buildingHospitals, loading: false, error: null })
@@ -107,7 +108,8 @@ export const queryHospitals = (client) => async dispatch => {
     }
     return dispatch({
       type: HOSPITAL_HOSPITALS_SUCCESS,
-      hospitals: json
+      hospitals: json,
+      noJson: hospitals
     })
   } catch (e) {
     console.log(e)

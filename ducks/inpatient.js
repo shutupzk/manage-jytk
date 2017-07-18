@@ -57,7 +57,7 @@ const queryGql = gql`
         totalPayment
         balance
         status
-        IPFlag
+        iPFlag
         nationalityID
         raceID
         professioinID
@@ -89,12 +89,14 @@ const queryGql = gql`
 `
 
 export const queryInpatient = (client, {patientId}) => async dispatch => {
+  console.log('-----queryInpatient-----------', patientId)
   if (!patientId) return
   dispatch({
     type: INPATIENT_INPATIENT_QUERY
   })
   try {
     let data = await client.query({ query: queryGql, variables: { id: patientId } }) // 58eb7c94c77c0857c9dc5b1e
+    console.log('-----queryInpatient----data---', data)
     if (data.error) {
       return dispatch({
         type: INPATIENT_INPATIENT_FAIL,
@@ -126,43 +128,47 @@ export const queryInpatient = (client, {patientId}) => async dispatch => {
 }
 
 const UPDATEINPATIENTRECORD = gql`
-  mutation($inpatientCardId: String!){
-    createInpatientCard(input:{inpatientCardId: $inpatientCardId}){
-      id
+  mutation($hospitalId: ObjID!, $patientId: ObjID!, $inpatientNo: String){
+    createInpatientCard(input:{hospitalId: $hospitalId, patientId: $patientId, inpatientNo: $inpatientNo}){
+     id
     }
   }
 `
 
-export const updateInpatient = (client, {inpatientCardId, newNativePlaceProvince, marriageFlag}) => async dispatch => {
+export const updateInpatient = (client, {hospitalId, patientId, inpatientNo}) => async dispatch => {
   dispatch({
     type: INPATIENT_INPATIENT_UPDATE
   })
+  console.log('------params-----', hospitalId, patientId, inpatientNo)
   try {
-    let data = await client.mutate({ mutation: UPDATEINPATIENTRECORD, variables: {inpatientCardId, newNativePlaceProvince} })
+    let data = await client.mutate({ mutation: UPDATEINPATIENTRECORD, variables: {hospitalId, patientId, inpatientNo}})
     if (data.error) {
       return dispatch({
         type: INPATIENT_INPATIENT_UPDATE_FAIL,
         error: data.error.message
       })
     }
-    let docs = data.data.patient.inpatientCards[0].inpatientRecords
-    const inpatientNo = data.data.patient.inpatientCards[0].inpatientNo
-    const patientId = data.data.patient.id
-    const name = data.data.patient.name
-    let inpatientRecords = {}
-    for (let doc of docs) {
-      inpatientRecords[doc.id] = Object.assign({}, doc, {name, inpatientNo, patientId})
-    }
+    console.log('------successs----', data)
+    // let docs = data.data.patient.inpatientCards[0].inpatientRecords
+    // const inpatientNo = data.data.patient.inpatientCards[0].inpatientNo
+    // const patientId = data.data.patient.id
+    // const name = data.data.patient.name
+    // let inpatientRecords = {}
+    // for (let doc of docs) {
+    //   inpatientRecords[doc.id] = Object.assign({}, doc, {name, inpatientNo, patientId})
+    // }
+    const createInpatientCard = data.createInpatientCard
     return dispatch({
       type: INPATIENT_INPATIENT_UPDATE_SUCCESS,
-      inpatientRecords
+      createInpatientCard
     })
   } catch (e) {
-    console.log(e)
+    console.log('---bind card---successs----', e)
     return dispatch({
       type: INPATIENT_INPATIENT_UPDATE_FAIL,
-      error: '数据更新失败'
+      error: e.message
     })
+    return e.message
   }
 }
 
@@ -191,7 +197,7 @@ const UPDATEINPATIENTRECORD2 = gql`
       totalPayment
       balance
       status
-      IPFlag
+      iPFlag
       nationalityID
       professioinID
       raceID

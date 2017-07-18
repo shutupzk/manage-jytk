@@ -4,7 +4,7 @@ import localforage from 'localforage'
 import Router from 'next/router'
 import _ from 'lodash'
 import {Loading, FilterCard, FilterSelect, FilterTime, Modal, ModalHeader, ModalFooter, FilterTimeResult, theme, NoDataCard, ErrCard, RequireLoginCard} from 'components'
-import {HOSPITAL_NAME} from 'config'
+
 
 import {
   queryPatients,
@@ -15,7 +15,7 @@ import {
   signin
  } from '../../../ducks'
 import { judge } from '../../../utils'
-class InpatientScreen extends Component {
+class InpatientListScreen extends Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -81,18 +81,14 @@ class InpatientScreen extends Component {
     this.props.queryDeposits(this.props.client, {patientId})
   }
   filterRecord (inpatientRecordArray, selectInpatientId) {
-    const urlQueryId =  this.props.url && this.props.url.query && this.props.url.query.id
     let inpatientRecord = inpatientRecordArray.filter((inpatientRecord) => {
-      if (urlQueryId && selectInpatientId === inpatientRecord.patientId && (inpatientRecord.id === urlQueryId)) {
-        return true
-      }
-      if (!urlQueryId && selectInpatientId === inpatientRecord.patientId) {
+      if (selectInpatientId === inpatientRecord.patientId) {
         return true
       }
       return false
     })
-    console.log('-------inpatientRecord', inpatientRecord)
-    return inpatientRecord[0]
+    console.log('----inpatientRecord', inpatientRecord)
+    return inpatientRecord
   }
 
   renderModal() {
@@ -155,74 +151,78 @@ class InpatientScreen extends Component {
     }
     const patientsData = this.props.patientsData
     const selectInpatientId = this.props.selectInpatientId
-    const inpatientRecords = this.props.inpatientRecords
+    let inpatientRecords = this.props.inpatientRecords
     let inpatientRecordArray = []
     for (let i in inpatientRecords) {
       if (inpatientRecords[i] && inpatientRecords[i].id) {
         inpatientRecordArray.push(inpatientRecords[i])
       }
-    }
-    if (inpatientRecordArray && inpatientRecordArray.length > 0 && this.filterRecord(inpatientRecordArray, selectInpatientId)) {
-      return (
-        <div>
-          {this.renderPatientList()}
-          <div>
-            {topView(patientsData[selectInpatientId], this.filterRecord(inpatientRecordArray, selectInpatientId), patientsData, this.props)}
-            {middleList(this.filterRecord(inpatientRecordArray, selectInpatientId), this.props)}
-            {buttomList(this.filterRecord(inpatientRecordArray, selectInpatientId), this.props, this.filterRecord(inpatientRecordArray, selectInpatientId).id)}
-          </div>
-          <style jsx global>{`
-            .topView {
-              background-color: #ffffff;
-              margin-bottom: ${theme.tbmargin};
-            }
-            .topViewTittle {
-              padding: 0 ${theme.lrmargin};
-              align-items: center;
-              line-height: 45px;
-              border-bottom: 1px dashed #eee;
-            }
-            .topViewInfor {
-              padding: ${theme.tbmargin} ${theme.lrmargin};
-              align-items: flex-start;
-            }
-            .txtGray {
-              font-size: 14px;
-              color: #797979;
-              margin-top: 5px;
-              margin-bottom: 5px;
-              margin-right: 10px;
-            }
-            .txtBlack {
-              font-size: 14px;
-              color: #505050;
-              margin-top: 5px;
-              margin-bottom: 5px;
-            }
-            .spliteLine {
-              backgroundColor: #E6E6E6;
-              width: 100%;
-              height: 0.5px;
-            }
-            .payButton {
-              padding: 0;
-              border: solid 1px ${theme.maincolor};
-              border-radius: 10px;
-              border-width: 0.5px;
-              align-items: center;
-              justify-content: center;
-              line-height: 26px;
-              width: 80px;
-            }
-          `}</style>
-        </div>
-      )
-    } else {
-      return (<div>
-        {this.renderPatientList()}
-        <div><NoDataCard /></div>
-      </div>)
-    }
+		}
+		inpatientRecords = this.filterRecord(inpatientRecordArray, selectInpatientId)
+		console.log('------inpatientRecords-------', inpatientRecords)
+		return (
+			<div>
+				{this.renderPatientList()}
+				{
+					inpatientRecords && inpatientRecords.length > 0 ?
+					 inpatientRecords.map((item, iKey) => {
+						return (
+							<div key={iKey}>
+								{topView(patientsData[selectInpatientId], item, patientsData, this.props)}
+							</div>
+						)
+					})
+					:
+						<div>
+							<div><NoDataCard /></div>
+						</div>
+				}
+				<style jsx global>{`
+					.topView {
+						background-color: #ffffff;
+						margin-bottom: ${theme.tbmargin};
+					}
+					.topViewTittle {
+						padding: 0 ${theme.lrmargin};
+						align-items: center;
+						line-height: 45px;
+						border-bottom: 1px dashed #eee;
+					}
+					.topViewInfor {
+						padding: ${theme.tbmargin} ${theme.lrmargin};
+						align-items: flex-start;
+					}
+					.txtGray {
+						font-size: 14px;
+						color: #797979;
+						margin-top: 5px;
+						margin-bottom: 5px;
+						margin-right: 10px;
+					}
+					.txtBlack {
+						font-size: 14px;
+						color: #505050;
+						margin-top: 5px;
+						margin-bottom: 5px;
+					}
+					.spliteLine {
+						backgroundColor: #E6E6E6;
+						width: 100%;
+						height: 0.5px;
+					}
+					.payButton {
+						padding: 0;
+						border: solid 1px ${theme.maincolor};
+						border-radius: 10px;
+						border-width: 0.5px;
+						align-items: center;
+						justify-content: center;
+						line-height: 26px;
+						width: 80px;
+					}
+				`}</style>
+			</div>
+		)
   }
 }
 
@@ -244,7 +244,7 @@ const topView = (patient, inpatientRecord, patientsData, props) => {
     }
   }
   return (
-    <div className={'topView'}>
+    <div className={'topView'} onClick={() => {Router.push('/inpatient?id=' + inpatientRecord.id)}}>
       <div className={'topViewTittle'}>
         <span style={{ fontSize: 16, color: theme.mainfontcolor, paddingRight: '.06rem' }} >{ name }</span>
         <span style={{ fontSize: 14, color: theme.fontcolor }}>{ '住院号：' + inpatientNo}</span>
@@ -357,7 +357,7 @@ const buttomList = (inpatientRecord, props, id) => {
     {
       title: '住院须知',
       icon: 'flight-takeoff',
-      navKey: 'doctor_advice'
+      navKey: ''
     }
   ]
   const array2 = [
@@ -378,24 +378,23 @@ const buttomList = (inpatientRecord, props, id) => {
     }
   ]
   let array = []
-  if (!status || (HOSPITAL_NAME.indexOf('鲁中')> -1)) {
-    array = array1
-  } else {
+  if (status) {
     array = array2
+  } else {
+    array = array1
   }
   return (
     <div>
       {
-        array.map((item, i) => {
+        array2.map((item, i) => {
           return (
-            <div style={{padding: 15, borderBottom: '1px solid #d8d8d8', color: theme.mainfontcolor, backgroundColor: '#ffffff'}} key={i}
-              onClick={() => {
-                if (item.title === '一日清单') {
-                  props.selectInpatientRecord({patientRecordId: id})
-                }
-                Router.push('/inpatient/' + item.navKey)
-              }}>
-              <div className='flex tb-flex' style={{ justifyContent: 'space-between'}}>{item.title}<span className='back-left' style={{display: 'inline-block', transform: 'rotate(135deg)'}}></span></div>
+            <div style={{padding: 15, borderBottom: '1px solid #d8d8d8', color: theme.mainfontcolor, backgroundColor: '#ffffff'}} key={i} onClick={() => {
+              if (item.title === '一日清单') {
+                props.selectInpatientRecord({patientRecordId: id})
+              }
+              Router.push('/inpatient/' + item.navKey)
+            }}>
+              <div className='flex' style={{ justifyContent: 'space-between'}}>{item.title}<span className='back-left' style={{display: 'inline-block', transform: 'rotate(135deg)'}}></span></div>
             </div>
           )
         })
@@ -426,4 +425,4 @@ export default connect(
     queryDeposits,
     signin
   }
-)(InpatientScreen)
+)(InpatientListScreen)

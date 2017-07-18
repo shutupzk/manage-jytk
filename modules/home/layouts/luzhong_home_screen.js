@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import Router from 'next/router'
 import moment from 'moment'
 import {HOME_PAGE} from 'config'
-import { CardWhite, Loading, ErrCard, theme, NoDataCard } from 'components'
+import { CardWhite, Loading, ErrCard, theme, NoDataCard, Prompt } from 'components'
 import {
   queryNewsGroups,
   queryNews,
@@ -18,7 +18,12 @@ class LuZhongHome extends Component {
     super(props)
     this.state = {
       isInit: false,
-      groupId: null
+      groupId: null,
+      animating: false,
+      autoClose: true,
+      closeTime: 3,
+      isShow: false,
+      promptContent: ''
     }
   }
   componentWillMount () {
@@ -49,6 +54,27 @@ class LuZhongHome extends Component {
     console.log('====')
     Router.push('/hospital')
   }
+
+  goOtherPage(item) {
+    console.log('-----goOther', item)
+    let i = 2
+    if ((item.title.indexOf('候诊提醒') > -1) || (item.title.indexOf('查询报告') > -1)) {
+      this.setState({
+        isShow: true,
+        promptContent: '该功能暂未开放'
+      })
+      this.interval = setInterval(() => {
+        if (i === 0) {
+          clearInterval(this.interval)
+          this.setState({ isShow: false, promptContent: '' })
+        }
+        i--
+      }, 1000)
+      return
+    }
+    Router.push(item.navigateName)
+  }
+
   render () {
     if (this.props.newsLoading || this.state.isInit) {
       return (<div><Loading showLoading /></div>)
@@ -61,6 +87,7 @@ class LuZhongHome extends Component {
     // let hospital = this.getHospital(this.props.hospitals)
     return (
       <div>
+        <Prompt isShow={this.state.isShow} autoClose={this.state.autoClose} closeTime={this.state.closeTime}>{this.state.promptContent}</Prompt>
         <img src='/static/icons/banner3.png' style={{width: '100%'}} />
         <CardWhite classChild='nav'>
           <Link href={HOME_PAGE.grid_module[0].navigateName}><a>
@@ -76,15 +103,16 @@ class LuZhongHome extends Component {
                   {
                     HOME_PAGE.grid_module.slice(itemcon+1, itemcon+3) && HOME_PAGE.grid_module.slice(itemcon+1, itemcon+3).map((item, iKey) => {
                       return (
-                        <Link href={item.navigateName} key={iKey}><a>
-                          <article style={{borderBottom: '1px solid #fff',  borderColor: iKey === 0 || iKey === 2 ? theme.bordercolor : '#fff'}}>
-                            <header className='flex lr-flex tb-flex'
-                              style={{width: '100%', paddingTop: 20, height: 50}}>
-                              <img src={item.avatar} style={item.imgStyle || {width: 38}} />
-                            </header>
-                            <h3>{item.title}</h3>
-                          </article>
-                        </a></Link>
+                        <article
+                          style={{borderBottom: '1px solid #fff',  borderColor: iKey === 0 || iKey === 2 ? theme.bordercolor : '#fff'}}
+                          onClick={() => {this.goOtherPage(item)}}
+                          key={iKey}>
+                          <header className='flex lr-flex tb-flex'
+                            style={{width: '100%', paddingTop: 20, height: 50}}>
+                            <img src={item.avatar} style={item.imgStyle || {width: 38}} />
+                          </header>
+                          <h3>{item.title}</h3>
+                        </article>
                       )
                     })
                   }

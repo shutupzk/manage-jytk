@@ -21,7 +21,7 @@ class DoctorAdviceScreen extends Component {
         inpatientRecordArray.push(inpatientRecords[i])
       }
     }
-    const inpatientRecord = this.filterRecord(inpatientRecordArray, selectInpatientId)
+    const inpatientRecord = this.filterRecord(inpatientRecordArray, selectInpatientId) || {}
     return (
       <div>
         {

@@ -109,9 +109,6 @@ class AppointmentDetailScreen extends Component {
     if (this.state.isInit || this.props.loading) {
       return (<div><Loading showLoading={true} /></div>)
     }
-    if (this.props.error) {
-      return (<div><ErrCard /></div>)
-    }
     const { patients, appointments, appointmentId } = this.props
     const appointment = appointments[appointmentId]
     const patient = patients[appointment.patientId]
