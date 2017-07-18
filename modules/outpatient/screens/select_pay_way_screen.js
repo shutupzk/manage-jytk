@@ -61,30 +61,32 @@ class SelectPayWayScreen extends Component {
       return
     }
     if (payWay === 'WECHAT') {
-      const openId = await localforage.getItem('openId')
-      const error = await this.props.createPayment(this.props.client, { openId, payWay, totalFee: outpatient.chargeTotal, typeName: '挂号缴费', typeInfo: '东川门诊内科-挂号缴费', outpatientId: outpatient.id })
-      const param = JSON.parse(this.props.orderInfo.orderInfo)
-      const params = {
-        appId: param.appId,
-        timeStamp: param.timeStamp,
-        nonceStr: param.nonceStr,
-        signType: param.signType,
-        package: param.package,
-        paySign: param.paySign
-      }
-      if (!error) {
-        this.wxPayment(params, (res) => {
-            // window.alert(res.err_msg);
-          if (res.err_msg === 'get_brand_wcpay_request:ok') {
-            Router.push('/pay/success')
-          } else if (res.err_msg === 'get_brand_wcpay_request:fail') {
-            // window.alert('支付失败，请重新支付');
-            Router.push('/pay/fail')
-          } else if (res.err_msg === 'get_brand_wcpay_request:cancel') {
-            // window.alert('支付取消');
-          }
-        })
-      }
+      window.alert('接口待完善')
+      return ''
+      // const openId = await localforage.getItem('openId')
+      // const error = await this.props.createPayment(this.props.client, { openId, payWay, totalFee: outpatient.chargeTotal, typeName: '挂号缴费', typeInfo: '东川门诊内科-挂号缴费', outpatientId: outpatient.id })
+      // const param = JSON.parse(this.props.orderInfo.orderInfo)
+      // const params = {
+      //   appId: param.appId,
+      //   timeStamp: param.timeStamp,
+      //   nonceStr: param.nonceStr,
+      //   signType: param.signType,
+      //   package: param.package,
+      //   paySign: param.paySign
+      // }
+      // if (!error) {
+      //   this.wxPayment(params, (res) => {
+      //       // window.alert(res.err_msg);
+      //     if (res.err_msg === 'get_brand_wcpay_request:ok') {
+      //       Router.push('/pay/success')
+      //     } else if (res.err_msg === 'get_brand_wcpay_request:fail') {
+      //       // window.alert('支付失败，请重新支付');
+      //       Router.push('/pay/fail')
+      //     } else if (res.err_msg === 'get_brand_wcpay_request:cancel') {
+      //       // window.alert('支付取消');
+      //     }
+      //   })
+      // }
     }
   }
   render () {
