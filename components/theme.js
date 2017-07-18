@@ -6,12 +6,15 @@ const theme = {
     nfontcolor: '#b4b4b4', // 修饰字体颜色
 
     bordercolor: '#d8d8d8', // 边框颜色
+    nbordercolor: '#e6e6e6',
 
-    fontsize: '.15rem',
+    mainfontsize: '.15rem',
+    fontsize: '.14rem',
     nfontsize: '.13rem',
 
     tbmargin: '.1rem',
     lrmargin: '.15rem',
+    midmargin: '.06rem'
 }
 
 export default theme;

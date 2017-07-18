@@ -117,7 +117,7 @@ export function styles() {
         line-height: .36rem;
         width: 100%;
         font-weight: 300;
-        border-radius: 1rem;
+        {/* border-radius: 1rem; */}
         background: #f8f8f8;
         font-size: .18rem;
         border: 1px solid #ccc;

@@ -14,8 +14,9 @@ import {
   MAINCOLOR,
   PROFILE_FUNCTION_LIST,
   CARTEVITAL,
-  PORT
-} from './luzhong_index'
+  PORT,
+  MAINFUNCTION
+} from './beiyisanyuan_index'
 
 export {
   server,
@@ -33,5 +34,6 @@ export {
   MAINCOLOR,
   PROFILE_FUNCTION_LIST,
   CARTEVITAL,
-  PORT
+  PORT,
+  MAINFUNCTION
 }
