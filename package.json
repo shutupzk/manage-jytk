@@ -1,7 +1,7 @@
 {
-  "name": "hospital-patient-wechat",
+  "name": "hospital-management",
   "version": "0.0.1",
-  "description": "wechat project.",
+  "description": "management project.",
   "main": "./server.js",
   "scripts": {
     "dev": "next",
