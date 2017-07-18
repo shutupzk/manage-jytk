@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Router from 'next/router'
-
+import {theme} from 'components'
 import SearchBar from '../components/search_bar'
 import SearchDoctorList from '../components/search_doctor_list'
 import DepartmentList from '../../hospital/components/department_list'
@@ -55,24 +55,27 @@ class SearchScreen extends Component {
     const docs = this.filterDocs(this.props.doctors, this.props.searchDocIds)
     return (
       <div>
-        <div style={{display: 'flex', backgroundColor: '#fff', padding: '10px 20px'}}>
-          <div style={{flex: 11}}><SearchBar searchDep={(term) => { this.searchDepOrDoc(term) }} /></div>
-          <div style={{flex: 1, marginLeft: 20, padding: 10}} onClick={() => {
-            this.props.removeSearchDepIds()
-            this.props.removeSearchDocIds()
-            window.history.back()
-          }}><a style={{pading: '0px 10px'}}>取消</a></div>
+        <div style={{backgroundColor: '#e6e6e6', padding: '10px 15px'}}>
+          <div style={{background: '#fff', width: '100%', borderRadius: 6, justifyContent: 'space-between', lineHeight: '36px'}}
+            className='flex tb-flex'>
+            <SearchBar searchDep={(term) => { this.searchDepOrDoc(term) }} />
+            <div style={{padding: '0 15px', background: theme.maincolor, borderRadius: '0 6px 6px 0'}} onClick={() => {
+              this.props.removeSearchDepIds()
+              this.props.removeSearchDocIds()
+              window.history.back()
+            }}><a style={{color: '#fff'}}>取消</a></div>
+          </div>
         </div>
         {
           deps && deps.length > 0
-          ? <div>
+          ? <div style={{padding: '10px 15px'}}>
             <div style={{padding: 10}}>科室</div>
             <DepartmentList deps={deps} selectDepartment={(dep) => { this.selectDepartment(dep) }} searchKey={(text) => { return replaceSearchKey(text, this.state.term) }} />
           </div> : ''
         }
         {
           docs && docs.length > 0
-          ? <div>
+          ? <div style={{ padding: '10px 15px'}}>
             <div style={{padding: 10}}>医生</div>
             <SearchDoctorList doctors={docs} selectDoctor={(docId) => { this.selectDoctor(docId) }} searchKey={(text) => { return replaceSearchKey(text, this.state.term) }} />
           </div> : ''

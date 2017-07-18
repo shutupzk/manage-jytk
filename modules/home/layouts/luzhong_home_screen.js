@@ -8,8 +8,10 @@ import { CardWhite, Loading, ErrCard, theme, NoDataCard, Prompt } from 'componen
 import {
   queryNewsGroups,
   queryNews,
-  selectNews
+  selectNews,
+  getUserCookie2
 } from '../../../ducks'
+import localforage from 'localforage'
 import NewsItem from '../../hospital/components/news_item'
 import {home_styles} from './home_styles'
 
@@ -28,6 +30,13 @@ class LuZhongHome extends Component {
   }
   componentWillMount () {
     this.queryNews()
+    this.getUserCookie()
+  }
+  async getUserCookie () {
+    const openId = await localforage.getItem('openId')
+    if (!openId) {
+      this.props.getUserCookie2()
+    }
   }
 
   async queryNews () {
@@ -188,4 +197,5 @@ function mapStateToProps (state) {
 export default connect(mapStateToProps, {
   queryNewsGroups,
   queryNews,
-  selectNews})(LuZhongHome)
+  selectNews,
+  getUserCookie2})(LuZhongHome)
