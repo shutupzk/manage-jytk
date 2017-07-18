@@ -6,29 +6,7 @@ import localforage from 'localforage'
 import {API_SERVER} from 'config'
 
 import {
-  hospitals,
-  departments,
-  doctors,
-  doctorEvaluates,
-  user,
-  patients,
-  schedules,
-  appointments,
-  clinicStops,
-  news,
-  examinations,
-  laboratories,
-  outpatient,
-  inpatient,
-  billitem,
-  dailyfee,
-  questions,
-  deposit,
-  patientTypes,
-  messages,
-  lastMessages,
-  payments,
-  orderInfo
+  user
 } from '../ducks'
 // 服务地址
 // export const API_SERVER = 'localhost:3000'
@@ -81,29 +59,7 @@ function createMiddleware (clientMiddleware) {
 function getReducer (client) {
   return combineReducers({
     // apollo: client.reducer(),
-    hospitals,
-    departments,
-    doctors,
-    doctorEvaluates,
-    user,
-    patients,
-    schedules,
-    appointments,
-    clinicStops,
-    news,
-    examinations,
-    laboratories,
-    outpatient,
-    inpatient,
-    billitem,
-    dailyfee,
-    questions,
-    deposit,
-    patientTypes,
-    messages,
-    lastMessages,
-    payments,
-    orderInfo
+    user
   })
 }
 
