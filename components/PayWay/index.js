@@ -52,7 +52,7 @@ const payTypeList = (me) => {
           const payWay = getRadioBoxValue('payType')
           me.setState({payWay})
         }} /></div>
-        <div style={{padding: 10, borderBottom: 'solid 0.5px #eeeeee'}}>支付宝支付<input type='radio' name='payType' value='ALIPY' style={{float: 'right'}} onClick={(e) => {
+        {/*<div style={{padding: 10, borderBottom: 'solid 0.5px #eeeeee'}}>支付宝支付<input type='radio' name='payType' value='ALIPY' style={{float: 'right'}} onClick={(e) => {
           const payWay = getRadioBoxValue('payType')
           me.setState({payWay})
           console.log(e.target.value)
@@ -61,7 +61,7 @@ const payTypeList = (me) => {
           const payWay = getRadioBoxValue('payType')
           me.setState({payWay})
           console.log(e.target.value)
-        }} /></div>
+        }} /></div>*/}
         <div style={{padding: 10, borderBottom: 'solid 0.5px #eeeeee'}}>医保卡支付<input type='radio' name='payType' value='carteVital' style={{float: 'right'}} onClick={(e) => {
           const payWay = getRadioBoxValue('payType')
           me.setState({payWay})
@@ -75,7 +75,7 @@ const payTypeList = (me) => {
 const payButton = (props, payWay) => {
   return (
     <div style={{margin: '10px'}} onClick={() => { props.goPay(payWay) }}>
-      <button style={{width: '100%', backgroundColor: '#3CA0FF', marginTop: 30, display: 'block', borderRadius: 10, padding: 10, textAlign: 'center'}}>确认缴费</button>
+      <button className='btnBG btnBGMain'>确认缴费</button>
     </div>
   )
 }
