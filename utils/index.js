@@ -139,7 +139,7 @@ export function getBirthday (certificateNo) {
 
 // 根据日期，获取年龄 日期格式：1980-02-02
 export function ages (str) {
-  var r = str.match(/^(\d{1,4})(-|\/)(\d{1,2})\2(\d{1,2})$/)
+  var r = str&&str.match(/^(\d{1,4})(-|\/)(\d{1,2})\2(\d{1,2})$/)
   if (r == null) return false
   var d = new Date(r[1], r[3] - 1, r[4])
   if (Number(d.getFullYear()) === Number(r[1]) && Number((d.getMonth() + 1)) === Number(r[3]) && Number(d.getDate()) === Number(r[4])) {
@@ -170,6 +170,7 @@ export function getSex (certificateNo) {
 
 // 判断性别
 export function sex (sex) {
+  console.log('----sex', sex)
   switch (sex) {
     case '0':
       return '女'

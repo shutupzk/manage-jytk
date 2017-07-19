@@ -3,68 +3,32 @@ import Link from 'next/link'
 import Router from 'next/router'
 import {HOSPITAL_NAME, HOSPITALINFO} from 'config'
 
-import { theme, Prompt, HeaderBar } from 'components'
-import { signin, queryUser, queryPatients } from '../../../ducks'
+import { theme, Prompt } from 'components'
+import { signin, queryUser, queryPatients, showPrompt } from '../../../ducks'
 import { connect } from 'react-redux'
 
 class SigninScreen extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      animating: false,
-      autoClose: true,
-      closeTime: 2,
-      isShow: false,
-      promptContent: ''
+      username: '',
+      password: ''
     }
   }
   async submit () {
-    let i = 2
     const username = this.state.username
     const password = this.state.password
     if (!username) {
-      this.setState({
-        isShow: true,
-        promptContent: '请输入正确的账号'
-      })
-      this.interval = setInterval(() => {
-        if (i === 0) {
-          clearInterval(this.interval)
-          this.setState({ isShow: false, promptContent: '' })
-        }
-        i--
-      }, 1000)
+      this.props.showPrompt({text: '请输入正确的账号'})
       return
     }
     if (!password) {
-      this.setState({
-        isShow: true,
-        promptContent: '请输入密码'
-      })
-      this.interval = setInterval(() => {
-        if (i === 0) {
-          clearInterval(this.interval)
-          this.setState({ isShow: false, promptContent: '' })
-        }
-        i--
-      }, 1000)
+      this.props.showPrompt({text: '请输入密码'})
       return
     }
-    this.setState({animating: true})
     const error = await this.props.signin({ username, password })
-    this.setState({animating: false})
     if (error) {
-      this.setState({
-        isShow: true,
-        promptContent: '用户名或密码错误'
-      })
-      this.interval = setInterval(() => {
-        if (i === 0) {
-          clearInterval(this.interval)
-          this.setState({ isShow: false, promptContent: '' })
-        }
-        i--
-      }, 1000)
+      this.props.showPrompt({text: error})
       return
     }
     await this.props.queryUser(this.props.client, { userId: this.props.userId })
@@ -73,10 +37,8 @@ class SigninScreen extends Component {
     // window.location.href = '/'
   }
   render () {
-    console.log('----hospital_short_name', HOSPITALINFO)
     return (
       <div className={'loginPage'}>
-        <HeaderBar />
         <div className={'loginCon'}>
           <h3
             style={{textAlign: 'center', fontSize: 22, color: theme.mainfontcolor, paddingTop: 50, margin: 0}}>
@@ -105,7 +67,6 @@ class SigninScreen extends Component {
             </dl>
           </section>
           <button className='btnBG btnBGMain' style={{height: '.52rem'}} onClick={() => this.submit(this.props)}>登录</button>
-          <Prompt isShow={this.state.isShow} autoClose={this.state.autoClose} closeTime={this.state.closeTime}>{this.state.promptContent}</Prompt>
         </div>
         <style jsx>{`
           .loginPage {
@@ -122,7 +83,7 @@ class SigninScreen extends Component {
             border-radius: 6px;
             width: 30%;
             height: auto;
-            margin: 6% auto 0;
+            margin: 26% auto 0;
             position: relative;
             min-width: 380px;
           }
@@ -165,4 +126,4 @@ function mapStateToProps (state) {
   }
 }
 
-export default connect(mapStateToProps, { signin, queryUser, queryPatients })(SigninScreen)
+export default connect(mapStateToProps, { signin, queryUser, queryPatients, showPrompt })(SigninScreen)

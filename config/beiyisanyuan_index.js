@@ -4,111 +4,81 @@ import withData from './withData'
 
 // 医院名称
 const HOSPITAL_NAME = '北医三院管理平台'
-const API_SERVER = '218.58.137.218:9002' // 山东鲁中
+const API_SERVER = '120.92.57.18:9198' // 山东鲁中
 // const API_SERVER = '172.18.96.198:9002'
 // const API_SERVER = '127.0.0.1:9002' // 山东鲁中
 const PORT = '9003' // 前端端口
-const CARTEVITAL = false // 否开通医保卡
 
-// 一维码格式
-const BAR_FORMART = 'CODE128'
-
+// 医院信息
 const HOSPITALINFO = {
   hospital_short_name: 'beiyisanyuan',
   hospital_image: '../static/luzhong/loginlogo.png',
   hospital_loginlogo: '../static/beiyisanyuan/loginLogo.png',
+  footerbar_background_color: '#36486C',
   contact: [
     { title: '网站链接', values: ['http://www.pkuih.edu.cn/'] },
-    { title: '联系电话', values: ['总机电话: 010-3755555', '客服电话: 010-3755555', '医疗共同体: 010-3755555'] },
-    { title: '电子邮箱', values: ['pr@pkuih.edu.cn'] }
+    { title: '联系电话', values: ['010-00000000']},
+    { title: '京ICP备14005009号', values: ['京ICP备14005009号'] }
   ]
 }
 
 // 主功能
 const MAINFUNCTION = [
   {
-    title: '用户管理',
-    navigateName: '',
+    title: '订单管理',
+    short_name: 'order',
+    navigateName: '/order',
     children: [
-      {title: '修改密码', navigateName: '',}
+      {title: '订单管理', navigateName: '/order', color: '#5D75A6',},
+      {title: '交易管理', navigateName: '', color: '#5D75A6'},
+      {title: '服务记录', navigateName: '', color: '#5D75A6'},
+    ]
+  },
+  {
+    title: '用户管理',
+    short_name: 'profile',
+    navigateName: '/profile/records',
+    children: [
+      {title: '修改密码', navigateName: '/profile/modifypassword', color: '#5D75A6'}
     ]
   }
 ]
 
-const HOME_PAGE = { // 山东鲁中
-  banner: ['/static/icons/banner3'],
-  grid_module: [
-    {title: '预约挂号', avatar: '../static/luzhong/homeAppoint.png', subTitle: '', navigateName: '/appointment/child_department_list'},
-    {title: '门诊缴费', avatar: '../static/luzhong/homeoutpatient.png', subTitle: '', navigateName: '/outpatient?key=outpatient'},
-    {title: '查询报告', avatar: '../static/luzhong/homeReport.png', subTitle: '', navigateName: '/report', imgStyle: {width: 32}},
-    {title: '候诊提醒', avatar: '../static/luzhong/homeRealTime.png', subTitle: '', navigateName: '/real_time', imgStyle: {width: 26}},
-    {title: '住院跟踪', avatar: '../static/luzhong/homeInhos.png', subTitle: '', navigateName: '/inpatient/inpatient_list', imgStyle: {width: 30}}
-  ],
-  hospital: {
-    title: '山东鲁中', avatar: '/static/icons/app.png', subTitle: ['江苏省南京市栖霞区岭山北路182号', '联系电话：40060-95522'], navigateName: ''
-  },
-  other_modules: ['健康资讯'],
-  bottomLabel: [
-    {i: 1, title: '首页', avatar: '/static/luzhong/navHomeIcon', url: '/', imgStyle: {width: 24, paddingTop: 4}},
-    {i: 2, title: '挂号订单', avatar: '/static/luzhong/navAppointIcon', url: '/appointment/appointment_list', imgStyle: {width: 18, paddingTop: 2}},
-    {i: 3, title: '我的', avatar: '/static/luzhong/navProfileIcon', url: '/profile', imgStyle: {width: 20, paddingTop: 4}}
-  ]
-}
-
-const REPORT = { // 山东鲁中
-  needPassword: false,
-  reportType: [{text: '检验报告', value: 'lab'}, {text: '检查报告', value: 'exm'}]
-}
-
-/**
- * 个人中心功能模块
- */
-const PROFILE_FUNCTION_LIST = {
-	middleView: [
-		{ title: '就诊人管理', icon: 'familyIcon', type: 'simple-line-icon', navigateUrl: 'profile/patient_list' },
-		{ title: '我的医生', icon: 'doctors', type: 'simple-line-icon', navigateUrl: 'profile/my_doctors' },
-		{ title: '缴费记录', icon: 'depositRecords', type: 'simple-line-icon', navigateUrl: 'profile/deposit_record' },
-		// { title: '我的随访', icon: 'pencil-square-o', type: 'font-awesome', navigateUrl: 'ehr' },
-		// { title: '满意度评价', icon: 'evaluationIcon', type: 'simple-line-icon', navigateUrl: 'profile/evaluation' }
-	],
-	bottomView: [
-		// { title: '医保卡信息', icon: 'cartecardicon', type: 'simple-line-icon', navigateUrl: 'profile/carte_vital' },
-		{ title: '修改密码', icon: 'setpassword', type: 'simple-line-icon', navigateUrl: 'profile/setPassword' },
-		// { title: '隐私条款', icon: 'prvite', type: 'simple-line-icon', navigateUrl: 'profile/privacy_terms' },
-		// { title: '常见问题', icon: 'question', type: 'simple-line-icon', navigateUrl: 'profile/questions' },
-		// { title: '我的报告单', icon: 'doc', type: 'simple-line-icon', navigateUrl: 'favorite_list' },
-		{ title: '退出登录', icon: 'logout', type: 'simple-line-icon', navigateUrl: 'logout' }
-		// { title: '设置', icon: 'settings', type: 'simple-line-icon', navigateUrl: 'setting' }
-	]
-}
-
-/**
- * 医院介绍功能模块
- */
-const HOSPITAL_FUNCTION_LIST = [
-  { title: '医院介绍', avatar: '../static/icons/hospital_hospital.png', subTitle: '医院基本情况简介', navigateName: 'hospital_introduction', width: '16px', params: {} },
-  { title: '科室介绍', avatar: '../static/icons/hospital_department.png', subTitle: '科室相关信息', navigateName: 'departments', width: '18px', params: { toScreenKey: 'department_detail' } },
-  { title: '医生介绍', avatar: '../static/icons/hospital_doctor.png', subTitle: '医生简介及出诊信息', navigateName: 'departments', width: '22px', params: { toScreenKey: 'doctor_introduce_list' } },
-  { title: '医院新闻', avatar: '../static/icons/hospital_news.png', subTitle: '医院相关最新资讯', navigateName: 'news_list', params: {} },
-  { title: '停诊信息', avatar: '../static/icons/hospital_stopvisit.png', subTitle: '医院停诊通知', navigateName: 'clinic_stop', width: '18px', params: {} },
-//   { title: '健康资讯', avatar: '../static/icons/hospital_news.png', subTitle: '健康新闻快速知', navigateName: 'news_list', width: '24px', params: {} },
-  { title: '就诊指南', avatar: '../static/icons/hospital_visit_point.png', subTitle: '挂号/就诊说明', navigateName: 'guide_list', width: '18px', params: {} },
-//   { title: '楼层分布', avatar: '../static/icons/hospital_in_navigation.png', subTitle: '院内楼层分布情况', navigateName: 'buildings', width: '18px', params: {} },
-  { title: '来院导航', avatar: '../static/icons/hospital_out_navigation.png', subTitle: '周边交通及地图导航', navigateName: 'navigation', width: '18px', params: {} },
-//   { title: '环境赏析', avatar: '../static/icons/hospital_contact.png', subTitle: '环境赏析', navigateName: 'environment', width: '22px', params: {} },
-  { title: '联系我们', avatar: '../static/icons/hospital_contact.png', subTitle: '医院网址/电话/邮箱', navigateName: 'contact', params: {} }
-]
-
-// 联系方式
-const CONTACT = [
-  { title: '网站链接', values: ['http://www.pkuih.edu.cn/'] },
-  { title: '联系电话', values: ['总机电话: 010-3755555', '客服电话: 010-3755555', '医疗共同体: 010-3755555'] },
-  { title: '电子邮箱', values: ['pr@pkuih.edu.cn'] }
-]
+// home 页面
+const HOME_PAGE = {url: '/order'}
 
 // 主题颜色
-const MAINCOLOR = '#355CC2'
+const MAINCOLOR = '#2A4680'
 
+// order type<option value="7">全部订单类型</option>
+            // <option value="1">待支付</option>
+            // <option value="2">待退款</option>
+            // <option value="3">待执行</option>
+            // <option value="4">执行中</option>
+            // <option value="5">已完成</option>
+            // <option value="6">已关闭</option>
+            // 01：待支付，02：已取消，03：待执行，04：执行中，{05：已过期，06：退款申请}待退款，07：已完成，08：已退款
+const ORDERTYPE = [
+   {title: '待支付', value: '01'},
+   {title: '已取消', value: '02'},
+   {title: '待执行', value: '03'},
+   {title: '执行中', value: '04'},
+   {title: '已过期', value: '05'},
+   {title: '退款申请', value: '06'},
+   {title: '已完成', value: '07'},
+   {title: '已退款', value: '08'}
+]
+
+const ORDERINFO = {
+  order_list_title: [
+    {title: '产品服务', value: '', style: {width: '30%'}, apiKey: ''},
+    {title: '单价(元)', value: '', style: {width: '10%'}, apiKey: ''},
+    {title: '数量', value: '', style: {width: '10%'}, apiKey: ''},
+    {title: '买家信息', value: '', style: {width: '14%'}, apiKey: ''},
+    {title: '订单状态', value: '', style: {width: '16%', textAlign: 'center'}, apiKey: ''},
+    {title: '支付信息(元)', value: '', style: {width: '20%', textAlign: 'center'}, apiKey: ''},
+  ]
+}
 
 export {
   server,
@@ -117,15 +87,11 @@ export {
   initStore,
   withData,
   HOSPITAL_NAME,
-  BAR_FORMART,
-  HOSPITAL_FUNCTION_LIST,
-  CONTACT,
   HOME_PAGE,
-  REPORT,
   HOSPITALINFO,
   MAINCOLOR,
-	PROFILE_FUNCTION_LIST,
-  CARTEVITAL,
   PORT,
-  MAINFUNCTION
+  MAINFUNCTION,
+  ORDERTYPE,
+  ORDERINFO
 }

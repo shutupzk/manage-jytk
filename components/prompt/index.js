@@ -1,35 +1,69 @@
 import React, { Component } from 'react'
-export default class Prompt extends Component {
+import { hidePrompt } from 'ducks'
+import { connect } from 'react-redux'
+let timer;
+
+class Prompt extends Component {
   constructor (props) {
     super(props)
     this.state = {
       closeTime: 2,
       autoClose: false,
-      isShow: false,
+      show: false,
       promptContent: ''
     }
   }
 
-  componentWillReceiveProps (nextProps) {
-    this.setState(nextProps)
-    if (nextProps.autoClose) {
-      let i = nextProps.closeTime
-      this.interval = setInterval(() => {
-        if (i === 0) {
-          clearInterval(this.interval)
-          this.setState({ isShow: false, promptContent: '' })
-        }
-        i--
-      }, 1000)
+  componentWillMount() {
+  }
+
+  componentWillReceiveProps(nextProps) {
+    console.log('-------prompt======000000', nextProps.text, nextProps.timer)
+    if (!this.props.text && nextProps.text) {
+      this.setState({show: true});
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        this.setState({show: false});
+        this.props.hidePrompt()
+      }, nextProps.timer);
     }
   }
+
+  componentWillUpdate() {
+    // console.log('-------prompt=====', this.props.text, this.props.timer, this.state.show)
+    // if (this.state.show) {
+    //   clearTimeout(timer);
+    //   timer = setTimeout(() => {
+    //     this.setState({show: false});
+    //   }, this.props.timer);
+    // }
+  }
+
+  componentWillUnMount() {
+    clearTimeout(timer);
+  }
+
+  // componentWillReceiveProps (nextProps) {
+  //   this.setState(nextProps)
+  //   if (nextProps.autoClose) {
+  //     let i = nextProps.closeTime
+  //     this.interval = setInterval(() => {
+  //       if (i === 0) {
+  //         clearInterval(this.interval)
+  //         this.setState({ isShow: false, promptContent: '' })
+  //       }
+  //       i--
+  //     }, 1000)
+  //   }
+  // }
 
   render () {
   // const width = window.screen.availHeight
   // const height = window.screen.availWidth
     // console.log('-----prompt', this.props.children)
     return (
-      <div className={`promptDiv ${this.state.isShow === true ? 'show' : ''}`}>
+      <div className={`promptDiv ${this.state.show === true ? 'show' : ''}`}>
+        {this.props.text}
         {
           this.props.children
         }
@@ -60,3 +94,12 @@ export default class Prompt extends Component {
     )
   }
 }
+
+function mapStateToProps (state) {
+  return {
+    text: state.prompt.data.text,
+    timer: state.prompt.data.timer
+  }
+}
+
+export default connect(mapStateToProps, { hidePrompt })(Prompt)

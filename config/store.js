@@ -6,7 +6,9 @@ import localforage from 'localforage'
 import {API_SERVER} from 'config'
 
 import {
-  user
+  user,
+  prompt,
+  order
 } from '../ducks'
 // 服务地址
 // export const API_SERVER = 'localhost:3000'
@@ -59,7 +61,9 @@ function createMiddleware (clientMiddleware) {
 function getReducer (client) {
   return combineReducers({
     // apollo: client.reducer(),
-    user
+    user,
+    prompt,
+    order
   })
 }
 

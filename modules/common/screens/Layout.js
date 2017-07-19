@@ -1,18 +1,20 @@
 import Head from './head'
-import Navigation from './foot_navigation'
+import ConLayout from './con_layout'
 import {styles} from 'components/styles';
 // import Header from './header'
 // var innerHeight = document.body.clientHeight
+import {HeaderBar, Prompt, FooterBar} from 'components'
 
 const Layout = (props) => {
-  console.log('---layout--props', props);
   return (
     <main>
       <Head title={props.title} />
       <div>
-        {/*<Header title={props.title} />*/}
-        <div style={{overflow: 'auto', marginBottom: '60px'}}> {props.children}</div>
-        <Navigation url={props.url} />
+        <HeaderBar {...props}  />
+        <Prompt />
+        <div style={{overflow: 'auto', marginBottom: '60px'}}>
+        <ConLayout {...props} /></div>
+        <FooterBar notLoginPage />
       </div>
       {styles()}
     </main>

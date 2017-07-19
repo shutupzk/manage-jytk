@@ -11,6 +11,7 @@ import ErrCard from './ErrCard'
 import PayWay from './PayWay'
 import CalendarCard from './CalendarCard'
 import HeaderBar from './HeaderBar'
+import FooterBar from './FooterBar'
 
 export {
     CardWhite,
@@ -30,7 +31,8 @@ export {
     ErrCard,
     PayWay,
     CalendarCard,
-    HeaderBar
+    HeaderBar,
+    FooterBar
 }
 
 

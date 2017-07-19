@@ -92,7 +92,7 @@ export function styles() {
       }
 
       /*btn*/
-      /*只有边框和线、没有背景的按钮*/
+      /*灰色系的按钮*/
       .btnBorder{
         text-align: center;
         color: ${theme.mainfontcolor};
@@ -134,10 +134,16 @@ export function styles() {
         border: 1px solid #7FA4C9;
         color: #fff;
       }
-      .btnBGDisable{
-        background: ${theme.bordercolor};
-        border: 1px solid ${theme.bordercolor};
-        color: #fff;
+      /* 灰色系按钮 */
+      .btnBGGray{
+        background: #f2f2f2;
+        border: 1px solid #f2f2f2;
+        color: ${theme.mainfontcolor};
+      }
+      .btnBGGrayDisable{
+        background: #f2f2f2;
+        border: 1px solid #f2f2f2;
+        color: ${theme.nfontcolor};
       }
       .btnBGLitt{
         width: .5rem;
@@ -145,34 +151,7 @@ export function styles() {
         line-height: .3rem;
         font-size: .14rem;
         text-align: center;
-      }
-      /*全屏宽的按钮*/
-      /*灰色 不可点*/
-      .fullWidthFixed{
-        width: 100%;
-        position: fixed;
-        bottom: 0;
-        z-index: 100;
-      }
-      .fullWidthBtn{
-        border: 0px solid #fff;
-        height: .46rem;
-        line-height: .46rem;
-        background: ${theme.nfontcolor};
-        color: #fff;
-        font-size: .16rem;
-        text-align: center;
-        letter-spacing: -0.21px;
         padding: 0;
-      }
-      /*可点 主色调*/
-      .fullWidthBtnMain{
-        background: ${theme.maincolor};
-      }
-      /*白色背景 可点*/
-      .fullWidthBtnBackWhite{
-        background: #fbfbfb;
-        color: #E45252;
       }
       button{
         font-weight: 300;
@@ -211,22 +190,30 @@ export function styles() {
         -webkit-appearance:none;
         -ms-appearance:none;
         width: 100%;
-        height: .28rem;
-        line-height: .28rem;
+        height: .34rem;
+        line-height: .34rem;
         border: 0px solid #fff;
         background: transparent;
+        color: ${theme.mainfontcolor};
       }
       .select .select-icon{
-        position: absolute;
-        top: .08rem;
-        right: .1rem;
       }
       .select .select-icon i:nth-of-type(1) {
         {/*@include sanjiao(left, bottom, right, #B8C2C7, 0.04rem);*/}
+        width: 0;
+        height: 0;
+        border-left: .04rem solid transparent;
+        border-right: .04rem solid transparent;
+        border-bottom: .04rem solid #B8C2C7;
         display: block;
       }
       .select .select-icon i:nth-of-type(2) {
         {/*@include sanjiao(left, top, right, #B8C2C7, 0.04rem);*/}
+        width: 0;
+        height: 0;
+        border-left: .04rem solid transparent;
+        border-right: .04rem solid transparent;
+        border-top: .04rem solid #B8C2C7;
         display: block;
         margin-top: .04rem;
       }
