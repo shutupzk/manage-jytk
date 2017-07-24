@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Router from 'next/router'
 import {theme} from 'components'
-import {ORDERTYPE} from 'config'
+import {ORDERTYPE, ORDERINFO} from 'config'
 import OrderItemDoctor from './order_item_doctor'
 
 export default class OrderListItem extends Component {
@@ -10,31 +10,12 @@ export default class OrderListItem extends Component {
     this.state = {
     }
 	}
-	
-
-  showPayMethod(method) {
-		console.log('----method', method)
-    let html;
-    const aliPay = '/static/icons/aliPay.png'
-    const wxPay = '/static/icons/wxPay.png'
-    const yinlianPay = '/static/icons/yinlianPay.png'
-    if (method === 'WECHAT') {
-      html = (<p className='flex tb-flex'><img height='14px' src={wxPay} alt="" />&nbsp;微信支付</p>)
-    } else if (method === 'ALIPAY') {
-      html = (<p className='flex tb-flex'><img height='14px' src={aliPay} alt="" />&nbsp;支付宝支付</p>)
-    } else if (method === 'NATIVE') {
-      html = (<p className='flex tb-flex'><img height='14px' src={yinlianPay} alt="" />&nbsp;银联支付</p>)
-    }
-    return html;
-	}
-	
 
   render () {
 		const data = this.props.data || {}
-		const curStatus = ORDERTYPE.filter((item) => item.value === data.status) || []
     return (
-			<div className={'orderRecordItem'}>
-        <header>
+			<div style={{border: `1px solid ${theme.nbordercolor}`,borderRadius: 3, margin: `${theme.tbmargin} 0px`, background: '#fff', color: theme.mainfontcolor}}>
+        <header style={{background: '#E8EEFA', lineHeight: '.24rem', padding: `${theme.midmargin} ${theme.lrmargin}`, fontSize: '.12rem'}}>
           {/*<input type="checkbox" className="left" style={{marginRight: '10px',background: 'transparent',margin: 0}} />*/}
           <p className="left">{data.createdAt|| '无'}</p>
           <p className="left" style={{color: theme.fontcolor,padding: '0 10px'}}>订单编号 {data.id|| '无'}</p>
@@ -42,43 +23,15 @@ export default class OrderListItem extends Component {
 					<article className='clearfix'></article>
         </header>
         <ul className='flex tb-flex'>
-          <OrderItemDoctor data={data} />
-          <li className={'left ' + 'orderCon2'}>
-            ￥{data.fee|| '无'}
-          </li>
-          <li className={'left ' + 'orderCon3'}>
-            {data.count|| '1'}
-          </li>
-          <li className={'left ' + 'orderCon4'}>
-            <p>{data.patient.name|| '无'}</p>
-            <p>{data.patient.phone|| '无'}</p>
-          </li>
-          <li className={'left ' + 'orderCon5'} style={{paddingTop: data.refundFlag ? '0' : '10px'}}>
-            <p>{curStatus[0] && curStatus[0].title || '无'}</p>
-            <article style={{display: data.payment ? 'block' : 'none'}}>退款</article>
-            <article onClick={() => {Router.push(`/order/detail?id=${data.id}`)}}>查看详情</article>
-          </li>
 					{
-						data.payment ?
-							<li className={'left ' + 'orderCon6'}>
-								<p style={{color: theme.nfontcolor}}>实付&nbsp;<strong style={{color: '#FF8A00'}}>￥{data.payment.totalFee|| '无'}</strong></p>
-								<p>{data.payment.createdAt|| '无'}</p>
-								{this.showPayMethod(data.payment.payWay)}
-							</li>
-						:
-						<li className={'left ' + 'orderCon6'}>
-							<p>{'无'}</p>
-						</li>
+						ORDERINFO.order_list_title.map((item, iKey) => {
+							const orderCon = `orderCon${iKey}`
+							return eval(orderCon + '(data, item)')
+						})
 					}
 					<article className='clearfix'></article>
         </ul>
 				<style jsx>{`
-					.orderRecordItem{
-						border: 1px solid #E6E6E6;
-						border-radius: 3px;
-						margin: 10px 0;
-						background: #fff;
-					}
 					header{
 						background: #E8EEFA;
 						line-height: 24px;
@@ -93,37 +46,89 @@ export default class OrderListItem extends Component {
 						font-size: 13px;
 						box-sizing: content-box;
 					}
-					.orderCon2, .orderCon3{
-						color: #505050;
-						line-height: 54px;
-						width: 10%
-					}
-					.orderCon4{
-						color: #505050;
-						width: 14%
-					}
-					.orderCon5{
-						color: #505050;
-						padding-top: 10px;
-						width: 16%
-					}
-					.orderCon5 article{
-						color: #3464CA;
-						display: block;
-						cursor: pointer;
-					}
-					.orderCon5AddBtn{
-						padding-top: 0;
-					}
-					.orderCon6{
-						color: #797979;
-						width: 20%
-					}
-					.orderCon6 p:nth-of-type(3) {
-							line-height: 16px;
-					}
 				`}</style>
       </div>
     )
   }
+}
+
+const orderCon0 = (data) => {
+	return (
+		<OrderItemDoctor data={data} />
+	)
+}
+
+const orderCon1 = (data, item) => {
+	let style = item.style
+	style.color = theme.mainfontcolor
+	style.lineHeight = '.54rem'
+	return (
+		<li className={'left'} style={style}>
+			￥{data.fee|| '无'}
+		</li>
+	)
+}
+
+const orderCon2 = (data, item) => {
+	item.style.color = theme.mainfontcolor
+	item.style.lineHeight = '.54rem'
+	return (
+		<li className={'left'} style={item.style}>
+			{data.count|| '1'}
+		</li>
+	)
+}
+
+const orderCon3 = (data, item) => {
+	item.style.color = theme.mainfontcolor
+	return (
+		<li className={'left'} style={item.style}>
+			<p>{data.patient && data.patient.user && data.patient.user.name|| '无'}</p>
+			<p>{data.patient && data.patient.user && data.patient.user.phone|| '无'}</p>
+		</li>
+	)
+}
+
+const orderCon4 = (data, item) => {
+	item.style.color = theme.mainfontcolor
+	const curStatus = ORDERTYPE.filter((item) => item.value === data.status) || []
+	return (
+		<li className={'left'} style={item.style}>
+			<p>{curStatus[0] && curStatus[0].title || '无'}</p>
+			<article style={{display: data.payment ? 'block' : 'none'}}>退款</article>
+			<article onClick={() => {Router.push(`/order/detail?id=${data.id}`)}}>查看详情</article>
+			<style jsx>{`
+				article{
+					color: #3464CA;
+					display: block;
+					cursor: pointer;
+				}
+			`}</style>
+		</li>
+	)
+}
+
+const orderCon5 = (data, item) => {
+	item.style.color = theme.mainfontcolor
+	let payway = {title: '', imgurl: ''}
+	if (data.payment && data.payment.payWay === 'WECHAT') {
+		payway = {title: '微信支付', imgurl: 'wxPay'}
+	} else if (data.payment && data.payment.payWay === 'ALIPAY') {
+		payway = {title: '支付宝支付', imgurl: 'aliPay'}
+	} else if (data.payment && data.payment.payWay === 'NATIVE') {
+		payway = {title: '银联支付', imgurl: 'yinlianPay'}
+	} 
+	let html = <li className={'left'} style={item.style}>
+				<p>{'无'}</p>
+			</li>
+	if (data.payment) {
+		html = <li className={'left'} style={item.style}>
+					<p style={{color: theme.nfontcolor}}><span style={{fontSize: 12}}>实付&nbsp;</span><strong style={{color: '#FF8A00'}}>￥{data.payment && data.payment.totalFee|| '无'}</strong></p>
+					<p style={{lineHeight: '18px'}}>{data.payment.createdAt|| '无'}</p>
+					<p className='flex tb-flex lr-flex' style={{lineHeight: '.16rem'}}>
+						<img height='14px' src={`/static/icons/${payway.imgurl}.png`} alt="" />&nbsp;{payway.title}
+					</p>
+				</li>
+	}
+	return html
 }

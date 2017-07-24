@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import Link from 'next/link'
 import Router from 'next/router'
 import {HOSPITAL_NAME, HOSPITALINFO} from 'config'
+import localforage from 'localforage'
 
 import { theme, Prompt } from 'components'
 import { signin, queryUser, queryPatients, showPrompt } from '../../../ducks'
@@ -26,13 +27,23 @@ class SigninScreen extends Component {
       this.props.showPrompt({text: '请输入密码'})
       return
     }
-    const error = await this.props.signin({ username, password })
-    if (error) {
-      this.props.showPrompt({text: error})
+    if (username !== 'admin' && password !== 'admin123') {
+      this.props.showPrompt({text: '用户名或密码错误'})
       return
+    } else {
+      localforage.setItem('token', 'token')
+      localforage.setItem('userId', 'userId')
+      localforage.setItem('username', username)
+      localforage.setItem('password', password)
+      Router.push('/')
     }
-    await this.props.queryUser(this.props.client, { userId: this.props.userId })
-    await this.props.queryPatients(this.props.client, { userId: this.props.userId })
+    // const error = await this.props.signin({ username, password })
+    // if (error) {
+    //   this.props.showPrompt({text: error})
+    //   return
+    // }
+    // await this.props.queryUser(this.props.client, { userId: this.props.userId })
+    // await this.props.queryPatients(this.props.client, { userId: this.props.userId })
     // return this.props.navigation.goBack(null)
     // window.location.href = '/'
   }
@@ -83,7 +94,7 @@ class SigninScreen extends Component {
             border-radius: 6px;
             width: 30%;
             height: auto;
-            margin: 26% auto 0;
+            margin: 20% auto 0;
             position: relative;
             min-width: 380px;
           }

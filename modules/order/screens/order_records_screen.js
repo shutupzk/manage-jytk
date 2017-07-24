@@ -2,8 +2,9 @@ import React, { Component } from 'react'
 // import { Router } from '../../../routes'
 import Router from 'next/router'
 import {theme, Prompt, Loading} from 'components'
-import {ORDERTYPE} from 'config'
-import {OrderTab, OrderListTopFilterCard, OrderListTitle, OrderListItem} from '../components'
+import {ORDERTYPE, ORDERINFO} from 'config'
+import {OrderTab, OrderListItem} from '../components'
+import {TopFilterCard, ListTitle} from 'modules/common/components'
 import { queryOrderList } from '../../../ducks'
 import { connect } from 'react-redux'
 
@@ -172,17 +173,22 @@ class OrderRecordsScreen extends Component {
       return <Loading showLoading />
     }
     let orderlist = this.filterCard(this.props.orderlist)
-    console.log('----orderlist', orderlist)
     return (
       <div className={'orderRecordsPage'}>
-        <OrderListTopFilterCard status={this.state.status} changeStatus={(status) => {this.setState({status: status})}}
-          changeKeyword={(keyword) => {this.setState({keyword: keyword})}} />
+        <TopFilterCard status={this.state.status} changeStatus={(status) => {this.setState({status: status})}}
+          changeKeyword={(keyword) => {this.setState({keyword: keyword})}}
+          data={ORDERTYPE} />
         <OrderTab status={this.state.status} changeStatus={(status) => {this.setState({status: status})}} />
-        {/*<div className={styles.orderConTop + ' clearfix'}>
-          <a className='right'>下一页</a>
-          <a className='right'>上一页</a>
-        </div>*/}
-        <OrderListTitle />
+        <div className={'orderConTop'} style={{marginBottom: theme.tbmargin}}>
+          <button className='right btnBGGray btnBGLitt'
+            style={{height: '.24rem', lineHeight: '.24rem',backgroundImage: 'linear-gradient(-180deg, #FAFAFA 0%, #F2F2F2 100%)', 
+              border: `1px solid ${theme.nbordercolor}`, borderRadius: 2, marginRight: theme.tbmargin, fontSize: 12, color: theme.mainfontcolor}}>下一页</button>
+          <button className='right btnBGGray btnBGLitt'
+            style={{height: '.24rem', lineHeight: '.24rem', backgroundImage: 'linear-gradient(-180deg, #FAFAFA 0%, #F2F2F2 100%)',
+            border: `1px solid ${theme.nbordercolor}`, borderRadius: 2, marginRight: theme.tbmargin, fontSize: 12, color: theme.mainfontcolor}}>上一页</button>
+          <p className='clearfix'></p>
+        </div>
+        <ListTitle data={ORDERINFO.order_list_title} />
         {
           orderlist && orderlist.length > 0 ?
             orderlist.map((orderItem, iKey) => {

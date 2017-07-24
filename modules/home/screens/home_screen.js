@@ -4,6 +4,7 @@ import {HeaderBar, Loading} from 'components'
 import Router from 'next/router'
 import { signin, showPrompt } from 'ducks'
 import { connect } from 'react-redux'
+import localforage from 'localforage'
 
 class Home extends Component {
   constructor (props) {
@@ -18,12 +19,19 @@ class Home extends Component {
 
   // 自动登陆，
   async autoSignin () {
-    const error = await this.props.signin({ username: null, password: null })
-    if (error) {
-      this.props.showPrompt(error)
-      Router.push('/signin')
-    }
-    const userId = this.props.userId
+    // const error = await this.props.signin({ username: null, password: null })
+    // if (error) {
+    //   this.props.showPrompt({text: error})
+    //   Router.push('/signin')
+    // }
+    // const userId = this.props.userId
+    // if (userId) {
+    //   Router.push(HOME_PAGE.url)
+    // } else {
+    //   Router.push('/signin')
+    // }
+    const userId = await localforage.getItem('userId')
+    // console.log('------home---', userId)
     if (userId) {
       Router.push(HOME_PAGE.url)
     } else {

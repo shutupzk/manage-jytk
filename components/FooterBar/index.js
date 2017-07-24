@@ -20,12 +20,14 @@ export default class FooterBar extends Component {
 							line-height: 40px;
 							text-align: center;
 							color: #fff;
-							{/* position: absolute; */}
-							bottom: 0;
+							position: relative;
 							width: 100%;
+							z-index: 10;
 						}
 						.footerBar2{
 							opacity: 0.6;
+							position: fixed;
+							bottom: 0;
 						}
 					`}
 				</style>

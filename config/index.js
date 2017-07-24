@@ -11,8 +11,9 @@ import {
   PORT,
   MAINFUNCTION,
   ORDERTYPE,
-  ORDERINFO
-} from './beiyisanyuan_index'
+  ORDERINFO,
+  DOCTORINFO
+} from './luzhong_index'
 
 export {
   server,
@@ -27,5 +28,6 @@ export {
   PORT,
   MAINFUNCTION,
   ORDERTYPE,
-  ORDERINFO
+  ORDERINFO,
+  DOCTORINFO
 }

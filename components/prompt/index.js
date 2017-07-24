@@ -18,7 +18,6 @@ class Prompt extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log('-------prompt======000000', nextProps.text, nextProps.timer)
     if (!this.props.text && nextProps.text) {
       this.setState({show: true});
       clearTimeout(timer);

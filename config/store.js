@@ -8,7 +8,13 @@ import {API_SERVER} from 'config'
 import {
   user,
   prompt,
-  order
+  order,
+  doctor,
+  department,
+  hospital,
+  news,
+  buildings,
+  notices
 } from '../ducks'
 // 服务地址
 // export const API_SERVER = 'localhost:3000'
@@ -63,7 +69,13 @@ function getReducer (client) {
     // apollo: client.reducer(),
     user,
     prompt,
-    order
+    order,
+    doctor,
+    department,
+    hospital,
+    news,
+    buildings,
+    notices
   })
 }
 

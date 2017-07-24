@@ -1,4 +1,5 @@
 import { OrderRecordDetailScreen } from 'modules/order'
+import { ManageSchedulesScreen } from 'modules/doctor'
 import { Layout } from 'modules/common'
 import {withData, HOSPITAL_NAME} from 'config'
 // import React, { Component } from 'react'

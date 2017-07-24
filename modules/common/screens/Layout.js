@@ -12,7 +12,7 @@ const Layout = (props) => {
       <div>
         <HeaderBar {...props}  />
         <Prompt />
-        <div style={{overflow: 'auto', marginBottom: '60px'}}>
+        <div style={{overflow: 'auto'}}>
         <ConLayout {...props} /></div>
         <FooterBar notLoginPage />
       </div>

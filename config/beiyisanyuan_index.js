@@ -35,11 +35,43 @@ const MAINFUNCTION = [
     ]
   },
   {
-    title: '用户管理',
-    short_name: 'profile',
-    navigateName: '/profile/records',
+    title: '医生管理',
+    short_name: 'doctor',
+    navigateName: '/doctor/manage_schedule',
     children: [
-      {title: '修改密码', navigateName: '/profile/modifypassword', color: '#5D75A6'}
+      {title: '排班管理', navigateName: '/doctor/manage_schedule', color: '#5D75A6',},
+      {title: '费用管理', navigateName: '/doctor/manage_fee', color: '#5D75A6'},
+      {title: '全部排版', navigateName: '/doctor/manage_all_schedule', color: '#5D75A6'},
+    ]
+  },
+  {
+    title: '科室管理',
+    short_name: 'department',
+    navigateName: '/department/department_level1',
+    children: [
+      {title: '一级科室管理', navigateName: '/department/department_level1', color: '#5D75A6',},
+      {title: '二级科室管理', navigateName: '/department/department_level2', color: '#5D75A6'},
+      {title: '推荐科室管理', navigateName: '/department/department_recommand', color: '#5D75A6'},
+      {title: '挂号科室管理', navigateName: '/department/department_isAppoint', color: '#5D75A6'},
+    ]
+  },
+  {
+    title: '健康资讯管理',
+    short_name: 'news',
+    navigateName: '/news',
+    children: [
+      {title: '资讯管理', navigateName: '/news', color: '#5D75A6',},
+    ]
+  },
+  {
+    title: '医院信息管理',
+    short_name: 'hospital',
+    navigateName: '/hospital',
+    children: [
+      {title: '医院介绍', navigateName: '/hospital', color: '#5D75A6'},
+      {title: '功能清单', navigateName: '/hospital/hospital_funlist', color: '#5D75A6'},
+      {title: '院内导航', navigateName: '/hospital/hospital_navigation', navigateNameDetail: '/hospital/hospital_navigation_detail', color: '#5D75A6'},
+      {title: '就诊指南', navigateName: '/hospital/hospital_visitGuide', color: '#5D75A6'}
     ]
   }
 ]
@@ -80,6 +112,35 @@ const ORDERINFO = {
   ]
 }
 
+const DOCTORINFO = {
+  modal_type_title: [
+    {title: '基本信息', value: 0},
+    {title: '服务设置', value: 1},
+  ],
+  schedule_list_title: [
+    {title: '编号', value: '', style: {width: '8%'}, apiKey: ''},
+    {title: '医生工号', value: '', style: {width: '12%'}, apiKey: ''},
+    {title: '姓名', value: '', style: {width: '12%'}, apiKey: ''},
+    {title: '所属机构', value: '', style: {width: '20%'}, apiKey: ''},
+    {title: '专业', value: '', style: {width: '12%'}, apiKey: ''},
+    {title: '亚专业', value: '', style: {width: '12%'}, apiKey: ''},
+    {title: '服务开通状态', value: '', style: {width: '14%'}, apiKey: ''},
+    {title: '设置', value: '', style: {width: '8%', textAlign: 'center'}, apiKey: ''},
+  ],
+  fee_list_title: [
+    {title: '编号', value: '', style: {width: '8%'}, apiKey: ''},
+    {title: '医生工号', value: '', style: {width: '12%'}, apiKey: ''},
+    {title: '姓名', value: '', style: {width: '10%'}, apiKey: ''},
+    {title: '所属机构', value: '', style: {width: '16%'}, apiKey: ''},
+    {title: '专业', value: '', style: {width: '10%'}, apiKey: ''},
+    {title: '亚专业', value: '', style: {width: '10%'}, apiKey: ''},
+    {title: '用药咨询', value: '', style: {width: '8%', textAlign: 'center'}, apiKey: ''},
+    {title: '图文问诊', value: '', style: {width: '8%', textAlign: 'center'}, apiKey: ''},
+    {title: '视频问诊', value: '', style: {width: '8%', textAlign: 'center'}, apiKey: ''},
+    {title: '设置', value: '', style: {width: '8%', textAlign: 'center'}, apiKey: ''},
+  ]
+}
+
 export {
   server,
   API_SERVER,
@@ -93,5 +154,6 @@ export {
   PORT,
   MAINFUNCTION,
   ORDERTYPE,
-  ORDERINFO
+  ORDERINFO,
+  DOCTORINFO
 }

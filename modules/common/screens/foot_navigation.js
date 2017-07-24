@@ -10,7 +10,7 @@ const Navigation = (props) => {
       {
         data && data.map((item) => {
           return (
-            <li className={url === item.navigateName ? 'leftLiCur' : ''}
+            <li className={url === item.navigateName || url === item.navigateNameDetail ? 'leftLiCur' : ''}
               key={item.title}>
               <Link href={item.navigateName}><a style={{color: item.color}}>{item.title}</a></Link>
             </li>
@@ -18,6 +18,10 @@ const Navigation = (props) => {
         })
       }
       <style jsx>{`
+        ul{
+          position: relative;
+          z-index: 10;
+        }
         li{
           line-height: .46rem;
           font-size: .16rem;

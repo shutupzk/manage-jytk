@@ -164,6 +164,53 @@ export function styles() {
         outline: none;
       }
 
+      /**
+       * input radio video
+       */
+      ::-moz-placeholder { color: ${theme.nfontcolor}; }
+      ::-webkit-input-placeholder { color:${theme.nfontcolor}; }
+      :-ms-input-placeholder { color:${theme.nfontcolor}; }
+      .radio, .checkbox{
+        position: relative;
+        width: .22rem;
+        height: .22rem;
+        }
+        .radio label, .radio input, .radio label:before, .checkbox label, .checkbox input, .checkbox label:before{
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: .22rem;
+          height: .22rem;
+          border: 1px solid $border-color;
+          background: #fff;
+          margin: 0 !important;
+        }
+        .radio label:before, .checkbox label:before{
+          content: '';
+          background: $main-color;
+          border: 1px solid $main-color;
+          opacity: 0;
+        }
+        .radio label:after, .checkbox label:after{
+          content: '';
+          position: absolute;
+          width: .14rem;
+          height: .08rem;
+          border-left: .028rem solid #fff;
+          border-bottom: .028rem solid #fff;
+          transform: rotate(-45deg);
+          top: .04rem;
+          left: .04rem;
+          opacity: 0;
+        }
+        .radio input[type=radio]:checked + label:before, .checkbox input[type=radio]:checked + label:before,
+        .radio input[type=radio]:checked + label:after, .checkbox input[type=radio]:checked + label:after,
+        .radio input[type=checkbox]:checked + label:before, .checkbox input[type=checkbox]:checked + label:before,
+        .radio input[type=checkbox]:checked + label:after, .checkbox input[type=checkbox]:checked + label:after {
+          opacity: 1;
+        }
+      }
+
       /*select*/
       input[type=date], select{
         //去除select右边默认的图标

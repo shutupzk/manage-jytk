@@ -7,9 +7,9 @@ export function Modal(props) {
     <div>
       {
         showModalState ?
-          <div className={props.classChild + ' modal'}>
-            <p className='shade'></p>
-            <section>{props.children}</section>
+          <div className={props.classChild + ' modal'} style={props.style}>
+            {/* <p className='shade'></p> */}
+            <section style={props.sectionStyle}>{props.children}</section>
             <style jsx>{`
               .modal{
                 position: fixed;
@@ -19,14 +19,16 @@ export function Modal(props) {
                 z-index: 100;
               }
               .modal section{
-                background: #fff;
-                border-radius: $inmargin;
+                /* Rectangle 11 Copy 2: */
+                background: #FFFFFF;
+                border: 1px solid #E6E6E6;
+                box-shadow: 0px 3px 7px 0px rgba(0,0,0,0.10);
+                border-radius: 8px;
                 position: relative;
                 z-index: 10;
-                width: 80%;
-                top: 10%;
-                margin: 10% auto 0;
-                box-shadow: 0 0 .12rem rgba(0,0,0,0.2);
+                width: 60%;
+                top: 0;
+                margin: 0 auto 0;
               }
             `}</style>
           </div>
@@ -46,7 +48,7 @@ export function ModalHeader(props) {
       {props.children}
       {
         showCloseBtn ?
-          <button onClick={() => {props.onHide()}}>*</button>
+          <article onClick={() => {props.onHide()}}></article>
         : ''
       }
       <style jsx global>{`
@@ -54,11 +56,17 @@ export function ModalHeader(props) {
           font-size: .18rem;
           color: ${theme.mainfontcolor};
           text-align: center;
-          padding: ${theme.lrmargin};
+          padding: ${theme.lrmargin} ${theme.lrmargin} 0 ${theme.lrmargin};
           position: relative;
         }
-        .modalheader button{
+        .modalheader article{
           position: absolute;
+          background: url('/static/icons/closeIcon.png');
+          width: .16rem;
+          height: .16rem;
+          cursor: pointer;
+          background-size: 16px;
+          right: ${theme.lrmargin}; top: ${theme.lrmargin};
         }
         {/*须知类弹窗提示 modalheader modalheaderTip*/}
         .modalheaderTip{
@@ -81,7 +89,6 @@ export function ModalFooter(props) {
           border-top: 1px solid ${theme.bordercolor};
           color: #4A4A4A;
           font-size: .18rem;
-          line-height: .46rem;
         }
         .modalBtn{
           height: .45rem;

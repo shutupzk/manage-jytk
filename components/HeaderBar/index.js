@@ -17,7 +17,8 @@ class HeaderBar extends Component {
 
   // 登出
   async doSignout () {
-    await this.props.signout()
+    let error = await this.props.signout()
+    Router.push('/signin')
     // this.props.navigation.goBack(null)
   }
 
@@ -36,7 +37,7 @@ class HeaderBar extends Component {
             style={{borderTopColor: theme.nfontcolor}}></article>
         </div>
         <section>
-          <Link href='/modify-pass'><article>修改密码</article></Link>
+          {/* <Link href='/modify-pass'><article>修改密码</article></Link> */}
           <article onClick={() => {this.doSignout()}}>退出</article>
         </section>
       </div>
