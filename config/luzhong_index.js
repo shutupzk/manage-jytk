@@ -70,7 +70,7 @@ const MAINFUNCTION = [
     children: [
       {title: '医院介绍', navigateName: '/hospital', color: '#5D75A6'},
       // {title: '功能清单', navigateName: '/hospital/hospital_funlist', color: '#5D75A6'},
-      {title: '院内导航', navigateName: '/hospital/hospital_navigation', navigateNameDetail: '/hospital/hospital_navigation_detail', color: '#5D75A6'},
+      {title: '院内导航', navigateName: '/hospital/hospital_navigation', navigateNameDetail: 'navigation', color: '#5D75A6'},
       {title: '就诊指南', navigateName: '/hospital/hospital_visitGuide', color: '#5D75A6'}
     ]
   }

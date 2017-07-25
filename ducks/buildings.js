@@ -91,7 +91,7 @@ export const queryBuildings = (client) => async dispatch => {
     type: BUILDING_QUERY_BUILDINGS
   })
   try {
-		const data = await client.query({ query: QUERY_BUILDINGS})
+		const data = await client.query({ query: QUERY_BUILDINGS, fetchPolicy: 'network-only'})
     if (data.error) {
       return dispatch({
         type: BUILDING_QUERY_BUILDING_FAIL,
@@ -162,34 +162,23 @@ export const queryBuildingDetail = (client, {id}) => async dispatch => {
 
 
 // update building
-const UPDATE_DEPARTMENT = gql`
-	mutation($id: ObjID!, $deptName: String, $hot: Boolean, $description: String, $isAppointment: Boolean){
-		updatebuilding(id: $id, input: {deptName: $deptName, hot: $hot, description: $description, isAppointment: $isAppointment}) {
+const UPDATE_BUILDING = gql`
+	mutation($id: ObjID!, $hospitalId: ObjID!, $name: String!, $description: String, $position: String, $code: String){
+		updateBuilding(id: $id, input: {hospitalId: $hospitalId, name: $name, description: $description, position: $position, code: $code}) {
 			id
-			deptName
-			deptSn
-			hot
-			childs {
-				id
-				deptSn
-				deptName
-			}
-			parent {
-				id
-			}
 		}
 	}
 `
 
-export const updatebuilding = (client, {id, deptName, deptSn, hot, description, isAppointment}) => async dispatch => {
-  // console.log('---updatebuilding', id, deptName, hot)
+export const updateBuilding = (client, {id, hospitalId, name, description, position, code}) => async dispatch => {
   dispatch({
     type: BUILDING_QUERY_BUILDINGS
   })
   try {
+    console.log('---updateBuilding', id, hospitalId, name, description, position, code)
     let data = await client.mutate({
-      mutation: UPDATE_DEPARTMENT,
-      variables: { id, deptName, hot, description, isAppointment}
+      mutation: UPDATE_BUILDING,
+      variables: { id, hospitalId, name, description, position, code}
 		})
 		if (data.error) {
       return dispatch({
@@ -199,12 +188,12 @@ export const updatebuilding = (client, {id, deptName, deptSn, hot, description, 
     }
     dispatch({
       type: UPDATE_BUILDING_SUCCESS,
-      building: data.data.updatebuilding
+      building: data.data.updateBuilding
 		})
 		return null
   } catch (e) {
     dispatch({
-      trype: CHECK_VERIFY_CODE_FAIL,
+      trype: BUILDING_QUERY_BUILDING_FAIL,
       error: e.message
     })
     return e.message
@@ -213,7 +202,7 @@ export const updatebuilding = (client, {id, deptName, deptSn, hot, description, 
 
 // create building
 const CREATE_BUILDING = gql`
-	mutation( $hospitalId: ObjID!, $name: String!, $description: String, $position: String, $code: String){
+	mutation($hospitalId: ObjID!, $name: String!, $description: String, $position: String, $code: String){
 		createBuilding(input: {hospitalId: $hospitalId, name: $name, description: $description, position: $position, code: $code}) {
 			id
 		}
@@ -251,6 +240,46 @@ export const createbuilding = (client, {hospitalId, name, description, position,
   }
 }
 
+
+// create building
+const UPDATE_FLOOR = gql`
+	mutation($id: ObjID!,  $buildingId: ObjID!, $floorNum: String!, $description: String){
+		updateFloor(id: $id, input: {buildingId: $buildingId, floorNum: $floorNum, description: $description}) {
+			id
+		}
+	}
+`
+
+export const updateFloor = (client, {id, buildingId, floorNum, description}) => async dispatch => {
+  // console.log('---updatebuilding', id, deptName, hot)
+  dispatch({
+    type: BUILDING_QUERY_BUILDINGS
+  })
+  try {
+		console.log('----updateFloor-value---', id, buildingId, floorNum, description)
+    let data = await client.mutate({
+      mutation: UPDATE_FLOOR,
+      variables: { id, buildingId, floorNum, description}
+		})
+		if (data.error) {
+      return dispatch({
+        type: BUILDING_QUERY_BUILDING_FAIL,
+        error: data.error.message
+      })
+    }
+    dispatch({
+      type: UPDATE_FLOORS_SUCCESS,
+      floor: data.data.updateFloor
+		})
+		return null
+  } catch (e) {
+    dispatch({
+      trype: BUILDING_QUERY_BUILDING_FAIL,
+      error: e.message
+    })
+    return e.message
+  }
+}
 
 // create building
 const CREATE_FLOORS = gql`
@@ -322,6 +351,46 @@ export const createRoom = (client, {floorId, name}) => async dispatch => {
     dispatch({
       type: CREATE_ROOMS_SUCCESS,
       room: data.data.createRoom
+		})
+		return null
+  } catch (e) {
+    dispatch({
+      trype: BUILDING_QUERY_BUILDING_FAIL,
+      error: e.message
+    })
+    return e.message
+  }
+}
+
+// create building
+const UPDATE_ROOM = gql`
+	mutation($id: ObjID!, $floorId: ObjID!, $name: String){
+		updateRoom(id: $id, input: {floorId: $floorId, name: $name}) {
+			id
+		}
+	}
+`
+
+export const updateRoom = (client, {id, floorId, name}) => async dispatch => {
+  // console.log('---updatebuilding', id, deptName, hot)
+  dispatch({
+    type: BUILDING_QUERY_BUILDINGS
+  })
+  try {
+		console.log('---updateRoom--value', id, floorId, name)
+    let data = await client.mutate({
+      mutation: UPDATE_ROOM,
+      variables: { id, floorId, name}
+		})
+		if (data.error) {
+      return dispatch({
+        type: BUILDING_QUERY_BUILDING_FAIL,
+        error: data.error.message
+      })
+    }
+    dispatch({
+      type: UPDATE_ROOMS_SUCCESS,
+      room: data.data.updateRoom
 		})
 		return null
   } catch (e) {

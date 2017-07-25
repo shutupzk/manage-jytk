@@ -5,7 +5,7 @@ import {doctor, queryDoctors, queryDoctorDetail, updateDoctor, createDoctor} fro
 import {department, queryDepartments, updateDepartment, createDepartment} from './department'
 import {hospital, queryHospitals, updateHospital, createHospital} from './hospital'
 import {news, queryNews, queryNewGroups, createNews, updateNews} from './news'
-import {buildings, createbuilding, createFloor, createRoom, queryBuildings, queryBuildingDetail, changeFloorAndRooms} from './buildings'
+import {buildings, createbuilding, createFloor, createRoom, queryBuildings, queryBuildingDetail, updateBuilding, updateFloor, updateRoom} from './buildings'
 import {notices, createVisitNotice, querynotices, queryNoticesGroups, updateVisitNotice} from './notice'
 
 // key
@@ -58,7 +58,9 @@ export {
     createRoom,
     queryBuildings,
     queryBuildingDetail,
-    changeFloorAndRooms,
+    updateBuilding,
+    updateFloor,
+    updateRoom,
     createVisitNotice,
     querynotices,
     queryNoticesGroups,

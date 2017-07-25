@@ -65,7 +65,7 @@ class HospitalNavigationScreen extends Component {
       <div>
 				<article style={{textAlign: 'right', paddingBottom: theme.lrmargin}}>
 					<button style={{width: '1rem'}} className='btnBG btnBGMain btnBGLitt'
-						onClick={() => Router.push('/hospital/hospital_navigation_detail')}>添加来院导航</button>
+						onClick={() => Router.push('/hospital/add_hospital_navigation')}>添加来院导航</button>
 				</article>
 				 <HospitalDetailModal selectedHospital={this.state.selectedHospital}
 					showModal={this.state.showModal}

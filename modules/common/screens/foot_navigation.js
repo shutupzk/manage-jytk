@@ -10,7 +10,7 @@ const Navigation = (props) => {
       {
         data && data.map((item) => {
           return (
-            <li className={url === item.navigateName || url === item.navigateNameDetail ? 'leftLiCur' : ''}
+            <li className={url === item.navigateName || (item.navigateNameDetail && url.indexOf(item.navigateNameDetail)) ? 'leftLiCur' : ''}
               key={item.title}>
               <Link href={item.navigateName}><a style={{color: item.color}}>{item.title}</a></Link>
             </li>
