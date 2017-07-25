@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Link from 'next/link'
 import Router from 'next/router'
-import {HOSPITAL_NAME, HOSPITALINFO} from 'config'
+import {HOSPITAL_NAME, HOSPITALINFO, HOME_PAGE} from 'config'
 import localforage from 'localforage'
 
 import { theme, Prompt } from 'components'
@@ -27,15 +27,16 @@ class SigninScreen extends Component {
       this.props.showPrompt({text: '请输入密码'})
       return
     }
-    if (username !== 'admin' && password !== 'admin123') {
-      this.props.showPrompt({text: '用户名或密码错误'})
-      return
-    } else {
+    if (username === 'admin' && password === 'admin123') {
       localforage.setItem('token', 'token')
       localforage.setItem('userId', 'userId')
       localforage.setItem('username', username)
       localforage.setItem('password', password)
-      Router.push('/')
+      // Router.push('/')
+      Router.push(HOME_PAGE.url)
+    } else {
+      this.props.showPrompt({text: '用户名或密码错误'})
+      return
     }
     // const error = await this.props.signin({ username, password })
     // if (error) {
