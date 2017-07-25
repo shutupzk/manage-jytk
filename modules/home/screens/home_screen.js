@@ -31,11 +31,9 @@ class Home extends Component {
     //   Router.push('/signin')
     // }
     const userId = await localforage.getItem('userId')
-    // console.log('------home---', userId)
     if (userId) {
       Router.push(HOME_PAGE.url)
     } else {
-      Router.push('/signin')
     }
   }
 
