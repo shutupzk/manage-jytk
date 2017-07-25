@@ -77,7 +77,7 @@ class HospitalIntroScreen extends Component {
 				{
 					hospital && hospital.length > 0 ?
 						hospital.map((hospitalItem, iKey) => {
-							return <HospitalListItem data={hospitalItem} index={iKey}
+							return <HospitalListItem data={hospitalItem} key={iKey} index={iKey}
 							 titleInfo={HOSPITALINFO.hospitalInfo_list_title}
 							 page='intro'
 							 clickShowModal={(data, modalType) => {this.setState({selectedHospital: data, modalType: modalType, showModal: true})}} />

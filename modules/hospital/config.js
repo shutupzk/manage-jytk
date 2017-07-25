@@ -21,7 +21,7 @@ const HOSPITALINFO = {
   hospitalNav_list_title: [
     {title: '所属医院', value: '', style: {width: '30%'}, apiKey: 'guideName'},
     {title: '楼宇名称', value: '', style: {width: '50%'}, apiKey: 'guideType'},
-    // {title: '设置', value: '', style: {width: '10%'}, apiKey: ''},
+    {title: '设置导航', value: '', style: {width: '10%'}, apiKey: ''},
   ],
   hospitalGuide_list_title: [
     {title: '指南编号', value: '', style: {width: '12%'}, apiKey: 'code', type: 'input'},

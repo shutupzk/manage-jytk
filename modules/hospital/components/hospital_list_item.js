@@ -22,7 +22,7 @@ export default class HospitalListItem extends Component {
 				{
 					newTitleInfo.map((item, iKey) => {
 						const orderCon = `orderCon${page}${iKey}`
-						return eval(orderCon + '(data, item, key, props)')
+						return eval(orderCon + '(props, item, iKey)')
 					})
 				}
 				<article className='clearfix'></article>
@@ -43,20 +43,16 @@ export default class HospitalListItem extends Component {
   }
 }
 
-const orderConnavi0 = (data, item, key) => {
-	return (
-		<li className={'left textoverflow1'} style={item.style}>
-			 {data.hospital.hospitalName || '无'}
-		</li>
-	)
+const orderConnavi0 = (props, item, iKey) => {
+	return (normalHtml(props.data.hospital.hospitalName, item, iKey))
 }
 
-const orderConnavi1 = (data, item, key) => {
+const orderConnavi1 = (props, item, iKey) => {
 	return (
-		<li className={'left flex tb-flex'} style={item.style}>
-			 {data.name}
+		<li className={'left flex tb-flex'} key={iKey} style={item.style}>
+			 {props.data.name}
 			 {
-				 data.floors && data.floors.map((floorItem, iKey) => {
+				 props.data.floors && props.data.floors.map((floorItem, iKey) => {
 					 return (
 						 <article key={iKey}>
 						 	<span><span style={{padding: '0 6px'}}>|</span>{floorItem.floorNum}</span>
@@ -75,120 +71,105 @@ const orderConnavi1 = (data, item, key) => {
 	)
 }
 
-const orderConnavi2 = (data, item, key, props) => {
+const orderConnavi2 = (props, item, iKey) => {
+	return (btnHtml(props, item, iKey))
+}
+
+const orderConguide0 = (props, item, iKey) => {
+	return (normalHtml(props.data[item.apiKey], item, iKey))
+}
+
+const orderConguide1 = (props, item, iKey) => {
+	return (normalHtml(props.data[item.apiKey], item, iKey))
+}
+const orderConguide2 = (props, item, iKey) => {
+	return (normalHtml(props.data.visitNoticeGroup.name, item, iKey))
+}
+
+const orderConguide3 = (props, item, iKey) => {
+	return (normalHtml(props.data[item.apiKey], item, iKey))
+}
+
+
+const orderConguide4 = (props, item, iKey) => {
+	return (btnHtml(props, item, iKey))
+}
+
+
+const orderConfun0 = (props, item, iKey) => {
+	return (normalHtml(props.data[item.apiKey], item, iKey))
+}
+
+const orderConfun1 = (props, item, iKey) => {
+	return (boolHtml(props.data[item.apiKey], item, iKey))
+}
+
+const orderConfun2 = (props, item, iKey) => {
+	return (normalHtml(props.data[item.apiKey], item, iKey))
+}
+const normalHtml = (data, item, iKey) => {
 	return (
-		<li className={'left flex tb-flex lr-flex'} style={item.style}>
-			<img src={`/static/icons/modify.png`} style={{height: '.16rem'}} onClick={() => props.clickModify(data)} />
+		<li className={'left textoverflow1'} key={iKey} style={item.style}>
+			 {data || '无'}
+		</li>
+	)
+}
+
+const boolHtml = (data, item, iKey) => {
+	return (
+		<li className={'left textoverflow1'} key={iKey} style={item.style}>
+			 {data ? '是' : '否'}
+		</li>
+	)
+}
+
+const btnHtml = (props, item, iKey) => {
+	return (
+		<li className={'left flex tb-flex lr-flex'} key={iKey} style={item.style}>
+			{
+				item.title.indexOf('设置导航') > -1 ?
+
+				<img src={`/static/icons/modify.png`} style={{height: '.16rem'}} onClick={() => props.clickGoDetailPage(props.data, 'modify')} />
+			:
+
+				<img src={`/static/icons/modify.png`} style={{height: '.16rem'}} onClick={() => props.clickShowModal(props.data, 'modify')} />
+			}
 			{/* <img src={`/static/icons/delete.png`} style={{height: '.16rem', padding: `0 ${theme.tbmargin}`}} onClick={() => props.clickShowModal(data, 'delete')} /> */}
 		</li>)
 }
-
-const orderConguide0 = (data, item, key) => {
+const orderConintro0 = (props, item, iKey) => {
 	return (
-		<li className={'left textoverflow1'} style={item.style}>
-			 {data[item.apiKey] || '无'}
-		</li>
-	)
-}
-
-const orderConguide1 = (data, item, key) => {
-	return (
-		<li className={'left textoverflow1'} style={item.style}>
-			 {data[item.apiKey] }
-		</li>
-	)
-}
-const orderConguide2 = (data, item, key) => {
-	return (
-		<li className={'left textoverflow1'} style={item.style}>
-			 {data.visitNoticeGroup.name || '无'}
-		</li>
-	)
-}
-
-const orderConguide3 = (data, item, key) => {
-	return (
-		<li className={'left textoverflow1'} style={item.style}>
-			 {data[item.apiKey]}
-		</li>
-	)
-}
-
-const orderConguide4 = (data, item, key, props) => {
-	return (
-		<li className={'left flex tb-flex lr-flex'} style={item.style}>
-			<img src={`/static/icons/modify.png`} style={{height: '.16rem'}} onClick={() => props.clickShowModal(data, 'modify')} />
-			{/* <img src={`/static/icons/delete.png`} style={{height: '.16rem', padding: `0 ${theme.tbmargin}`}} onClick={() => props.clickShowModal(data, 'delete')} /> */}
-		</li>)
-}
-
-
-const orderConfun0 = (data, item, key) => {
-	return (
-		<li className={'left textoverflow1'} style={item.style}>
-			 {data[item.apiKey] || '无'}
-		</li>
-	)
-}
-
-const orderConfun1 = (data, item, key) => {
-	return (
-		<li className={'left textoverflow1'} style={item.style}>
-			 {data[item.apiKey] ? '是' : '否'}
-		</li>
-	)
-}
-
-const orderConfun2 = (data, item, key) => {
-	return (
-		<li className={'left textoverflow1'} style={item.style}>
-			 {data[item.apiKey] || '无'}
-		</li>
-	)
-}
-const orderConintro0 = (data, item, key) => {
-	return (
-		<li className={'left textoverflow1'} style={item.style}>
+		<li className={'left textoverflow1'} key={iKey} style={item.style}>
 			{
 				item.title.indexOf('logo') > -1 ?
-					<img width='50px' src={data[item.apiKey]} /> 
+					<img width='50px' src={props.data[item.apiKey]} /> 
 				:
-					data[item.apiKey]
+					props.data[item.apiKey]
 			}
 			 
 		</li>
 	)
 }
 
-const orderConintro1 = (data, item) => {
+const orderConintro1 = (props, item, iKey) => {
 	return (
-		<li className={'left textoverflow1'} style={item.style}>
-			{data[item.apiKey] || '无'}
-		</li>
+		normalHtml(props.data[item.apiKey], item, iKey)
 	)
 }
 
-const orderConintro2 = (data, item) => {
+const orderConintro2 = (props, item, iKey) => {
 	return (
-		<li className={'left textoverflow1'} style={item.style}>
-			{data[item.apiKey]}
-		</li>
+		normalHtml(props.data[item.apiKey], item, iKey)
 	)
 }
 
-const orderConintro3 = (data, item, key, props) => {
+const orderConintro3 = (props, item, iKey) => {
 	return (
-		<li className={'left textoverflow1'} style={item.style}>
-			{data[item.apiKey]|| '无'}
-		</li>
+		normalHtml(props.data[item.apiKey], item, iKey)
 	)
 }
 
-const orderConintro4 = (data, item, key, props) => {
-	return (
-		<li className={'left flex tb-flex lr-flex'} style={item.style}>
-			<img src={`/static/icons/modify.png`} style={{height: '.16rem'}} onClick={() => props.clickShowModal(data, 'modify')} />
-			{/* <img src={`/static/icons/delete.png`} style={{height: '.16rem', padding: `0 ${theme.tbmargin}`}} onClick={() => props.clickShowModal(data, 'delete')} /> */}
-		</li>)
+const orderConintro4 = (props, item, iKey) => {
+	return (btnHtml(props, item, iKey))
 }
 

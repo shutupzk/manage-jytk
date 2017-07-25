@@ -78,10 +78,10 @@ class HospitalNavigationScreen extends Component {
 				{
 					building && building.length > 0 ?
 						building.map((buildingItem, iKey) => {
-							return <HospitalListItem data={buildingItem} index={iKey}
+							return <HospitalListItem data={buildingItem} key={iKey} index={iKey}
 							 titleInfo={HOSPITALINFO.hospitalNav_list_title}
 							 page='navi'
-							 clickModify={(data) => {Router.push('/hospital/hospital_navigation_detail?id='+data.id)}} />
+							 clickGoDetailPage={(data) => {Router.push('/hospital/hospital_navigation_detail?id='+data.id)}} />
 						})
 					: 'no data'
 				} 
