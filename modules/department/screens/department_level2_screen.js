@@ -85,7 +85,7 @@ class DepartmentLevel2Screen extends Component {
 				{
 					departments.childs && departments.childs.length > 0 ?
 						departments.childs.map((department, iKey) => {
-							return <DepartmentListItem data={department} index={iKey}
+							return <DepartmentListItem data={department} key={iKey} index={iKey}
 							 titleInfo={DEPARTMENTINFO.department_list_title2}
 							 clickShowModal={(data, modalType) => {this.setState({selectedDepartment: data, modalType: modalType, showModal: true})}} />
 						})

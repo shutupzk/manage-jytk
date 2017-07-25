@@ -22,7 +22,7 @@ export default class ManageListItem extends Component {
 				{
 					newTitleInfo.map((item, iKey) => {
 						const orderCon = `orderCon${iKey}`
-						return eval(orderCon + '(data, item, key, props)')
+						return eval(orderCon + '(props, item, iKey, key)')
 					})
 				}
 				<article className='clearfix'></article>
@@ -43,93 +43,82 @@ export default class ManageListItem extends Component {
   }
 }
 
-const orderCon0 = (data, item, key) => {
+const normalHtml = (data, item, iKey) => {
 	return (
-		<li style={item.style}>{key + 1}</li>
-	)
-}
-
-const orderCon1 = (data, item) => {
-	return (
-		<li className={'left textoverflow1'} style={item.style}>
-			{data.doctorSn|| '无'}
+		<li className={'left textoverflow1'} key={iKey} style={item.style}>
+			{data || '无'}
 		</li>
 	)
 }
 
-const orderCon2 = (data, item) => {
+const orderCon0 = (props, item, iKey, key) => {
 	return (
-		<li className={'left textoverflow1'} style={item.style}>
-			{data.doctorName|| '医生'}
-		</li>
+		<li style={item.style} key={iKey}>{key + 1}</li>
 	)
 }
 
-const orderCon3 = (data, item) => {
-	return (
-		<li className={'left textoverflow1'} style={item.style}>
-			{data.departmentHasDoctors &&
+const orderCon1 = (props, item, iKey) => {
+	return (normalHtml(props.data.doctorSn, item, iKey))
+}
+
+const orderCon2 = (props, item, iKey) => {
+	return (normalHtml(props.data.doctorName, item, iKey))
+}
+
+const orderCon3 = (props, item, iKey) => {
+	const data = props.data || {}
+	return (normalHtml(data.departmentHasDoctors &&
 			data.departmentHasDoctors[0] &&
 			data.departmentHasDoctors[0].department &&
 			data.departmentHasDoctors[0].department.hospital &&
-			data.departmentHasDoctors[0].department.hospital.hospitalName || '无'}
-		</li>
-	)
+			data.departmentHasDoctors[0].department.hospital.hospitalName, item, iKey))
 }
 
-const orderCon4 = (data, item) => {
-	const curStatus = ORDERTYPE.filter((item) => item.value === data.status) || []
-	return (
-		<li className={'left textoverflow1'} style={item.style}>
-			{data.departmentHasDoctors &&
+const orderCon4 = (props, item, iKey) => {
+	const curStatus = ORDERTYPE.filter((item) => item.value === props.data.status) || []
+	const data = props.data || {}
+	return (normalHtml(data.departmentHasDoctors &&
 			data.departmentHasDoctors[0] &&
 			data.departmentHasDoctors[0].department &&
-			data.departmentHasDoctors[0].department.deptName|| '无'}
-		</li>
-	)
+			data.departmentHasDoctors[0].department.deptName, item, iKey))
 }
 
-const orderCon5 = (data, item, key, self) => {
-	if (item.title.indexOf('设置') > -1) {
-		return (
-			<li className={'left textoverflow1'} style={item.style}>
-				<span style={{color: theme.maincolor, cursor: 'pointer'}} onClick={() => self.clickShowModal(data, 'modify')}>{'设置'}</span>
+const btnHtml = (props, item, iKey) => {
+	return (<li className={'left textoverflow1'} key={iKey} style={item.style}>
+				<span style={{color: theme.maincolor, cursor: 'pointer'}} onClick={() => props.clickShowModal(props.data, 'modify')}>{'设置'}</span>
 			</li>)
+}
+
+const orderCon5 = (props, item, iKey) => {
+	const data = props.data || {}
+	if (item.title.indexOf('设置') > -1) {
+		return (btnHtml(props, item, iKey))
 	}
-	return (
-		<li className={'left textoverflow1'} style={item.style}>
-			{data.departmentHasDoctors &&
+	return (normalHtml(data.departmentHasDoctors &&
 			data.departmentHasDoctors[0] &&
 			data.departmentHasDoctors[0].department &&
 			data.departmentHasDoctors[0].department.childs &&
 			data.departmentHasDoctors[0].department.childs[0] &&
-			data.departmentHasDoctors[0].department.childs[0].deptName || '无'}
-		</li>)
+			data.departmentHasDoctors[0].department.childs[0].deptName, item, iKey))
 }
 
-const orderCon6 = (data, item) => {
+const orderCon6 = (props, item, iKey) => {
 	if (item.title.indexOf('服务开通状态') > -1) {
 		return (
-			<li className={'left flex tb-flex'} style={item.style}>
+			<li className={'left flex tb-flex'} key={iKey} style={item.style}>
 				<img src={`/static/${HOSPITALINFO.hospital_short_name}/chat1.png`} style={{height: '.16rem'}} />
 				<img src={`/static/${HOSPITALINFO.hospital_short_name}/chat1.png`} style={{height: '.16rem', padding: `0 ${theme.tbmargin}`}} />
 				<img src={`/static/${HOSPITALINFO.hospital_short_name}/chat1.png`} style={{height: '.16rem'}} />
 		</li>)
 	}
 	if (item.title.indexOf('用药咨询') > -1) {
-		return (
-			<li className={'left textoverflow1'} style={item.style}>
-				{data.videoPrice}
-		</li>)
+		return (normalHtml(props.data.videoPrice, item, iKey))
 	}
 }
 
-const orderCon7 = (data, item, key, self) => {
+const orderCon7 = (props, item, iKey) => {
 	if (item.title.indexOf('设置') > -1) {
-		return (
-			<li className={'left textoverflow1'} style={item.style}>
-				<span style={{color: theme.maincolor, cursor: 'pointer'}} onClick={() => self.clickShowModal(data)}>{'设置'}</span>
-			</li>)
+		return (btnHtml(props, item, iKey))
 	}
 	if (item.title.indexOf('图文问诊') > -1) {
 		return (
@@ -139,24 +128,15 @@ const orderCon7 = (data, item, key, self) => {
 	}
 }
 
-const orderCon8 = (data, item, key, self) => {
+const orderCon8 = (props, item, iKey) => {
 	if (item.title.indexOf('服务开通状态') > -1) {
-		return (
-			<li className={'left textoverflow1'} style={item.style}>
-				<span style={{color: theme.maincolor, cursor: 'pointer'}} onClick={() => self.clickShowModal(data)}>{'设置'}</span>
-			</li>)
+		return (btnHtml(props, item, iKey))
 	}
 	if (item.title.indexOf('视频问诊') > -1) {
-		return (
-			<li className={'left textoverflow1'} style={item.style}>
-				{data.videoPrice}
-		</li>)
+		return (normalHtml(props.data.videoPrice, item, iKey))
 	}
 }
 
-const orderCon9 = (data, item, key, self) => {
-	return (
-		<li className={'left textoverflow1'} style={item.style}>
-			<span style={{color: theme.maincolor, cursor: 'pointer'}} onClick={() => self.clickShowModal(data)}>{'修改'}</span>
-		</li>)
+const orderCon9 = (props, item, iKey) => {
+	return (btnHtml(props, item, iKey))
 }

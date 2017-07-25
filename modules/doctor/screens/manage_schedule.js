@@ -119,7 +119,7 @@ class ManageScheduleScreen extends Component {
 						doctors.map((doctor, iKey) => {
 							return (
 								<div key={iKey}>
-									<ManageListItem data={doctor} index={iKey}
+									<ManageListItem data={doctor} key={iKey} index={iKey}
 										titleInfo={DOCTORINFO.schedule_list_title}
 										clickShowModal={(item, modalType) => {this.setState({showModal: true, selectedDoctor: item, modalType: modalType})}} />
 								</div>

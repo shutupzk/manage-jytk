@@ -80,7 +80,7 @@ class NewsListsScreen extends Component {
 				{
 					news && news.length > 0 ?
 						news.map((newsItem, iKey) => {
-							return <NewsListItem data={newsItem} index={iKey}
+							return <NewsListItem data={newsItem} key={iKey} index={iKey}
 							 titleInfo={NEWSINFO.news_list_title}
 							 clickShowModal={(data, modalType) => {this.setState({selectedNews: data, modalType: modalType, showModal: true})}} />
 						})

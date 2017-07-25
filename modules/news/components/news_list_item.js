@@ -12,9 +12,7 @@ export default class NewsListItem extends Component {
 	}
 
   render () {
-		const data = this.props.data || {}
-		const key = this.props.index
-		const props = this.props
+		const props = this.props || {}
 		const {titleInfo} = this.props
 		let newTitleInfo = titleInfo.filter((item) => item.nolistShow !== true)
     return (
@@ -22,7 +20,7 @@ export default class NewsListItem extends Component {
 				{
 					newTitleInfo.map((item, iKey) => {
 						const orderCon = `orderCon${iKey}`
-						return eval(orderCon + '(data, item, key, props)')
+						return eval(orderCon + '(props, item, iKey)')
 					})
 				}
 				<article className='clearfix'></article>
@@ -43,42 +41,34 @@ export default class NewsListItem extends Component {
   }
 }
 
-const orderCon0 = (data, item, key) => {
+const normalHtml = (data, item, iKey) => {
 	return (
-		<li className={'left textoverflow1'} style={item.style}>
-			{data[item.apiKey]|| '无'}
+		<li className={'left textoverflow1'} key={iKey} style={item.style}>
+			{data|| '无'}
 		</li>
 	)
 }
 
-const orderCon1 = (data, item) => {
-	return (
-		<li className={'left textoverflow1'} style={item.style}>
-			{data.newsGroup && data.newsGroup.type || '无'}
-		</li>
-	)
+const orderCon0 = (props, item, iKey) => {
+	return (normalHtml(props.data[item.apiKey], item, iKey))
 }
 
-const orderCon2 = (data, item) => {
-	return (
-		<li className={'left textoverflow1'} style={item.style}>
-			{data[item.apiKey]}
-		</li>
-	)
+const orderCon1 = (props, item, iKey) => {
+	return (normalHtml(props.data.newsGroup && props.data.newsGroup.type, item, iKey))
 }
 
-const orderCon3 = (data, item, key, props) => {
-	return (
-		<li className={'left textoverflow1'} style={item.style}>
-			{data[item.apiKey]}
-		</li>
-	)
+const orderCon2 = (props, item, iKey) => {
+	return (normalHtml(props.data[item.apiKey], item, iKey))
 }
 
-const orderCon4 = (data, item, key, props) => {
+const orderCon3 = (props, item, iKey) => {
+	return (normalHtml(props.data[item.apiKey], item, iKey))
+}
+
+const orderCon4 = (props, item, iKey) => {
 	return (
-		<li className={'left flex tb-flex lr-flex'} style={item.style}>
-			<img src={`/static/icons/modify.png`} style={{height: '.16rem'}} onClick={() => props.clickShowModal(data, 'modify')} />
+		<li className={'left flex tb-flex lr-flex'} key={iKey} style={item.style}>
+			<img src={`/static/icons/modify.png`} style={{height: '.16rem'}} onClick={() => props.clickShowModal(props.data, 'modify')} />
 			{/* <img src={`/static/icons/delete.png`} style={{height: '.16rem', padding: `0 ${theme.tbmargin}`}} onClick={() => props.clickShowModal(data, 'delete')} /> */}
 		</li>)
 }
