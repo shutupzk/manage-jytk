@@ -27,7 +27,7 @@ class SigninScreen extends Component {
       this.props.showPrompt({text: '请输入密码'})
       return
     }
-    if (username === 'admin' && password === 'admin123') {
+    if (username === 'admin' && password === '123456') {
       localforage.setItem('token', 'token')
       localforage.setItem('userId', 'userId')
       localforage.setItem('username', username)

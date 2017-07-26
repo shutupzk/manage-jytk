@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Router from 'next/router'
 import Link from 'next/link'
 import {theme} from 'components'
-import {ORDERTYPE, DOCTORINFO, HOSPITALINFO} from 'config'
+import {ORDERINFO, DOCTORINFO, HOSPITALINFO} from 'config'
 
 export default class ManageListItem extends Component {
   constructor (props) {
@@ -18,7 +18,7 @@ export default class ManageListItem extends Component {
 		const {titleInfo} = this.props
 		let newTitleInfo = titleInfo.filter((item) => item.nolistShow !== true)
     return (
-			<ul className='flex tb-flex'>
+			<ul className='flex tb-flex listItem'>
 				{
 					newTitleInfo.map((item, iKey) => {
 						const orderCon = `orderCon${iKey}`
@@ -26,18 +26,6 @@ export default class ManageListItem extends Component {
 					})
 				}
 				<article className='clearfix'></article>
-				<style jsx>{`
-					ul{
-						padding: 0 15px;
-						color: ${theme.mainfontcolor};
-						line-height: .36rem;
-						font-size: ${theme.nfontsize};
-						box-sizing: content-box;
-					}
-					ul:nth-of-type(2n+1) {
-						background: #FBFBFB;
-					}
-				`}</style>
 			</ul>
     )
   }
@@ -75,7 +63,7 @@ const orderCon3 = (props, item, iKey) => {
 }
 
 const orderCon4 = (props, item, iKey) => {
-	const curStatus = ORDERTYPE.filter((item) => item.value === props.data.status) || []
+	const curStatus = ORDERINFO && ORDERINFO.order_type && ORDERINFO.order_type.filter((item) => item.value === props.data.status) || []
 	const data = props.data || {}
 	return (normalHtml(data.departmentHasDoctors &&
 			data.departmentHasDoctors[0] &&
@@ -121,10 +109,7 @@ const orderCon7 = (props, item, iKey) => {
 		return (btnHtml(props, item, iKey))
 	}
 	if (item.title.indexOf('图文问诊') > -1) {
-		return (
-			<li className={'left textoverflow1'} style={item.style}>
-				{data.imageAndTextPrice}
-		</li>)
+		return (normalHtml(props.data.imageAndTextPrice, item, iKey))
 	}
 }
 

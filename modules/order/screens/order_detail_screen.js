@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 // import { Router } from '../../../routes'
 import Router from 'next/router'
 import {theme, Prompt, Loading} from 'components'
-import {ORDERTYPE, HOSPITALINFO} from 'config'
+import {ORDERINFO, HOSPITALINFO} from 'config'
 import {OrderTab, OrderListTopFilterCard, OrderListTitle, OrderListItem, OrderItemDoctor} from '../components'
 import { queryOrderDetail } from '../../../ducks'
 import { connect } from 'react-redux'
@@ -59,7 +59,7 @@ const topView = () => {
 }
 
 const statusView = (data) => {
-	let curStatus = ORDERTYPE.filter((item) => item.value === data.status) || []
+	let curStatus = ORDERINFO.order_type.filter((item) => item.value === data.status) || []
 	let imgUrl = 'ordering'
 	if (data.status === '07' || data.status === '08') {
 		imgUrl = 'pass'
@@ -131,12 +131,12 @@ const productInfoView = (orderDetail) => {
 			</ul>
 			<article style={{marginTop: theme.lrmargin, marginLeft: '.3rem'}}><p>
 				<span className="left">积分：</span>
-				<i className="right">0</i>
+				<i className="left">0</i>
 				<strong className='clearfix'></strong>
 			</p></article>
 			<article style={{marginLeft: '.3rem'}}><p className="">
 				<span className="left">优惠：</span>
-				<i className="right">0</i>
+				<i className="left">0</i>
 				<strong className='clearfix'></strong>
 			</p></article>
 			<article style={{marginTop: theme.tbmargin,paddingBottom: theme.lrmargin,marginLeft: '.3rem'}}><p className="">
@@ -210,7 +210,7 @@ const productDetailView = (orderDetail) => {
 					border-radius: 50%;
 					position: absolute;
 					top: .12rem
-					left: .04rem;
+					left: -.04rem;
 				}
 			`}</style>
 		</div>

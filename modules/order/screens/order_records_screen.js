@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 // import { Router } from '../../../routes'
 import Router from 'next/router'
 import {theme, Prompt, Loading} from 'components'
-import {ORDERTYPE, ORDERINFO} from 'config'
+import {ORDERINFO} from 'config'
 import {OrderTab, OrderListItem} from '../components'
 import {TopFilterCard, ListTitle} from 'modules/common/components'
 import { queryOrderList } from '../../../ducks'
@@ -177,7 +177,7 @@ class OrderRecordsScreen extends Component {
       <div className={'orderRecordsPage'}>
         <TopFilterCard status={this.state.status} changeStatus={(status) => {this.setState({status: status})}}
           changeKeyword={(keyword) => {this.setState({keyword: keyword})}}
-          data={ORDERTYPE} />
+          data={ORDERINFO.order_type} />
         <OrderTab status={this.state.status} changeStatus={(status) => {this.setState({status: status})}} />
         <div className={'orderConTop'} style={{marginBottom: theme.tbmargin}}>
           <button className='right btnBGGray btnBGLitt'

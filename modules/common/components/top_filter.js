@@ -15,7 +15,7 @@ export default class TopFilterCard extends Component {
 				{keywordcard(this)}
         {
           this.props.hideSeniorSoso ? '' :
-          <article className='left' style={{ color: theme.mainfontcolor}}>
+          <article className='left' style={{ color: theme.mainfontcolor, display: 'none'}}>
             <span className='left'>高级搜索</span>
             <svg className='left' style={{width: 10, margin: '.12rem 0 0 .04rem'}} viewBox='1163 144 16 13' version='1.1' xmlns='http://www.w3.org/2000/svg'>
               <desc>高级搜索icon</desc>
@@ -25,7 +25,7 @@ export default class TopFilterCard extends Component {
             <p className='clearfix'></p>
           </article>
         }
-				<a style={{color: theme.fontcolor, fontSize: theme.nfontsize}} className='right'>问题和帮助QA</a>
+				<a style={{color: theme.fontcolor, fontSize: theme.nfontsize, display: 'none'}} className='right'>问题和帮助QA</a>
 				<div className='clearfix'></div>
 				<style jsx>{`
 					select, section, article, input, a, button{
@@ -38,23 +38,23 @@ export default class TopFilterCard extends Component {
   }
 }
 
-const selectcard = (self, status) => {
-  return (
-    <div className='left select flex tb-flex' style={{border: '1px solid #E6E6E6', minWidth: 130,background: 'none', borderRadius: 4, width: 'auto'}}>
-      <select onChange={(e) => {self.props.changeStatus(e.target.value)}} value={status}>
-        <option value=''>全部订单类型</option>
-        {
-          self.props.data.map((item, iKey) => {
-            return (
-              <option value={item.value} key={iKey}>{item.title}</option>
-            )
-          })
-        }
-      </select>
-      <article className='select-icon'><i></i><i></i></article>
-    </div>
-  )
-}
+const selectcard = (self) => {
+    return (
+      <div className='left select flex tb-flex' style={{border: '1px solid #E6E6E6', minWidth: 130,background: 'none', borderRadius: 4, width: 'auto'}}>
+        <select onChange={(e) => {self.props.changeStatus(e.target.value)}} value={status}>
+          <option value=''>{self.props.selectTitle || '全部订单类型'}</option>
+          {
+            self.props.data && self.props.data.map((item, iKey) => {
+              return (
+                <option value={item.value} key={iKey}>{item.title}</option>
+              )
+            })
+          }
+        </select>
+        <article className='select-icon'><i></i><i></i></article>
+      </div>
+    )
+  }
 
 const keywordcard = (self) => {
   return (

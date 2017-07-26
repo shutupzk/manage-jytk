@@ -89,7 +89,7 @@ const modalHeaderView = (self) => {
 }
 
 const renderServiceModal = (self) => {
-	const modalHeight = document && document.body.clientWidth * 0.3
+	const modalHeight = process.browser? document.body.clientWidth * 0.3 : 500
 	const {selectedDoctor, selectedType, pageType} = self.props;
 	const serviceCon = [
 		{title: '专家图文问诊', apiKey: 'imageAndTextPrice', ref: 'imageText'},
@@ -291,7 +291,7 @@ const renderDoctorInfoModal = (self) => {
 	const {selectedDoctor, selectedType} = self.props;
 	const department = selectedDoctor.departmentHasDoctors && selectedDoctor.departmentHasDoctors[0] && selectedDoctor.departmentHasDoctors[0].department && selectedDoctor.departmentHasDoctors[0].department || {}
 	return (
-		<div style={{height: modalHeight}}>
+		<div style={{height: modalHeight, overflow: 'auto'}}>
 			<div style={{padding: '.2rem .25rem .1rem'}} className='flex'>
 				<img src={selectedDoctor.avatar} height='50px' width='50px' style={{paddingTop: '0rem'}} />
 				<div style={{paddingLeft: '.2rem', width: '60%'}}>

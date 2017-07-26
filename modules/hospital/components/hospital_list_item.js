@@ -18,7 +18,7 @@ export default class HospitalListItem extends Component {
 		const {titleInfo, page} = this.props
 		let newTitleInfo = titleInfo.filter((item) => item.nolistShow !== true)
     return (
-			<ul className='flex tb-flex'>
+			<ul className='flex tb-flex listItem'>
 				{
 					newTitleInfo.map((item, iKey) => {
 						const orderCon = `orderCon${page}${iKey}`
@@ -26,18 +26,6 @@ export default class HospitalListItem extends Component {
 					})
 				}
 				<article className='clearfix'></article>
-				<style jsx>{`
-					ul{
-						padding: 0 15px;
-						color: ${theme.mainfontcolor};
-						line-height: .36rem;
-						font-size: ${theme.nfontsize};
-						box-sizing: content-box;
-					}
-					ul:nth-of-type(2n+1) {
-						background: #FBFBFB;
-					}
-				`}</style>
 			</ul>
     )
   }

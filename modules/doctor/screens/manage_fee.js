@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 // import { Router } from '../../../routes'
 import Router from 'next/router'
 import {theme, Prompt, Loading} from 'components'
-import {ORDERTYPE, DOCTORINFO, HOSPITALINFO} from 'config'
+import {ORDERINFO, DOCTORINFO, HOSPITALINFO} from 'config'
 import {TopFilterCard, ListTitle} from 'modules/common/components'
 import { queryDoctors, showPrompt } from '../../../ducks'
 import { connect } from 'react-redux'
@@ -66,7 +66,7 @@ class ManageFeeScreen extends Component {
           changeKeyword={(keyword) => {this.setState({keyword: keyword})}}
 					clickfilter={() => this.filterCard(doctors, true)}
 					placeholder='医生姓名/专业/亚专业/服务等'
-          data={ORDERTYPE} />
+          data={ORDERINFO.order_type} />
         <ListTitle data={DOCTORINFO.fee_list_title} style={{padding: '2px 15px'}} />
 				{
 					doctors && doctors.length > 0 ?

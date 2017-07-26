@@ -10,10 +10,9 @@ import {
   MAINCOLOR,
   PORT,
   MAINFUNCTION,
-  ORDERTYPE,
   ORDERINFO,
   DOCTORINFO
-} from './luzhong_index'
+} from './beiyisanyuan_index'
 
 export {
   server,
@@ -27,7 +26,6 @@ export {
   MAINCOLOR,
   PORT,
   MAINFUNCTION,
-  ORDERTYPE,
   ORDERINFO,
   DOCTORINFO
 }

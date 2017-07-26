@@ -24,24 +24,22 @@ const HOSPITALINFO = {
 
 // 主功能
 const MAINFUNCTION = [
-  // {
-  //   title: '订单管理',
-  //   short_name: 'order',
-  //   navigateName: '/order',
-  //   children: [
-  //     {title: '订单管理', navigateName: '/order', color: '#5D75A6',},
-  //     {title: '交易管理', navigateName: '', color: '#5D75A6'},
-  //     {title: '服务记录', navigateName: '', color: '#5D75A6'},
-  //   ]
-  // },
+  {
+    title: '订单管理',
+    short_name: 'order',
+    navigateName: '/order',
+    children: [
+      {title: '订单管理', navigateName: '/order', color: '#5D75A6',},
+      {title: '交易管理', navigateName: '', color: '#5D75A6'},
+      {title: '服务记录', navigateName: '', color: '#5D75A6'},
+    ]
+  },
   {
     title: '医生管理',
     short_name: 'doctor',
     navigateName: '/doctor/manage_schedule',
     children: [
       {title: '医生管理', navigateName: '/doctor/manage_schedule', color: '#5D75A6',},
-      // {title: '费用管理', navigateName: '/doctor/manage_fee', color: '#5D75A6'},
-      // {title: '全部排版', navigateName: '/doctor/manage_all_schedule', color: '#5D75A6'},
     ]
   },
   {
@@ -82,25 +80,7 @@ const HOME_PAGE = {url: '/hospital'}
 // 主题颜色
 const MAINCOLOR = '#2A4680'
 
-// order type<option value="7">全部订单类型</option>
-            // <option value="1">待支付</option>
-            // <option value="2">待退款</option>
-            // <option value="3">待执行</option>
-            // <option value="4">执行中</option>
-            // <option value="5">已完成</option>
-            // <option value="6">已关闭</option>
-            // 01：待支付，02：已取消，03：待执行，04：执行中，{05：已过期，06：退款申请}待退款，07：已完成，08：已退款
-const ORDERTYPE = [
-   {title: '待支付', value: '01'},
-   {title: '已取消', value: '02'},
-   {title: '待执行', value: '03'},
-   {title: '执行中', value: '04'},
-   {title: '已过期', value: '05'},
-   {title: '退款申请', value: '06'},
-   {title: '已完成', value: '07'},
-   {title: '已退款', value: '08'}
-]
-
+// 订单管理信息
 const ORDERINFO = {
   order_list_title: [
     {title: '产品服务', value: '', style: {width: '30%'}, apiKey: ''},
@@ -109,6 +89,16 @@ const ORDERINFO = {
     {title: '买家信息', value: '', style: {width: '14%'}, apiKey: ''},
     {title: '订单状态', value: '', style: {width: '16%', textAlign: 'center'}, apiKey: ''},
     {title: '支付信息(元)', value: '', style: {width: '20%', textAlign: 'center'}, apiKey: ''},
+  ],
+  order_type: [
+    {title: '待支付', value: '01'},
+    {title: '已取消', value: '02'},
+    {title: '待执行', value: '03'},
+    {title: '执行中', value: '04'},
+    {title: '已过期', value: '05'},
+    {title: '退款申请', value: '06'},
+    {title: '已完成', value: '07'},
+    {title: '已退款', value: '08'}
   ]
 }
 
@@ -152,7 +142,6 @@ export {
   MAINCOLOR,
   PORT,
   MAINFUNCTION,
-  ORDERTYPE,
   ORDERINFO,
   DOCTORINFO
 }

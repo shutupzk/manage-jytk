@@ -8,21 +8,7 @@ export default class NewsDetailModal extends Component {
   constructor (props) {
     super(props)
     this.state = {
-			fastSchedules: [],
-			videoSchedules: [],
-			videoTime: {
-				time: '',
-				num: ''
-			}
     }
-	}
-
-	componentWillMount() {
-		console.log('-----props', this.props.selectedNews)
-	}
-
-	componentWillReceiveProps(nextProps) {
-		console.log('-------willprops', nextProps.selectedNews)
 	}
 
   render () {
@@ -42,27 +28,31 @@ const renderModal = (self) => {
 					''
 				: renderDepartmentInfoModal(self)
 			}
-			<ModalFooter>
-				<article style={{width: '50%'}}>
-					<button className='btnBorder'
-						style={{display: 'inline-block', width: '100%', borderRadius: '2px 0 0 2px', lineHeight: '36px', border: 'none', fontSize: theme.mainfontsize,
-							borderRight: `1px solid ${theme.bordercolor}`}}
-						onClick={() => self.props.onHide()}>取消</button>
-				</article>
-					<button className='btnBorder'
-						style={{display: 'inline-block', lineHeight: '36px', border: 'none', width: '50%', fontSize: theme.mainfontsize, color: theme.maincolor}}
-						onClick={() => {
-							let values = {}
-							for (const titleInfoItem in titleInfo) {
-								const refName = titleInfo[titleInfoItem].apiKey + 'Ref'
-								if (refName !== 'Ref') {
-									values[titleInfo[titleInfoItem].apiKey] = self.refs[refName] && self.refs[refName].value
+			{
+				titleInfo[titleInfo.length -1].showModify ?
+					<ModalFooter>
+						<article style={{width: '50%'}}>
+							<button className='btnBorder'
+								style={{display: 'inline-block', width: '100%', borderRadius: '2px 0 0 2px', lineHeight: '36px', border: 'none', fontSize: theme.mainfontsize,
+									borderRight: `1px solid ${theme.bordercolor}`}}
+								onClick={() => self.props.onHide()}>取消</button>
+						</article>
+						<button className='btnBorder'
+							style={{display: 'inline-block', lineHeight: '36px', border: 'none', width: '50%', fontSize: theme.mainfontsize, color: theme.maincolor}}
+							onClick={() => {
+								let values = {}
+								for (const titleInfoItem in titleInfo) {
+									const refName = titleInfo[titleInfoItem].apiKey + 'Ref'
+									if (refName !== 'Ref') {
+										values[titleInfo[titleInfoItem].apiKey] = self.refs[refName] && self.refs[refName].value
+									}
+									{/* values.newsGroupId = self.refs.newsGroupIdRef && self.refs.newsGroupIdRef.value */}
 								}
-								{/* values.newsGroupId = self.refs.newsGroupIdRef && self.refs.newsGroupIdRef.value */}
-							}
-							self.props.clickModalOk(data, modalType, values)}
-						}>确定</button>
-			</ModalFooter>
+								self.props.clickModalOk(data, modalType, values)}
+							}>确定</button>
+						</ModalFooter>
+					: ''
+			}
 		</Modal>
 	)
 }
@@ -96,7 +86,7 @@ const renderDepartmentInfoModal = (self) => {
 	const {selectedNews, modalType, titleInfo, newsGroups} = self.props;
 	if (modalType === 'delete') {
 		return (
-			<div style={{padding: '.3rem .25rem', color: theme.mainfontcolor}}>您确定要删除<span style={{color: theme.maincolor}}>{selectedNews.deptName}</span>吗？</div>
+			<div style={{padding: '.3rem .25rem', color: theme.mainfontcolor}}>您确定要删除<span style={{color: '#f00'}}>{selectedNews.title || selectedNews.type}</span>吗？</div>
 		)
 	}
 	if (modalType === 'modify' || modalType === 'add') {
@@ -125,7 +115,7 @@ const renderDepartmentInfoModal = (self) => {
 						color: theme.fontcolor;
 						padding-right: ${theme.tbmargin};
 					}
-					input{
+					dd input{
 						line-height: 30px;
 						width: 100%;
 					}
@@ -140,32 +130,64 @@ const renderDepartmentInfoModal = (self) => {
 
 const showHtml = (self, titleInfoItem) => {
 	const {selectedNews, modalType, titleInfo} = self.props;
-	if (titleInfoItem.title.indexOf('资讯标题') > -1 ||
-		titleInfoItem.title.indexOf('资讯摘要') > -1) {
-		return (<dd><input type='text' defaultValue={selectedNews[titleInfoItem.apiKey]} ref={`${titleInfoItem.apiKey}Ref`} /></dd>)
+	const lastConfigItem = titleInfo[titleInfo.length - 1]
+	if (titleInfoItem.inputType === 'text') {
+		if (!lastConfigItem.showModify) {
+			return (<dd className='disabledDetailInput'><input style={{border: 'none'}} type='text' disabled defaultValue={selectedNews[titleInfoItem.apiKey]} ref={`${titleInfoItem.apiKey}Ref`} /></dd>)
+		} else {
+			return (<dd><input type='text' defaultValue={selectedNews[titleInfoItem.apiKey]} ref={`${titleInfoItem.apiKey}Ref`} /></dd>)
+		}
 	}
-	if (titleInfoItem.title.indexOf('资讯类型') > -1) {
-		return (
-			<dd className='select' style={{padding: 0, borderRadius: 0}}>
-				<select defaultValue={selectedNews[titleInfoItem.apiKey]} ref={`${titleInfoItem.apiKey}Ref`}>
-					{
-						self.props.newsGroups.map((newsGroup) => {
-							return (
-								<option key={newsGroup.id} value={newsGroup.id}>{newsGroup.type}</option>
-							)
-						})
-					}
-				</select>
-			</dd>
-		)
+	if (titleInfoItem.inputType === 'select') {
+		if (!lastConfigItem.showModify) {
+			return (
+				<dd className='select disabledDetailInput' style={{padding: 0, borderRadius: 0}}>
+					<select disabled defaultValue={selectedNews[titleInfoItem.apiKey]} ref={`${titleInfoItem.apiKey}Ref`}>
+						{
+							self.props.newsGroups.map((newsGroup) => {
+								return (
+									<option key={newsGroup.id} value={newsGroup.id}>{newsGroup.type}</option>
+								)
+							})
+						}
+					</select>
+				</dd>
+			)
+		} else {
+			return (
+				<dd className='select' style={{padding: 0, borderRadius: 0}}>
+					<select defaultValue={selectedNews[titleInfoItem.apiKey]} ref={`${titleInfoItem.apiKey}Ref`}>
+						{
+							self.props.newsGroups.map((newsGroup) => {
+								return (
+									<option key={newsGroup.id} value={newsGroup.id}>{newsGroup.type}</option>
+								)
+							})
+						}
+					</select>
+				</dd>
+			)
+		}
 	}
-	if (titleInfoItem.title.indexOf('资讯内容') > -1) {
-		return (
-			<dd>
-				<textarea
-					style={{width: '100%', border: `1px solid ${theme.bordercolor}`, minHeight: '1rem'}}
-					defaultValue={selectedNews[titleInfoItem.apiKey]} ref={`${titleInfoItem.apiKey}Ref`}></textarea>
-			</dd>
-		)
+	if (titleInfoItem.inputType === 'textarea') {
+		const style = {width: '100%', border: `1px solid ${theme.bordercolor}`, minHeight: '1rem'}
+		if (titleInfoItem.showModify) {
+			return (
+				<dd className='disabledDetailInput'>
+					<input
+						disabled
+						style={{width: '100%'}}
+						defaultValue={selectedNews[titleInfoItem.apiKey]} ref={`${titleInfoItem.apiKey}Ref`} />
+				</dd>
+			)
+		} else {
+			return (
+				<dd className=''>
+					<textarea
+						style={style}
+						defaultValue={selectedNews[titleInfoItem.apiKey]} ref={`${titleInfoItem.apiKey}Ref`}></textarea>
+				</dd>
+			)
+		}
 	}
 }

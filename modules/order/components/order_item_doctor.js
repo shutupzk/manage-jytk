@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import {theme} from 'components'
-import {ORDERTYPE} from 'config'
 
 export default class OrderItemDoctor extends Component {
   constructor (props) {
@@ -25,8 +24,8 @@ export default class OrderItemDoctor extends Component {
 				<img className="left" src={data.docPic} style={{display: data.docPic ? 'block' : 'none'}} />
 				<dl className="left">
 					<dt>{data.doctor && data.doctor.doctorName || '医生'}</dt>
-					<dd>{hospitalName || '无'}</dd>
-					<dd>{curType[0] && curType[0].title}</dd>
+					<dd style={{lineHeight: '18px'}}>{hospitalName || '无'}</dd>
+					<dd style={{lineHeight: '16px'}}>{curType[0] && curType[0].title}</dd>
 				</dl>
 				<style jsx>{`
 					.orderCon1{

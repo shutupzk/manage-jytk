@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import {theme} from 'components'
-import {ORDERTYPE} from 'config'
+import {ORDERINFO} from 'config'
 
 export default class OrderTab extends Component {
   constructor (props) {
@@ -12,7 +12,7 @@ export default class OrderTab extends Component {
     return (
 			<ul className={'orderNav'}>
 				{
-					ORDERTYPE.map((item, iKey) => {
+					ORDERINFO.order_type.map((item, iKey) => {
 						return (
 							<li key={iKey}
 								className={this.props.status === item.value ? 'curLi left' : 'left'}

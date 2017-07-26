@@ -16,7 +16,7 @@ export default class NewsListItem extends Component {
 		const {titleInfo} = this.props
 		let newTitleInfo = titleInfo.filter((item) => item.nolistShow !== true)
     return (
-			<ul className='flex tb-flex'>
+			<ul className='flex tb-flex listItem'>
 				{
 					newTitleInfo.map((item, iKey) => {
 						const orderCon = `orderCon${iKey}`
@@ -24,18 +24,6 @@ export default class NewsListItem extends Component {
 					})
 				}
 				<article className='clearfix'></article>
-				<style jsx>{`
-					ul{
-						padding: 0 15px;
-						color: ${theme.mainfontcolor};
-						line-height: .36rem;
-						font-size: ${theme.nfontsize};
-						box-sizing: content-box;
-					}
-					ul:nth-of-type(2n+1) {
-						background: #FBFBFB;
-					}
-				`}</style>
 			</ul>
     )
   }
@@ -68,8 +56,15 @@ const orderCon3 = (props, item, iKey) => {
 const orderCon4 = (props, item, iKey) => {
 	return (
 		<li className={'left flex tb-flex lr-flex'} key={iKey} style={item.style}>
+			<img src={props.data[item.apiKey]} style={{height: 60, maxWidth:'100%'}} /> 
+		</li>)
+}
+
+const orderCon5 = (props, item, iKey) => {
+	return (
+		<li className={'left flex tb-flex lr-flex'} key={iKey} style={item.style}>
 			<img src={`/static/icons/modify.png`} style={{height: '.16rem'}} onClick={() => props.clickShowModal(props.data, 'modify')} />
-			{/* <img src={`/static/icons/delete.png`} style={{height: '.16rem', padding: `0 ${theme.tbmargin}`}} onClick={() => props.clickShowModal(data, 'delete')} /> */}
+			 <img src={`/static/icons/delete.png`} style={{height: '.16rem', display: item.showDelete ? 'block' : 'none', padding: `0 ${theme.tbmargin}`}} onClick={() => props.clickShowModal(props.data, 'delete')} /> 
 		</li>)
 }
 

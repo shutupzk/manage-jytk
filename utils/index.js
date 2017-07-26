@@ -33,6 +33,30 @@ export const checkIdCard = (num) => {
 }
 
 /**
+ * 模糊查询
+ * @param {*} list 
+ * @param {*} keyword 
+ * @param {*} apiKeyword
+ */
+export function fuzzyQuery(list, keyword, apiKeyword) {
+  //正则表达式
+  var len = list.length;
+  var arr = [];
+  var reg = new RegExp(keyword);
+  for(var i=0;i<len;i++){
+      //如果字符串中不包含目标字符会返回-1
+      if(list[i][apiKeyword[0]] && list[i][apiKeyword[0]].match(reg) ||
+         list[i][apiKeyword[1]] && list[i][apiKeyword[1]].match(reg) ||
+         list[i][apiKeyword[2]] && list[i][apiKeyword[2]].match(reg) ||
+         list[i][apiKeyword[3]] && list[i][apiKeyword[3]].match(reg) ||
+         list[i][apiKeyword[4]] && list[i][apiKeyword[4]].match(reg)){
+          arr.push(list[i]);
+      }
+  }
+  return arr;
+}
+
+/**
  * 判断对象是否为空对象{}
  * @param {*} obj
  */

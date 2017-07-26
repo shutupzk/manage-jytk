@@ -17,7 +17,7 @@ export default class DepartmentListItem extends Component {
 		const props = this.props
 		const {titleInfo} = this.props
     return (
-			<ul className='flex tb-flex'>
+			<ul className='flex tb-flex listItem'>
 				{
 					titleInfo.map((item, iKey) => {
 						const orderCon = `orderCon${iKey}`
@@ -25,18 +25,6 @@ export default class DepartmentListItem extends Component {
 					})
 				}
 				<article className='clearfix'></article>
-				<style jsx>{`
-					ul{
-						padding: 0 15px;
-						color: ${theme.mainfontcolor};
-						line-height: .36rem;
-						font-size: ${theme.nfontsize};
-						box-sizing: content-box;
-					}
-					ul:nth-of-type(2n+1) {
-						background: #FBFBFB;
-					}
-				`}</style>
 			</ul>
     )
   }

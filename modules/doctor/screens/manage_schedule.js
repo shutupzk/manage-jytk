@@ -2,12 +2,11 @@ import React, { Component } from 'react'
 // import { Router } from '../../../routes'
 import Router from 'next/router'
 import {theme, Prompt, Loading} from 'components'
-import {ORDERTYPE, DOCTORINFO, HOSPITALINFO, HOSPITAL_NAME} from 'config'
+import {ORDERINFO, DOCTORINFO, HOSPITALINFO, HOSPITAL_NAME} from 'config'
 import {TopFilterCard, ListTitle} from 'modules/common/components'
 import { queryDoctors, showPrompt, createDoctor, updateDoctor } from '../../../ducks'
 import { connect } from 'react-redux'
 import {ManageListItem, ManageDoctorModal, DoctorDetailModal} from '../components'
-
 
 class ManageScheduleScreen extends Component {
   constructor (props) {
@@ -22,7 +21,6 @@ class ManageScheduleScreen extends Component {
 			modalType: ''
     }
   }
-
   componentWillMount() {
     this.props.queryDoctors(this.props.client)
 	}
@@ -80,6 +78,7 @@ class ManageScheduleScreen extends Component {
 			return <div>{this.props.error}</div>
 		}
 		let doctors = this.filterCard(this.props.doctors)
+		// let doctors = []
     return (
       <div>
 				{
@@ -112,17 +111,15 @@ class ManageScheduleScreen extends Component {
           changeKeyword={(keyword) => {this.setState({keyword: keyword})}}
 					clickfilter={() => this.filterCard(doctors, true)}
 					placeholder='医生姓名/专业/亚专业/服务等'
-          data={ORDERTYPE} /> */}
+          data={ORDERINFO.order_type} /> */}
         <ListTitle data={DOCTORINFO.schedule_list_title} />
 				{
 					doctors && doctors.length > 0 ?
 						doctors.map((doctor, iKey) => {
 							return (
-								<div key={iKey}>
-									<ManageListItem data={doctor} key={iKey} index={iKey}
-										titleInfo={DOCTORINFO.schedule_list_title}
-										clickShowModal={(item, modalType) => {this.setState({showModal: true, selectedDoctor: item, modalType: modalType})}} />
-								</div>
+								<ManageListItem data={doctor} key={iKey} index={iKey}
+									titleInfo={DOCTORINFO.schedule_list_title}
+									clickShowModal={(item, modalType) => {this.setState({showModal: true, selectedDoctor: item, modalType: modalType})}} />
 							)
 						})
 					: 'no datas'

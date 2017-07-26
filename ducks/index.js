@@ -4,7 +4,7 @@ import {order, queryOrderList, queryOrderDetail} from './order'
 import {doctor, queryDoctors, queryDoctorDetail, updateDoctor, createDoctor} from './doctor'
 import {department, queryDepartments, updateDepartment, createDepartment} from './department'
 import {hospital, queryHospitals, updateHospital, createHospital} from './hospital'
-import {news, queryNews, queryNewGroups, createNews, updateNews} from './news'
+import {news, queryNews, queryNewGroups, updateNewsGroup, removeNewsGroup, createNews, updateNews, removeNews} from './news'
 import {buildings, createbuilding, createFloor, createRoom, queryBuildings, queryBuildingDetail, updateBuilding, updateFloor, updateRoom} from './buildings'
 import {notices, createVisitNotice, querynotices, queryNoticesGroups, updateVisitNotice} from './notice'
 
@@ -51,8 +51,11 @@ export {
     createHospital,
     queryNews,
     queryNewGroups,
+    updateNewsGroup,
+    removeNewsGroup,
     createNews,
     updateNews,
+    removeNews,
     createbuilding,
     createFloor,
     createRoom,

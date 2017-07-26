@@ -2,7 +2,7 @@ import CardWhite from './CardWhite'
 import Loading from './Loading'
 import theme from './theme'
 import Prompt from './prompt'
-import {FilterCard, FilterSelect, FilterTime} from './FilterCard'
+import {FilterCard, SelectFilterCard, KeywordCard, SeniorSoso, LinkQuestion} from './FilterCard'
 import {Modal, ModalHeader, ModalFooter, FilterTimeResult} from './Modal'
 import TabHeader from './TabHeader'
 import NoDataCard from './NoDataCard'
@@ -19,8 +19,10 @@ export {
     theme,
     Prompt,
     FilterCard,
-    FilterSelect,
-    FilterTime,
+    SelectFilterCard,
+    KeywordCard,
+    SeniorSoso,
+    LinkQuestion,
     Modal,
     ModalHeader,
     ModalFooter,
