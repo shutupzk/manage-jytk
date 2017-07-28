@@ -42,11 +42,19 @@ const orderCon0 = (props, item, iKey) => {
 }
 
 const orderCon1 = (props, item, iKey) => {
-	return (normalHtml(props.data.newsGroup && props.data.newsGroup.type, item, iKey))
+	let data = props.data.newsGroup && props.data.newsGroup.type
+	if (item.apiKey === 'hospitalId') {
+		data = props.data.hospital && props.data.hospital.hospitalName
+	}
+	return (normalHtml(data, item, iKey))
 }
 
 const orderCon2 = (props, item, iKey) => {
-	return (normalHtml(props.data[item.apiKey], item, iKey))
+	if (item.title.indexOf('设置') > -1) {
+		return (btnHtml(props, item, iKey))
+	} else {
+		return (normalHtml(props.data[item.apiKey], item, iKey))
+	}
 }
 
 const orderCon3 = (props, item, iKey) => {
@@ -60,11 +68,15 @@ const orderCon4 = (props, item, iKey) => {
 		</li>)
 }
 
-const orderCon5 = (props, item, iKey) => {
+const btnHtml = (props, item, iKey) => {
 	return (
 		<li className={'left flex tb-flex lr-flex'} key={iKey} style={item.style}>
 			<img src={`/static/icons/modify.png`} style={{height: '.16rem'}} onClick={() => props.clickShowModal(props.data, 'modify')} />
 			 <img src={`/static/icons/delete.png`} style={{height: '.16rem', display: item.showDelete ? 'block' : 'none', padding: `0 ${theme.tbmargin}`}} onClick={() => props.clickShowModal(props.data, 'delete')} /> 
 		</li>)
+}
+
+const orderCon5 = (props, item, iKey) => {
+	return (btnHtml(props, item, iKey))
 }
 

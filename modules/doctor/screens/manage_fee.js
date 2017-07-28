@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 // import { Router } from '../../../routes'
 import Router from 'next/router'
-import {theme, Prompt, Loading} from 'components'
+import {theme, Prompt, Loading, FilterCard, SelectFilterCard, KeywordCard} from 'components'
 import {ORDERINFO, DOCTORINFO, HOSPITALINFO} from 'config'
 import {TopFilterCard, ListTitle} from 'modules/common/components'
+import {fuzzyQuery} from 'utils'
 import { queryDoctors, showPrompt } from '../../../ducks'
 import { connect } from 'react-redux'
 import {ManageListItem, ManageDoctorModal} from '../components'
@@ -26,21 +27,15 @@ class ManageFeeScreen extends Component {
     this.props.queryDoctors(this.props.client)
   }
 
-  filterCard(doctors, isfilterkeyword) {
-		const status = this.state.status;
-		let newdoctors;
-    if (!status) {
-			newdoctors = doctors // status 空 代表全部
-		} else {
-			newdoctors = doctors.filter((item) => item&&item.status === status)
+  filterCard(doctors) {
+		let filterDoctors = doctors
+		if (this.state.keyword) {
+			filterDoctors = fuzzyQuery(filterDoctors, this.state.keyword, ['doctorName', 'doctorSn'])
 		}
-		if (isfilterkeyword && this.state.keyword) {
-			// newdoctors  todo filter keyword
-			this.setState({
-				isfilterkeyword: false
-			})
+		if (this.state.status) {
+			filterDoctors = filterDoctors.filter((doctorItem) => {return doctorItem.newsGroup.id === this.state.status})
 		}
-    return newdoctors
+		return filterDoctors
   }
 
   render () {
@@ -61,12 +56,13 @@ class ManageFeeScreen extends Component {
 					showModal={this.state.showModal}
 					onHide={() => this.setState({showModal: false, selectedType: 0, selectedDoctor: {}})}
 					changeType={(type) => this.setState({selectedType: type})}
-					pageType={'fee'} />
-        <TopFilterCard status={this.state.status} changeStatus={(status) => {this.setState({status: status})}}
-          changeKeyword={(keyword) => {this.setState({keyword: keyword})}}
-					clickfilter={() => this.filterCard(doctors, true)}
-					placeholder='医生姓名/专业/亚专业/服务等'
-          data={ORDERINFO.order_type} />
+					pageType={'fee'}
+					typeTitle={DOCTORINFO.modal_type_title} />
+				<FilterCard>
+					<KeywordCard
+						config={{placeholder: '医生姓名/医生工号'}}
+						clickfilter={(keyword) => {this.setState({keyword: keyword})}} />
+				</FilterCard>
         <ListTitle data={DOCTORINFO.fee_list_title} style={{padding: '2px 15px'}} />
 				{
 					doctors && doctors.length > 0 ?

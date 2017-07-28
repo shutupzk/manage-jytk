@@ -5,16 +5,15 @@ import {theme, Prompt, Loading, FilterCard, SelectFilterCard, KeywordCard} from 
 import {ORDERTYPE} from 'config'
 import {NEWSINFO} from '../config'
 import {ListTitle} from 'modules/common/components'
-import {fuzzyQuery} from 'utils'
-import { queryNews, queryHospitals,queryNewGroups, showPrompt,
-	createNews,
-	updateNews,
-	removeNews } from '../../../ducks'
+import { queryHospitals,queryNewGroups, showPrompt,
+	createGroups,
+	updateNewsGroup,
+	removeNewsGroup } from '../../../ducks'
 import { connect } from 'react-redux'
 import {NewsListItem, NewsDetailModal} from '../components'
 
 
-class NewsListsScreen extends Component {
+class NewsGroupListsScreen extends Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -26,7 +25,7 @@ class NewsListsScreen extends Component {
   }
 
   componentWillMount() {
-		this.props.queryNews(this.props.client)
+		this.props.queryHospitals(this.props.client)
 		this.props.queryNewGroups(this.props.client)
   }
 	
@@ -34,44 +33,32 @@ class NewsListsScreen extends Component {
 		let error;
 		if (modalType === 'modify') {
 			values.id = this.state.selectedNews.id
-			error = await this.props.updateNews(this.props.client, values)
+			error = await this.props.updateNewsGroup(this.props.client, values)
 		}
 		else if (modalType === 'add') {
-			for (const titleKey in NEWSINFO.news_list_title) {
-				const titleItem = NEWSINFO.news_list_title[titleKey] || {}
+			for (const titleKey in NEWSINFO.news_groups_list_title) {
+				const titleItem = NEWSINFO.news_groups_list_title[titleKey] || {}
 				if (titleItem.addRequireKey && !values[titleItem.apiKey]) {
 					this.props.showPrompt({text: titleItem.title + '必填'})
 					return;
 				}
 			}
-			error = await this.props.createNews(this.props.client, values)
+			error = await this.props.createGroups(this.props.client, values)
 		} else if (modalType === 'delete') {
 			values.id = this.state.selectedNews.id
-			error = await this.props.removeNews(this.props.client, values)
+			error = await this.props.removeNewsGroup(this.props.client, values)
 		}
 		if (error) {
 			this.props.showPrompt({text: error});
 			return
 		}
 		this.onHide();
-		await this.props.queryNews(this.props.client, {forceFetch: true})
+		await this.props.queryNewGroups(this.props.client, {forceFetch: true})
 	}
 
 	onHide() {
 		this.setState({showModal: false, selectedNews: {}, modalType: ''})
 	}
-
-	filterCard(news) {
-		let filterNews = news
-		if (this.state.keyword) {
-			filterNews = fuzzyQuery(filterNews, this.state.keyword, ['title', 'summary'])
-		}
-		if (this.state.status) {
-			filterNews = filterNews.filter((newsItem) => {return newsItem.newsGroup.id === this.state.status})
-		}
-		return filterNews
-	}
-
   render () {
     if (this.props.loading) {
       return <Loading showLoading />
@@ -79,29 +66,19 @@ class NewsListsScreen extends Component {
 		if (this.props.error) {
 			return <div>{this.props.error}</div>
 		}
-		let news = this.filterCard(this.props.news)
+		let newsGroups = this.props.newsGroups
     return (
       <div>
-				<FilterCard>
-					<SelectFilterCard
-						data={this.props.newsGroups}
-						status={this.state.status}
-						config= {{selectTitle: '全部资讯类型', valueKey: 'id', titleKey: 'type'}}
-						changeStatus={(status) => {this.setState({status: status})}} />
-					<KeywordCard
-						config={{placeholder: '资讯标题／资讯类型'}}
-						clickfilter={(keyword) => {this.setState({keyword: keyword})}} />
-				</FilterCard>
 				<article style={{textAlign: 'right', paddingBottom: theme.lrmargin}}>
 					<button style={{width: '1rem'}} className='btnBG btnBGMain btnBGLitt'
-						onClick={() => this.setState({showModal: true, modalType: 'add'})}>添加资讯</button>
+						onClick={() => this.setState({showModal: true, modalType: 'add'})}>添加资讯类型</button>
 				</article>
-				<ListTitle data={NEWSINFO.news_list_title} />
+				<ListTitle data={NEWSINFO.news_groups_list_title} />
 				{
-					news && news.length > 0 ?
-						news.map((newsItem, iKey) => {
-							return <NewsListItem data={newsItem} key={iKey} index={iKey}
-							 titleInfo={NEWSINFO.news_list_title}
+					newsGroups && newsGroups.length > 0 ?
+						newsGroups.map((newsGroupsItem, iKey) => {
+							return <NewsListItem data={newsGroupsItem} key={iKey} index={iKey}
+							 titleInfo={NEWSINFO.news_groups_list_title}
 							 clickShowModal={(data, modalType) => {this.setState({selectedNews: data, modalType: modalType, showModal: true})}} />
 						})
 					: 'no data'
@@ -109,9 +86,9 @@ class NewsListsScreen extends Component {
 				<NewsDetailModal selectedNews={this.state.selectedNews}
 					showModal={this.state.showModal}
 					onHide={() => this.onHide()}
-					titleInfo={NEWSINFO.news_list_title}
+					titleInfo={NEWSINFO.news_groups_list_title}
 					modalType={this.state.modalType}
-					newsGroups={this.props.newsGroups}
+					newsGroups={this.props.hospital}
 					clickModalOk={(data, modalType, values) => this.clickModalOk(data, modalType, values)} />
       </div>
     )
@@ -121,7 +98,6 @@ class NewsListsScreen extends Component {
 
 function mapStateToProps (state) {
   return {
-    news: state.news.data.news,
     loading: state.news.loading,
 		error: state.news.error,
 		hospital: state.hospital.data,
@@ -129,4 +105,4 @@ function mapStateToProps (state) {
   }
 }
 
-export default connect(mapStateToProps, { queryNews, queryHospitals, queryNewGroups, showPrompt, createNews, updateNews, removeNews })(NewsListsScreen)
+export default connect(mapStateToProps, { queryHospitals, queryNewGroups, showPrompt, createGroups, updateNewsGroup, removeNewsGroup })(NewsGroupListsScreen)

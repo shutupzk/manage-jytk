@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
 // import { Router } from '../../../routes'
 import Router from 'next/router'
-import {theme, Prompt, Loading} from 'components'
+import {theme, Prompt, Loading, FilterCard, SelectFilterCard, KeywordCard} from 'components'
 import {ORDERINFO} from 'config'
-import {OrderTab, OrderListItem} from '../components'
+import {fuzzyQuery} from 'utils'
+import {OrderTab, OrderListItem, OrderTipModal} from '../components'
 import {TopFilterCard, ListTitle} from 'modules/common/components'
-import { queryOrderList } from '../../../ducks'
+import { queryOrderList, showPrompt } from '../../../ducks'
 import { connect } from 'react-redux'
 
 
@@ -14,7 +15,9 @@ class OrderRecordsScreen extends Component {
     super(props)
     this.state = {
       status: '', // 空 代表全部
-      keyword: ''
+      keyword: '',
+      selectOrder: {},
+      showModal: false
     }
   }
 
@@ -22,150 +25,29 @@ class OrderRecordsScreen extends Component {
     this.props.queryOrderList(this.props.client)
   }
 
-  // 提交
-  async submit (props) {
-    let i = 2
-    const password = this.state.password
-    const code = this.state.verCode
-    const phone = this.state.phone
-    const repassword = this.state.repassword
-    if (!phone) {
-      this.setState({
-        isShow: true,
-        promptContent: '请输入手机号'
-      })
-      this.interval = setInterval(() => {
-        if (i === 0) {
-          clearInterval(this.interval)
-          this.setState({ isShow: false, promptContent: '' })
-        }
-        i--
-      }, 1000)
-      return
-      // return console.log('', '请输入手机号')
-    }
-    if (phone.length !== 11) {
-      this.setState({
-        isShow: true,
-        promptContent: '手机号格式不正确'
-      })
-      this.interval = setInterval(() => {
-        if (i === 0) {
-          clearInterval(this.interval)
-          this.setState({ isShow: false, promptContent: '' })
-        }
-        i--
-      }, 1000)
-      return
-    }
-    if (!code) {
-      this.setState({
-        isShow: true,
-        promptContent: '请输入验证码'
-      })
-      this.interval = setInterval(() => {
-        if (i === 0) {
-          clearInterval(this.interval)
-          this.setState({ isShow: false, promptContent: '' })
-        }
-        i--
-      }, 1000)
-      return
-    }
-    // if (verCode !== '1234') {
-    //   this.setState({
-    //     isShow: true,
-    //     promptContent: '验证码输入错误'
-    //   })
-    //   this.interval = setInterval(() => {
-    //     if (i === 0) {
-    //       clearInterval(this.interval)
-    //       this.setState({ isShow: false, promptContent: '' })
-    //     }
-    //     i--
-    //   }, 1000)
-    //   return
-    // }
-    if (!password) {
-      this.setState({
-        isShow: true,
-        promptContent: '请输入密码'
-      })
-      this.interval = setInterval(() => {
-        if (i === 0) {
-          clearInterval(this.interval)
-          this.setState({ isShow: false, promptContent: '' })
-        }
-        i--
-      }, 1000)
-      return
-    }
-    if (password.length < 8) {
-      this.setState({
-        isShow: true,
-        promptContent: '密码长度不能小于8位'
-      })
-      this.interval = setInterval(() => {
-        if (i === 0) {
-          clearInterval(this.interval)
-          this.setState({ isShow: false, promptContent: '' })
-        }
-        i--
-      }, 1000)
-      return
-    }
-    if (password !== repassword) {
-      this.setState({
-        isShow: true,
-        promptContent: '密码输入不一致，请重新输入'
-      })
-      this.interval = setInterval(() => {
-        if (i === 0) {
-          clearInterval(this.interval)
-          this.setState({ isShow: false, promptContent: '' })
-        }
-        i--
-      }, 1000)
-      return
-    }
-    // const error = await props.checkVerifyCode(props.client, {phone, code})
-    // if (error) {
-    //   this.setState({
-    //     isShow: true,
-    //     promptContent: error
-    //   })
-    //   this.interval = setInterval(() => {
-    //     if (i === 0) {
-    //       clearInterval(this.interval)
-    //       this.setState({ isShow: false, promptContent: '' })
-    //     }
-    //     i--
-    //   }, 1000)
-    //   return
-    // }
-    const error = this.props.forgotPassword(this.props.client, {phone, password, code})
-    if (error) {
-      this.setState({
-        isShow: true,
-        promptContent: error
-      })
-      this.interval = setInterval(() => {
-        if (i === 0) {
-          clearInterval(this.interval)
-          this.setState({ isShow: false, promptContent: '' })
-        }
-        i--
-      }, 1000)
-      return
-    }
-    Router.push('/sigin')
-  }
+	async clickModalOk() {
+		const {selectOrder, modalType} = this.state;
+		let error;
+		if (modalType === 'cancel') {
+			error = await this.props.cancelAppointment(this.props.client, {id: selectOrder.id})
+		}
+		this.setState({showModal: false, selectOrder: {}})
+		if (error) {
+			this.props.showPrompt({text: error})
+			return
+		}
+		await this.props.queryOrderList(this.props.client)
+	}
 
   filterCard(orderlist) {
-    const status = this.state.status;
-    if (!status) return orderlist // status 空 代表全部
-    let neworderlist = orderlist.filter((item) => item&&item.status === status)
-    return neworderlist
+		let filterOrderList = orderlist
+		if (this.state.keyword) {
+			filterOrderList = fuzzyQuery(filterOrderList, this.state.keyword, ['title', 'summary'])
+		}
+		if (this.state.status) {
+			filterOrderList = filterOrderList.filter((orderItem) => {return orderItem.status === this.state.status})
+		}
+		return filterOrderList
   }
 
   render () {
@@ -175,11 +57,19 @@ class OrderRecordsScreen extends Component {
     let orderlist = this.filterCard(this.props.orderlist)
     return (
       <div className={'orderRecordsPage'}>
-        <TopFilterCard status={this.state.status} changeStatus={(status) => {this.setState({status: status})}}
-          changeKeyword={(keyword) => {this.setState({keyword: keyword})}}
-          data={ORDERINFO.order_type} />
+				<FilterCard>
+					<SelectFilterCard
+						data={ORDERINFO.order_type}
+						status={this.state.status}
+						config= {{selectTitle: '全部订单类型', valueKey: 'value', titleKey: 'title'}}
+						changeStatus={(status) => {this.setState({status: status})}} />
+					{/* <KeywordCard
+						config={{placeholder: '资讯标题／资讯类型'}}
+						clickfilter={(keyword) => {this.setState({keyword: keyword})}} /> */}
+				</FilterCard>
+        {renderModal(this)}
         <OrderTab status={this.state.status} changeStatus={(status) => {this.setState({status: status})}} />
-        <div className={'orderConTop'} style={{marginBottom: theme.tbmargin}}>
+        {/* <div className={'orderConTop'} style={{marginBottom: theme.tbmargin}}>
           <button className='right btnBGGray btnBGLitt'
             style={{height: '.24rem', lineHeight: '.24rem',backgroundImage: 'linear-gradient(-180deg, #FAFAFA 0%, #F2F2F2 100%)', 
               border: `1px solid ${theme.nbordercolor}`, borderRadius: 2, marginRight: theme.tbmargin, fontSize: 12, color: theme.mainfontcolor}}>下一页</button>
@@ -187,14 +77,17 @@ class OrderRecordsScreen extends Component {
             style={{height: '.24rem', lineHeight: '.24rem', backgroundImage: 'linear-gradient(-180deg, #FAFAFA 0%, #F2F2F2 100%)',
             border: `1px solid ${theme.nbordercolor}`, borderRadius: 2, marginRight: theme.tbmargin, fontSize: 12, color: theme.mainfontcolor}}>上一页</button>
           <p className='clearfix'></p>
-        </div>
+        </div> */}
         <ListTitle data={ORDERINFO.order_list_title} />
         {
           orderlist && orderlist.length > 0 ?
             orderlist.map((orderItem, iKey) => {
               return (
                 <div key={iKey}>
-                  <OrderListItem data={orderItem} />
+                  <OrderListItem data={orderItem}
+                    clickConfirm={(data) => {
+                      this.setState({selectOrder: data, showModal: true})
+                    }} />
                 </div>
               )
             })
@@ -203,6 +96,21 @@ class OrderRecordsScreen extends Component {
       </div>
     )
   }
+}
+
+const renderModal = (self) => {
+	const {selectOrder, showModal} = self.state;
+	return (
+		<OrderTipModal showModalState={showModal}
+			onHide={() => self.setState({selectOrder: {}, showModal: false})}
+			clickModalOk={() => self.clickModalOk()}>
+			<dl style={{padding: '.2rem .25rem', color: theme.fontcolor, marginTop: theme.tbmargin, borderTop: `1px solid ${theme.bordercolor}`, fontSize: 13, lineHeight: '.3rem'}}>
+				<dt><span>患者姓名：</span>{selectOrder.patientName}</dt>
+				<dt><span>就诊时间：</span>{selectOrder.visitSchedule && selectOrder.visitSchedule.visitDate}</dt>
+				<dd style={{fontSize: 14, paddingTop: 10, color: theme.mainfontcolor}}>您确定要<span style={{color: '#f00'}}>退款</span>吗？</dd>
+			</dl>
+		</OrderTipModal>
+	)
 }
 
 
@@ -214,4 +122,4 @@ function mapStateToProps (state) {
   }
 }
 
-export default connect(mapStateToProps, { queryOrderList })(OrderRecordsScreen)
+export default connect(mapStateToProps, { queryOrderList, showPrompt })(OrderRecordsScreen)

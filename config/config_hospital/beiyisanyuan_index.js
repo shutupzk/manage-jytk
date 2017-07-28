@@ -1,6 +1,6 @@
-import server from './server'
-import { initClient, initStore } from './store'
-import withData from './withData'
+import server from 'config/server'
+import { initClient, initStore } from 'config/store'
+import withData from 'config/withData'
 
 // 医院名称
 const HOSPITAL_NAME = '北医三院管理平台'

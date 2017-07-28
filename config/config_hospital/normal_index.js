@@ -1,12 +1,12 @@
-import server from './server'
-import { initClient, initStore } from './store'
-import withData from './withData'
+import server from 'config/server'
+import { initClient, initStore } from 'config/store'
+import withData from 'config/withData'
 
 // 医院名称
 const HOSPITAL_NAME = '北大医疗标准管理平台'
 const API_SERVER = '218.58.137.218:9002'
-// const API_SERVER = '172.18.96.198:9002'
-// const API_SERVER = '127.0.0.1:9002'
+// const API_SERVER = '120.92.57.18:9198'
+// const API_SERVER = '120.92.57.18:9200'
 const PORT = '9003' // 前端端口
 
 // 医院信息
@@ -22,16 +22,20 @@ const HOSPITALINFO = {
   ]
 }
 
-// 主功能
+/**
+ * 主功能
+ * title: 展示在header上的文字  short_name：根据此字段，判断header哪个高亮   navigateName：决定了header上的文字，点击跳哪个链接
+ * children 左侧菜单
+ * childer[0].navigateNameDetail：用于此功能下所有页面（list、detail等page），处于高亮
+ */
 const MAINFUNCTION = [
   {
-    title: '订单管理',
+    title: '业务管理',
     short_name: 'order',
     navigateName: '/order',
     children: [
-      {title: '订单管理', navigateName: '/order', color: '#5D75A6',},
-      {title: '交易管理', navigateName: '', color: '#5D75A6'},
-      {title: '服务记录', navigateName: '', color: '#5D75A6'},
+      {title: '挂号管理', navigateName: '/order/appoint_order', color: '#5D75A6', navigateNameDetail: 'appoint'},
+      {title: '咨询管理', navigateName: '/order', color: '#5D75A6', navigateNameDetail: 'detail'}
     ]
   },
   {
@@ -39,9 +43,10 @@ const MAINFUNCTION = [
     short_name: 'doctor',
     navigateName: '/doctor/manage_schedule',
     children: [
-      {title: '医生管理', navigateName: '/doctor/manage_schedule', color: '#5D75A6',},
-      // {title: '费用管理', navigateName: '/doctor/manage_fee', color: '#5D75A6'},
-      // {title: '全部排版', navigateName: '/doctor/manage_all_schedule', color: '#5D75A6'},
+      {title: '资料管理', navigateName: '/doctor/manage_info', color: '#5D75A6',},
+      {title: '排班管理', navigateName: '/doctor/manage_schedule', color: '#5D75A6',},
+      {title: '费用管理', navigateName: '/doctor/manage_fee', color: '#5D75A6'},
+      {title: '全部排班', navigateName: '/doctor/manage_all_schedule', color: '#5D75A6'},
     ]
   },
   {
@@ -50,7 +55,7 @@ const MAINFUNCTION = [
     navigateName: '/department/department_level1',
     children: [
       {title: '一级科室管理', navigateName: '/department/department_level1', color: '#5D75A6',},
-      // {title: '二级科室管理', navigateName: '/department/department_level2', color: '#5D75A6'},
+      {title: '二级科室管理', navigateName: '/department/department_level2', color: '#5D75A6'},
       {title: '推荐科室管理', navigateName: '/department/department_recommand', color: '#5D75A6'},
       {title: '挂号科室管理', navigateName: '/department/department_isAppoint', color: '#5D75A6'},
     ]
@@ -60,7 +65,8 @@ const MAINFUNCTION = [
     short_name: 'news',
     navigateName: '/news',
     children: [
-      {title: '资讯管理', navigateName: '/news', color: '#5D75A6',},
+      {title: '类型管理', navigateName: '/news/news_groups', color: '#5D75A6',},
+      {title: '资讯管理', navigateName: '/news', color: '#5D75A6',}
     ]
   },
   {
@@ -69,14 +75,14 @@ const MAINFUNCTION = [
     navigateName: '/hospital',
     children: [
       {title: '医院介绍', navigateName: '/hospital', color: '#5D75A6'},
-      // {title: '功能清单', navigateName: '/hospital/hospital_funlist', color: '#5D75A6'},
+      {title: '功能清单', navigateName: '/hospital/hospital_funlist', color: '#5D75A6'},
       {title: '院内导航', navigateName: '/hospital/hospital_navigation', navigateNameDetail: 'navigation', color: '#5D75A6'},
       {title: '就诊指南', navigateName: '/hospital/hospital_visitGuide', color: '#5D75A6'}
     ]
   }
 ]
 
-// home 页面
+// home页面  登录成功，默认进入的页面
 const HOME_PAGE = {url: '/hospital'}
 
 // 主题颜色
@@ -101,21 +107,39 @@ const ORDERINFO = {
     {title: '退款申请', value: '06'},
     {title: '已完成', value: '07'},
     {title: '已退款', value: '08'}
+  ],
+  appoint_list_title: [
+    {title: '患者名称', value: '', style: {width: '8%'}, apiKey: ''},
+    {title: '医院名称', value: '', style: {width: '16%'}, apiKey: ''},
+    {title: '医生名称', value: '', style: {width: '8%'}, apiKey: ''},
+    {title: '科室名称', value: '', style: {width: '16%'}, apiKey: ''},
+    // {title: '预约时间', value: '', style: {width: '16%'}, apiKey: ''},
+    {title: '就诊时间', value: '', style: {width: '12%'}, apiKey: ''},
+    {title: '状态', value: '', style: {width: '8%'}, apiKey: ''},
+    {title: '支付方式', value: '', style: {width: '8%'}, apiKey: ''},
+    {title: '支付状态', value: '', style: {width: '6%'}, apiKey: ''},
+    {title: '设置', value: '', style: {width: '18%'}, apiKey: ''},
+  ],
+  appoint_visit_status: [
+    {title: '待取号', value: '01'},
+    {title: '已取消', value: '02'},
+    {title: '已取号', value: '03'},
+    {title: '已退号', value: '04'},
+    {title: '已过期', value: '05'}
   ]
 }
 
 const DOCTORINFO = {
   modal_type_title: [
     {title: '基本信息', value: 0},
+    {title: '服务设置', value: 1},
   ],
-  schedule_list_title: [
+  doctor_info_list_title: [
     {title: '编号', value: '', style: {width: '8%'}, apiKey: ''},
     {title: '医生工号', value: '', style: {width: '12%'}, apiKey: 'doctorSn'},
     {title: '姓名', value: '', style: {width: '12%'}, apiKey: 'doctorName'},
     {title: '所属机构', value: '', style: {width: '20%'}, apiKey: ''},
     {title: '专业', value: '', style: {width: '12%'}, apiKey: ''},
-    {title: '亚专业', value: '', style: {width: '12%'}, apiKey: '', nolistShow: true},
-    {title: '服务开通状态', value: '', style: {width: '14%'}, apiKey: '', nolistShow: true},
     {title: '设置', value: '', style: {width: '8%', textAlign: 'center'}, apiKey: ''},
   ],
   fee_list_title: [
@@ -128,6 +152,16 @@ const DOCTORINFO = {
     {title: '用药咨询', value: '', style: {width: '8%', textAlign: 'center'}, apiKey: ''},
     {title: '图文问诊', value: '', style: {width: '8%', textAlign: 'center'}, apiKey: ''},
     {title: '视频问诊', value: '', style: {width: '8%', textAlign: 'center'}, apiKey: ''},
+    {title: '设置', value: '', style: {width: '8%', textAlign: 'center'}, apiKey: ''},
+  ],
+  schedule_list_title: [
+    {title: '编号', value: '', style: {width: '8%'}, apiKey: ''},
+    {title: '医生工号', value: '', style: {width: '12%'}, apiKey: ''},
+    {title: '姓名', value: '', style: {width: '12%'}, apiKey: ''},
+    {title: '所属机构', value: '', style: {width: '20%'}, apiKey: ''},
+    {title: '专业', value: '', style: {width: '12%'}, apiKey: ''},
+    {title: '亚专业', value: '', style: {width: '12%'}, apiKey: ''},
+    {title: '服务开通状态', value: '', style: {width: '14%'}, apiKey: ''},
     {title: '设置', value: '', style: {width: '8%', textAlign: 'center'}, apiKey: ''},
   ]
 }

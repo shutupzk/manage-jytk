@@ -82,21 +82,24 @@ export const queryDoctors = (client) => async dispatch => {
   try {
 		const data = await client.query({ query: QUERY_DOCTORS, fetchPolicy: 'network-only'})
     if (data.error) {
-      return dispatch({
+      dispatch({
         type: DOCTOR_QUERY_DOCTOR_FAIL,
         error: data.error.message
       })
+      return data.error.message
     }
     dispatch({
       type: DOCTOR_QUERY_DOCTOR_SUCCESS,
       doctor: data.data.doctors
     })
+    return null
   } catch (e) {
     console.log(e)
     dispatch({
       type: DOCTOR_QUERY_DOCTOR_FAIL,
       error: e.message
     })
+    return e.message
   }
 }
 
@@ -162,21 +165,24 @@ export const queryDoctorDetail = (client, {id}) => async dispatch => {
 		const data = await client.query({ query: QUERY_CONSULATION_DETAIL , variables: { id }})
 		console.log('------doctor', data)
     if (data.error) {
-      return dispatch({
+      dispatch({
         type: DOCTOR_QUERY_DOCTOR_FAIL,
         error: data.error.message
       })
+      return data.error.message
     }
     dispatch({
       type: DOCTOR_QUERY_DOCTOR_DETAIL_SUCCESS,
       doctor: data.data.consultation
     })
+    return null
   } catch (e) {
     console.log(e)
     dispatch({
       type: DOCTOR_QUERY_DOCTOR_FAIL,
       error: e.message
     })
+    return e.message
   }
 }
 
@@ -204,15 +210,17 @@ export const updateDoctor = (client, {id, major, recommend, hot, isAppointment, 
       variables: { id, major, recommend, hot, isAppointment, phone, workingYears, description }
 		})
 		if (data.error) {
-      return dispatch({
+      dispatch({
         type: DOCTOR_QUERY_DOCTOR_FAIL,
         error: data.error.message
       })
+      return data.error.message
     }
     dispatch({
       type: UPDATE_DOCTOR_SUCCESS,
       doctor: data.data.updateDoctor
     })
+    return null
   } catch (e) {
     dispatch({
       trype: DOCTOR_QUERY_DOCTOR_FAIL,
@@ -222,7 +230,7 @@ export const updateDoctor = (client, {id, major, recommend, hot, isAppointment, 
   }
 }
 
-// update doctor
+// create doctor
 const CREATE_DOCTOR = gql`
   mutation($doctorSn: String!, $doctorName: String!, $major: String, $sex: String, $recommend: Boolean,
     $hot: Boolean, $isAppointment: Boolean, $phone: String, $workingYears: Int, $description: String){
@@ -245,15 +253,17 @@ export const createDoctor = (client, {doctorSn, doctorName, major, sex, recommen
       variables: { doctorSn, doctorName, major, recommend, hot, isAppointment, phone, workingYears, description }
 		})
 		if (data.error) {
-      return dispatch({
+      dispatch({
         type: DOCTOR_QUERY_DOCTOR_FAIL,
         error: data.error.message
       })
+      return data.error.message
     }
     dispatch({
       type: UPDATE_DOCTOR_SUCCESS,
       doctor: data.data.createDoctor
     })
+    return null
   } catch (e) {
     dispatch({
       trype: DOCTOR_QUERY_DOCTOR_FAIL,

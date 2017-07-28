@@ -20,7 +20,7 @@ export default class DepartmentListItem extends Component {
 			<ul className='flex tb-flex listItem'>
 				{
 					titleInfo.map((item, iKey) => {
-						const orderCon = `orderCon${iKey}`
+						const orderCon = `orderCon${this.props.page}${iKey}`
 						return eval(orderCon + '(props, item, iKey, key)')
 					})
 				}
@@ -32,7 +32,7 @@ export default class DepartmentListItem extends Component {
 
 const normalHtml = (data, item, iKey) => {
 	return (
-		<li className={'left textoverflow1'} key={iKey} style={item.style}>
+		<li className={'left textoverflow1'} key={iKey} style={item && item.style}>
 			{data || '无'}
 		</li>
 	)
@@ -54,33 +54,35 @@ const buttonhtml = (props, item, iKey) => {
 		</li>)
 }
 
-const orderCon0 = (props, item, iKey, key) => {
-	return (
-		<li key={iKey} style={item.style}>{key + 1}</li>
-	)
+const orderConlevel10 = (props, item, iKey, key) => {
+	return (normalHtml((key+1), item, iKey))
 }
 
-const orderCon1 = (props, item, iKey) => {
+const orderConlevel11 = (props, item, iKey) => {
 	return (normalHtml(props.data[item.apiKey], item, iKey))
 }
 
-const orderCon2 = (props, item, iKey) => {
+const orderConlevel12 = (props, item, iKey) => {
 	return (normalHtml(props.data[item.apiKey], item, iKey))
 }
 
-const orderCon3 = (props, item, iKey) => {
+const orderConlevel13 = (props, item, iKey) => {
+	return (normalHtml(props.data && props.data.hospital && props.data.hospital.hospitalName, item, iKey))
+}
+
+const orderConlevel14 = (props, item, iKey) => {
 	if (item.title.indexOf('是否推荐') > -1) {
 		return (recommandHtml(props, item, iKey, props.data[item.apiKey]))
 	}
 }
 
-const orderCon4 = (props, item, iKey) => {
+const orderConlevel15 = (props, item, iKey) => {
 	if (item.title.indexOf('是否可挂号') > -1) {
 		return (recommandHtml(props, item, iKey, props.data[item.apiKey]))
 	}
 }
 
-const orderCon5 = (props, item, iKey) => {
+const orderConlevel16 = (props, item, iKey) => {
 	if (item.title.indexOf('科室介绍') > -1) {
 		return (normalHtml(props.data[item.apiKey], item, iKey))
 	}
@@ -91,7 +93,49 @@ const orderCon5 = (props, item, iKey) => {
 	}
 }
 
-const orderCon6 = (props, item, iKey) => {
+const orderConlevel17 = (props, item, iKey) => {
+	return (
+		buttonhtml(props, item, iKey)
+	)
+}
+
+
+
+
+
+const orderConlevel20 = (props, item, iKey, key) => {
+	return (normalHtml((key+1), item, iKey))
+}
+
+const orderConlevel21 = (props, item, iKey) => {
+	return (normalHtml(props.data[item.apiKey], item, iKey))
+}
+
+const orderConlevel22 = (props, item, iKey) => {
+	return (normalHtml(props.data[item.apiKey], item, iKey))
+}
+
+const orderConlevel23 = (props, item, iKey) => {
+	return (normalHtml(props.data.hospital && props.data.hospital.hospitalName, item, iKey))
+}
+
+const orderConlevel24 = (props, item, iKey) => {
+	return (normalHtml(props.data.parent && props.data.parent.deptName, item, iKey))
+}
+
+const orderConlevel25 = (props, item, iKey) => {
+	return (recommandHtml(props, item, iKey, props.data[item.apiKey]))
+}
+
+const orderConlevel26 = (props, item, iKey) => {
+	return (recommandHtml(props, item, iKey, props.data[item.apiKey]))
+}
+
+const orderConlevel27 = (props, item, iKey) => {
+	return (normalHtml(props.data[item.apiKey], item, iKey))
+}
+
+const orderConlevel28 = (props, item, iKey) => {
 	return (
 		buttonhtml(props, item, iKey)
 	)

@@ -66,6 +66,14 @@ export function isEmptyObject (obj) {
 }
 
 /**
+ * 判断是否是数组 因为filter、map会报错
+ * @param {*} arr
+ */
+export function isArray (arr) {
+  return arr instanceof Array
+}
+
+/**
  * 去除数组重复数据
  */
 export function removeDuplicateData (arr) {

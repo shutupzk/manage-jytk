@@ -55,6 +55,10 @@ const QUERY_NEWGROUPS = gql`
     newsGroups {
       id
       type
+      hospital{
+        hospitalName
+        id
+      }
     }
 	}
 `
@@ -64,7 +68,7 @@ export const queryNewGroups = (client) => async dispatch => {
     type: NEWS_QUERY_NEWS
   })
   try {
-		const data = await client.query({ query: QUERY_NEWGROUPS})
+		const data = await client.query({ query: QUERY_NEWGROUPS, fetchPolicy: 'network-only'})
     if (data.error) {
       return dispatch({
         type: NEWS_QUERY_NEWS_FAIL,
@@ -83,7 +87,7 @@ export const queryNewGroups = (client) => async dispatch => {
     })
   }
 }
-// create news
+// create news groups
 const CREATE_GROUPS = gql`
 	mutation($type: String!, $hospitalId: ObjID!){
     createNewsGroup(input: {hospitalId: $hospitalId, type: $type}) {
@@ -104,10 +108,11 @@ export const createGroups = (client, {hospitalId, type}) => async dispatch => {
       variables: {hospitalId, type}
 		})
 		if (data.error) {
-      return dispatch({
+      dispatch({
         type: NEWS_QUERY_NEWS_FAIL,
         error: data.error.message
       })
+      return data.error.message
     }
     dispatch({
       type: NEWS_CREATE_NEWS_SUCCESS,
@@ -122,15 +127,15 @@ export const createGroups = (client, {hospitalId, type}) => async dispatch => {
     return e.message
   }
 }
-// create news
+
+// update news groups
 const UPDATE_NEWS_GROUPS = gql`
-	mutation($id: ObjID, $type: String!, $hospitalId: ObjID!){
+	mutation($id: ObjID!, $type: String!, $hospitalId: ObjID!){
     updateNewsGroup(id: $id, input: {hospitalId: $hospitalId, type: $type}) {
       id
     }
 	}
 `
-
 export const updateNewsGroup = (client, {id, hospitalId, type}) => async dispatch => {
   // console.log('---updateDepartment', id, deptName, hot)
   dispatch({
@@ -143,10 +148,11 @@ export const updateNewsGroup = (client, {id, hospitalId, type}) => async dispatc
       variables: {id, hospitalId, type}
 		})
 		if (data.error) {
-      return dispatch({
+      dispatch({
         type: NEWS_QUERY_NEWS_FAIL,
         error: data.error.message
       })
+      return data.error.message
     }
     dispatch({
       type: NEWS_CREATE_NEWS_SUCCESS,
@@ -161,9 +167,9 @@ export const updateNewsGroup = (client, {id, hospitalId, type}) => async dispatc
     return e.message
   }
 }
-// create news
+// remove news groups
 const REMOVE_NEWS_GROUPS = gql`
-	mutation($id: ObjID){
+	mutation($id: ObjID!){
     removeNewsGroup(id: $id)
 	}
 `
@@ -180,10 +186,11 @@ export const removeNewsGroup = (client, {id}) => async dispatch => {
       variables: {id}
 		})
 		if (data.error) {
-      return dispatch({
+      dispatch({
         type: NEWS_QUERY_NEWS_FAIL,
         error: data.error.message
       })
+      return data.error.message
     }
     dispatch({
       type: NEWS_CREATE_NEWS_SUCCESS,
@@ -199,7 +206,7 @@ export const removeNewsGroup = (client, {id}) => async dispatch => {
   }
 }
 
-// department list
+// news list
 const QUERY_NEWS = gql`
   query {
     newss {
@@ -246,7 +253,7 @@ export const queryNews = (client) => async dispatch => {
 }
 
 
-// create news
+// update news
 const UPDATE_NEWS = gql`
 	mutation($id: ObjID!, $title: String!, $summary: String!, $time: String, $content: String, $newsGroupId: ObjID!){
 		updateNews(id: $id, input: {title: $title, summary: $summary, time: $time, content: $content, newsGroupId: $newsGroupId}) {
@@ -267,10 +274,11 @@ export const updateNews = (client, {id, title, summary, time, content, newsGroup
       variables: {id, title, summary, time, content, newsGroupId}
 		})
 		if (data.error) {
-      return dispatch({
+      dispatch({
         type: NEWS_QUERY_NEWS_FAIL,
         error: data.error.message
       })
+      return data.error.message
     }
     dispatch({
       type: NEWS_CREATE_NEWS_SUCCESS,
@@ -307,10 +315,11 @@ export const createNews = (client, {title, summary, time, content, newsGroupId})
       variables: {title, summary, time, content, newsGroupId}
 		})
 		if (data.error) {
-      return dispatch({
+      dispatch({
         type: NEWS_QUERY_NEWS_FAIL,
         error: data.error.message
       })
+      return data.error.message
     }
     dispatch({
       type: NEWS_CREATE_NEWS_SUCCESS,
@@ -344,10 +353,11 @@ export const removeNews = (client, {id}) => async dispatch => {
       variables: {id}
 		})
 		if (data.error) {
-      return dispatch({
+      dispatch({
         type: NEWS_QUERY_NEWS_FAIL,
         error: data.error.message
       })
+      return data.error.message
     }
     dispatch({
       type: NEWS_CREATE_NEWS_SUCCESS,

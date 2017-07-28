@@ -83,7 +83,7 @@ const modalHeaderView = (self) => {
 
 const renderDepartmentInfoModal = (self) => {
 	// const modalHeight = document && document.body.clientWidth * 0.3
-	const {selectedNews, modalType, titleInfo, newsGroups} = self.props;
+	const {selectedNews, modalType, titleInfo} = self.props;
 	if (modalType === 'delete') {
 		return (
 			<div style={{padding: '.3rem .25rem', color: theme.mainfontcolor}}>您确定要删除<span style={{color: '#f00'}}>{selectedNews.title || selectedNews.type}</span>吗？</div>
@@ -146,7 +146,7 @@ const showHtml = (self, titleInfoItem) => {
 						{
 							self.props.newsGroups.map((newsGroup) => {
 								return (
-									<option key={newsGroup.id} value={newsGroup.id}>{newsGroup.type}</option>
+									<option key={newsGroup.id} value={newsGroup.id}>{newsGroup.type || newsGroup.hospitalName}</option>
 								)
 							})
 						}
@@ -160,7 +160,7 @@ const showHtml = (self, titleInfoItem) => {
 						{
 							self.props.newsGroups.map((newsGroup) => {
 								return (
-									<option key={newsGroup.id} value={newsGroup.id}>{newsGroup.type}</option>
+									<option key={newsGroup.id} value={newsGroup.id}>{newsGroup.type || newsGroup.hospitalName}</option>
 								)
 							})
 						}

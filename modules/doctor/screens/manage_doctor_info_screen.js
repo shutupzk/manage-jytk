@@ -8,7 +8,7 @@ import { queryDoctors, showPrompt, createDoctor, updateDoctor } from '../../../d
 import { connect } from 'react-redux'
 import {ManageListItem, ManageDoctorModal, DoctorDetailModal} from '../components'
 
-class ManageScheduleScreen extends Component {
+class ManageDoctorInfoScreen extends Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -23,6 +23,32 @@ class ManageScheduleScreen extends Component {
   }
   componentWillMount() {
     this.props.queryDoctors(this.props.client)
+	}
+	
+	async clickModalOk(data, modalType, values) {
+		let error;
+		if (modalType === 'modify') {
+			values.id = this.state.selectedDoctor.id
+			error = await this.props.updateDoctor(this.props.client, values)
+		}
+		else if (modalType === 'add') {
+			console.log('------add----', values)
+			error = await this.props.createDoctor(this.props.client, values)
+		}
+		if (error) {
+			this.onHide();
+			this.props.showPrompt({text: error});
+			// return
+		}
+		this.onHide();
+		this.props.queryDoctors(this.props.client)
+	}
+
+	onHide() {
+		this.setState({
+			showModal: false,
+			selectedDoctor: {}
+		})
 	}
 
   filterCard(doctors, isfilterkeyword) {
@@ -55,26 +81,29 @@ class ManageScheduleScreen extends Component {
 		// let doctors = []
     return (
       <div>
-				<ManageDoctorModal selectedDoctor={this.state.selectedDoctor}
-					selectedType={this.state.selectedType}
+				<article style={{textAlign: 'right', paddingBottom: theme.lrmargin}}>
+					<button style={{width: '1rem'}} className='btnBG btnBGMain btnBGLitt'
+						onClick={() => this.setState({showModal: true, modalType: 'add'})}>添加医生</button>
+				</article>
+				<DoctorDetailModal selectedDoctor={this.state.selectedDoctor}
 					showModal={this.state.showModal}
-					onHide={() => this.setState({showModal: false, selectedType: 0, selectedDoctor: {}})}
-					changeType={(type) => this.setState({selectedType: type})}
-					pageType={'schedule'}
-					typeTitle={DOCTORINFO.modal_type_title} />
+					onHide={() => this.onHide()}
+					titleInfo={DOCTORINFO.doctor_info_list_title}
+					modalType={this.state.modalType}
+					clickModalOk={(data, modalType, values) => this.clickModalOk(data, modalType, values)} />
 				{/* {renderModal(this)} */}
         {/* <TopFilterCard status={this.state.status} changeStatus={(status) => {this.setState({status: status})}}
           changeKeyword={(keyword) => {this.setState({keyword: keyword})}}
 					clickfilter={() => this.filterCard(doctors, true)}
 					placeholder='医生姓名/专业/亚专业/服务等'
           data={ORDERINFO.order_type} /> */}
-        <ListTitle data={DOCTORINFO.schedule_list_title} />
+        <ListTitle data={DOCTORINFO.doctor_info_list_title} />
 				{
 					doctors && doctors.length > 0 ?
 						doctors.map((doctor, iKey) => {
 							return (
 								<ManageListItem data={doctor} key={iKey} index={iKey}
-									titleInfo={DOCTORINFO.schedule_list_title}
+									titleInfo={DOCTORINFO.doctor_info_list_title}
 									clickShowModal={(item, modalType) => {this.setState({showModal: true, selectedDoctor: item, modalType: modalType})}} />
 							)
 						})
@@ -94,4 +123,4 @@ function mapStateToProps (state) {
   }
 }
 
-export default connect(mapStateToProps, { queryDoctors, showPrompt, createDoctor, updateDoctor })(ManageScheduleScreen)
+export default connect(mapStateToProps, { queryDoctors, showPrompt, createDoctor, updateDoctor })(ManageDoctorInfoScreen)

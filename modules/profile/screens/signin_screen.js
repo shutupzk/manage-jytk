@@ -95,7 +95,7 @@ class SigninScreen extends Component {
             border-radius: 6px;
             width: 30%;
             height: auto;
-            margin: 20% auto 0;
+            margin: 10% auto 0;
             position: relative;
             min-width: 380px;
           }

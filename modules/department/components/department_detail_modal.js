@@ -8,21 +8,10 @@ export default class DepartmentDetailModal extends Component {
   constructor (props) {
     super(props)
     this.state = {
-			fastSchedules: [],
-			videoSchedules: [],
-			videoTime: {
-				time: '',
-				num: ''
-			}
     }
 	}
 
 	componentWillMount() {
-		console.log('-----props', this.props.selectedDepartment)
-	}
-
-	componentWillReceiveProps(nextProps) {
-		console.log('-------willprops', nextProps.selectedDepartment)
 	}
 
   render () {
@@ -56,7 +45,7 @@ const renderModal = (self) => {
 							for (const titleInfoItem in titleInfo) {
 								const refName = titleInfo[titleInfoItem].apiKey + 'Ref'
 								if (refName !== 'Ref') {
-									if (refName === 'hotRef' || refName === 'isAppointmentRef') {
+									if (titleInfo[titleInfoItem].inputType === 'checkbox') {
 										values[titleInfo[titleInfoItem].apiKey] = self.refs[refName] && self.refs[refName].checked
 									} else {
 										values[titleInfo[titleInfoItem].apiKey] = self.refs[refName] && self.refs[refName].value
@@ -96,7 +85,10 @@ const modalHeaderView = (self) => {
 
 const renderDepartmentInfoModal = (self) => {
 	// const modalHeight = document && document.body.clientWidth * 0.3
-	const {selectedDepartment, modalType, titleInfo} = self.props;
+	const {selectedDepartment, modalType, titleInfo, departmentSelect, config} = self.props;
+	const detailPage = self.props.detailPage
+	const recommandPage = self.props.recommandPage
+	const isAppointPage = self.props.isAppointPage
 	if (modalType === 'delete') {
 		return (
 			<div style={{padding: '.3rem .25rem', color: theme.mainfontcolor}}>您确定要删除<span style={{color: theme.maincolor}}>{selectedDepartment.deptName}</span>吗？</div>
@@ -107,54 +99,86 @@ const renderDepartmentInfoModal = (self) => {
 			<div style={{padding: '20px 30px'}}>
 				{
 					titleInfo.map((titleInfoItem, iKey) => {
-						if (titleInfoItem.title.indexOf('设置') > -1) {
-							return
-						}
-						if (titleInfoItem.title.indexOf('是否可挂号') > -1 && self.props.isAppointPage) {
+						if (titleInfoItem.inputType === 'checkbox') {
 							return (
 							<dl key={iKey} className='flex tb-flex'
 								style={{fontSize: theme.fontsize, color: theme.mainfontcolor}}>
 								<dt>{titleInfoItem.title}</dt>
-								<dd><input type='checkbox' defaultChecked={selectedDepartment[titleInfoItem.apiKey]} ref={`${titleInfoItem.apiKey}Ref`} /></dd>
+								<dd>
+									{
+										(isAppointPage && titleInfoItem.title.indexOf('推荐') > -1) || (recommandPage && titleInfoItem.title.indexOf('挂号') > -1) ?
+											<input type='checkbox' disabled defaultChecked={selectedDepartment[titleInfoItem.apiKey]} ref={`${titleInfoItem.apiKey}Ref`} />
+										:
+											<input type='checkbox' defaultChecked={selectedDepartment[titleInfoItem.apiKey]} ref={`${titleInfoItem.apiKey}Ref`} />
+									}
+								</dd>
 							</dl>
 							)
 						}
-						if (titleInfoItem.title.indexOf('是否推荐') > -1 && !self.props.isAppointPage && self.props.recommandPage) {
+						if (titleInfoItem.inputType === 'text') {
 							return (
 							<dl key={iKey} className='flex tb-flex'
 								style={{fontSize: theme.fontsize, color: theme.mainfontcolor}}>
 								<dt>{titleInfoItem.title}</dt>
-								<dd><input type='checkbox' defaultChecked={selectedDepartment[titleInfoItem.apiKey]} ref={`${titleInfoItem.apiKey}Ref`} /></dd>
+								<dd>
+									{
+										detailPage ?
+											<input type='text' disabled defaultValue={selectedDepartment[titleInfoItem.apiKey]} ref={`${titleInfoItem.apiKey}Ref`} />
+										:
+											<input type='text' defaultValue={selectedDepartment[titleInfoItem.apiKey]} ref={`${titleInfoItem.apiKey}Ref`} />
+									}</dd>
 							</dl>
 							)
 						}
-						if (titleInfoItem.title.indexOf('科室名称') > -1 && !self.props.recommandPage) {
+						if (titleInfoItem.inputType === 'select') {
+							let curSelect = config.filter((configItem) => {return configItem.title.indexOf(titleInfoItem.title) > -1})
 							return (
 							<dl key={iKey} className='flex tb-flex'
 								style={{fontSize: theme.fontsize, color: theme.mainfontcolor}}>
 								<dt>{titleInfoItem.title}</dt>
-								<dd><input type='text' defaultValue={selectedDepartment[titleInfoItem.apiKey]} ref={`${titleInfoItem.apiKey}Ref`} /></dd>
+								<dd className='select' style={{borderRadius: 0, padding: 0}}>
+									{
+										detailPage ?
+											<select disabled defaultValue={selectedDepartment[titleInfoItem.apiKey]} ref={`${titleInfoItem.apiKey}Ref`}>
+												{
+													curSelect[0].selectData && curSelect[0].selectData.map((departmentSelectItem, deptKey) => {
+														return (
+															<option value={departmentSelectItem[curSelect[0].valueKey]} key={deptKey}>{departmentSelectItem[curSelect[0].titleKey]}</option>
+														)
+													})
+												}
+											</select>
+										:
+											<select defaultValue={selectedDepartment[titleInfoItem.apiKey]} ref={`${titleInfoItem.apiKey}Ref`}>
+												{
+													curSelect[0].selectData && curSelect[0].selectData.map((departmentSelectItem, deptKey) => {
+														return (
+															<option value={departmentSelectItem[curSelect[0].valueKey]} key={deptKey}>{departmentSelectItem[curSelect[0].titleKey]}</option>
+														)
+													})
+												}
+											</select>
+									}
+								</dd>
 							</dl>
 							)
 						}
-						if (titleInfoItem.title.indexOf('科室编码') > -1 && !self.props.recommandPage) {
-							return (
-							<dl key={iKey} className='flex tb-flex'
-								style={{fontSize: theme.fontsize, color: theme.mainfontcolor}}>
-								<dt>{titleInfoItem.title}</dt>
-								<dd><input type='text' defaultValue={selectedDepartment[titleInfoItem.apiKey]} ref={`${titleInfoItem.apiKey}Ref`} /></dd>
-							</dl>
-							)
-						}
-						if (titleInfoItem.title.indexOf('科室介绍') > -1 && !self.props.recommandPage) {
+						if (titleInfoItem.inputType === 'textarea') {
 							return (
 							<dl key={iKey} className='flex tb-flex'
 								style={{fontSize: theme.fontsize, color: theme.mainfontcolor}}>
 								<dt>{titleInfoItem.title}</dt>
 								<dd style={{width: '80%'}}>
-									<textarea
-										style={{width: '100%', border: `1px solid ${theme.bordercolor}`, minHeight: '1rem'}}
-										defaultValue={selectedDepartment[titleInfoItem.apiKey]} ref={`${titleInfoItem.apiKey}Ref`}></textarea>
+									{
+										detailPage ?
+											<textarea disabled
+												style={{width: '100%', border: `1px solid ${theme.bordercolor}`, minHeight: '1rem'}}
+												defaultValue={selectedDepartment[titleInfoItem.apiKey]} ref={`${titleInfoItem.apiKey}Ref`}></textarea>
+										: 
+											<textarea
+												style={{width: '100%', border: `1px solid ${theme.bordercolor}`, minHeight: '1rem'}}
+												defaultValue={selectedDepartment[titleInfoItem.apiKey]} ref={`${titleInfoItem.apiKey}Ref`}></textarea>
+									}
 								</dd>
 							</dl>
 							)
@@ -168,65 +192,22 @@ const renderDepartmentInfoModal = (self) => {
 					}
 					dt{
 						color: theme.fontcolor;
-						padding-right: ${theme.tbmargin};
+						{/* padding-right: ${theme.tbmargin}; */}
+						width: 18%;
+						padding-right: 2%;
+						text-align: right;
+					}
+					dd{
+						width: 80%;
+					
+					}
+					input{
+						width: 100%;
+						border: 1px solid ${theme.bordercolor};
+						line-height: 30px;
 					}
 				`}</style>
 			</div>
 		)
 	}
-}
-
-const frameHtml = (self, titleInfoItem, iKey) => {
-	const {selectedDepartment, modalType, titleInfo} = self.props;
-	let html;
-	if (titleInfoItem.title.indexOf('是否可挂号') > -1 && self.props.isAppointPage) {
-	html = (
-		<dl key={iKey} className='flex tb-flex'
-			style={{fontSize: theme.fontsize, color: theme.mainfontcolor}}>
-			<dt>{titleInfoItem.title}</dt>
-			<dd><input type='checkbox' defaultChecked={selectedDepartment[titleInfoItem.apiKey]} ref={`${titleInfoItem.apiKey}Ref`} /></dd>
-		</dl>
-		)
-	}
-	if (titleInfoItem.title.indexOf('是否推荐') > -1 && self.props.recommandPage) {
-		html = (
-		<dl key={iKey} className='flex tb-flex'
-			style={{fontSize: theme.fontsize, color: theme.mainfontcolor}}>
-			<dt>{titleInfoItem.title}</dt>
-			<dd><input type='checkbox' defaultChecked={selectedDepartment[titleInfoItem.apiKey]} ref={`${titleInfoItem.apiKey}Ref`} /></dd>
-		</dl>
-		)
-	}
-	if (titleInfoItem.title.indexOf('科室名称') > -1 && !self.props.recommandPage) {
-		html = (
-		<dl key={iKey} className='flex tb-flex'
-			style={{fontSize: theme.fontsize, color: theme.mainfontcolor}}>
-			<dt>{titleInfoItem.title}</dt>
-			<dd><input type='text' defaultValue={selectedDepartment[titleInfoItem.apiKey]} ref={`${titleInfoItem.apiKey}Ref`} /></dd>
-		</dl>
-		)
-	}
-	if (titleInfoItem.title.indexOf('科室编码') > -1 && !self.props.recommandPage) {
-		html = (
-		<dl key={iKey} className='flex tb-flex'
-			style={{fontSize: theme.fontsize, color: theme.mainfontcolor}}>
-			<dt>{titleInfoItem.title}</dt>
-			<dd><input type='text' defaultValue={selectedDepartment[titleInfoItem.apiKey]} ref={`${titleInfoItem.apiKey}Ref`} /></dd>
-		</dl>
-		)
-	}
-	if (titleInfoItem.title.indexOf('科室介绍') > -1 && !self.props.recommandPage) {
-		html = (
-		<dl key={iKey} className='flex tb-flex'
-			style={{fontSize: theme.fontsize, color: theme.mainfontcolor}}>
-			<dt>{titleInfoItem.title}</dt>
-			<dd style={{width: '80%'}}>
-				<textarea
-					style={{width: '100%', border: `1px solid ${theme.bordercolor}`, minHeight: '1rem'}}
-					defaultValue={selectedDepartment[titleInfoItem.apiKey]} ref={`${titleInfoItem.apiKey}Ref`}></textarea>
-			</dd>
-		</dl>
-		)
-	}
-	return html
 }

@@ -2,13 +2,13 @@ import React, { Component } from 'react'
 // import { Router } from '../../../routes'
 import _ from 'lodash'
 import Router from 'next/router'
-import {theme, Prompt, Loading} from 'components'
-import {ORDERTYPE} from 'config'
+import {isArray, fuzzyQuery} from 'utils'
+import {theme, Prompt, Loading, FilterCard, SelectFilterCard, KeywordCard} from 'components'
 import {DEPARTMENTINFO} from '../config'
 import { ListTitle} from 'modules/common/components'
 import { queryDepartments, showPrompt, updateDepartment } from '../../../ducks'
 import { connect } from 'react-redux'
-import {DepartmentListItem, DepartmentDetailModal, DepartmentFilterCard} from '../components'
+import {DepartmentListItem, DepartmentDetailModal} from '../components'
 
 
 class DepartmentRecommandScreen extends Component {
@@ -19,8 +19,6 @@ class DepartmentRecommandScreen extends Component {
 			showModal: false,
 			selectedDepartment: {},
 			modalType: '', // add\modify\delete
-			isfilterkeyword: false,
-			status: ''
     }
   }
 
@@ -28,30 +26,26 @@ class DepartmentRecommandScreen extends Component {
     this.props.queryDepartments(this.props.client)
 	}
 	
-  filterCard(departments) {
-		console.log('------departments', departments)
-    if (!isEmptyObject(departments)) {
-      let newdepartments = []
-      _.mapValues(departments, function (dep) {
-        newdepartments.push(dep)
-      })
-			const curstatus = this.state.status || (departments && departments[0] && departments[0].id);
-			newdepartments = (departments.constructor() !== {}) && departments.filter((item) => item.hot === true)
-			return newdepartments
-    }
-	}
-	
 	async clickModalOk(data, modalType, values) {
 		values.id = this.state.selectedDepartment.id
+		console.log('-----recommand---', values)
 		const error = await this.props.updateDepartment(this.props.client, values)
 		if (error) {
 			this.onHide();
 			this.props.showPrompt({text: error});
-			// return
+			return
 		}
 		this.onHide();
 		// await this.props.showPrompt('更新成功');
 		await this.props.queryDepartments(this.props.client)
+	}
+
+	filterCard(allDepartments) {
+		let filterAllDepartments = allDepartments.filter((department) => {return department.hot === true})
+		if (this.state.keyword) {
+			filterAllDepartments = fuzzyQuery(filterAllDepartments, this.state.keyword, ['deptSn', 'deptName', 'description'])
+		}
+		return filterAllDepartments
 	}
 
 	onHide() {
@@ -62,30 +56,24 @@ class DepartmentRecommandScreen extends Component {
     if (this.props.loading) {
       return <Loading showLoading />
 		}
-		if (this.props.error) {
-			this.props.showPrompt(this.props.error)
-			// return console.log(this.props.error)
-			return <div>{this.props.error}</div>
-		}
-		let departments = this.filterCard(this.props.departments)
+		let departments = this.filterCard(isArray(this.props.departments) ? this.props.departments : [])
     return (
       <div>
-				{/* <DepartmentFilterCard status={this.state.status}
-					changeStatus={(status) => {this.setState({status: status})}}
-          changeKeyword={(keyword) => {this.setState({keyword: keyword})}}
-					clickfilter={() => {this.setState({isfilterkeyword: true})}}
-					placeholder='科室名称／科室编码'
-          data={this.props.departments}
-					hideSeniorSoso /> */}
-				{/* <article style={{textAlign: 'right', paddingBottom: theme.lrmargin}}>
-					<button style={{width: '1rem'}} className='btnBG btnBGMain btnBGLitt'
-						onClick={() => this.setState({showModal: true, modalType: 'add'})}>添加科室</button>
-				</article> */}
+				<FilterCard>
+					<KeywordCard
+						config={{placeholder: '科室编码／科室名称／科室介绍'}}
+						clickfilter={(keyword) => {this.setState({keyword: keyword})}} />
+				</FilterCard>
 				<DepartmentDetailModal selectedDepartment={this.state.selectedDepartment}
 					showModal={this.state.showModal}
 					onHide={() => this.onHide()}
 					titleInfo={DEPARTMENTINFO.department_list_title2}
 					modalType={this.state.modalType}
+					config={[
+						{title: '所属医院', selectData: isArray(this.props.hospitals) ? this.props.hospitals : [], valueKey: 'id', titleKey: 'hospitalName'},
+						{title: '父级科室', selectData: isArray(this.props.departmentsLevel1) ? this.props.departmentsLevel1 : [], valueKey: 'id', titleKey: 'deptName'}
+					]}
+					detailPage
 					recommandPage
 					clickModalOk={(data, modalType, values) => this.clickModalOk(data, modalType, values)} />
 				<ListTitle data={DEPARTMENTINFO.department_list_title2} />
@@ -94,6 +82,7 @@ class DepartmentRecommandScreen extends Component {
 						departments.map((department, iKey) => {
 							return <DepartmentListItem data={department} key={iKey} index={iKey}
 							 titleInfo={DEPARTMENTINFO.department_list_title2}
+							 page={'level2'}
 							 clickShowModal={(data, modalType) => {this.setState({selectedDepartment: data, modalType: modalType, showModal: true})}} />
 						})
 					: 'no data'
@@ -104,21 +93,13 @@ class DepartmentRecommandScreen extends Component {
 }
 
 
-function isEmptyObject (obj) {
-	for (let n in obj) { return false }
-	return true
-}
-function mapStateToProps (state) {
-	return {
-		department: state.departments
-	}
-}
-
 function mapStateToProps (state) {
   return {
-    departments: state.department.data,
+    departments: state.department.data.departments,
     loading: state.department.loading,
-    error: state.department.error
+		error: state.department.error,
+		hospitals: state.hospital.data,
+		departmentsLevel1: state.department.data.departmentsLevel1,
   }
 }
 

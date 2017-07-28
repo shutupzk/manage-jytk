@@ -4,9 +4,10 @@ import {order, queryOrderList, queryOrderDetail} from './order'
 import {doctor, queryDoctors, queryDoctorDetail, updateDoctor, createDoctor} from './doctor'
 import {department, queryDepartments, updateDepartment, createDepartment} from './department'
 import {hospital, queryHospitals, updateHospital, createHospital} from './hospital'
-import {news, queryNews, queryNewGroups, updateNewsGroup, removeNewsGroup, createNews, updateNews, removeNews} from './news'
+import {news, queryNews, queryNewGroups, createGroups, updateNewsGroup, removeNewsGroup, createNews, updateNews, removeNews} from './news'
 import {buildings, createbuilding, createFloor, createRoom, queryBuildings, queryBuildingDetail, updateBuilding, updateFloor, updateRoom} from './buildings'
 import {notices, createVisitNotice, querynotices, queryNoticesGroups, updateVisitNotice} from './notice'
+import {appointments, queryAppointments, cancelAppointment, queryAppointmentDetail} from './appoint'
 
 // key
 export {
@@ -18,7 +19,8 @@ export {
     hospital,
     news,
     buildings,
-    notices
+    notices,
+    appointments
 }
 
 // action
@@ -51,6 +53,7 @@ export {
     createHospital,
     queryNews,
     queryNewGroups,
+    createGroups,
     updateNewsGroup,
     removeNewsGroup,
     createNews,
@@ -67,5 +70,8 @@ export {
     createVisitNotice,
     querynotices,
     queryNoticesGroups,
-    updateVisitNotice
+    updateVisitNotice,
+    queryAppointments,
+    cancelAppointment,
+    queryAppointmentDetail
 }

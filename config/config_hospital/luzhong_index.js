@@ -1,6 +1,6 @@
-import server from './server'
-import { initClient, initStore } from './store'
-import withData from './withData'
+import server from 'config/server'
+import { initClient, initStore } from 'config/store'
+import withData from 'config/withData'
 
 // 医院名称
 const HOSPITAL_NAME = '北大医疗鲁中管理平台'
@@ -37,9 +37,9 @@ const MAINFUNCTION = [
   {
     title: '医生管理',
     short_name: 'doctor',
-    navigateName: '/doctor/manage_schedule',
+    navigateName: '/doctor/manage_info',
     children: [
-      {title: '医生管理', navigateName: '/doctor/manage_schedule', color: '#5D75A6',},
+      {title: '资料管理', navigateName: '/doctor/manage_info', color: '#5D75A6',},
     ]
   },
   {
@@ -106,26 +106,12 @@ const DOCTORINFO = {
   modal_type_title: [
     {title: '基本信息', value: 0},
   ],
-  schedule_list_title: [
+  doctor_info_list_title: [
     {title: '编号', value: '', style: {width: '8%'}, apiKey: ''},
     {title: '医生工号', value: '', style: {width: '12%'}, apiKey: 'doctorSn'},
     {title: '姓名', value: '', style: {width: '12%'}, apiKey: 'doctorName'},
     {title: '所属机构', value: '', style: {width: '20%'}, apiKey: ''},
     {title: '专业', value: '', style: {width: '12%'}, apiKey: ''},
-    {title: '亚专业', value: '', style: {width: '12%'}, apiKey: '', nolistShow: true},
-    {title: '服务开通状态', value: '', style: {width: '14%'}, apiKey: '', nolistShow: true},
-    {title: '设置', value: '', style: {width: '8%', textAlign: 'center'}, apiKey: ''},
-  ],
-  fee_list_title: [
-    {title: '编号', value: '', style: {width: '8%'}, apiKey: ''},
-    {title: '医生工号', value: '', style: {width: '12%'}, apiKey: ''},
-    {title: '姓名', value: '', style: {width: '10%'}, apiKey: ''},
-    {title: '所属机构', value: '', style: {width: '16%'}, apiKey: ''},
-    {title: '专业', value: '', style: {width: '10%'}, apiKey: ''},
-    {title: '亚专业', value: '', style: {width: '10%'}, apiKey: ''},
-    {title: '用药咨询', value: '', style: {width: '8%', textAlign: 'center'}, apiKey: ''},
-    {title: '图文问诊', value: '', style: {width: '8%', textAlign: 'center'}, apiKey: ''},
-    {title: '视频问诊', value: '', style: {width: '8%', textAlign: 'center'}, apiKey: ''},
     {title: '设置', value: '', style: {width: '8%', textAlign: 'center'}, apiKey: ''},
   ]
 }

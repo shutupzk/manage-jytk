@@ -32,7 +32,7 @@ export class SelectFilterCard extends Component {
     return (
       <div className='left select flex tb-flex' style={{border: '1px solid #E6E6E6', minWidth: 130,background: 'none', borderRadius: 4, width: 'auto'}}>
         <select onChange={(e) => {this.props.changeStatus(e.target.value)}} value={status}>
-          <option value=''>{config.selectTitle || '全部订单类型'}</option>
+					{config.selectTitle ? <option value=''>{config.selectTitle || '全部订单类型'}</option> : ''}
           {
             this.props.data && this.props.data.map((item, iKey) => {
               return (

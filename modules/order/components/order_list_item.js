@@ -13,6 +13,7 @@ export default class OrderListItem extends Component {
 
   render () {
 		const data = this.props.data || {}
+		const props = this.props
     return (
 			<div style={{border: `1px solid ${theme.nbordercolor}`,borderRadius: 3, margin: `${theme.tbmargin} 0px`, background: '#fff', color: theme.mainfontcolor}}>
         <header style={{background: '#E8EEFA', lineHeight: '.24rem', padding: `${theme.midmargin} ${theme.lrmargin}`, fontSize: '.12rem'}}>
@@ -26,7 +27,7 @@ export default class OrderListItem extends Component {
 					{
 						ORDERINFO.order_list_title.map((item, iKey) => {
 							const orderCon = `orderCon${iKey}`
-							return eval(orderCon + '(data, item)')
+							return eval(orderCon + '(data, item, props)')
 						})
 					}
 					<article className='clearfix'></article>
@@ -72,13 +73,13 @@ const orderCon3 = (data, item) => {
 	)
 }
 
-const orderCon4 = (data, item) => {
+const orderCon4 = (data, item, props) => {
 	item.style.color = theme.mainfontcolor
 	const curStatus = ORDERINFO.order_type.filter((item) => item.value === data.status) || []
 	return (
 		<li className={'left'} key={item.id} style={item.style}>
 			<p style={{fontSize: 12}}>{curStatus[0] && curStatus[0].title || '无'}</p>
-			<article style={{display: data.payment ? 'block' : 'none', lineHeight: '18px'}}>退款</article>
+			<article style={{display: data.payment ? 'block' : 'none', lineHeight: '18px'}} onClick={() => props.clickConfirm(data)}>退款</article>
 			<article style={{lineHeight: '16px'}} onClick={() => {Router.push(`/order/detail?id=${data.id}`)}}>查看详情</article>
 			<style jsx>{`
 				article{

@@ -93,24 +93,28 @@ export const queryBuildings = (client) => async dispatch => {
   try {
 		const data = await client.query({ query: QUERY_BUILDINGS, fetchPolicy: 'network-only'})
     if (data.error) {
-      return dispatch({
+      dispatch({
         type: BUILDING_QUERY_BUILDING_FAIL,
         error: data.error.message
       })
+      return data.error.message
     }
     dispatch({
       type: BUILDING_QUERY_BUILDING_SUCCESS,
       building: data.data.buildings
     })
+    return null
   } catch (e) {
     console.log(e)
     dispatch({
       type: BUILDING_QUERY_BUILDING_FAIL,
       error: e.message
     })
+    return e.message
   }
 }
-// building list
+
+// building detail
 const QUERY_BUILDING_DETAIL = gql`
   query($id: ObjID!) {
 		building(id: $id) {
@@ -142,21 +146,24 @@ export const queryBuildingDetail = (client, {id}) => async dispatch => {
   try {
 		const data = await client.query({ query: QUERY_BUILDING_DETAIL, variables: { id }, fetchPolicy: 'network-only'})
     if (data.error) {
-      return dispatch({
+      dispatch({
         type: BUILDING_QUERY_BUILDING_FAIL,
         error: data.error.message
       })
+      return data.error.message
     }
     dispatch({
       type: BUILDING_QUERY_BUILDING_SUCCESS,
       building: data.data.building
     })
+    return null
   } catch (e) {
     console.log(e)
     dispatch({
       type: BUILDING_QUERY_BUILDING_FAIL,
       error: e.message
     })
+    return e.message
   }
 }
 
@@ -181,10 +188,11 @@ export const updateBuilding = (client, {id, hospitalId, name, description, posit
       variables: { id, hospitalId, name, description, position, code}
 		})
 		if (data.error) {
-      return dispatch({
+      dispatch({
         type: BUILDING_QUERY_BUILDING_FAIL,
         error: data.error.message
       })
+      return data.error.message
     }
     dispatch({
       type: UPDATE_BUILDING_SUCCESS,
@@ -221,10 +229,11 @@ export const createbuilding = (client, {hospitalId, name, description, position,
       variables: { hospitalId, name, description, position, code}
 		})
 		if (data.error) {
-      return dispatch({
+      dispatch({
         type: BUILDING_QUERY_BUILDING_FAIL,
         error: data.error.message
       })
+      return data.error.message
     }
     dispatch({
       type: CREATE_BUILDING_SUCCESS,
@@ -241,7 +250,7 @@ export const createbuilding = (client, {hospitalId, name, description, position,
 }
 
 
-// create building
+// update floor
 const UPDATE_FLOOR = gql`
 	mutation($id: ObjID!,  $buildingId: ObjID!, $floorNum: String!, $description: String){
 		updateFloor(id: $id, input: {buildingId: $buildingId, floorNum: $floorNum, description: $description}) {
@@ -249,7 +258,6 @@ const UPDATE_FLOOR = gql`
 		}
 	}
 `
-
 export const updateFloor = (client, {id, buildingId, floorNum, description}) => async dispatch => {
   // console.log('---updatebuilding', id, deptName, hot)
   dispatch({
@@ -262,10 +270,11 @@ export const updateFloor = (client, {id, buildingId, floorNum, description}) => 
       variables: { id, buildingId, floorNum, description}
 		})
 		if (data.error) {
-      return dispatch({
+      dispatch({
         type: BUILDING_QUERY_BUILDING_FAIL,
         error: data.error.message
       })
+      return data.error.message
     }
     dispatch({
       type: UPDATE_FLOORS_SUCCESS,
@@ -281,7 +290,7 @@ export const updateFloor = (client, {id, buildingId, floorNum, description}) => 
   }
 }
 
-// create building
+// create floor
 const CREATE_FLOORS = gql`
 	mutation( $buildingId: ObjID!, $floorNum: String!, $description: String){
 		createFloor(input: {buildingId: $buildingId, floorNum: $floorNum, description: $description}) {
@@ -289,7 +298,6 @@ const CREATE_FLOORS = gql`
 		}
 	}
 `
-
 export const createFloor = (client, {buildingId, floorNum, description}) => async dispatch => {
   // console.log('---updatebuilding', id, deptName, hot)
   dispatch({
@@ -302,10 +310,11 @@ export const createFloor = (client, {buildingId, floorNum, description}) => asyn
       variables: { buildingId, floorNum, description}
 		})
 		if (data.error) {
-      return dispatch({
+      dispatch({
         type: BUILDING_QUERY_BUILDING_FAIL,
         error: data.error.message
       })
+      return data.error.message
     }
     dispatch({
       type: CREATE_FLOORS_SUCCESS,
@@ -322,7 +331,7 @@ export const createFloor = (client, {buildingId, floorNum, description}) => asyn
 }
 
 
-// create building
+// create room
 const CREATE_ROOM = gql`
 	mutation( $floorId: ObjID!, $name: String){
 		createRoom(input: {floorId: $floorId, name: $name}) {
@@ -330,7 +339,6 @@ const CREATE_ROOM = gql`
 		}
 	}
 `
-
 export const createRoom = (client, {floorId, name}) => async dispatch => {
   // console.log('---updatebuilding', id, deptName, hot)
   dispatch({
@@ -343,10 +351,11 @@ export const createRoom = (client, {floorId, name}) => async dispatch => {
       variables: { floorId, name}
 		})
 		if (data.error) {
-      return dispatch({
+      dispatch({
         type: BUILDING_QUERY_BUILDING_FAIL,
         error: data.error.message
       })
+      return data.error.message
     }
     dispatch({
       type: CREATE_ROOMS_SUCCESS,
@@ -362,7 +371,7 @@ export const createRoom = (client, {floorId, name}) => async dispatch => {
   }
 }
 
-// create building
+// update room
 const UPDATE_ROOM = gql`
 	mutation($id: ObjID!, $floorId: ObjID!, $name: String){
 		updateRoom(id: $id, input: {floorId: $floorId, name: $name}) {
@@ -370,7 +379,6 @@ const UPDATE_ROOM = gql`
 		}
 	}
 `
-
 export const updateRoom = (client, {id, floorId, name}) => async dispatch => {
   // console.log('---updatebuilding', id, deptName, hot)
   dispatch({
@@ -383,10 +391,11 @@ export const updateRoom = (client, {id, floorId, name}) => async dispatch => {
       variables: { id, floorId, name}
 		})
 		if (data.error) {
-      return dispatch({
+      dispatch({
         type: BUILDING_QUERY_BUILDING_FAIL,
         error: data.error.message
       })
+      return data.error.message
     }
     dispatch({
       type: UPDATE_ROOMS_SUCCESS,

@@ -153,6 +153,23 @@ export function styles() {
         text-align: center;
         padding: 0;
       }
+      /**
+       * list item button
+       */
+      .btnList{
+        background: #87b87f;
+        font-size: .12rem;
+        border: none;
+        color: #fff;
+        margin: 0 ${theme.midmargin};
+        padding: .03rem .07rem;
+      }
+      .btnListDelete{
+        background: #d15b47;
+      }
+      .btnListModify{
+        background: #9585bf;
+      }
       button{
         font-weight: 300;
       }
