@@ -25,13 +25,11 @@ const HOSPITALINFO = {
 // 主功能
 const MAINFUNCTION = [
   {
-    title: '订单管理',
+    title: '业务管理',
     short_name: 'order',
-    navigateName: '/order',
+    navigateName: '/order/appoint_order',
     children: [
-      {title: '订单管理', navigateName: '/order', color: '#5D75A6',},
-      {title: '交易管理', navigateName: '', color: '#5D75A6'},
-      {title: '服务记录', navigateName: '', color: '#5D75A6'},
+      {title: '挂号管理', navigateName: '/order/appoint_order', color: '#5D75A6', navigateNameDetail: 'appoint'},
     ]
   },
   {
@@ -82,23 +80,24 @@ const MAINCOLOR = '#2A4680'
 
 // 订单管理信息
 const ORDERINFO = {
-  order_list_title: [
-    {title: '产品服务', value: '', style: {width: '30%'}, apiKey: ''},
-    {title: '单价(元)', value: '', style: {width: '10%'}, apiKey: ''},
-    {title: '数量', value: '', style: {width: '10%'}, apiKey: ''},
-    {title: '买家信息', value: '', style: {width: '14%'}, apiKey: ''},
-    {title: '订单状态', value: '', style: {width: '16%', textAlign: 'center'}, apiKey: ''},
-    {title: '支付信息(元)', value: '', style: {width: '20%', textAlign: 'center'}, apiKey: ''},
+  appoint_list_title: [
+    {title: '患者名称', value: '', style: {width: '8%'}, apiKey: ''},
+    {title: '医院名称', value: '', style: {width: '16%'}, apiKey: ''},
+    {title: '医生名称', value: '', style: {width: '8%'}, apiKey: ''},
+    {title: '科室名称', value: '', style: {width: '16%'}, apiKey: ''},
+    // {title: '预约时间', value: '', style: {width: '16%'}, apiKey: ''},
+    {title: '就诊时间', value: '', style: {width: '12%'}, apiKey: ''},
+    {title: '状态', value: '', style: {width: '8%'}, apiKey: ''},
+    {title: '支付方式', value: '', style: {width: '8%'}, apiKey: ''},
+    {title: '支付状态', value: '', style: {width: '6%'}, apiKey: ''},
+    {title: '设置', value: '', style: {width: '18%'}, apiKey: ''},
   ],
-  order_type: [
-    {title: '待支付', value: '01'},
+  appoint_visit_status: [
+    {title: '待取号', value: '01'},
     {title: '已取消', value: '02'},
-    {title: '待执行', value: '03'},
-    {title: '执行中', value: '04'},
-    {title: '已过期', value: '05'},
-    {title: '退款申请', value: '06'},
-    {title: '已完成', value: '07'},
-    {title: '已退款', value: '08'}
+    {title: '已取号', value: '03'},
+    {title: '已退号', value: '04'},
+    {title: '已过期', value: '05'}
   ]
 }
 

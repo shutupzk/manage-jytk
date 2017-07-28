@@ -95,6 +95,9 @@ export const queryDepartments = (client) => async dispatch => {
     }
     let departments = data.data.departments
     let departmentsLevel1 = departments.filter((department) => {return department.level == '1'})
+    if (departments.length > 0 && departmentsLevel1.length === 0) {
+      departmentsLevel1 = departments
+    }
     let departmentsLevel2 = departments.filter((department) => {return department.level == '2'})
     dispatch({
       type: DEPARTMENT_QUERY_DEPARTMENT_SUCCESS,

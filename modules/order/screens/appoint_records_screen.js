@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import Router from 'next/router'
 import {theme, Prompt, Loading, FilterCard, SelectFilterCard, KeywordCard} from 'components'
 import {ORDERINFO} from 'config'
-import {fuzzyQuery} from 'utils'
+import {fuzzyQuery, isArray} from 'utils'
 import { AppointListItem, OrderTipModal} from '../components'
 import {TopFilterCard, ListTitle} from 'modules/common/components'
 import { queryAppointments, showPrompt, cancelAppointment } from '../../../ducks'
@@ -54,7 +54,7 @@ class AppointRecordsScreen extends Component {
     if (this.props.loading) {
       return <Loading showLoading />
     }
-		let appointments = this.filterCard(this.props.appointments)
+		let appointments = this.filterCard(isArray(this.props.appointments) ? this.props.appointments : [])
 		let modalConHtml;
     return (
       <div className={'orderRecordsPage'}>
@@ -81,7 +81,7 @@ class AppointRecordsScreen extends Component {
         <ListTitle data={ORDERINFO.appoint_list_title} />
         {
           appointments && appointments.length > 0 ?
-            appointments.map((appointmentItem, iKey) => {
+            isArray(appointments) ? appointments.map((appointmentItem, iKey) => {
               return (
 								<AppointListItem data={appointmentItem} key={iKey}
 									titleInfo={ORDERINFO.appoint_list_title}
@@ -97,6 +97,7 @@ class AppointRecordsScreen extends Component {
 									}} />
               )
             })
+						: ''
           : 'no data'
         }
       </div>
