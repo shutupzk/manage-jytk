@@ -24,6 +24,23 @@ class ManageScheduleScreen extends Component {
   componentWillMount() {
     this.props.queryDoctors(this.props.client)
 	}
+	
+	async clickModalOk(values) {
+		let error;
+		values.id = this.state.selectedDoctor.id
+		error = await this.props.updateDoctor(this.props.client, Object.assign({}, this.state.selectedDoctor, values))
+		if (error) {
+			this.onHide();
+			this.props.showPrompt({text: error});
+			return
+		}
+		this.onHide();
+		this.props.queryDoctors(this.props.client)
+	}
+
+	onHide() {
+		this.setState({showModal: false, selectedType: 0, selectedDoctor: {}})
+	}
 
   filterCard(doctors, isfilterkeyword) {
 		const status = this.state.status;
@@ -58,10 +75,11 @@ class ManageScheduleScreen extends Component {
 				<ManageDoctorModal selectedDoctor={this.state.selectedDoctor}
 					selectedType={this.state.selectedType}
 					showModal={this.state.showModal}
-					onHide={() => this.setState({showModal: false, selectedType: 0, selectedDoctor: {}})}
+					onHide={() => this.onHide()}
 					changeType={(type) => this.setState({selectedType: type})}
 					pageType={'schedule'}
-					typeTitle={DOCTORINFO.modal_type_title} />
+					typeTitle={DOCTORINFO.modal_type_title}
+					clickModalOk={(values) => this.clickModalOk(values)} />
 				{/* {renderModal(this)} */}
         {/* <TopFilterCard status={this.state.status} changeStatus={(status) => {this.setState({status: status})}}
           changeKeyword={(keyword) => {this.setState({keyword: keyword})}}

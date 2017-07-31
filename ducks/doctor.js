@@ -51,9 +51,13 @@ const QUERY_DOCTORS = gql`
 			description
 			remark
 			recommend
-			hot
+      hot
+      quikeOpen
+      videoOpen
+      imageAndTextOpen
 			phone
-			evaluate
+      evaluate
+      quikePrice
 			imageAndTextPrice
 			videoPrice
 			serviceTotal
@@ -103,111 +107,37 @@ export const queryDoctors = (client) => async dispatch => {
   }
 }
 
-
-// doctor detail
-const QUERY_CONSULATION_DETAIL = gql`
-  query($id: ObjID!) {
-		consultation(id: $id){
-			id
-			type
-			status
-			content
-			fee
-			refundReason
-			createdAt
-			consultationReason {
-				id
-				reason
-			}
-			doctor{
-				id
-				doctorName
-				departmentHasDoctors{
-					department{
-						hospital{
-							hospitalName
-						}
-					}
-				}
-			}
-			patient{
-				id
-				name
-				phone
-				sex
-				birthday
-				user {
-					id
-					phone
-					name
-					sex
-					birthday
-				}
-			}
-			payment{
-				id
-				totalFee
-				transactionNo
-				outTradeNo
-				tradeNo
-				createdAt
-				payWay
-			}
-		}
-	}
-`
-
-export const queryDoctorDetail = (client, {id}) => async dispatch => {
-  dispatch({
-    type: DOCTOR_QUERY_DOCTOR
-  })
-  try {
-		const data = await client.query({ query: QUERY_CONSULATION_DETAIL , variables: { id }})
-		console.log('------doctor', data)
-    if (data.error) {
-      dispatch({
-        type: DOCTOR_QUERY_DOCTOR_FAIL,
-        error: data.error.message
-      })
-      return data.error.message
-    }
-    dispatch({
-      type: DOCTOR_QUERY_DOCTOR_DETAIL_SUCCESS,
-      doctor: data.data.consultation
-    })
-    return null
-  } catch (e) {
-    console.log(e)
-    dispatch({
-      type: DOCTOR_QUERY_DOCTOR_FAIL,
-      error: e.message
-    })
-    return e.message
-  }
-}
-
 // update doctor
-
 const UPDATE_DOCTOR = gql`
   mutation($id: ObjID!, $major: String, $sex: String, $recommend: Boolean,
-    $hot: Boolean, $isAppointment: Boolean, $phone: String, $workingYears: Int, $description: String){
+    $hot: Boolean, $isAppointment: Boolean, $phone: String, $workingYears: Int, $description: String,
+    $quikeOpen: Boolean,
+    $imageAndTextOpen: Boolean,
+    $videoOpen: Boolean,
+    $quikePrice: Int,
+    $imageAndTextPrice: Int,
+    $videoPrice: Int
+){
     updateDoctor(id: $id, input: {major: $major, sex: $sex,
       recommend: $recommend, hot: $hot, isAppointment: $isAppointment, phone: $phone,
-      workingYears: $workingYears, description: $description}){
+      workingYears: $workingYears, description: $description,
+      quikeOpen: $quikeOpen, imageAndTextOpen: $imageAndTextOpen, videoOpen: $videoOpen,
+      quikePrice: $quikePrice, imageAndTextPrice: $imageAndTextPrice, videoPrice: $videoPrice
+    }){
       id
     }
   }
 `
 
-export const updateDoctor = (client, {id, major, recommend, hot, isAppointment, phone, workingYears, description}) => async dispatch => {
-  console.log('---updateDoctor', id, major, recommend, hot, isAppointment, phone, workingYears, description)
+export const updateDoctor = (client, {id, major, recommend, hot, isAppointment, phone, workingYears, description, quikeOpen, imageAndTextOpen, videoOpen, quikePrice, imageAndTextPrice, videoPrice}) => async dispatch => {
+  console.log('---updateDoctor', id, major, recommend, hot, isAppointment, phone, workingYears, description, quikeOpen, imageAndTextOpen, videoOpen, quikePrice, imageAndTextPrice, videoPrice)
   dispatch({
     type: DOCTOR_QUERY_DOCTOR
   })
   try {
     let data = await client.mutate({
       mutation: UPDATE_DOCTOR,
-      variables: { id, major, recommend, hot, isAppointment, phone, workingYears, description }
+      variables: { id, major, recommend, hot, isAppointment, phone, workingYears, description, quikeOpen, imageAndTextOpen, videoOpen, quikePrice, imageAndTextPrice, videoPrice}
 		})
 		if (data.error) {
       dispatch({

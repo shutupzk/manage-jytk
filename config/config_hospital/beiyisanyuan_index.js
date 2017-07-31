@@ -12,9 +12,9 @@ const PORT = '9003' // 前端端口
 // 医院信息
 const HOSPITALINFO = {
   hospital_short_name: 'beiyisanyuan',
-  hospital_image: '../static/luzhong/loginlogo.png',
   hospital_loginlogo: '../static/beiyisanyuan/loginLogo.png',
   footerbar_background_color: '#36486C',
+  headerImg: {imgstyle: {height: '.4rem', margin: '.1rem .1rem 0 .2rem'}},
   contact: [
     { title: '网站链接', values: ['http://www.pkuih.edu.cn/'] },
     { title: '联系电话', values: ['010-00000000']},
@@ -96,8 +96,8 @@ const DOCTORINFO = {
     {title: '所属机构', value: '', style: {width: '16%'}, apiKey: ''},
     {title: '专业', value: '', style: {width: '10%'}, apiKey: ''},
     {title: '亚专业', value: '', style: {width: '10%'}, apiKey: ''},
-    {title: '用药咨询', value: '', style: {width: '8%', textAlign: 'center'}, apiKey: ''},
     {title: '图文问诊', value: '', style: {width: '8%', textAlign: 'center'}, apiKey: ''},
+    {title: '快速问诊', value: '', style: {width: '8%', textAlign: 'center'}, apiKey: ''},
     {title: '视频问诊', value: '', style: {width: '8%', textAlign: 'center'}, apiKey: ''},
     {title: '设置', value: '', style: {width: '8%', textAlign: 'center'}, apiKey: ''},
   ]

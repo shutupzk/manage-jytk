@@ -19,7 +19,7 @@ export default class ListTitle extends Component {
 							return (
 								<li className={'left'} key={iKey} style={item.style}>
 									{(item.title.indexOf('设置') > -1) || (item.nolistShow) ? '' : item.title}
-									{item.title.indexOf('用药咨询') > -1 || item.title.indexOf('图文问诊') > -1 || item.title.indexOf('视频问诊') > -1 ?
+									{item.title.indexOf('快速问诊') > -1 || item.title.indexOf('图文问诊') > -1 || item.title.indexOf('视频问诊') > -1 ?
 										<article>(元/次)</article> : ''
 									}
 								</li>

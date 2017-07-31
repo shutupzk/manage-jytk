@@ -92,15 +92,24 @@ const orderCon5 = (props, item, iKey) => {
 
 const orderCon6 = (props, item, iKey) => {
 	if (item.title.indexOf('服务开通状态') > -1) {
+		let openStatus = [
+			{img: props.data.imageAndTextOpen ? 'chat1Cur' : 'chat1', style: {height: '.16rem'}},
+			{img: props.data.quikeOpen ? 'chat2Cur' : 'chat2', style: {height: '.16rem', padding: `0 ${theme.tbmargin}`}},
+			{img: props.data.videoOpen ? 'viedoCur' : 'viedo', style: {height: '.16rem'}}
+		]
 		return (
 			<li className={'left flex tb-flex'} key={iKey} style={item.style}>
-				<img src={`/static/${HOSPITALINFO.hospital_short_name}/chat1.png`} style={{height: '.16rem'}} />
-				<img src={`/static/${HOSPITALINFO.hospital_short_name}/chat1.png`} style={{height: '.16rem', padding: `0 ${theme.tbmargin}`}} />
-				<img src={`/static/${HOSPITALINFO.hospital_short_name}/chat1.png`} style={{height: '.16rem'}} />
+				{
+					openStatus.map((openstatusItem, openstatusIkey) => {
+						return (
+							<img key={openstatusIkey} src={`/static/${HOSPITALINFO.hospital_short_name}/${openstatusItem.img}.png`} style={openstatusItem.style} />
+						)
+					})
+				}
 		</li>)
 	}
-	if (item.title.indexOf('用药咨询') > -1) {
-		return (normalHtml(props.data.videoPrice, item, iKey))
+	if (item.title.indexOf('图文问诊') > -1) {
+		return (normalHtml(props.data.imageAndTextPrice, item, iKey))
 	}
 }
 
@@ -108,8 +117,8 @@ const orderCon7 = (props, item, iKey) => {
 	if (item.title.indexOf('设置') > -1) {
 		return (btnHtml(props, item, iKey))
 	}
-	if (item.title.indexOf('图文问诊') > -1) {
-		return (normalHtml(props.data.imageAndTextPrice, item, iKey))
+	if (item.title.indexOf('快速问诊') > -1) {
+		return (normalHtml(props.data.quikePrice, item, iKey))
 	}
 }
 

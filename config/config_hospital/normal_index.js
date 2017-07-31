@@ -4,9 +4,8 @@ import withData from 'config/withData'
 
 // 医院名称
 const HOSPITAL_NAME = '北大医疗标准管理平台'
-const API_SERVER = '218.58.137.218:9002'
-// const API_SERVER = '120.92.57.18:9198'
-// const API_SERVER = '120.92.57.18:9200'
+// const API_SERVER = '218.58.137.218:9002'
+const API_SERVER = '120.92.57.18:9198'
 const PORT = '9003' // 前端端口
 
 // 医院信息
@@ -15,6 +14,7 @@ const HOSPITALINFO = {
   hospital_image: '../static/normal/loginlogo.png',
   hospital_loginlogo: '../static/normal/loginLogo.png',
   footerbar_background_color: '#36486C',
+  headerImg: {imgstyle: {height: '.4rem', margin: '.1rem .1rem 0 .2rem'}}, // 配置headerbar logo大小 可以不写
   contact: [
     { title: '网站链接', values: ['http://www.pkuih.edu.cn/'] },
     { title: '联系电话', values: ['010-00000000']},
@@ -149,8 +149,8 @@ const DOCTORINFO = {
     {title: '所属机构', value: '', style: {width: '16%'}, apiKey: ''},
     {title: '专业', value: '', style: {width: '10%'}, apiKey: ''},
     {title: '亚专业', value: '', style: {width: '10%'}, apiKey: ''},
-    {title: '用药咨询', value: '', style: {width: '8%', textAlign: 'center'}, apiKey: ''},
     {title: '图文问诊', value: '', style: {width: '8%', textAlign: 'center'}, apiKey: ''},
+    {title: '快速问诊', value: '', style: {width: '8%', textAlign: 'center'}, apiKey: ''},
     {title: '视频问诊', value: '', style: {width: '8%', textAlign: 'center'}, apiKey: ''},
     {title: '设置', value: '', style: {width: '8%', textAlign: 'center'}, apiKey: ''},
   ],

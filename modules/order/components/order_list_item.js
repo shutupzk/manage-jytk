@@ -98,7 +98,7 @@ const orderCon5 = (data, item) => {
 	} else if (data.payment && data.payment.payWay === 'ALIPAY') {
 		payway = {title: '支付宝支付', imgurl: 'aliPay'}
 	} else if (data.payment && data.payment.payWay === 'NATIVE') {
-		payway = {title: '银联支付', imgurl: 'yinlianPay'}
+		payway = {title: '微信支付', imgurl: 'wxPay'}
 	} 
 	let html = <li className={'left'} key={item.id} style={item.style}>
 				<p>{'无'}</p>

@@ -47,14 +47,11 @@ class HeaderBar extends Component {
   render () {
     const hideRightCon = this.props.hideRightCon || false;
     const {showLogutBtn} = this.state;
-    console.log('------props', this.props)
     const curUrl = this.props.url && this.props.url.pathname
+    const imgstylenormal = {height: '.26rem', padding: '0 .1rem 0 .3rem', marginTop: '.16rem'}
     return (
       <div className={'headerBar'}>
-        <img style={{
-            height: '.26rem',
-            padding: '0 .1rem 0 .3rem',
-            marginTop: '.16rem'}} src={HOSPITALINFO.hospital_loginlogo} className='left' />
+        <img style={HOSPITALINFO.headerImg && HOSPITALINFO.headerImg.imgstyle ? HOSPITALINFO.headerImg.imgstyle : imgstylenormal} src={HOSPITALINFO.hospital_loginlogo} className='left' />
         <article className='left'>{HOSPITAL_NAME}</article>
         {
           hideRightCon ?

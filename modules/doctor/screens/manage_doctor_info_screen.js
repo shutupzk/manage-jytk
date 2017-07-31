@@ -29,7 +29,7 @@ class ManageDoctorInfoScreen extends Component {
 		let error;
 		if (modalType === 'modify') {
 			values.id = this.state.selectedDoctor.id
-			error = await this.props.updateDoctor(this.props.client, values)
+			error = await this.props.updateDoctor(this.props.client, Object.assign({}, this.state.selectedDoctor, values))
 		}
 		else if (modalType === 'add') {
 			console.log('------add----', values)

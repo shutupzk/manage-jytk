@@ -5,7 +5,7 @@ import {theme, Prompt, Loading, FilterCard, SelectFilterCard, KeywordCard} from 
 import {ORDERINFO, DOCTORINFO, HOSPITALINFO} from 'config'
 import {TopFilterCard, ListTitle} from 'modules/common/components'
 import {fuzzyQuery} from 'utils'
-import { queryDoctors, showPrompt } from '../../../ducks'
+import { queryDoctors, showPrompt, updateDoctor } from '../../../ducks'
 import { connect } from 'react-redux'
 import {ManageListItem, ManageDoctorModal} from '../components'
 
@@ -22,10 +22,27 @@ class ManageFeeScreen extends Component {
 			selectedType: 0
     }
   }
-
+// , quikePrice, imageAndTextPrice, videoPrice
   componentWillMount() {
     this.props.queryDoctors(this.props.client)
   }
+	
+	async clickModalOk(values) {
+		let error;
+		values.id = this.state.selectedDoctor.id
+		error = await this.props.updateDoctor(this.props.client, Object.assign({}, this.state.selectedDoctor, values))
+		if (error) {
+			this.onHide();
+			this.props.showPrompt({text: error});
+			return
+		}
+		this.onHide();
+		this.props.queryDoctors(this.props.client)
+	}
+
+	onHide() {
+		this.setState({showModal: false, selectedType: 0, selectedDoctor: {}})
+	}
 
   filterCard(doctors) {
 		let filterDoctors = doctors
@@ -54,10 +71,11 @@ class ManageFeeScreen extends Component {
 				<ManageDoctorModal selectedDoctor={this.state.selectedDoctor}
 					selectedType={this.state.selectedType}
 					showModal={this.state.showModal}
-					onHide={() => this.setState({showModal: false, selectedType: 0, selectedDoctor: {}})}
+					onHide={() => this.onHide()}
 					changeType={(type) => this.setState({selectedType: type})}
 					pageType={'fee'}
-					typeTitle={DOCTORINFO.modal_type_title} />
+					typeTitle={DOCTORINFO.modal_type_title}
+					clickModalOk={(values) => this.clickModalOk(values)} />
 				<FilterCard>
 					<KeywordCard
 						config={{placeholder: '医生姓名/医生工号'}}
@@ -89,4 +107,4 @@ function mapStateToProps (state) {
   }
 }
 
-export default connect(mapStateToProps, { queryDoctors, showPrompt })(ManageFeeScreen)
+export default connect(mapStateToProps, { queryDoctors, showPrompt, updateDoctor })(ManageFeeScreen)

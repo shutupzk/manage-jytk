@@ -4,6 +4,11 @@ import {theme, Modal, ModalHeader, ModalFooter} from 'components'
 import Link from 'next/link'
 import {ORDERTYPE, DOCTORINFO, HOSPITALINFO, HOSPITAL_NAME} from 'config'
 
+const serviceCon = [
+	{title: '专家图文问诊', priceApiKey: 'imageAndTextPrice', openApiKey: 'imageAndTextOpen'},
+	{title: '快速问诊', priceApiKey: 'quikePrice', openApiKey: 'quikeOpen'},
+	{title: '视频问诊', priceApiKey: 'videoPrice', openApiKey: 'videoOpen'}
+]
 export default class ManageDoctorModal extends Component {
   constructor (props) {
     super(props)
@@ -33,7 +38,7 @@ export default class ManageDoctorModal extends Component {
 }
 
 const renderModal = (self) => {
-	const {selectedDoctor, selectedType} = self.props;
+	const {selectedDoctor, selectedType, pageType} = self.props;
 	return (
 		<Modal showModalState={self.props.showModal} style={{top: '12%'}}>
 			{modalHeaderView(self)}
@@ -47,7 +52,24 @@ const renderModal = (self) => {
 					<ModalFooter>
 						<article style={{width: '100%',textAlign: 'right', lineHeight: '46px'}}>
 							<button className='btnBG btnBGMain btnBGLitt'
-								style={{display: 'inline-block', marginRight: 20, width: 130, borderRadius: 4}}>确定</button>
+								style={{display: 'inline-block', marginRight: 20, width: 130, borderRadius: 4}}
+								onClick={() => {
+									let values = {}
+									for (const serviceConItem of serviceCon) {
+										let openRef = `${serviceConItem.openApiKey}Ref`
+										values[serviceConItem.openApiKey] = self.refs[openRef] && self.refs[openRef].checked
+										let priceRef = `${serviceConItem.priceApiKey}Ref`
+										values[serviceConItem.priceApiKey] = JSON.parse(self.refs[priceRef] && self.refs[priceRef].value, 10)
+									}
+									self.props.clickModalOk(values)
+									if (pageType === 'schedule') {
+
+									} else {
+
+									}
+									
+								}}
+								>确定</button>
 						</article>
 					</ModalFooter>
 				: ''
@@ -91,11 +113,6 @@ const modalHeaderView = (self) => {
 const renderServiceModal = (self) => {
 	const modalHeight = process.browser? document.body.clientWidth * 0.3 : 500
 	const {selectedDoctor, selectedType, pageType} = self.props;
-	const serviceCon = [
-		{title: '专家图文问诊', apiKey: 'imageAndTextPrice', ref: 'imageText'},
-		{title: '快速问诊', apiKey: 'imageAndTextPrice', ref: 'fast'},
-		{title: '视频问诊', apiKey: 'videoPrice', ref: 'video'}
-	]
 	return (
 		<div style={{height: modalHeight, overflow: 'auto', padding: `${theme.tbmargin} .25rem`}}>
 			<dl>
@@ -110,7 +127,8 @@ const renderServiceModal = (self) => {
 							<header style={{ fontSize: theme.nfontsize, paddingBottom: theme.tbmargin}} className='flex tb-flex'>
 								<article className='checkbox'>
 									<label htmlFor={`service${index}`}></label>
-									<input type='checkbox' id={`service${index}`} />
+									<input type='checkbox' id={`service${index}`} defaultChecked={selectedDoctor[item.openApiKey] || false}
+										ref={`${item.openApiKey}Ref`} />
 								</article>
 								<strong style={{fontSize: 14, paddingRight: theme.tbmargin}}>{item.title}</strong>
 								已服务&nbsp;<span style={{color: theme.maincolor}}>{selectedDoctor.serviceTotal}</span>&nbsp;单
@@ -118,8 +136,8 @@ const renderServiceModal = (self) => {
 							<article className='flex tb-flex' style={{fontSize: 12, paddingLeft: 24}}>
 								收取费用&nbsp;&nbsp;
 								{pageType === 'schedule' ?
-								<input type='text' ref={`${item.ref}Ref`} disabled defaultValue={selectedDoctor[item.apiKey]} style={{background: '#F2F2F2', border: `1px solid ${theme.bordercolor}`, lineHeight: '18px', width: 60, borderRadius: 2}} />
-								:<input type='text' ref={`${item.ref}Ref`} defaultValue={selectedDoctor[item.apiKey]} style={{background: '#F2F2F2', border: `1px solid ${theme.bordercolor}`, lineHeight: '18px', width: 60, borderRadius: 2}} />
+								<input type='text' ref={`${item.priceApiKey}Ref`} disabled defaultValue={selectedDoctor[item.priceApiKey]} style={{background: '#F2F2F2', border: `1px solid ${theme.bordercolor}`, lineHeight: '18px', width: 60, borderRadius: 2}} />
+								:<input type='text' ref={`${item.priceApiKey}Ref`} defaultValue={selectedDoctor[item.priceApiKey]} style={{background: '#F2F2F2', border: `1px solid ${theme.bordercolor}`, lineHeight: '18px', width: 60, borderRadius: 2}} />
 								}&nbsp;元/次
 							</article>
 							{
@@ -277,7 +295,7 @@ const renderFastSchedule = (self) => {
 }
 
 const renderDoctorInfoModal = (self) => {
-	const modalHeight = document && document.body.clientWidth * 0.3
+	const modalHeight = process.browser? document && document.body.clientWidth * 0.3 : 500
 	const doctorInfo = [
 		{title: '姓名', apiKey: 'doctorName'},
 		{title: '所在机构', apiKey: ''},

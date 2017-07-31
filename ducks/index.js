@@ -1,7 +1,7 @@
 import { user, signup, signin, signout, queryUser, updatePassword, savePhone, currentUser, forgotPassword, sendVerifyCode, checkVerifyCode, getUserCookie, getUserCookie2 } from './user'
 import {prompt, showPrompt, hidePrompt} from './prompt'
 import {order, queryOrderList, queryOrderDetail} from './order'
-import {doctor, queryDoctors, queryDoctorDetail, updateDoctor, createDoctor} from './doctor'
+import {doctor, queryDoctors, updateDoctor, createDoctor} from './doctor'
 import {department, queryDepartments, updateDepartment, createDepartment} from './department'
 import {hospital, queryHospitals, updateHospital, createHospital} from './hospital'
 import {news, queryNews, queryNewGroups, createGroups, updateNewsGroup, removeNewsGroup, createNews, updateNews, removeNews} from './news'
@@ -42,7 +42,6 @@ export {
     queryOrderList,
     queryOrderDetail,
     queryDoctors,
-    queryDoctorDetail,
     updateDoctor,
     createDoctor,
     queryDepartments,
