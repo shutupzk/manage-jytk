@@ -53,14 +53,12 @@ const normalHtml = (data, item, style) => {
 }
 
 const orderCon1 = (data, item) => {
-	let style = item.style
-	style.lineHeight = '.54rem'
-	return (normalHtml(data.fee, item, style))
+	return (normalHtml(data.fee, item, Object.assign({}, item.style, {lineHeight: '.54rem'})))
 }
 
 const orderCon2 = (data, item) => {
-	item.style.lineHeight = '.54rem'
-	return (normalHtml(data.count, item, item.style))
+	// item.style.lineHeight = '.54rem'
+	return (normalHtml(data.count, item, Object.assign({}, item.style, {lineHeight: '.54rem'})))
 }
 
 const orderCon3 = (data, item) => {
