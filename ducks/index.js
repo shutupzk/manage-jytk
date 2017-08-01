@@ -6,7 +6,7 @@ import {department, queryDepartments, updateDepartment, createDepartment} from '
 import {hospital, queryHospitals, updateHospital, createHospital} from './hospital'
 import {news, queryNews, queryNewGroups, createGroups, updateNewsGroup, removeNewsGroup, createNews, updateNews, removeNews} from './news'
 import {buildings, createbuilding, createFloor, createRoom, queryBuildings, queryBuildingDetail, updateBuilding, updateFloor, updateRoom} from './buildings'
-import {notices, createVisitNotice, querynotices, queryNoticesGroups, updateVisitNotice} from './notice'
+import {notices, createVisitNotice, querynotices, queryNoticesGroups, createNoticesGroups, updateNoticesGroups, updateVisitNotice} from './notice'
 import {appointments, queryAppointments, cancelAppointment, queryAppointmentDetail} from './appoint'
 
 // key
@@ -69,6 +69,8 @@ export {
     createVisitNotice,
     querynotices,
     queryNoticesGroups,
+    createNoticesGroups,
+    updateNoticesGroups,
     updateVisitNotice,
     queryAppointments,
     cancelAppointment,

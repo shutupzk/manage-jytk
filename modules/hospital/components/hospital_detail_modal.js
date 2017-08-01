@@ -91,7 +91,7 @@ const modalHeaderView = (self) => {
 
 const renderDepartmentInfoModal = (self) => {
 	// const modalHeight = document && document.body.clientWidth * 0.3
-	const {selectedData, modalType, titleInfo, noticesGroups} = self.props;
+	const {selectedData, modalType, titleInfo, noticesGroup, hospital, page} = self.props;
 	if (modalType === 'delete') {
 		return (
 			<div style={{padding: '.3rem .25rem', color: theme.mainfontcolor}}>您确定要删除<span style={{color: theme.maincolor}}>{selectedData.hospitalName}</span>吗？</div>
@@ -129,6 +129,9 @@ const renderDepartmentInfoModal = (self) => {
 							)
 						}
 						if (titleInfoItem.type === 'select') {
+							let selectData = page === 'guideType' ?
+															{data: hospital, valueKey: 'id', valueName: 'hospitalName'} :
+															{data: noticesGroups, valueKey: 'id', valueName: 'name'}
 							return (
 								<dl key={iKey} className='flex tb-flex'
 									style={{fontSize: theme.fontsize, color: theme.mainfontcolor}}>
@@ -136,9 +139,9 @@ const renderDepartmentInfoModal = (self) => {
 									<dd className='select' style={{borderRadius: 0, padding: 0, width: '80%'}}>
 										<select defaultValue={selectedData[titleInfoItem.apiKey]} ref={`${titleInfoItem.apiKey}Ref`}>
 											{
-												noticesGroups && noticesGroups.map((noticesGroup) => {
+												selectData.data && selectData.data.map((noticesGroup) => {
 													return (
-														<option value={noticesGroup.id} key={noticesGroup.id}>{noticesGroup.name}</option>
+														<option value={noticesGroup[selectData.valueKey]} key={noticesGroup[selectData.valueKey]}>{noticesGroup[selectData.valueName]}</option>
 													)
 												})
 											}

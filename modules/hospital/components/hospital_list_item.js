@@ -63,6 +63,21 @@ const orderConnavi2 = (props, item, iKey) => {
 	return (btnHtml(props, item, iKey))
 }
 
+const orderConguideType0 = (props, item, iKey) => {
+	return (normalHtml(props.data[item.apiKey], item, iKey))
+}
+
+const orderConguideType1 = (props, item, iKey) => {
+	return (normalHtml(props.data[item.apiKey], item, iKey))
+}
+const orderConguideType2 = (props, item, iKey) => {
+	return (normalHtml(props.data.hospital.hospitalName, item, iKey))
+}
+
+const orderConguideType3 = (props, item, iKey) => {
+	return (btnHtml(props, item, iKey))
+}
+
 const orderConguide0 = (props, item, iKey) => {
 	return (normalHtml(props.data[item.apiKey], item, iKey))
 }

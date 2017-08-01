@@ -9,6 +9,10 @@ const NOTICES_UPDATE_NOTICES_SUCCESS = 'notices/updatenotices/success'
 
 const NOTICES_CREATE_NOTICES_SUCCESS = 'notices/createNotices/success'
 
+const NOTICES_UPDATE_NOTICES_GROUPS_SUCCESS = 'notices/update_notices_groups/success'
+
+const NOTICES_CREATE_NOTICES_GROUPS_SUCCESS = 'notices/create_notices_groups/success'
+
 const initState = {
   data: {},
   loading: false,
@@ -31,6 +35,8 @@ export function notices (state = initState, action = {}) {
         { loading: false, error: null }
       )
     case NOTICES_UPDATE_NOTICES_SUCCESS:
+    case NOTICES_CREATE_NOTICES_GROUPS_SUCCESS:
+    case NOTICES_UPDATE_NOTICES_GROUPS_SUCCESS:
       return Object.assign(
         {},
         state,
@@ -56,6 +62,10 @@ const QUERY_NOTICESGROUPS = gql`
 			name
 			id
 			code
+      hospital {
+        id
+        hospitalName
+      }
 		}
 	}
 `
@@ -65,7 +75,7 @@ export const queryNoticesGroups = (client) => async dispatch => {
     type: NOTICES_QUERY_NOTICES
   })
   try {
-		const data = await client.query({ query: QUERY_NOTICESGROUPS})
+		const data = await client.query({ query: QUERY_NOTICESGROUPS, fetchPolicy: 'network-only'})
     if (data.error) {
       dispatch({
         type: NOTICES_QUERY_NOTICES_FAIL,
@@ -114,7 +124,47 @@ export const createNoticesGroups = (client, {code, name, hospitalId}) => async d
       return data.error.message
     }
     dispatch({
-      type: NOTICES_CREATE_NOTICES_SUCCESS,
+      type: NOTICES_CREATE_NOTICES_GROUPS_SUCCESS,
+      createNewsGroup: data.data.createVisitNoticeGroup
+		})
+		return null
+  } catch (e) {
+    dispatch({
+      trype: NOTICES_QUERY_NOTICES_FAIL,
+      error: e.message
+    })
+    return e.message
+  }
+}
+
+// update notices groups
+const UPDATE_NOTICE_GROUPS = gql`
+	mutation($id: ObjID!, $code: String!, $name: String!, $hospitalId: ObjID!){
+    updateVisitNoticeGroup(id: $id, input: {code: $code, name: $name, hospitalId: $hospitalId}) {
+      id
+    }
+	}
+`
+export const updateNoticesGroups = (client, {id, code, name, hospitalId}) => async dispatch => {
+  // console.log('---updateDepartment', id, deptName, hot)
+  dispatch({
+    type: NOTICES_QUERY_NOTICES
+  })
+  try {
+		console.log('--update-notice--groups---value', id, code, name, hospitalId)
+    let data = await client.mutate({
+      mutation: UPDATE_NOTICE_GROUPS,
+      variables: {id, code, name, hospitalId}
+		})
+		if (data.error) {
+      dispatch({
+        type: NOTICES_QUERY_NOTICES_FAIL,
+        error: data.error.message
+      })
+      return data.error.message
+    }
+    dispatch({
+      type: NOTICES_UPDATE_NOTICES_GROUPS_SUCCESS,
       createNewsGroup: data.data.createVisitNoticeGroup
 		})
 		return null

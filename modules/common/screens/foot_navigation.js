@@ -1,41 +1,103 @@
+import React, { Component } from 'react'
 import Link from 'next/link'
 import {HOME_PAGE} from 'config'
 import {theme} from 'components'
 
-const Navigation = (props) => {
-  const url = props.url
-  const data = props.data
+export default class Navigation extends Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+    }
+  }
+  
+  render() {
+    const data = this.props.data
+    return (
+      <ul className='footNavUl'>
+        {
+          data && data.map((item, itemKey) => {
+            return (
+              <div>
+                {
+                  item.childs && item.childs.length > 0 ?
+                    levelTowHtml(this, item, itemKey)
+                  :
+                    levelOneHtml(this, item, itemKey)
+                }
+              </div>
+            )
+          })
+        }
+        <style jsx global>{`
+          .footNavUl{
+            position: relative;
+            z-index: 10;
+          }
+          .footNavLI{
+            line-height: .46rem;
+            font-size: .16rem;
+            cursor: pointer;
+          }
+          .footNavLI.leftLiCur{
+            background: #1A3979;
+          }
+          .footNavLI.leftLiCur .footNavLIA{
+            color: #fff !important;
+          }
+          .footNavChild{
+            padding-bottom: 6px;
+            background: #2A3788;
+          }
+          .footNavChildItem{
+            line-height: .4rem;
+            border-top: 1px solid ${theme.bordercolor};
+          }
+        `}</style>
+      </ul>
+    )
+  }
+}
+
+const levelOneHtml = (self, item, itemKey) => {
+  const url = self.props.url
   return (
-    <ul>
-      {
-        data && data.map((item) => {
-          return (
-            <li className={url === item.navigateName || (item.navigateNameDetail && url.indexOf(item.navigateNameDetail) > -1) ? 'leftLiCur' : ''}
-              key={item.title}>
-              <Link href={item.navigateName}><a style={{color: item.color}}>{item.title}</a></Link>
-            </li>
-          )
-        })
-      }
-      <style jsx>{`
-        ul{
-          position: relative;
-          z-index: 10;
-        }
-        li{
-          line-height: .46rem;
-          font-size: .16rem;
-          cursor: pointer;
-        }
-        li.leftLiCur{
-          background: #1A3979;
-        }
-        li.leftLiCur a{
-          color: #fff !important;
-        }
-      `}</style>
-    </ul>
+    <li className={url === item.navigateName || (item.navigateNameDetail && url.indexOf(item.navigateNameDetail) > -1) ? 'leftLiCur footNavLI' : 'footNavLI'}
+      key={item.title}>
+      <Link href={item.navigateName}>
+        <a style={{color: item.color}} className='flex lr-flex tb-flex footNavLIA'>{item.title}</a>
+      </Link>
+    </li>
   )
 }
 
-export default Navigation
+const levelTowHtml = (self, item, itemKey) => {
+  const url = self.props.url
+  const commanUrl = url.indexOf(item.navigateName) > -1 ? true : false
+  return (
+    <li className={commanUrl ? 'leftLiCur footNavLI' : 'footNavLI'}
+      key={item.title}>
+      <a style={{color: item.color}} className='flex lr-flex tb-flex footNavLIA'
+      onClick={() => {
+        const prev = self.state[itemKey]
+        self.setState({
+          [itemKey]: !prev
+        })
+      }}>{item.title}
+        <i style={{display: 'block', marginLeft: '.03rem',
+            borderTop: '.02rem solid #fff', borderLeft: '.02rem solid #fff', width: '.06rem', height: '.06rem',
+            transform: self.state[itemKey] || commanUrl ? 'rotate(45deg)' : 'rotate(-135deg)'
+          }}></i>
+      </a>
+      <article className='footNavChild' style={{display: self.state[itemKey] || commanUrl ? 'block' : 'none'}}>
+        {
+          item.childs.map((child, childKey) => {
+            return (<Link href={child.navigateName} key={childKey}>
+              <p className='footNavChildItem' style={{color: url === child.navigateName ? '#fff' : item.color}}>{child.title}</p>
+            </Link>)
+          })
+        }
+      </article>
+    </li>
+  )
+}
+

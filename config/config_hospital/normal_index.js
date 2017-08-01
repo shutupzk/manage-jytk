@@ -4,8 +4,8 @@ import withData from 'config/withData'
 
 // 医院名称
 const HOSPITAL_NAME = '北大医疗标准管理平台'
-// const API_SERVER = '218.58.137.218:9002'
-const API_SERVER = '120.92.57.18:9198'
+const API_SERVER = '218.58.137.218:9002'
+// const API_SERVER = '120.92.57.18:9198'
 const PORT = '9003' // 前端端口
 
 // 医院信息
@@ -27,6 +27,7 @@ const HOSPITALINFO = {
  * title: 展示在header上的文字  short_name：根据此字段，判断header哪个高亮   navigateName：决定了header上的文字，点击跳哪个链接
  * children 左侧菜单
  * childer[0].navigateNameDetail：用于此功能下所有页面（list、detail等page），处于高亮
+ * children[0].childs: 用于左侧2级菜单   此时children[0].navigateName指的是，childs里navigateName的缩写。   用于高亮效果
  */
 const MAINFUNCTION = [
   {
@@ -77,7 +78,10 @@ const MAINFUNCTION = [
       {title: '医院介绍', navigateName: '/hospital', color: '#5D75A6'},
       {title: '功能清单', navigateName: '/hospital/hospital_funlist', color: '#5D75A6'},
       {title: '院内导航', navigateName: '/hospital/hospital_navigation', navigateNameDetail: 'navigation', color: '#5D75A6'},
-      {title: '就诊指南', navigateName: '/hospital/hospital_visitGuide', color: '#5D75A6'}
+      {title: '就诊指南', navigateName: 'visitGuide', color: '#5D75A6', childs: [
+        {title: '指南类型', navigateName: '/hospital/hospital_visitGuide_type',},
+        {title: '指南管理', navigateName: '/hospital/hospital_visitGuide',}
+      ]}
     ]
   }
 ]

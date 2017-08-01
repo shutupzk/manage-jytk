@@ -67,7 +67,10 @@ const MAINFUNCTION = [
       {title: '医院介绍', navigateName: '/hospital', color: '#5D75A6'},
       // {title: '功能清单', navigateName: '/hospital/hospital_funlist', color: '#5D75A6'},
       {title: '院内导航', navigateName: '/hospital/hospital_navigation', navigateNameDetail: 'navigation', color: '#5D75A6'},
-      {title: '就诊指南', navigateName: '/hospital/hospital_visitGuide', color: '#5D75A6'}
+      {title: '就诊指南', navigateName: 'visitGuide', color: '#5D75A6', childs: [
+        {title: '指南类型', navigateName: '/hospital/hospital_visitGuide_type',},
+        {title: '指南管理', navigateName: '/hospital/hospital_visitGuide',}
+      ]}
     ]
   }
 ]

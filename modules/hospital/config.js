@@ -31,6 +31,12 @@ const HOSPITALINFO = {
     {title: '指南内容', value: '', style: {width: '40%'}, apiKey: 'content', type: 'textarea'},
     {title: '资讯图片', value: '', style: {width: '10%'}, apiKey: 'image', type: 'image', nolistShow: true,},
     {title: '设置', value: '', style: {width: '10%'}, apiKey: ''},
+  ],
+  hospitalGuide_type_list_title: [
+    {title: '指南编号', value: '', style: {width: '12%'}, apiKey: 'code', type: 'input'},
+    {title: '指南类型', value: '', style: {width: '25%'}, apiKey: 'name', type: 'input'},
+    {title: '所属医院', value: '', style: {width: '25%'}, apiKey: 'hospitalId', type: 'select'},
+    {title: '设置', value: '', style: {width: '30%'}, apiKey: ''},
   ]
 }
 
