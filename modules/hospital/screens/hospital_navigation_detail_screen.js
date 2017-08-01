@@ -76,6 +76,7 @@ class HospitalNavigationDetailScreen extends Component {
   render () {
     return (
 			<HospitalNavigationDetail
+				detailPage
 				{...this.props}
 				goCreate={(values) => this.goCreate(values)} />
     )

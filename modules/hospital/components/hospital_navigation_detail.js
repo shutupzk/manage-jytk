@@ -62,19 +62,20 @@ export default class HospitalNavigationDetail extends Component {
       return <Loading showLoading />
 		}
 		if (this.props.error) {
-			this.props.showPrompt({text: this.props.error})
+			// this.props.showPrompt({text: this.props.error})
 			return <div>{this.props.error}</div>
 		}
 		let hospital = this.props.hospital
 		const floors = this.state.floors;
 		const building = this.props.building || {}
+		const detailPage = this.props.detailPage || ''
 		console.log('--------this.floors', building.floors, this.state.floors)
     return (
       <div style={{width: '70%', margin: '20px auto'}}>
 				<dl className='flex tb-flex'>
 					<dt>所在医院: </dt>
 					<dd className='select roundDD' style={{borderRadius: 0, width: '50%', padding: 0}}>
-						<select ref='hospitalId' defaultValue={building.hospital && building.hospital.id}>
+						<select ref='hospitalId' disabled={detailPage ? true : false} defaultValue={building.hospital && building.hospital.id}>
 							<option value="">请选择</option>
 							{
 								hospital && hospital.length > 0 ?
@@ -90,9 +91,11 @@ export default class HospitalNavigationDetail extends Component {
 				</dl>
 				<dl className='flex tb-flex'>
 					<dt>楼宇名称: </dt>
-					<dd className='roundDD'><input defaultValue={building.name} type='' ref='buildRef' /></dd>
+					<dd className='roundDD'>
+						<input defaultValue={building.name} type='' ref='buildRef' disabled={detailPage ? true : false} />
+					</dd>
 				</dl>
-				<dl className='flex tb-flex'>
+				<dl style={{display: detailPage ? 'none' : 'block'}} className='flex tb-flex'>
 					<dt>楼层名称</dt>
 					<dd className='roundDD' style={{borderBottom: `1px solid ${theme.bordercolor}`, cursor: 'pointer', color: theme.maincolor, textAlign: 'right'}}
 					onClick={() => {
@@ -115,9 +118,13 @@ export default class HospitalNavigationDetail extends Component {
 					}
 				</div>
 				<footer style={{padding: '.2rem'}}>
-					<button className='btnBG btnBGMain btnBGLitt' onClick={() => {
-						this.clickBtn()
-					}}>确定</button>
+					{
+						!detailPage ?
+							<button className='btnBG btnBGMain btnBGLitt' onClick={() => {
+								this.clickBtn()
+							}}>确定</button>
+						: ''
+					}
 				</footer>
 				<style jsx global>{`
 					dl{
@@ -148,25 +155,28 @@ export default class HospitalNavigationDetail extends Component {
 
 const floorView = (self, floor, iKey) => {
 	const {floors} = self.state
+	const detailPage = self.props.detailPage || ''
 	return (
 		<dl className='flex tb-flex'>
 			<dt>楼层名称: </dt>
-			<dd><input type='text'
-			value={floor.floorNum}
-			onChange={(e) => {
-				let newFloors = []
-				for(const othKey in floors) {
-					if (othKey != iKey) {
-						newFloors.push(floors[othKey])
-					} else {
-						newFloors.push({floorNum: e.target.value, rooms: floor.rooms})
-					}
-				}
-				self.setState({
-					floors: newFloors
-				})
-			}} /></dd>
-			<dd style={{padding: '0 6px', color: theme.maincolor, cursor: 'pointer'}}
+			<dd>
+				<input type='text' disabled={detailPage ? true : false}
+					value={floor.floorNum}
+					onChange={(e) => {
+						let newFloors = []
+						for(const othKey in floors) {
+							if (othKey != iKey) {
+								newFloors.push(floors[othKey])
+							} else {
+								newFloors.push({floorNum: e.target.value, rooms: floor.rooms})
+							}
+						}
+						self.setState({
+							floors: newFloors
+						})
+					}} />
+			</dd>
+			<dd style={{display: detailPage ? 'none' : 'block', padding: '0 6px', color: theme.maincolor, cursor: 'pointer'}}
 				onClick={() => {
 					let newFloor = []
 					for(const othKey in floors) {
@@ -178,7 +188,7 @@ const floorView = (self, floor, iKey) => {
 						floors: newFloor
 					})
 				}}>删除楼层</dd>
-			<dd style={{color: theme.maincolor, cursor: 'pointer'}}
+			<dd style={{display: detailPage ? 'none' : 'block', color: theme.maincolor, cursor: 'pointer'}}
 				onClick={() => {
 					let newRoom = [{name: ''}]
 					let newRooms = newRoom.concat(floor.rooms)
@@ -202,6 +212,7 @@ const floorView = (self, floor, iKey) => {
 
 const roomView = (self, floor, iKey) => {
 	const {floors} = self.state
+	const detailPage = self.props.detailPage || ''
 	return (
 		<div style={{paddingLeft: '.7rem'}}>
 			{
@@ -210,30 +221,32 @@ const roomView = (self, floor, iKey) => {
 						return (
 							<dl className='flex tb-flex' key={index}>
 								<dt>房间名称: </dt>
-								<dd><input type='text'
-									value={floor.rooms[index].name}
-									onChange={(e) => {
-										let newRooms = []
-										for (const othRoomKey in floor.rooms) {
-											if (othRoomKey != index) {
-												newRooms.push(floor.rooms[othRoomKey])
-											} else {
-												newRooms.push({name: e.target.value})
+								<dd>
+									<input type='text' disabled={detailPage ? true : false}
+										value={floor.rooms[index].name}
+										onChange={(e) => {
+											let newRooms = []
+											for (const othRoomKey in floor.rooms) {
+												if (othRoomKey != index) {
+													newRooms.push(floor.rooms[othRoomKey])
+												} else {
+													newRooms.push({name: e.target.value})
+												}
 											}
-										}
-										let newFloors = []
-										for (const othFloorKey in floors) {
-											if (othFloorKey != iKey) {
-												newFloors.push(floors[othFloorKey])
-											} else {
-												newFloors.push({floorNum: floors[othFloorKey].floorNum, rooms: newRooms})
+											let newFloors = []
+											for (const othFloorKey in floors) {
+												if (othFloorKey != iKey) {
+													newFloors.push(floors[othFloorKey])
+												} else {
+													newFloors.push({floorNum: floors[othFloorKey].floorNum, rooms: newRooms})
+												}
 											}
-										}
-										self.setState({
-											floors: newFloors
-										})
-									}} /></dd>
-								<dd style={{padding: '0 6px', color: theme.maincolor}}
+											self.setState({
+												floors: newFloors
+											})
+										}} />
+								</dd>
+								<dd style={{display: detailPage ? 'none' : 'block', padding: '0 6px', color: theme.maincolor}}
 									onClick={() => {
 										let newRooms = []
 										let newFloors = []
