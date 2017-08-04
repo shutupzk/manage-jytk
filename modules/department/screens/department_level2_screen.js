@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import Router from 'next/router'
 import {theme, Prompt, Loading, FilterCard, SelectFilterCard, KeywordCard} from 'components'
 import {ORDERTYPE} from 'config'
-import {isArray, fuzzyQuery} from 'util'
+import {isArray, fuzzyQuery} from 'utils'
 import {DEPARTMENTINFO} from '../config'
 import { ListTitle} from 'modules/common/components'
 import { queryDepartments, showPrompt, updateDepartment, queryHospitals, createDepartment } from '../../../ducks'
@@ -61,7 +61,7 @@ class DepartmentLevel2Screen extends Component {
 	filterCard(departmentsLevel2) {
 		let filterlevelDepartments = departmentsLevel2
 		if (this.state.keyword) {
-			filterlevelDepartments = fuzzyQuery(filterlevelDepartments, this.state.keyword, ['deptSn', 'deptName', 'description'])
+			filterlevelDepartments = fuzzyQuery(filterlevelDepartments, this.state.keyword, ['deptSn', 'deptName'])
 		}
 		if (this.state.status) {
 			filterlevelDepartments = filterlevelDepartments.filter((departmentItem) => {return (departmentItem.parent && departmentItem.parent.deptSn) === this.state.status})
@@ -88,7 +88,7 @@ class DepartmentLevel2Screen extends Component {
 						config= {{selectTitle: '请选择父级科室', valueKey: 'deptSn', titleKey: 'deptName'}}
 						changeStatus={(status) => {this.setState({status: status})}} />
 					<KeywordCard
-						config={{placeholder: '科室编码／科室名称／科室介绍'}}
+						config={{placeholder: '科室编码／科室名称'}}
 						clickfilter={(keyword) => {this.setState({keyword: keyword})}} />
 				</FilterCard>
 				<article style={{textAlign: 'right', paddingBottom: theme.lrmargin}}>

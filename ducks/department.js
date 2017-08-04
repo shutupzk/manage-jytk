@@ -52,7 +52,7 @@ export function department (state = initState, action = {}) {
 // department list
 const QUERY_DEPARTMENTS = gql`
   query {
-    departments {
+    departments(limit: 1000) {
       id
       deptSn
       deptName

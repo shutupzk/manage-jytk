@@ -13,6 +13,7 @@ const PORT = '9003' // 前端端口
 const HOSPITALINFO = {
   hospital_short_name: 'beiyisanyuan',
   hospital_loginlogo: '../static/beiyisanyuan/loginLogo.png',
+  department_level: 2, // 设置一级可以，用于添加按钮的显示。  如果没有默认是2级科室
   footerbar_background_color: '#36486C',
   headerImg: {imgstyle: {height: '.4rem', margin: '.1rem .1rem 0 .2rem'}},
   contact: [

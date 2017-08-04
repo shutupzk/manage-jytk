@@ -46,7 +46,7 @@ export function appointments (state = initState, action = {}) {
 
 const QUERY_APPOINTMENTS = gql`
   query {
-		patients {
+		patients(limit: 1000) {
 			id
 			name
 			patientCards {

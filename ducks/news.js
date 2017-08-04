@@ -52,7 +52,7 @@ export function news (state = initState, action = {}) {
 // department list
 const QUERY_NEWGROUPS = gql`
   query {
-    newsGroups {
+    newsGroups(limit: 1000) {
       id
       type
       hospital{
@@ -209,7 +209,7 @@ export const removeNewsGroup = (client, {id}) => async dispatch => {
 // news list
 const QUERY_NEWS = gql`
   query {
-    newss {
+    newss(limit: 1000) {
 			id
 			title
 			summary

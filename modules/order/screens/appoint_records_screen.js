@@ -62,7 +62,7 @@ class AppointRecordsScreen extends Component {
 					<SelectFilterCard
 						data={ORDERINFO.appoint_visit_status}
 						status={this.state.status}
-						config= {{selectTitle: '全部支付状态', valueKey: 'value', titleKey: 'title'}}
+						config= {{selectTitle: '全部状态', valueKey: 'value', titleKey: 'title'}}
 						changeStatus={(status) => {this.setState({status: status})}} />
 					<KeywordCard
 						config={{placeholder: '患者姓名'}}

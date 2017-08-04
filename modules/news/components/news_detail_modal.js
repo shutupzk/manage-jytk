@@ -94,7 +94,7 @@ const renderDepartmentInfoModal = (self) => {
 			<div style={{padding: '20px 30px'}}>
 				{
 					titleInfo.map((titleInfoItem, iKey) => {
-						if (titleInfoItem.title.indexOf('设置') > -1 || titleInfoItem.title.indexOf('发布时间') > -1) {
+						if (titleInfoItem.title.indexOf('设置') > -1 || titleInfoItem.title.indexOf('发布时间') > -1 || titleInfoItem.title.indexOf('图片') > -1) {
 							return
 						} else {
 							return (

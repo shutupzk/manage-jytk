@@ -40,7 +40,7 @@ export function doctor (state = initState, action = {}) {
 // doctor list
 const QUERY_DOCTORS = gql`
   query {
-		doctors {
+		doctors(limit: 1000) {
 			id
 			doctorSn
 			doctorName

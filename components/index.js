@@ -9,7 +9,6 @@ import NoDataCard from './NoDataCard'
 import LoadErrCard from './LoadErrCard'
 import ErrCard from './ErrCard'
 import PayWay from './PayWay'
-import CalendarCard from './CalendarCard'
 import HeaderBar from './HeaderBar'
 import FooterBar from './FooterBar'
 
@@ -32,7 +31,6 @@ export {
     LoadErrCard,
     ErrCard,
     PayWay,
-    CalendarCard,
     HeaderBar,
     FooterBar
 }

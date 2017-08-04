@@ -58,7 +58,7 @@ export function notices (state = initState, action = {}) {
 // notice groups list
 const QUERY_NOTICESGROUPS = gql`
   query {
-    visitNoticeGroups{
+    visitNoticeGroups(limit: 1000){
 			name
 			id
 			code
@@ -180,7 +180,7 @@ export const updateNoticesGroups = (client, {id, code, name, hospitalId}) => asy
 // news list
 const QUERY_NOTICES = gql`
   query {
-    visitNotices {
+    visitNotices(limit: 1000) {
 			id
 			code
 			title

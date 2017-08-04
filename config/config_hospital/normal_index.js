@@ -12,6 +12,7 @@ const PORT = '9003' // 前端端口
 const HOSPITALINFO = {
   hospital_short_name: 'normal',
   hospital_image: '../static/normal/loginlogo.png',
+  department_level: 2, // 设置一级可以，用于添加按钮的显示。  如果没有默认是2级科室
   hospital_loginlogo: '../static/normal/loginLogo.png',
   footerbar_background_color: '#36486C',
   headerImg: {imgstyle: {height: '.4rem', margin: '.1rem .1rem 0 .2rem'}}, // 配置headerbar logo大小 可以不写
@@ -125,6 +126,10 @@ const ORDERINFO = {
     {title: '设置', value: '', style: {width: '18%'}, apiKey: ''},
   ],
   appoint_visit_status: [
+    {title: '退号待HIS确认', value: '-04'},
+    {title: '取消待HIS确认', value: '-02'},
+    {title: '挂号等待HIS确认', value: '-01'},
+    {title: '挂号失败', value: '00'},
     {title: '待取号', value: '01'},
     {title: '已取消', value: '02'},
     {title: '已取号', value: '03'},

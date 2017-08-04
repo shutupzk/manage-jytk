@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 // import { Router } from '../../../routes'
 import Router from 'next/router'
-import {theme, Prompt, Loading} from 'components'
-import {isArray} from 'utils'
+import {theme, Prompt, Loading, FilterCard, SelectFilterCard, KeywordCard} from 'components'
+import {isArray, fuzzyQuery} from 'utils'
+import {HOSPITALINFO} from 'config'
 import {DEPARTMENTINFO} from '../config'
 import {ListTitle} from 'modules/common/components'
 import { queryDepartments, showPrompt, updateDepartment, createDepartment, queryHospitals } from '../../../ducks'
@@ -55,6 +56,17 @@ class DepartmentLevel1Screen extends Component {
 		this.setState({showModal: false, selectedDepartment: {}, modalType: ''})
 	}
 
+	filterCard(departmentsLevel1) {
+		let filterlevelDepartments = departmentsLevel1
+		if (this.state.keyword) {
+			filterlevelDepartments = fuzzyQuery(filterlevelDepartments, this.state.keyword, ['deptSn', 'deptName'])
+		}
+		if (this.state.status) {
+			filterlevelDepartments = filterlevelDepartments.filter((departmentItem) => {return (departmentItem.parent && departmentItem.parent.deptSn) === this.state.status})
+		}
+		return filterlevelDepartments
+	}
+
   render () {
     if (this.props.loading) {
       return <Loading showLoading />
@@ -64,13 +76,23 @@ class DepartmentLevel1Screen extends Component {
 			// return console.log(this.props.error)
 			return <div>{this.props.error}</div>
 		}
-		let departmentsLevel1 = this.props.departmentsLevel1
+		let departmentsLevel1 = this.filterCard(this.props.departmentsLevel1)
 		console.log('--------depar', departmentsLevel1)
     return (
       <div>
+				<FilterCard>
+					<KeywordCard
+						config={{placeholder: '科室编码／科室名称'}}
+						clickfilter={(keyword) => {this.setState({keyword: keyword})}} />
+				</FilterCard>
 				<article style={{textAlign: 'right', paddingBottom: theme.lrmargin}}>
 					<button style={{width: '1rem'}} className='btnBG btnBGMain btnBGLitt'
-						onClick={() => this.setState({showModal: true, modalType: 'add'})}>添加一级科室</button>
+						onClick={() => this.setState({showModal: true, modalType: 'add'})}>
+						{
+							HOSPITALINFO && HOSPITALINFO.department_level && HOSPITALINFO.department_level === 1 ?
+								'添加科室'
+							: '添加一级科室'
+						}</button>
 				</article>
 				<DepartmentDetailModal selectedDepartment={this.state.selectedDepartment}
 					showModal={this.state.showModal}

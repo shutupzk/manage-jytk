@@ -34,7 +34,7 @@ export function hospital (state = initState, action = {}) {
 // query hospital
 const QUERY_HOSPITALS = gql`
   query {
-		hospitals {
+		hospitals(limit: 1000) {
 			id
       hospitalName
       hospitalCode

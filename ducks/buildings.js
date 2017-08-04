@@ -64,7 +64,7 @@ export function buildings (state = initState, action = {}) {
 // building list
 const QUERY_BUILDINGS = gql`
   query {
-		buildings {
+		buildings(limit: 1000) {
 			id
 			name
 			position
