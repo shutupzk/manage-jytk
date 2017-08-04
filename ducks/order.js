@@ -37,7 +37,7 @@ export function order (state = initState, action = {}) {
 // order list
 const QUERY_CONSULATIONS = gql`
   query {
-		consultations(limit: 1000){
+		consultations(limit: 100){
 			id
 			type
 			status
