@@ -17,9 +17,9 @@ const HOSPITALINFO = {
   footerbar_background_color: '#36486C',
   headerImg: {imgstyle: {height: '.4rem', margin: '.1rem .1rem 0 .2rem'}},
   contact: [
-    { title: '网站链接', values: ['http://www.pkuih.edu.cn/'] },
-    { title: '联系电话', values: ['010-00000000']},
-    { title: '京ICP备14005009号', values: ['京ICP备14005009号'] }
+    { title: '网站链接', values: ['http://www.puh3.net.cn/'] },
+    { title: '联系电话', values: ['010-8226669']},
+    { title: '京ICP备05082115号', values: ['京ICP备05082115号'] }
   ]
 }
 
@@ -38,8 +38,9 @@ const MAINFUNCTION = [
   {
     title: '医生管理',
     short_name: 'doctor',
-    navigateName: '/doctor/manage_schedule',
+    navigateName: '/doctor/manage_info',
     children: [
+      {title: '资料管理', navigateName: '/doctor/manage_info', color: '#5D75A6',},
       {title: '排班管理', navigateName: '/doctor/manage_schedule', color: '#5D75A6',},
       {title: '费用管理', navigateName: '/doctor/manage_fee', color: '#5D75A6'},
       {title: '全部排版', navigateName: '/doctor/manage_all_schedule', color: '#5D75A6'},

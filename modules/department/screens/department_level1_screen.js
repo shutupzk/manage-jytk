@@ -32,14 +32,14 @@ class DepartmentLevel1Screen extends Component {
 		let error;
 		if (modalType === 'modify') {
 			values.id = this.state.selectedDepartment.id
-			values.level = '1'
+			values.level = HOSPITALINFO && HOSPITALINFO.department_level && HOSPITALINFO.department_level === 1 ? '2' : '1'
 			error = await this.props.updateDepartment(this.props.client, values)
 		}
 		else if (modalType === 'add') {
 			if (!values.deptSn) {this.props.showPrompt({text: '科室编码必填'}); return;}
 			if (!values.deptName) {this.props.showPrompt({text: '科室名称必填'}); return;}
 			if (!values.hospitalId) {this.props.showPrompt({text: '所属医院必选'}); return;}
-			values.level = '1'
+			values.level = HOSPITALINFO && HOSPITALINFO.department_level && HOSPITALINFO.department_level === 1 ? '2' : '1'
 			error = await this.props.createDepartment(this.props.client, values)
 		}
 		if (error) {
@@ -58,6 +58,7 @@ class DepartmentLevel1Screen extends Component {
 
 	filterCard(departmentsLevel1) {
 		let filterlevelDepartments = departmentsLevel1
+		console.log('--------depar10000', departmentsLevel1)
 		if (this.state.keyword) {
 			filterlevelDepartments = fuzzyQuery(filterlevelDepartments, this.state.keyword, ['deptSn', 'deptName'])
 		}

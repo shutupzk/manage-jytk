@@ -91,7 +91,7 @@ const modalHeaderView = (self) => {
 
 const renderDepartmentInfoModal = (self) => {
 	// const modalHeight = document && document.body.clientWidth * 0.3
-	const {selectedData, modalType, titleInfo, noticesGroup, hospital, page} = self.props;
+	const {selectedData, modalType, titleInfo, noticesGroups, hospital, page} = self.props;
 	if (modalType === 'delete') {
 		return (
 			<div style={{padding: '.3rem .25rem', color: theme.mainfontcolor}}>您确定要删除<span style={{color: theme.maincolor}}>{selectedData.hospitalName}</span>吗？</div>

@@ -13,7 +13,7 @@ const HOSPITALINFO = {
   hospital_short_name: 'xianlin',
   hospital_image: '../static/xianlin/loginlogo.png',
   department_level: 1, // 设置一级可以，用于添加按钮的显示。  如果没有默认是2级科室
-  hospital_loginlogo: '../static/xianlin/loginLogo.png',
+  hospital_loginlogo: '../static/xianlin/loginlogo.png',
   footerbar_background_color: '#36486C',
   headerImg: {imgstyle: {height: '.4rem', margin: '.1rem .1rem 0 .2rem'}}, // 配置headerbar logo大小 可以不写
   contact: [
