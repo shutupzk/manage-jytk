@@ -81,14 +81,12 @@ const DOCTORINFO = {
     {title: '基本信息', value: 0},
     {title: '服务设置', value: 1},
   ],
-  schedule_list_title: [
+  doctor_info_list_title: [
     {title: '编号', value: '', style: {width: '8%'}, apiKey: ''},
-    {title: '医生工号', value: '', style: {width: '12%'}, apiKey: ''},
-    {title: '姓名', value: '', style: {width: '12%'}, apiKey: ''},
+    {title: '医生工号', value: '', style: {width: '12%'}, apiKey: 'doctorSn'},
+    {title: '姓名', value: '', style: {width: '12%'}, apiKey: 'doctorName'},
     {title: '所属机构', value: '', style: {width: '20%'}, apiKey: ''},
     {title: '专业', value: '', style: {width: '12%'}, apiKey: ''},
-    {title: '亚专业', value: '', style: {width: '12%'}, apiKey: ''},
-    {title: '服务开通状态', value: '', style: {width: '14%'}, apiKey: ''},
     {title: '设置', value: '', style: {width: '8%', textAlign: 'center'}, apiKey: ''},
   ],
   fee_list_title: [
@@ -101,6 +99,16 @@ const DOCTORINFO = {
     {title: '图文问诊', value: '', style: {width: '8%', textAlign: 'center'}, apiKey: ''},
     {title: '快速问诊', value: '', style: {width: '8%', textAlign: 'center'}, apiKey: ''},
     {title: '视频问诊', value: '', style: {width: '8%', textAlign: 'center'}, apiKey: ''},
+    {title: '设置', value: '', style: {width: '8%', textAlign: 'center'}, apiKey: ''},
+  ],
+  schedule_list_title: [
+    {title: '编号', value: '', style: {width: '8%'}, apiKey: ''},
+    {title: '医生工号', value: '', style: {width: '12%'}, apiKey: ''},
+    {title: '姓名', value: '', style: {width: '12%'}, apiKey: ''},
+    {title: '所属机构', value: '', style: {width: '20%'}, apiKey: ''},
+    {title: '专业', value: '', style: {width: '12%'}, apiKey: ''},
+    {title: '亚专业', value: '', style: {width: '12%'}, apiKey: ''},
+    {title: '服务开通状态', value: '', style: {width: '14%'}, apiKey: ''},
     {title: '设置', value: '', style: {width: '8%', textAlign: 'center'}, apiKey: ''},
   ]
 }

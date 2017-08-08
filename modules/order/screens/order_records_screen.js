@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 // import { Router } from '../../../routes'
 import Router from 'next/router'
-import {theme, Prompt, Loading, FilterCard, SelectFilterCard, KeywordCard} from 'components'
+import {theme, Prompt, Loading, FilterCard, SelectFilterCard, KeywordCard, PageCard} from 'components'
 import {ORDERINFO} from 'config'
 import {fuzzyQuery} from 'utils'
 import {OrderTab, OrderListItem, OrderTipModal} from '../components'
@@ -17,12 +17,21 @@ class OrderRecordsScreen extends Component {
       status: '', // 空 代表全部
       keyword: '',
       selectOrder: {},
-      showModal: false
+      showModal: false,
+      page: 1,
     }
   }
 
   componentWillMount() {
-    this.props.queryOrderList(this.props.client)
+    this.queryOrderList()
+  }
+
+  async queryOrderList() {
+    let error = await this.props.queryOrderList(this.props.client, {limit: 10, skip: (this.state.page - 1) * 10})
+    if (error) {
+      this.props.showPrompt({text: error})
+      return
+    }
   }
 
 	async clickModalOk() {
@@ -36,7 +45,7 @@ class OrderRecordsScreen extends Component {
 			this.props.showPrompt({text: error})
 			return
 		}
-		await this.props.queryOrderList(this.props.client)
+		this.queryOrderList()
 	}
 
   filterCard(orderlist) {
@@ -62,13 +71,23 @@ class OrderRecordsScreen extends Component {
 						data={ORDERINFO.order_type}
 						status={this.state.status}
 						config= {{selectTitle: '全部订单类型', valueKey: 'value', titleKey: 'title'}}
-						changeStatus={(status) => {this.setState({status: status})}} />
+						changeStatus={(status) => {
+              this.setState({
+                page: 1, status: status
+              }, () => {
+                this.queryOrderList()
+              })}
+            } />
 					{/* <KeywordCard
 						config={{placeholder: '资讯标题／资讯类型'}}
 						clickfilter={(keyword) => {this.setState({keyword: keyword})}} /> */}
 				</FilterCard>
         {renderModal(this)}
-        <OrderTab status={this.state.status} changeStatus={(status) => {this.setState({status: status})}} />
+        <OrderTab status={this.state.status} changeStatus={(status) => {this.setState({
+            page: 1, status: status
+          }, () => {
+            this.queryOrderList()
+          })}} />
         {/* <div className={'orderConTop'} style={{marginBottom: theme.tbmargin}}>
           <button className='right btnBGGray btnBGLitt'
             style={{height: '.24rem', lineHeight: '.24rem',backgroundImage: 'linear-gradient(-180deg, #FAFAFA 0%, #F2F2F2 100%)', 
@@ -83,16 +102,31 @@ class OrderRecordsScreen extends Component {
           orderlist && orderlist.length > 0 ?
             orderlist.map((orderItem, iKey) => {
               return (
-                <div key={iKey}>
-                  <OrderListItem data={orderItem}
-                    clickConfirm={(data) => {
-                      this.setState({selectOrder: data, showModal: true})
-                    }} />
-                </div>
+                <OrderListItem data={orderItem} key={iKey}
+                  clickConfirm={(data) => {
+                    this.setState({selectOrder: data, showModal: true})
+                  }} />
               )
             })
           : 'no data'
         }
+        <PageCard data={orderlist} page={this.state.page}
+          clickPage={(type) => {
+            const prevPage = this.state.page
+            let curPage
+            if (type === 'prev') {
+              curPage = prevPage - 1
+            } else if (type === 'next') {
+              curPage = prevPage + 1
+            } else {
+              curPage = type
+            }
+            this.setState({
+              page: curPage
+            }, () => {
+              this.queryOrderList()
+            })
+          }} />
       </div>
     )
   }

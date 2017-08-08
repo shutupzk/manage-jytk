@@ -6,7 +6,7 @@ import {DOCTORINFO} from 'config'
 const titleInfo = [
 	{title: '医生工号', value: '', style: {width: '12%'}, apiKey: 'doctorSn', type: 'input', notModify: true},
 	{title: '医生姓名', value: '', style: {width: '12%'}, apiKey: 'doctorName', type: 'input', notModify: true},
-	{title: '擅长领域', value: '', style: {width: '20%'}, apiKey: 'major', type: 'input'},
+	{title: '擅长领域', value: '', style: {width: '20%'}, apiKey: 'major', type: 'textarea'},
 	{title: '医生性别', value: '', style: {width: '12%'}, apiKey: 'sex', type: 'input'},
 	{title: '是否推荐', value: '', style: {width: '12%'}, apiKey: 'recommend', type: 'checkbox'},
 	{title: '是否热门', value: '', style: {width: '12%'}, apiKey: 'hot', type: 'checkbox'},

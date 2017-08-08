@@ -15,7 +15,7 @@ export default class OrderListItem extends Component {
 		const data = this.props.data || {}
 		const props = this.props
     return (
-			<div style={{border: `1px solid ${theme.nbordercolor}`,borderRadius: 3, margin: `${theme.tbmargin} 0px`, background: '#fff', color: theme.mainfontcolor}}>
+			<div key={data.id} style={{border: `1px solid ${theme.nbordercolor}`,borderRadius: 3, margin: `${theme.tbmargin} 0px`, background: '#fff', color: theme.mainfontcolor}}>
         <header style={{background: '#E8EEFA', lineHeight: '.24rem', padding: `${theme.midmargin} ${theme.lrmargin}`, fontSize: '.12rem'}}>
           {/* <input type="checkbox" id='orderId' className="left" style={{background: 'transparent',margin: '.06rem .06rem 0 0'}} /> */}
           <p className="left">{data.createdAt|| '无'}</p>
@@ -27,7 +27,7 @@ export default class OrderListItem extends Component {
 					{
 						ORDERINFO.order_list_title.map((item, iKey) => {
 							const orderCon = `orderCon${iKey}`
-							return eval(orderCon + '(data, item, props)')
+							return eval(orderCon + '(item, props, iKey)')
 						})
 					}
 					<article className='clearfix'></article>
@@ -37,47 +37,47 @@ export default class OrderListItem extends Component {
   }
 }
 
-const orderCon0 = (data, item) => {
+const orderCon0 = (item, props, iKey) => {
 	return (
-		<OrderItemDoctor data={data} key={item.id} />
+		<OrderItemDoctor data={props.data} key={iKey} />
 	)
 }
 
-const normalHtml = (data, item, style) => {
+const normalHtml = (item, data, iKey, style) => {
 	style.color = theme.mainfontcolor
 	return (
-		<li className={'left'} key={item.id} style={style}>
+		<li className={'left'} key={iKey} style={style}>
 			￥{data|| '无'}
 		</li>
 	)
 }
 
-const orderCon1 = (data, item) => {
-	return (normalHtml(data.fee, item, Object.assign({}, item.style, {lineHeight: '.54rem'})))
+const orderCon1 = (item, props, iKey) => {
+	return (normalHtml(item, props.data && props.data.fee, iKey, Object.assign({}, item.style, {lineHeight: '.54rem'})))
 }
 
-const orderCon2 = (data, item) => {
+const orderCon2 = (item, props, iKey) => {
 	// item.style.lineHeight = '.54rem'
-	return (normalHtml(data.count, item, Object.assign({}, item.style, {lineHeight: '.54rem'})))
+	return (normalHtml(item, props.data && props.data.count, iKey, Object.assign({}, item.style, {lineHeight: '.54rem'})))
 }
 
-const orderCon3 = (data, item) => {
+const orderCon3 = (item, props, iKey) => {
 	item.style.color = theme.mainfontcolor
 	return (
-		<li className={'left'} key={item.id} style={item.style}>
-			<p>{data.patient && data.patient.user && data.patient.user.name|| '无'}</p>
-			<p>{data.patient && data.patient.user && data.patient.user.phone|| '无'}</p>
+		<li className={'left'} key={iKey} style={item.style}>
+			<p>{props.data && props.data.patient && props.data.patient.user && props.data.patient.user.name|| '无'}</p>
+			<p>{props.data && props.data.patient && props.data.patient.user && props.data.patient.user.phone|| '无'}</p>
 		</li>
 	)
 }
 
-const orderCon4 = (data, item, props) => {
+const orderCon4 = (item, props, iKey) => {
 	item.style.color = theme.mainfontcolor
-	const curStatus = ORDERINFO.order_type.filter((item) => item.value === data.status) || []
+	const curStatus = ORDERINFO.order_type.filter((item) => {return item.value === props.data.status}) || []
 	return (
-		<li className={'left'} key={item.id} style={item.style}>
+		<li className={'left'} key={iKey} style={item.style}>
 			<p style={{fontSize: 12}}>{curStatus[0] && curStatus[0].title || '无'}</p>
-			<article style={{display: data.payment ? 'block' : 'none', lineHeight: '18px'}} onClick={() => props.clickConfirm(data)}>退款</article>
+			<article style={{display: props.data && props.data.payment ? 'block' : 'none', lineHeight: '18px'}} onClick={() => props.clickConfirm(props.data)}>退款</article>
 			<article style={{lineHeight: '16px'}} onClick={() => {Router.push(`/order/detail?id=${data.id}`)}}>查看详情</article>
 			<style jsx>{`
 				article{
@@ -90,7 +90,8 @@ const orderCon4 = (data, item, props) => {
 	)
 }
 
-const orderCon5 = (data, item) => {
+const orderCon5 = (item, props, iKey) => {
+	const data = props.data || {}
 	item.style.color = theme.mainfontcolor
 	let payway = {title: '', imgurl: ''}
 	if (data.payment && data.payment.payWay === 'WECHAT') {
@@ -100,11 +101,11 @@ const orderCon5 = (data, item) => {
 	} else if (data.payment && data.payment.payWay === 'NATIVE') {
 		payway = {title: '微信支付', imgurl: 'wxPay'}
 	} 
-	let html = <li className={'left'} key={item.id} style={item.style}>
+	let html = <li className={'left'} key={iKey} style={item.style}>
 				<p>{'无'}</p>
 			</li>
 	if (data.payment) {
-		html = <li className={'left'} key={item.id} style={item.style}>
+		html = <li className={'left'} key={iKey} style={item.style}>
 					<p style={{color: theme.nfontcolor}}><span style={{fontSize: 12}}>实付&nbsp;</span><strong style={{color: '#FF8A00'}}>￥{data.payment && data.payment.totalFee|| '无'}</strong></p>
 					<p style={{lineHeight: '18px'}}>{data.payment.createdAt|| '无'}</p>
 					<p className='flex tb-flex lr-flex' style={{lineHeight: '.16rem'}}>

@@ -11,6 +11,7 @@ import ErrCard from './ErrCard'
 import PayWay from './PayWay'
 import HeaderBar from './HeaderBar'
 import FooterBar from './FooterBar'
+import PageCard from './PageCard'
 
 export {
     CardWhite,
@@ -32,7 +33,8 @@ export {
     ErrCard,
     PayWay,
     HeaderBar,
-    FooterBar
+    FooterBar,
+    PageCard
 }
 
 

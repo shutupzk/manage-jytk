@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 // import { Router } from '../../../routes'
 import Router from 'next/router'
-import {theme, Prompt, Loading} from 'components'
+import {theme, Prompt, Loading, PageCard} from 'components'
 import {ORDERINFO, DOCTORINFO, HOSPITALINFO, HOSPITAL_NAME} from 'config'
 import {TopFilterCard, ListTitle} from 'modules/common/components'
+import {isArray} from 'utils'
 import { queryDoctors, showPrompt, createDoctor, updateDoctor } from '../../../ducks'
 import { connect } from 'react-redux'
 import {ManageListItem, ManageDoctorModal, DoctorDetailModal} from '../components'
@@ -14,15 +15,22 @@ class ManageDoctorInfoScreen extends Component {
     this.state = {
       status: '', // 空 代表全部
 			keyword: '',
-			isfilterkeyword: false,
 			showModal: false,
 			selectedDoctor: {},
-			selectedType: 0,
-			modalType: ''
+			modalType: '',
+			page: 1
     }
   }
   componentWillMount() {
-    this.props.queryDoctors(this.props.client)
+    this.queryDoctors()
+	}
+
+	async queryDoctors() {
+		let error = await this.props.queryDoctors(this.props.client, {limit: 10, skip: (this.state.page - 1) * 10})
+    if (error) {
+      this.props.showPrompt({text: error})
+      return
+    }
 	}
 	
 	async clickModalOk(data, modalType, values) {
@@ -34,6 +42,7 @@ class ManageDoctorInfoScreen extends Component {
 		else if (modalType === 'add') {
 			console.log('------add----', values)
 			error = await this.props.createDoctor(this.props.client, values)
+			this.setState({page: 1})
 		}
 		if (error) {
 			this.onHide();
@@ -41,7 +50,7 @@ class ManageDoctorInfoScreen extends Component {
 			// return
 		}
 		this.onHide();
-		this.props.queryDoctors(this.props.client)
+		this.queryDoctors()
 	}
 
 	onHide() {
@@ -78,6 +87,7 @@ class ManageDoctorInfoScreen extends Component {
 			return <div>{this.props.error}</div>
 		}
 		let doctors = this.filterCard(this.props.doctors)
+		console.log('-----doctors', DOCTORINFO.doctor_info_list_title)
 		// let doctors = []
     return (
       <div>
@@ -97,18 +107,35 @@ class ManageDoctorInfoScreen extends Component {
 					clickfilter={() => this.filterCard(doctors, true)}
 					placeholder='医生姓名/专业/亚专业/服务等'
           data={ORDERINFO.order_type} /> */}
-        <ListTitle data={DOCTORINFO.doctor_info_list_title} />
+        <ListTitle data={isArray(DOCTORINFO.doctor_info_list_title) ? DOCTORINFO.doctor_info_list_title : []} />
 				{
 					doctors && doctors.length > 0 ?
 						doctors.map((doctor, iKey) => {
 							return (
-								<ManageListItem data={doctor} key={iKey} index={iKey}
-									titleInfo={DOCTORINFO.doctor_info_list_title}
+								<ManageListItem data={doctor} key={iKey} index={iKey + ((this.state.page -1)*10)}
+									titleInfo={isArray(DOCTORINFO.doctor_info_list_title) ? DOCTORINFO.doctor_info_list_title : []}
 									clickShowModal={(item, modalType) => {this.setState({showModal: true, selectedDoctor: item, modalType: modalType})}} />
 							)
 						})
 					: 'no datas'
 				}
+        <PageCard data={doctors} page={this.state.page}
+          clickPage={(type) => {
+            const prevPage = this.state.page
+            let curPage
+            if (type === 'prev') {
+              curPage = prevPage - 1
+            } else if (type === 'next') {
+              curPage = prevPage + 1
+            } else {
+              curPage = type
+            }
+            this.setState({
+              page: curPage
+            }, () => {
+              this.queryDoctors()
+            })
+          }} />
       </div>
     )
   }

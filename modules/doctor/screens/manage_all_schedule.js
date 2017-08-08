@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 // import { Router } from '../../../routes'
 import Router from 'next/router'
-import {theme, Prompt, Loading} from 'components'
+import {theme, Prompt, Loading, PageCard} from 'components'
 import {ORDERINFO, DOCTORINFO, HOSPITALINFO} from 'config'
 import {TopFilterCard, ListTitle} from 'modules/common/components'
 import { queryDoctors, showPrompt } from '../../../ducks'
@@ -13,18 +13,20 @@ class ManageAllScheduleScreen extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      status: '', // 空 代表全部
-			keyword: '',
-			isfilterkeyword: false,
-			showModal: false,
-			selectedDoctor: {},
-			selectedType: 0
     }
   }
 
   componentWillMount() {
-    this.props.queryDoctors(this.props.client)
+    // this.queryDoctors()
   }
+
+	async queryDoctors() {
+		let error = await this.props.queryDoctors(this.props.client, {limit: 10, skip: (this.state.page - 1) * 10})
+    if (error) {
+      this.props.showPrompt({text: error})
+      return
+    }
+	}
 
   render () {
     if (this.props.loading) {
@@ -48,8 +50,24 @@ class ManageAllScheduleScreen extends Component {
 						>快速图文问诊</span>
 					<p className='clearfix'></p>
 				</div>
-
 				{tableView(this)}
+        {/* <PageCard data={this.props.doctors} page={this.state.page}
+          clickPage={(type) => {
+            const prevPage = this.state.page
+            let curPage
+            if (type === 'prev') {
+              curPage = prevPage - 1
+            } else if (type === 'next') {
+              curPage = prevPage + 1
+            } else {
+              curPage = type
+            }
+            this.setState({
+              page: curPage
+            }, () => {
+              this.queryDoctors()
+            })
+          }} /> */}
       </div>
     )
   }

@@ -17,7 +17,7 @@ export default class Navigation extends Component {
         {
           data && data.map((item, itemKey) => {
             return (
-              <div>
+              <div key={itemKey}>
                 {
                   item.childs && item.childs.length > 0 ?
                     levelTowHtml(this, item, itemKey)

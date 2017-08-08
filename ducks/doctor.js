@@ -39,8 +39,8 @@ export function doctor (state = initState, action = {}) {
 
 // doctor list
 const QUERY_DOCTORS = gql`
-  query {
-		doctors(limit: 1000) {
+  query($skip: Int, $limit: Int) {
+		doctors(limit: $limit, skip: $skip) {
 			id
 			doctorSn
 			doctorName
@@ -79,12 +79,12 @@ const QUERY_DOCTORS = gql`
 	}
 `
 
-export const queryDoctors = (client) => async dispatch => {
+export const queryDoctors = (client, {limit, skip}) => async dispatch => {
   dispatch({
     type: DOCTOR_QUERY_DOCTOR
   })
   try {
-		const data = await client.query({ query: QUERY_DOCTORS, fetchPolicy: 'network-only'})
+		const data = await client.query({ query: QUERY_DOCTORS, variables: { limit, skip }, fetchPolicy: 'network-only'})
     if (data.error) {
       dispatch({
         type: DOCTOR_QUERY_DOCTOR_FAIL,

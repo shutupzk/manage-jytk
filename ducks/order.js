@@ -36,8 +36,8 @@ export function order (state = initState, action = {}) {
 
 // order list
 const QUERY_CONSULATIONS = gql`
-  query {
-		consultations(limit: 100){
+  query($skip: Int, $limit: Int) {
+		consultations(limit: $limit, skip: $skip){
 			id
 			type
 			status
@@ -83,13 +83,13 @@ const QUERY_CONSULATIONS = gql`
 	}
 `
 
-export const queryOrderList = (client) => async dispatch => {
+export const queryOrderList = (client, {limit, skip}) => async dispatch => {
   dispatch({
     type: ORDER_QUERY_ORDER
   })
   try {
-		const data = await client.query({ query: QUERY_CONSULATIONS})
-		console.log('------order', data)
+		const data = await client.query({ query: QUERY_CONSULATIONS, variables: { limit, skip }, fetchPolicy: 'network-only'})
+		console.log('------limit', limit, '---skip', skip)
     if (data.error) {
       return dispatch({
         type: ORDER_QUERY_ORDER_FAIL,
@@ -105,7 +105,8 @@ export const queryOrderList = (client) => async dispatch => {
     dispatch({
       type: ORDER_QUERY_ORDER_FAIL,
       error: e.message
-    })
+		})
+		return e.message
   }
 }
 

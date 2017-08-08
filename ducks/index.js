@@ -8,6 +8,7 @@ import {news, queryNews, queryNewGroups, createGroups, updateNewsGroup, removeNe
 import {buildings, createbuilding, createFloor, createRoom, queryBuildings, queryBuildingDetail, updateBuilding, updateFloor, updateRoom} from './buildings'
 import {notices, createVisitNotice, querynotices, queryNoticesGroups, createNoticesGroups, updateNoticesGroups, updateVisitNotice} from './notice'
 import {appointments, queryAppointments, cancelAppointment, queryAppointmentDetail} from './appoint'
+import {schedule, querySchedules} from './schedule'
 
 // key
 export {
@@ -20,7 +21,8 @@ export {
     news,
     buildings,
     notices,
-    appointments
+    appointments,
+    schedule
 }
 
 // action
@@ -74,5 +76,6 @@ export {
     updateVisitNotice,
     queryAppointments,
     cancelAppointment,
-    queryAppointmentDetail
+    queryAppointmentDetail,
+    querySchedules
 }

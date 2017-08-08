@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 // import { Router } from '../../../routes'
 import Router from 'next/router'
-import {theme, Prompt, Loading} from 'components'
+import {theme, Prompt, Loading, PageCard} from 'components'
 import {ORDERINFO, DOCTORINFO, HOSPITALINFO, HOSPITAL_NAME} from 'config'
 import {TopFilterCard, ListTitle} from 'modules/common/components'
 import { queryDoctors, showPrompt, createDoctor, updateDoctor } from '../../../ducks'
@@ -14,15 +14,23 @@ class ManageScheduleScreen extends Component {
     this.state = {
       status: '', // 空 代表全部
 			keyword: '',
-			isfilterkeyword: false,
 			showModal: false,
 			selectedDoctor: {},
 			selectedType: 0,
-			modalType: ''
+			modalType: '',
+			page: 1
     }
   }
   componentWillMount() {
-    this.props.queryDoctors(this.props.client)
+    this.queryDoctors()
+	}
+
+	async queryDoctors() {
+		let error = await this.props.queryDoctors(this.props.client, {limit: 10, skip: (this.state.page - 1) * 10})
+    if (error) {
+      this.props.showPrompt({text: error})
+      return
+    }
 	}
 	
 	async clickModalOk(values) {
@@ -35,7 +43,7 @@ class ManageScheduleScreen extends Component {
 			return
 		}
 		this.onHide();
-		this.props.queryDoctors(this.props.client)
+		this.queryDoctors()
 	}
 
 	onHide() {
@@ -98,6 +106,23 @@ class ManageScheduleScreen extends Component {
 						})
 					: 'no datas'
 				}
+        <PageCard data={doctors} page={this.state.page}
+          clickPage={(type) => {
+            const prevPage = this.state.page
+            let curPage
+            if (type === 'prev') {
+              curPage = prevPage - 1
+            } else if (type === 'next') {
+              curPage = prevPage + 1
+            } else {
+              curPage = type
+            }
+            this.setState({
+              page: curPage
+            }, () => {
+              this.queryDoctors()
+            })
+          }} />
       </div>
     )
   }

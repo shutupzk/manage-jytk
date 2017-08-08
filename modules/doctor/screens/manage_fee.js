@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 // import { Router } from '../../../routes'
 import Router from 'next/router'
-import {theme, Prompt, Loading, FilterCard, SelectFilterCard, KeywordCard} from 'components'
+import {theme, Prompt, Loading, FilterCard, SelectFilterCard, KeywordCard, PageCard} from 'components'
 import {ORDERINFO, DOCTORINFO, HOSPITALINFO} from 'config'
 import {TopFilterCard, ListTitle} from 'modules/common/components'
 import {fuzzyQuery} from 'utils'
@@ -16,16 +16,24 @@ class ManageFeeScreen extends Component {
     this.state = {
       status: '', // 空 代表全部
 			keyword: '',
-			isfilterkeyword: false,
 			showModal: false,
 			selectedDoctor: {},
-			selectedType: 0
+			selectedType: 0,
+			page: 1
     }
   }
 // , quikePrice, imageAndTextPrice, videoPrice
   componentWillMount() {
-    this.props.queryDoctors(this.props.client)
+    this.queryDoctors()
   }
+
+	async queryDoctors() {
+		let error = await this.props.queryDoctors(this.props.client, {limit: 10, skip: (this.state.page - 1) * 10})
+    if (error) {
+      this.props.showPrompt({text: error})
+      return
+    }
+	}
 	
 	async clickModalOk(values) {
 		let error;
@@ -37,7 +45,7 @@ class ManageFeeScreen extends Component {
 			return
 		}
 		this.onHide();
-		this.props.queryDoctors(this.props.client)
+		this.queryDoctors()
 	}
 
 	onHide() {
@@ -93,6 +101,23 @@ class ManageFeeScreen extends Component {
 						})
 					: 'no datas'
 				}
+        <PageCard data={doctors} page={this.state.page}
+          clickPage={(type) => {
+            const prevPage = this.state.page
+            let curPage
+            if (type === 'prev') {
+              curPage = prevPage - 1
+            } else if (type === 'next') {
+              curPage = prevPage + 1
+            } else {
+              curPage = type
+            }
+            this.setState({
+              page: curPage
+            }, () => {
+              this.queryDoctors()
+            })
+          }} />
       </div>
     )
   }
