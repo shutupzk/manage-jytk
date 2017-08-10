@@ -4,8 +4,9 @@ import withData from 'config/withData'
 
 // 医院名称
 const HOSPITAL_NAME = '北大医疗标准管理平台'
-const API_SERVER = '218.58.137.218:9002'
+// const API_SERVER = '218.58.137.218:9002'
 // const API_SERVER = '120.92.57.18:9198'
+const API_SERVER = 'api.bysy.uthealth.com.cn'
 const PORT = '9003' // 前端端口
 
 // 医院信息
@@ -83,6 +84,14 @@ const MAINFUNCTION = [
         {title: '指南类型', navigateName: '/hospital/hospital_visitGuide_type',},
         {title: '指南管理', navigateName: '/hospital/hospital_visitGuide',}
       ]}
+    ]
+  },
+  {
+    title: '用户管理',
+    short_name: 'profile',
+    navigateName: '/profile/update_password',
+    children: [
+      {title: '修改密码', navigateName: '/profile/update_password', color: '#5D75A6',}
     ]
   }
 ]

@@ -3,7 +3,6 @@ import gql from 'graphql-tag'
 import axios from 'axios'
 import { API_SERVER } from '../config'
 
-const PROFILE_USER_SAVEPHONE = 'profile/user/savephone'
 const PROFILE_USER_SIGNUP = 'profile/user/signup'
 const PROFILE_USER_SIGNUP_SUCCESS = 'profile/user/signup/success'
 const PROFILE_USER_SIGNUP_FAIL = 'profile/user/signup/fail'
@@ -73,7 +72,7 @@ export function user (state = initState, action = {}) {
       return Object.assign(
         {},
         state,
-        { data: Object.assign({}, state.data, { token: action.token, id: action.userId, username: action.username, password: action.password }) },
+        { data: Object.assign({}, state.data, { token: action.token, id: action.adminId, username: action.username, password: action.password }) },
         { loading: false, error: null }
       )
     case PROFILE_USER_SIGNOUT_SUCCESS:
@@ -95,13 +94,6 @@ export function user (state = initState, action = {}) {
         {},
         state,
         { data: Object.assign({}, state.data, { password: action.password }) },
-        { loading: false, error: null }
-      )
-    case PROFILE_USER_SAVEPHONE:
-      return Object.assign(
-        {},
-        state,
-        { data: Object.assign({}, state.data, { phone: action.phone, password: action.password }) },
         { loading: false, error: null }
       )
     case PROFILE_VERIFY_CODE_SUCCESS:
@@ -175,101 +167,45 @@ export const signin = ({ username, password }) => async (dispatch) => {
   let localUsername = await localforage.getItem('username')
   let loacalPassword = await localforage.getItem('password')
   let token = await localforage.getItem('token')
-  let userId = await localforage.getItem('userId')
+  let adminId = await localforage.getItem('adminId')
   console.log('signin:', username, password, localUsername, loacalPassword)
   if (!username && !localUsername) return
   if (username || (username !== localUsername && password)) {
     if (!password) return
-    const openId = 'oPEWPwX1Q1wGg2wjc9ytBqrkcLbU'
-    return doSignin(dispatch, {username, password, openId})
+    return doSignin(dispatch, {username, password})
   }
   password = loacalPassword
   dispatch({
     type: PROFILE_USER_SIGNIN_SUCCESS,
     token,
-    userId,
+    adminId,
     username,
     password
   })
   return null
 }
 
-
-export const getUserCookie = () => async (dispatch) => {
-  dispatch({
-    type: PROFILE_USER_COOKIE
-  })
-  // const url = 'http://120.92.57.18:9180/wechat/auth/getUserCookie'
-  const url = 'http://syt.wechat.uthealth.com.cn/wechat/auth/getUserCookie'
-  try {
-    const data = await axios.post(url)
-    console.log(data)
-    dispatch({
-      type: PROFILE_USER_COOKIE_SUCCESS,
-      data: data.data
-    })
-    return null
-  } catch (e) {
-    console.log('getcookie========', e.message)
-    dispatch({
-      type: PROFILE_USER_COOKIE_FAIL,
-      error: e.message
-    })
-    return e.message
-  }
-}
-const cookieJson = {
-  refreshToken: 'x39_E6AOyl5f8wZ2vNIUDB_uYdtZOJ0TgCGpXou0cXw5gaqKmMT4WeNCdlNrTG8wfSt9Zc6wHkBZbYJJPftgezIgR3YEXpstHpfidWExJYs',
-  accessToken: 'cZpk8ygp2AJOIH6sjqco5bfWo3WDvqCtLEnJ8kRkgllHjK3Y2cdtS6eu5lAHLkzHOkRAqHvFBbKWvF-ILSLwCWGG4sLkyeVjvkCmP8Woypo',
-  openid: 'oPEWPwX1Q1wGg2wjc9ytBqrkcLbU'
-}
-export const getUserCookie2 = () => async (dispatch) => {
-  dispatch({
-    type: PROFILE_USER_COOKIE2
-  })
-  let cookie = null
-  if (process.browser) {
-    const arrStr = document.cookie.split('; ')
-    for (let i = 0; i < arrStr.length; i++) {
-      var temp = arrStr[i].split('=')
-      if (temp[0] === 'wechatUserCookie') {
-        const cookieValue = unescape(decodeURI(temp[1]))
-        const cookieJson = JSON.parse(cookieValue)
-        cookie = Object.assign({}, cookieJson)
-        window.alert(cookie)
-        localforage.setItem('openId', cookieJson.openid)
-      }
-    }
-  }
-  // localforage.setItem('openId', cookieJson.openid)
-  dispatch({
-    type: PROFILE_USER_COOKIE2_SUCCESS,
-    data: cookie
-  })
-  return null
-}
-
-const doSignin = async (dispatch, { username, password, openId }) => {
+const doSignin = async (dispatch, { username, password }) => {
   dispatch({
     type: PROFILE_USER_SIGNIN
   })
-  const url = `http://${API_SERVER}/login`
+  const url = `http://${API_SERVER}/admin/login`
   try {
     const data = await axios.post(url, {
       username: username,
-      password: password,
-      openId
+      password: password
     })
+    console.log('====doSignin', data.data)
     const token = data.data.token
-    const userId = data.data.userId
+    const adminId = data.data.adminId
     await localforage.setItem('token', token)
-    await localforage.setItem('userId', userId)
+    await localforage.setItem('adminId', adminId)
     await localforage.setItem('username', username)
     await localforage.setItem('password', password)
     dispatch({
       type: PROFILE_USER_SIGNIN_SUCCESS,
       token,
-      userId,
+      adminId,
       username,
       password
     })
@@ -289,7 +225,7 @@ export const signout = () => async dispatch => {
   // await AsyncStorage.removeItem('user')
   // await AsyncStorage.removeItem('patients')
   // await AsyncStorage.removeItem('token')
-  // await AsyncStorage.removeItem('userId')
+  // await AsyncStorage.removeItem('adminId')
   // await AsyncStorage.removeItem('username')
   // await AsyncStorage.removeItem('password')
   await localforage.clear()
@@ -301,8 +237,8 @@ export const signout = () => async dispatch => {
 
 // 获取用户信息
 const QUERY_USER = gql`
-  query($userId: ObjID!) {
-    user(id: $userId) {
+  query($adminId: ObjID!) {
+    user(id: $adminId) {
       id
       name
       phone
@@ -313,12 +249,12 @@ const QUERY_USER = gql`
     }
   }
 `
-export const queryUser = (client, { userId }) => async dispatch => {
+export const queryUser = (client, { adminId }) => async dispatch => {
   dispatch({
     type: PROFILE_USER_QUERYUSER
   })
   try {
-    const data = await client.query({ query: QUERY_USER, variables: { userId } })
+    const data = await client.query({ query: QUERY_USER, variables: { adminId } })
     if (data.error) {
       return dispatch({
         type: PROFILE_USER_QUERYUSER_FAIL,
@@ -338,22 +274,22 @@ export const queryUser = (client, { userId }) => async dispatch => {
   }
 }
 
-const UPDATE_USER = gql`
-  mutation ($userId: ObjID!, $password: String) {
-    updateUser(id: $userId, input: {password: $password}) {
+const UPDATE_ADMIN = gql`
+  mutation ($adminId: ObjID!, $password: String) {
+    updateAdmin(id: $adminId, input: {password: $password}) {
       id
     }
   }
 `
 // 修改密码
-export const updatePassword = (client, {userId, password}) => async dispatch => {
+export const updatePassword = (client, {adminId, password}) => async dispatch => {
   dispatch({
     type: PROFILE_USER_UPDATEPASSWORD
   })
   try {
     let data = await client.mutate({
-      mutation: UPDATE_USER,
-      variables: { userId, password }
+      mutation: UPDATE_ADMIN,
+      variables: { adminId, password }
     })
     if (data.error) {
       dispatch({
@@ -378,108 +314,6 @@ export const updatePassword = (client, {userId, password}) => async dispatch => 
   }
 }
 
-export const savePhone = ({phone, password}) => dispatch => {
-  console.log(phone)
-  console.log(password)
-  dispatch({
-    type: PROFILE_USER_SAVEPHONE,
-    phone,
-    password
-  })
-}
-
-const SEND_VERIFY_CODE = gql`
-  mutation($phone: String!){
-    createVerifyCode(input: {phone: $phone}) {
-      id
-      phone
-      verifyCode
-      valid
-      seconds
-      overdue
-    }
-  }
-`
-
-export const sendVerifyCode = (client, {phone}) => async dispatch => {
-  dispatch({
-    type: PROFILE_VERIFY_CODE
-  })
-  try {
-    let data = await client.mutate({
-      mutation: SEND_VERIFY_CODE,
-      variables: { phone }
-    })
-    if (data.errors) {
-      dispatch({
-        type: PROFILE_VERIFY_CODE_FAIL,
-        error: data.errors[0].message
-      })
-      return data.error[0].message
-    }
-    const verifyCode = data.data.createVerifyCode
-    dispatch({
-      type: PROFILE_VERIFY_CODE_SUCCESS,
-      code: verifyCode
-    })
-    return null
-  } catch (e) {
-    dispatch({
-      trype: PROFILE_VERIFY_CODE_FAIL,
-      error: e.message
-    })
-    return e.message
-  }
-}
-
-const CHECKVERIFYCODE = gql`
-  mutation($phone: String!, $code: String!){
-    checkVerifyCode(input: {phone: $phone, code: $code}){
-      id
-      phone
-      verifyCode
-      valid
-      seconds
-      overdue
-    }
-  }
-`
-
-export const checkVerifyCode = (client, {phone, code}) => async dispatch => {
-  console.log('---checkVerifyCode', phone, code)
-  dispatch({
-    type: CHECK_VERIFY_CODE
-  })
-  try {
-    let data = await client.mutate({
-      mutation: CHECKVERIFYCODE,
-      variables: { phone, code }
-    })
-    if (data.errors) {
-      dispatch({
-        type: CHECK_VERIFY_CODE_FAIL,
-        error: data.errors[0].message
-      })
-      return data.error[0].message
-    }
-    console.log('--------data', data)
-    const verifyCode = data.data.checkVerifyCode
-    dispatch({
-      type: CHECK_VERIFY_CODE_SUCCESS,
-      code: verifyCode
-    })
-    if (!verifyCode) {
-      return '验证码错误'
-    }
-    return null
-  } catch (e) {
-    dispatch({
-      trype: CHECK_VERIFY_CODE_FAIL,
-      error: e.message
-    })
-    return e.message
-  }
-}
 const FORGETPASSWORD = gql`
   mutation($phone: String!, $password: String!, $code: String!){
     updatePassword(phone: $phone, input: {verifyCode: $code, newPassword: $password}){

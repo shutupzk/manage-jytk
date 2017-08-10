@@ -15,21 +15,18 @@ class ConLayout extends Component {
 
   // 自动登陆，
   async autoSignin () {
-    // const error = await this.props.signin({ username: null, password: null })
-    // if (error) {
-    //   this.props.showPrompt({text: error})
-    //   Router.push('/signin')
-    // }
-    // const userId = this.props.userId
-    // if (userId) {
-    //   Router.push(HOME_PAGE.url)
-    // } else {
-    //   Router.push('/signin')
-    // }
-    const userId = await localforage.getItem('userId')
-    if (userId) {
-      // Router.push(HOME_PAGE.url)
-    } else {
+    const adminId = await localforage.getItem('adminId')
+		console.log('adminId', adminId)
+    if (this.props.adminId) {
+			// Router.push(HOME_PAGE.url)
+    } else if (!this.props.adminId && adminId) {
+			console.log('====autosing')
+			const error = await this.props.signin({ username: null, password: null })
+			if (error) {
+				this.props.showPrompt({text: error})
+				return
+			}
+		} else {
       Router.push('/signin')
     }
   }
@@ -83,7 +80,7 @@ class ConLayout extends Component {
 function mapStateToProps (state) {
   return {
     token: state.user.data.token,
-    userId: state.user.data.id,
+    adminId: state.user.data.id,
     loading: state.user.loading,
     error: state.user.error
   }

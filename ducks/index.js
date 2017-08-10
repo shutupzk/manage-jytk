@@ -1,4 +1,4 @@
-import { user, signup, signin, signout, queryUser, updatePassword, savePhone, currentUser, forgotPassword, sendVerifyCode, checkVerifyCode, getUserCookie, getUserCookie2 } from './user'
+import { user, signup, signin, signout, queryUser, updatePassword, currentUser, forgotPassword, sendVerifyCode, checkVerifyCode, getUserCookie, getUserCookie2 } from './user'
 import {prompt, showPrompt, hidePrompt} from './prompt'
 import {order, queryOrderList, queryOrderDetail} from './order'
 import {doctor, queryDoctors, updateDoctor, createDoctor} from './doctor'
@@ -32,7 +32,6 @@ export {
     signout,
     queryUser,
     updatePassword,
-    savePhone,
     currentUser,
     forgotPassword,
     sendVerifyCode,

@@ -20,9 +20,9 @@ export default function (ComposedComponent) {
       console.log('自动登录')
       const error = await this.props.signin({ username: null, password: null })
       if (error) return console.log(error)
-      const userId = this.props.userId
-      if (userId) {
-        this.props.queryUser(this.props.client, { userId })
+      const adminId = this.props.adminId
+      if (adminId) {
+        this.props.queryUser(this.props.client, { adminId })
       }
     }
 

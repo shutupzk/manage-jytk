@@ -29,10 +29,10 @@ class UserInfoScreen extends Component {
   }
 
   async getCurrentUser () {
-    let userId = await localforage.getItem('userId')
-    await this.props.queryUser(this.props.client, { userId: userId })
+    let adminId = await localforage.getItem('adminId')
+    await this.props.queryUser(this.props.client, { adminId: adminId })
     if (isEmptyObject(this.props.patients)) {
-      await this.props.queryPatients(this.props.client, { userId })
+      await this.props.queryPatients(this.props.client, { adminId })
     }
   }
   updateInfo () {

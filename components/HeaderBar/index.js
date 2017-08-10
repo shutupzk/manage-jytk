@@ -37,7 +37,7 @@ class HeaderBar extends Component {
             style={{borderTopColor: theme.nfontcolor}}></article>
         </div>
         <section>
-          {/* <Link href='/modify-pass'><article>修改密码</article></Link> */}
+           <Link href='/profile/update_password'><article>修改密码</article></Link> 
           <article onClick={() => {this.doSignout()}}>退出</article>
         </section>
       </div>
@@ -85,7 +85,7 @@ class HeaderBar extends Component {
 function mapStateToProps (state) {
   return {
     token: state.user.data.token,
-    userId: state.user.data.id,
+    adminId: state.user.data.id,
     loading: state.user.loading,
     error: state.user.error
   }

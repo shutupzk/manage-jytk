@@ -24,14 +24,14 @@ class Home extends Component {
     //   this.props.showPrompt({text: error})
     //   Router.push('/signin')
     // }
-    // const userId = this.props.userId
-    // if (userId) {
+    // const adminId = this.props.adminId
+    // if (adminId) {
     //   Router.push(HOME_PAGE.url)
     // } else {
     //   Router.push('/signin')
     // }
-    const userId = await localforage.getItem('userId')
-    if (userId) {
+    const token = await localforage.getItem('token')
+    if (token) {
       Router.push(HOME_PAGE.url)
     } else {
     }
@@ -51,7 +51,7 @@ class Home extends Component {
 function mapStateToProps (state) {
   return {
     token: state.user.data.token,
-    userId: state.user.data.id,
+    adminId: state.user.data.id,
     loading: state.user.loading,
     error: state.user.error
   }

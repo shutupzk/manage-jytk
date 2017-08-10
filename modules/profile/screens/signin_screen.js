@@ -20,33 +20,30 @@ class SigninScreen extends Component {
     const username = this.state.username
     const password = this.state.password
     if (!username) {
-      this.props.showPrompt({text: '请输入正确的账号'})
+      this.props.showPrompt({text: '请输入账号'})
       return
     }
     if (!password) {
       this.props.showPrompt({text: '请输入密码'})
       return
     }
-    if (username === 'admin' && password === '123456') {
-      localforage.setItem('token', 'token')
-      localforage.setItem('userId', 'userId')
-      localforage.setItem('username', username)
-      localforage.setItem('password', password)
-      // Router.push('/')
-      Router.push(HOME_PAGE.url)
-    } else {
-      this.props.showPrompt({text: '用户名或密码错误'})
-      return
-    }
-    // const error = await this.props.signin({ username, password })
-    // if (error) {
-    //   this.props.showPrompt({text: error})
+    // if (username === 'admin' && password === '123456') {
+    //   localforage.setItem('token', 'token')
+    //   localforage.setItem('adminId', 'adminId')
+    //   localforage.setItem('username', username)
+    //   localforage.setItem('password', password)
+    //   // Router.push('/')
+    //   Router.push(HOME_PAGE.url)
+    // } else {
+    //   this.props.showPrompt({text: '用户名或密码错误'})
     //   return
     // }
-    // await this.props.queryUser(this.props.client, { userId: this.props.userId })
-    // await this.props.queryPatients(this.props.client, { userId: this.props.userId })
-    // return this.props.navigation.goBack(null)
-    // window.location.href = '/'
+    const error = await this.props.signin({ username, password })
+    if (error) {
+      this.props.showPrompt({text: error})
+      return
+    }
+    Router.push(HOME_PAGE.url)
   }
   render () {
     return (
@@ -132,7 +129,7 @@ class SigninScreen extends Component {
 function mapStateToProps (state) {
   return {
     token: state.user.data.token,
-    userId: state.user.data.id,
+    adminId: state.user.data.id,
     loading: state.user.loading,
     error: state.user.error
   }

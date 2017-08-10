@@ -281,7 +281,7 @@ class SignupScreen extends Component {
 function mapStateToProps (state) {
   return {
     token: state.user.data.token,
-    userId: state.user.data.id,
+    adminId: state.user.data.id,
     user: state.user.data,
     code: state.user.data.code,
     loading: state.user.loading,
