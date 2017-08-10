@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 // import { Router } from '../../../routes'
 import Router from 'next/router'
-import {theme, Prompt, Loading, PageCard} from 'components'
+import {theme, Prompt, Loading, FilterCard, SelectFilterCard, KeywordCard, PageCard} from 'components'
 import {ORDERINFO, DOCTORINFO, HOSPITALINFO, HOSPITAL_NAME} from 'config'
 import {TopFilterCard, ListTitle} from 'modules/common/components'
+import {isArray, fuzzyQuery} from 'utils'
 import { queryDoctors, showPrompt, createDoctor, updateDoctor } from '../../../ducks'
 import { connect } from 'react-redux'
 import {ManageListItem, ManageDoctorModal, DoctorDetailModal} from '../components'
@@ -50,22 +51,13 @@ class ManageScheduleScreen extends Component {
 		this.setState({showModal: false, selectedType: 0, selectedDoctor: {}})
 	}
 
-  filterCard(doctors, isfilterkeyword) {
-		const status = this.state.status;
-		let newdoctors;
-    if (!status) {
-			newdoctors = doctors // status 空 代表全部
-		} else {
-			newdoctors = doctors.filter((item) => item&&item.status === status)
+	filterCard(doctor) {
+		let filterdoctor = doctor
+		if (this.state.keyword) {
+			filterdoctor = fuzzyQuery(filterdoctor, this.state.keyword, ['doctorName', 'doctorSn'])
 		}
-		if (isfilterkeyword && this.state.keyword) {
-			// newdoctors  todo filter keyword
-			this.setState({
-				isfilterkeyword: false
-			})
-		}
-    return newdoctors
-  }
+		return filterdoctor
+	}
 
   render () {
     if (this.props.loading) {
@@ -80,6 +72,11 @@ class ManageScheduleScreen extends Component {
 		// let doctors = []
     return (
       <div>
+				<FilterCard>
+					<KeywordCard
+						config={{placeholder: '医生工号／医生姓名', keyword: this.state.keyword}}
+						clickfilter={(keyword) => {this.setState({keyword: keyword, page: 1}, () => this.queryDoctors())}} />
+				</FilterCard>
 				<ManageDoctorModal selectedDoctor={this.state.selectedDoctor}
 					selectedType={this.state.selectedType}
 					showModal={this.state.showModal}

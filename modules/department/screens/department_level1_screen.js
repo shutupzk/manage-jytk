@@ -86,12 +86,11 @@ class DepartmentLevel1Screen extends Component {
 			return <div>{this.props.error}</div>
 		}
 		let departmentsLevel1 = this.filterCard(this.props.departmentsLevel1)
-		console.log('--------depar', departmentsLevel1)
     return (
       <div>
 				<FilterCard>
 					<KeywordCard
-						config={{placeholder: '科室编码／科室名称'}}
+						config={{placeholder: '科室编码／科室名称', keyword: this.state.keyword}}
 						clickfilter={(keyword) => {this.setState({keyword: keyword, page: 1}, () => {this.queryDepartments()})}} />
 				</FilterCard>
 				<article style={{textAlign: 'right', paddingBottom: theme.lrmargin}}>

@@ -25,13 +25,21 @@ export default function PageCard(props) {
 						props.clickPage('next')
 					}}>下一页</span>
 				<article>
-					跳转至<input type="number"
-						onKeyUp = {(e) => {
-							if (e.keyCode === 13) {
-								console.log('-------keyup ---enter---')
-								props.clickPage(e.target.value)
-							}
-						}} />页
+					跳转至
+					{
+						props.page === 1 && props.data.length < 10 ?
+							<input type="number" disabled
+								style={{border: '1px solid #f2f2f2'}} />
+						:
+							<input type="number"
+								onKeyUp = {(e) => {
+									if (e.keyCode === 13) {
+										console.log('-------keyup ---enter---')
+										props.clickPage(e.target.value)
+									}
+								}} />
+					}
+					页
 				</article>
 			</footer>
 			<style jsx>{`
@@ -48,6 +56,7 @@ export default function PageCard(props) {
 				}
 				.fenye article input[type=number]{
 					width: .3rem;
+					padding: 0;
 					margin: 0 ${theme.midmargin};
 				}
 				.fenyeItem{

@@ -57,7 +57,8 @@ export class KeywordCard extends Component {
 			<section className='left' style={{border: '1px solid #E6E6E6', borderRadius: 4, margin: '0 .15rem'}}>
 				<input type='text' className='left' style={{lineHeight: '.34rem', border: 'none', background: 'none', padding: '0 6px', minWidth: 200}}
 					placeholder={config.placeholder || '订单编号/姓名/手机号'}
-					ref='keywordRef' />
+					ref='keywordRef'
+					defaultValue={config.keyword} />
 				<button className='left btnBGGray btnBGLitt' style={{height: '.34rem', lineHeight: '.34rem'}}
 					onClick={() => this.props.clickfilter(this.refs.keywordRef && this.refs.keywordRef.value)}>搜索</button>
 				<div className='clearfix' />
