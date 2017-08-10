@@ -58,7 +58,7 @@ const orderCon1 = (item, props, iKey) => {
 
 const orderCon2 = (item, props, iKey) => {
 	// item.style.lineHeight = '.54rem'
-	return (normalHtml(item, props.data && props.data.count, iKey, Object.assign({}, item.style, {lineHeight: '.54rem'})))
+	return (normalHtml(item, props.data && props.data.count || '1', iKey, Object.assign({}, item.style, {lineHeight: '.54rem'})))
 }
 
 const orderCon3 = (item, props, iKey) => {
@@ -78,7 +78,7 @@ const orderCon4 = (item, props, iKey) => {
 		<li className={'left'} key={iKey} style={item.style}>
 			<p style={{fontSize: 12}}>{curStatus[0] && curStatus[0].title || '无'}</p>
 			<article style={{display: props.data && props.data.payment ? 'block' : 'none', lineHeight: '18px'}} onClick={() => props.clickConfirm(props.data)}>退款</article>
-			<article style={{lineHeight: '16px'}} onClick={() => {Router.push(`/order/detail?id=${data.id}`)}}>查看详情</article>
+			<article style={{lineHeight: '16px'}} onClick={() => {Router.push(`/order/detail?id=${props.data && props.data.id}`)}}>查看详情</article>
 			<style jsx>{`
 				article{
 					color: #3464CA;

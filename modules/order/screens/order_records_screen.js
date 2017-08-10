@@ -133,14 +133,21 @@ class OrderRecordsScreen extends Component {
 }
 
 const renderModal = (self) => {
-	const {selectOrder, showModal} = self.state;
+  const {selectOrder, showModal} = self.state;
+  console.log('=====selectOrder', selectOrder)
 	return (
 		<OrderTipModal showModalState={showModal}
 			onHide={() => self.setState({selectOrder: {}, showModal: false})}
 			clickModalOk={() => self.clickModalOk()}>
 			<dl style={{padding: '.2rem .25rem', color: theme.fontcolor, marginTop: theme.tbmargin, borderTop: `1px solid ${theme.bordercolor}`, fontSize: 13, lineHeight: '.3rem'}}>
-				<dt><span>患者姓名：</span>{selectOrder.patientName}</dt>
-				<dt><span>就诊时间：</span>{selectOrder.visitSchedule && selectOrder.visitSchedule.visitDate}</dt>
+				<dt><span>订单编号：</span>{selectOrder.id}</dt>
+				<dt><span>医生名称：</span>{selectOrder.doctor && selectOrder.doctor.doctorName}</dt>
+				{/* <dt><span>所属医院：</span>{selectOrder.patient && selectOrder.patient.name}</dt>
+				<dt><span>所属类型：</span>{selectOrder.patient && selectOrder.patient.name}</dt> */}
+        <dt></dt>
+				<dt><span>买家姓名：</span>{selectOrder.patient && selectOrder.patient.name}</dt>
+				<dt><span>买家电话：</span>{selectOrder.patient && selectOrder.patient.phone}</dt>
+				<dt><span>实付：</span>{selectOrder.fee}</dt>
 				<dd style={{fontSize: 14, paddingTop: 10, color: theme.mainfontcolor}}>您确定要<span style={{color: '#f00'}}>退款</span>吗？</dd>
 			</dl>
 		</OrderTipModal>
