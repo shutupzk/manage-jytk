@@ -25,7 +25,6 @@ class AppointDetailScreen extends Component {
     }
     const appointment = this.props.appointment || {};
     const patient = appointment.patientCard && appointment.patientCard.patient || {}
-    const {hospitalName} = this.props.url && this.props.url.query || {}
     const info = [
       {title: '患者姓名', apiKey: '', type: 'input'},
       // {title: '患者类型', apiKey: '', type: 'input'},
@@ -54,7 +53,7 @@ class AppointDetailScreen extends Component {
                 <dl key={infoKey} className='flex tb-flex'
                   style={{fontSize: theme.fontsize, lineHeight: '.3rem', margin: theme.tbmargin}}>
                   <dt style={{width: '30%', textAlign: 'right', color: theme.fontcolor, paddingRight: theme.tbmargin}}>{infoItem.title}</dt>
-                  {eval(detailCon + '(appointment, infoItem, hospitalName)')}
+                  {eval(detailCon + '(appointment, infoItem)')}
                 </dl>
               )
             })
@@ -77,7 +76,7 @@ const detailCon0 = (appointment, infoItem) => {return (normalHtml(appointment.pa
 const detailCon1 = (appointment, infoItem) => {return (normalHtml(appointment.patientCard && appointment.patientCard.patient && appointment.patientCard.patient.certificateNo))}
 const detailCon2 = (appointment, infoItem) => {return (normalHtml(appointment.patientCard && appointment.patientCard.patientIdNo))}
 const detailCon3 = (appointment, infoItem) => {return (normalHtml(appointment.patientCard && appointment.patientCard.patient && appointment.patientCard.patient.phone))}
-const detailCon4 = (appointment, infoItem, hospitalName) => {return (normalHtml(hospitalName))}
+const detailCon4 = (appointment, infoItem) => {return (normalHtml(appointment.patientCard && appointment.patientCard.hospital && appointment.patientCard.hospital.hospitalName))}
 const detailCon5 = (appointment, infoItem) => {return (normalHtml(appointment.visitSchedule && appointment.visitSchedule.department && appointment.visitSchedule.department.deptName))}
 const detailCon6 = (appointment, infoItem) => {return (normalHtml(appointment.visitSchedule && appointment.visitSchedule.doctor && appointment.visitSchedule.doctor.doctorName))}
 const detailCon7 = (appointment, infoItem) => {return (normalHtml(appointment.patientCard && appointment.patientCard.patient && appointment.patientCard.patient.name))}

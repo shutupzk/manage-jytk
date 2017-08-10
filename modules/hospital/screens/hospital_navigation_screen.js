@@ -1,13 +1,13 @@
 import React, { Component } from 'react'
 // import { Router } from '../../../routes'
 import Router from 'next/router'
-import {theme, Prompt, Loading} from 'components'
+import {theme, Prompt, Loading, PageCard} from 'components'
 import {ORDERTYPE} from 'config'
 import {HOSPITALINFO} from '../config'
 import {TopFilterCard, ListTitle} from 'modules/common/components'
 import { queryHospitals, showPrompt, createHospital, updateHospital, queryBuildings } from '../../../ducks'
 import { connect } from 'react-redux'
-import {HospitalListItem, HospitalDetailModal} from '../components'
+import {HospitalListItem} from '../components'
 
 
 class HospitalNavigationScreen extends Component {
@@ -18,36 +18,21 @@ class HospitalNavigationScreen extends Component {
 			showModal: false,
 			selectedHospital: {},
 			modalType: '', // add\modify\delete
-			isfilterkeyword: false
+			page: 1
     }
   }
 
   componentWillMount() {
 		this.props.queryHospitals(this.props.client)
-		this.props.queryBuildings(this.props.client)
-  }
-	
-	async clickModalOk(data, modalType, values) {
-		let error;
-		if (modalType === 'modify') {
-			values.id = this.state.selectedHospital.id
-			error = await this.props.updateHospital(this.props.client, values)
-		}
-		else if (modalType === 'add') {
-			error = await this.props.createHospital(this.props.client, values)
-		}
-		if (error) {
-			this.onHide();
-			this.props.showPrompt({text: error});
-			// return
-		}
-		this.onHide();
-		// await this.props.showPrompt('更新成功');
-		await this.props.queryHospitals(this.props.client)
+		this.queryBuildings()
 	}
 
-	onHide() {
-		this.setState({showModal: false, selectedHospital: {}, modalType: ''})
+	async queryBuildings() {
+		let error = await this.props.queryBuildings(this.props.client, {limit: 10, skip: (this.state.page - 1) * 10})
+    if (error) {
+      this.props.showPrompt({text: error})
+      return
+    }
 	}
 
   render () {
@@ -67,13 +52,6 @@ class HospitalNavigationScreen extends Component {
 					<button style={{width: '1rem'}} className='btnBG btnBGMain btnBGLitt'
 						onClick={() => Router.push('/hospital/add_hospital_navigation')}>添加来院导航</button>
 				</article>
-				 <HospitalDetailModal selectedHospital={this.state.selectedHospital}
-					showModal={this.state.showModal}
-					onHide={() => this.onHide()}
-					titleInfo={HOSPITALINFO.hospitalNav_list_title}
-					modalType={this.state.modalType}
-					newsGroups={this.props.newsGroups}
-					clickModalOk={(data, modalType, values) => this.clickModalOk(data, modalType, values)} />
 				<ListTitle data={HOSPITALINFO.hospitalNav_list_title} />
 				{
 					building && building.length > 0 ?
@@ -84,7 +62,24 @@ class HospitalNavigationScreen extends Component {
 							 clickGoDetailPage={(data) => {Router.push('/hospital/hospital_navigation_detail?id='+data.id)}} />
 						})
 					: 'no data'
-				} 
+				}
+        <PageCard data={building} page={this.state.page}
+          clickPage={(type) => {
+            const prevPage = this.state.page
+            let curPage
+            if (type === 'prev') {
+              curPage = prevPage - 1
+            } else if (type === 'next') {
+              curPage = prevPage + 1
+            } else {
+              curPage = type
+            }
+            this.setState({
+              page: curPage
+            }, () => {
+              this.queryBuildings()
+            })
+          }} />
       </div>
     )
   }

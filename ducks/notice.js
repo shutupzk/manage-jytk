@@ -58,7 +58,7 @@ export function notices (state = initState, action = {}) {
 // notice groups list
 const QUERY_NOTICESGROUPS = gql`
   query {
-    visitNoticeGroups(limit: 1000){
+    visitNoticeGroups(limit: 100){
 			name
 			id
 			code
@@ -179,8 +179,8 @@ export const updateNoticesGroups = (client, {id, code, name, hospitalId}) => asy
 
 // news list
 const QUERY_NOTICES = gql`
-  query {
-    visitNotices(limit: 1000) {
+  query($limit: Int, $skip: Int) {
+    visitNotices(limit: $limit, skip: $skip) {
 			id
 			code
 			title
@@ -199,12 +199,12 @@ const QUERY_NOTICES = gql`
 	}
 `
 
-export const querynotices = (client) => async dispatch => {
+export const querynotices = (client, {limit, skip}) => async dispatch => {
   dispatch({
     type: NOTICES_QUERY_NOTICES
   })
   try {
-		const data = await client.query({ query: QUERY_NOTICES, fetchPolicy: 'network-only'})
+		const data = await client.query({ query: QUERY_NOTICES, variables: {limit, skip}, fetchPolicy: 'network-only'})
     if (data.error) {
       return dispatch({
         type: NOTICES_QUERY_NOTICES_FAIL,

@@ -208,8 +208,8 @@ export const removeNewsGroup = (client, {id}) => async dispatch => {
 
 // news list
 const QUERY_NEWS = gql`
-  query {
-    newss(limit: 1000) {
+  query($limit: Int, $skip: Int) {
+    newss(limit: $limit, skip: $skip) {
 			id
 			title
 			summary
@@ -226,12 +226,12 @@ const QUERY_NEWS = gql`
 	}
 `
 
-export const queryNews = (client) => async dispatch => {
+export const queryNews = (client, {limit, skip}) => async dispatch => {
   dispatch({
     type: NEWS_QUERY_NEWS
   })
   try {
-		const data = await client.query({ query: QUERY_NEWS, fetchPolicy: 'network-only'})
+		const data = await client.query({ query: QUERY_NEWS, variables: {limit, skip}, fetchPolicy: 'network-only'})
     if (data.error) {
       return dispatch({
         type: NEWS_QUERY_NEWS_FAIL,

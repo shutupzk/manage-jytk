@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 // import { Router } from '../../../routes'
 import Router from 'next/router'
-import {theme, Prompt, Loading, FilterCard, SelectFilterCard, KeywordCard} from 'components'
+import {theme, Prompt, Loading, FilterCard, SelectFilterCard, KeywordCard, PageCard} from 'components'
 import {ORDERINFO} from 'config'
 import {fuzzyQuery, isArray} from 'utils'
 import { AppointListItem, OrderTipModal} from '../components'
@@ -17,12 +17,21 @@ class AppointRecordsScreen extends Component {
 			status: '',
 			keyword: '',
 			selectedAppoint: {},
-			showModal: false
+			showModal: false,
+			page: 1
     }
   }
 
   componentWillMount() {
-    this.props.queryAppointments(this.props.client)
+    this.queryAppointments()
+	}
+	
+	async queryAppointments() {
+		let error = await this.props.queryAppointments(this.props.client, {limit: 10, skip: (this.state.page - 1) * 10})
+    if (error) {
+      this.props.showPrompt({text: error})
+      return
+    }
 	}
 
 	async clickModalOk() {
@@ -36,7 +45,7 @@ class AppointRecordsScreen extends Component {
 			this.props.showPrompt({text: error})
 			return
 		}
-		await this.props.queryAppointments(this.props.client)
+		this.queryAppointments()
 	}
 
   filterCard(appointments) {
@@ -63,10 +72,10 @@ class AppointRecordsScreen extends Component {
 						data={ORDERINFO.appoint_visit_status}
 						status={this.state.status}
 						config= {{selectTitle: '全部状态', valueKey: 'value', titleKey: 'title'}}
-						changeStatus={(status) => {this.setState({status: status})}} />
+						changeStatus={(status) => {this.setState({status: status, page: 1}, () => this.queryAppointments())}} />
 					<KeywordCard
 						config={{placeholder: '患者姓名'}}
-						clickfilter={(keyword) => {this.setState({keyword: keyword})}} />
+						clickfilter={(keyword) => {this.setState({keyword: keyword, page: 1}, () => this.queryAppointments())}} />
 				</FilterCard>
 				{renderModal(this)}
         {/* <div className={'orderConTop'} style={{marginBottom: theme.tbmargin}}>
@@ -88,7 +97,7 @@ class AppointRecordsScreen extends Component {
 									clickConfirm={(data, modalType) => {
 										this.setState({selectedAppoint: data, modalType: modalType})
 										if (modalType === 'detail') {
-											Router.push(`/order/appoint_detail?id=${data.id}&hospitalName=${data.hospital && data.hospital.hospitalName}`)
+											Router.push(`/order/appoint_detail?id=${data.id}`)
 										} else {
 											this.setState({
 												showModal: true
@@ -100,6 +109,23 @@ class AppointRecordsScreen extends Component {
 						: ''
           : 'no data'
         }
+        <PageCard data={appointments} page={this.state.page}
+          clickPage={(type) => {
+            const prevPage = this.state.page
+            let curPage
+            if (type === 'prev') {
+              curPage = prevPage - 1
+            } else if (type === 'next') {
+              curPage = prevPage + 1
+            } else {
+              curPage = type
+            }
+            this.setState({
+              page: curPage
+            }, () => {
+              this.queryAppointments()
+            })
+          }} />
       </div>
     )
   }
@@ -112,7 +138,7 @@ const renderModal = (self) => {
 			onHide={() => self.setState({selectedAppoint: {}, showModal: false})}
 			clickModalOk={() => self.clickModalOk()}>
 			<dl style={{padding: '.2rem .25rem', color: theme.fontcolor, marginTop: theme.tbmargin, borderTop: `1px solid ${theme.bordercolor}`, fontSize: 13, lineHeight: '.3rem'}}>
-				<dt><span>患者姓名：</span>{selectedAppoint.patientName}</dt>
+				<dt><span>患者姓名：</span>{selectedAppoint.patientCard && selectedAppoint.patientCard.patient && selectedAppoint.patientCard.patient.name}</dt>
 				<dt><span>就诊时间：</span>{selectedAppoint.visitSchedule && selectedAppoint.visitSchedule.visitDate}</dt>
 				<dd style={{fontSize: 14, paddingTop: 10, color: theme.mainfontcolor}}>您确定要<span style={{color: '#f00'}}>取消</span>该挂号吗？</dd>
 			</dl>
@@ -123,8 +149,8 @@ const renderModal = (self) => {
 function mapStateToProps (state) {
   return {
     appointments: state.appointments.data.appointments,
-    loading: state.order.loading,
-		error: state.order.error,
+    loading: state.appointments.loading,
+		error: state.appointments.error,
 		appointment: state.appointments.data.appointment
   }
 }

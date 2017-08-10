@@ -45,80 +45,75 @@ export function appointments (state = initState, action = {}) {
 
 
 const QUERY_APPOINTMENTS = gql`
-  query {
-		patients(limit: 1000) {
-			id
-			name
-			patientCards {
-				id
-        hospital {
+  query($skip: Int, $limit: Int) {
+    appointments(limit: $limit, skip: $skip) {
+      id
+      orderSn
+      visitStatus
+      payStatus
+      visitNo
+      payType
+      timeRangeOfVist
+      patientCard {
+        id
+        patient{
+          name
           id
+        }
+        hospital{
           hospitalName
         }
-				appointments {
-					id
-					orderSn
-					visitStatus
-					payStatus
-					visitNo
-					payType
-					timeRangeOfVist
-					patientCard{
-						id
-						patientIdNo
-					}
-					visitSchedule {
-						id
-						visitDate
-						amPm
-						beginTime
-						endTime
-						clinicCode
-						clinicType
-						registerFee
-						department {
-							id
-							deptName
-						}
-						doctor {
-							id
-							doctorName
-						}
-					}
-				}
-			}
-		}
+      }
+      visitSchedule {
+        id
+        visitDate
+        amPm
+        beginTime
+        endTime
+        clinicCode
+        clinicType
+        registerFee
+        department {
+          id
+          deptName
+        }
+        doctor {
+          id
+          doctorName
+        }
+      }
+    }
 	}
 `
 
-export const queryAppointments = (client) => async dispatch => {
+export const queryAppointments = (client, {limit, skip}) => async dispatch => {
   dispatch({
     type: APPOINTS_QUERY_APPOINTS
   })
   try {
-		const data = await client.query({ query: QUERY_APPOINTMENTS, fetchPolicy: 'network-only'})
+		const data = await client.query({ query: QUERY_APPOINTMENTS, variables: { limit, skip }, fetchPolicy: 'network-only'})
     if (data.error) {
       return dispatch({
         type: APPOINTS_QUERY_APPOINTS_FAIL,
         error: data.error.message
       })
 		}
-		const patients = data.data.patients
-    const json = []
-    for (let patient of patients) {
-			const patientId = patient.id
-			const patientName = patient.name
-      const patientCards = patient.patientCards
-      for (let patientCard of patientCards) {
-				const appointments = patientCard.appointments
-        for (let appointment of appointments) {
-          json.push( Object.assign({}, appointment, { patientId }, {patientName}, {hospital: patientCard.hospital}))
-        }
-      }
-		}
+		// const patients = data.data.patients
+    // const json = []
+    // for (let patient of patients) {
+		// 	const patientId = patient.id
+		// 	const patientName = patient.name
+    //   const patientCards = patient.patientCards
+    //   for (let patientCard of patientCards) {
+		// 		const appointments = patientCard.appointments
+    //     for (let appointment of appointments) {
+    //       json.push( Object.assign({}, appointment, { patientId }, {patientName}, {hospital: patientCard.hospital}))
+    //     }
+    //   }
+		// }
     dispatch({
       type: APPOINTS_QUERY_APPOINTS_SUCCESS,
-      appointments: json
+      appointments: data.data.appointments
     })
   } catch (e) {
     console.log(e)
@@ -148,6 +143,9 @@ const QUERY_APPOINTMENT_DETAIL = gql`
           sex
           certificateNo
           certificateType
+        }
+        hospital{
+          hospitalName
         }
       }
       visitSchedule {

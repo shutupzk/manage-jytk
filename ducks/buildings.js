@@ -63,8 +63,8 @@ export function buildings (state = initState, action = {}) {
 
 // building list
 const QUERY_BUILDINGS = gql`
-  query {
-		buildings(limit: 1000) {
+  query($limit: Int, $skip: Int) {
+		buildings(limit: $limit, skip: $skip) {
 			id
 			name
 			position
@@ -86,12 +86,12 @@ const QUERY_BUILDINGS = gql`
 	}
 `
 
-export const queryBuildings = (client) => async dispatch => {
+export const queryBuildings = (client, {limit, skip}) => async dispatch => {
   dispatch({
     type: BUILDING_QUERY_BUILDINGS
   })
   try {
-		const data = await client.query({ query: QUERY_BUILDINGS, fetchPolicy: 'network-only'})
+		const data = await client.query({ query: QUERY_BUILDINGS, variables: {limit, skip}, fetchPolicy: 'network-only'})
     if (data.error) {
       dispatch({
         type: BUILDING_QUERY_BUILDING_FAIL,

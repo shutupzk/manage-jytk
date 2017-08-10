@@ -70,11 +70,11 @@ class SigninScreen extends Component {
               <dd>
                 <input placeholder={'请输入密码'} type='password'
                   onChange={(e) => this.setState({ password: e.target.value })} value={this.state.password} />
-                <a className='right forgetpass flex tb-flex'
+                {/* <a className='right forgetpass flex tb-flex'
                   onClick={() => { Router.push('/profile/forgot_password') }}>
                   <img style={{width: 16, paddingRight: 3}} src={`/static/${HOSPITALINFO.hospital_short_name}/forgetPass.png`} />
                   <span className=''>忘记密码?</span>
-                </a>
+                </a> */}
               </dd>
             </dl>
           </section>

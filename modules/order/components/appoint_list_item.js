@@ -38,11 +38,11 @@ const normalHtml = (data, item, iKey) => {
 }
 
 const orderCon0 = (props, item, iKey) => {
-	return (normalHtml(props.data && props.data.patientName, item, iKey))
+	return (normalHtml(props.data && props.data.patientCard && props.data.patientCard.patient && props.data.patientCard.patient.name, item, iKey))
 }
 
 const orderCon1 = (props, item, iKey) => {
-	return (normalHtml(props.data && props.data.hospital && props.data.hospital.hospitalName, item, iKey))
+	return (normalHtml(props.data && props.data.patientCard && props.data.patientCard.hospital && props.data.patientCard.hospital.hospitalName, item, iKey))
 }
 
 const orderCon2 = (props, item, iKey) => {

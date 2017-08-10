@@ -17,9 +17,9 @@ const HOSPITALINFO = {
   hospital_loginlogo: '../static/luzhong/loginLogo.png',
   footerbar_background_color: '#36486C',
   contact: [
-    { title: '网站链接', values: ['http://www.pkuih.edu.cn/'] },
-    { title: '联系电话', values: ['010-00000000']},
-    { title: '京ICP备14005009号', values: ['京ICP备14005009号'] }
+    { title: '网站链接', values: ['http://www.bdyllzyy.com/'] },
+    { title: '联系电话', values: ['0533-7698222']},
+    { title: '版权所有 © 北大医疗鲁中医院', values: ['版权所有 © 北大医疗鲁中医院'] }
   ]
 }
 
@@ -57,6 +57,7 @@ const MAINFUNCTION = [
     short_name: 'news',
     navigateName: '/news',
     children: [
+      {title: '类型管理', navigateName: '/news/news_groups', color: '#5D75A6',},
       {title: '资讯管理', navigateName: '/news', color: '#5D75A6',},
     ]
   },

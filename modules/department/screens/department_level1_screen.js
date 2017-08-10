@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 // import { Router } from '../../../routes'
 import Router from 'next/router'
-import {theme, Prompt, Loading, FilterCard, SelectFilterCard, KeywordCard} from 'components'
+import {theme, Prompt, Loading, FilterCard, SelectFilterCard, KeywordCard, PageCard} from 'components'
 import {isArray, fuzzyQuery} from 'utils'
 import {HOSPITALINFO} from 'config'
 import {DEPARTMENTINFO} from '../config'
@@ -19,14 +19,22 @@ class DepartmentLevel1Screen extends Component {
 			showModal: false,
 			selectedDepartment: {},
 			modalType: '', // add\modify\delete
-			isfilterkeyword: false
+			page: 1
     }
   }
 
   componentWillMount() {
-		this.props.queryDepartments(this.props.client)
+		this.queryDepartments()
 		this.props.queryHospitals(this.props.client)
   }
+
+	async queryDepartments() {
+		let error = await this.props.queryDepartments(this.props.client, {limit: 10, skip: (this.state.page - 1) * 10})
+    if (error) {
+      this.props.showPrompt({text: error})
+      return
+    }
+	}
 	
 	async clickModalOk(data, modalType, values) {
 		let error;
@@ -41,6 +49,7 @@ class DepartmentLevel1Screen extends Component {
 			if (!values.hospitalId) {this.props.showPrompt({text: '所属医院必选'}); return;}
 			values.level = HOSPITALINFO && HOSPITALINFO.department_level && HOSPITALINFO.department_level === 1 ? '2' : '1'
 			error = await this.props.createDepartment(this.props.client, values)
+			this.setState({page: 1})
 		}
 		if (error) {
 			this.onHide();
@@ -48,8 +57,7 @@ class DepartmentLevel1Screen extends Component {
 			// return
 		}
 		this.onHide();
-		// await this.props.showPrompt('更新成功');
-		await this.props.queryDepartments(this.props.client)
+		this.queryDepartments()
 	}
 
 	onHide() {
@@ -84,7 +92,7 @@ class DepartmentLevel1Screen extends Component {
 				<FilterCard>
 					<KeywordCard
 						config={{placeholder: '科室编码／科室名称'}}
-						clickfilter={(keyword) => {this.setState({keyword: keyword})}} />
+						clickfilter={(keyword) => {this.setState({keyword: keyword, page: 1}, () => {this.queryDepartments()})}} />
 				</FilterCard>
 				<article style={{textAlign: 'right', paddingBottom: theme.lrmargin}}>
 					<button style={{width: '1rem'}} className='btnBG btnBGMain btnBGLitt'
@@ -109,13 +117,30 @@ class DepartmentLevel1Screen extends Component {
 				{
 					departmentsLevel1 && departmentsLevel1.length > 0 ?
 						departmentsLevel1.map((department, iKey) => {
-							return <DepartmentListItem data={department} key={iKey} index={iKey}
+							return <DepartmentListItem data={department} key={iKey} index={iKey + ((this.state.page-1) * 10)}
 							 titleInfo={DEPARTMENTINFO.department_list_title1}
 							 page={'level1'}
 							 clickShowModal={(data, modalType) => {this.setState({selectedDepartment: data, modalType: modalType, showModal: true})}} />
 						})
 					: 'no data'
 				}
+        <PageCard data={isArray(departmentsLevel1) ? departmentsLevel1 : []} page={this.state.page}
+          clickPage={(type) => {
+            const prevPage = this.state.page
+            let curPage
+            if (type === 'prev') {
+              curPage = prevPage - 1
+            } else if (type === 'next') {
+              curPage = prevPage + 1
+            } else {
+              curPage = type
+            }
+            this.setState({
+              page: curPage
+            }, () => {
+              this.queryDepartments()
+            })
+          }} />
       </div>
     )
   }

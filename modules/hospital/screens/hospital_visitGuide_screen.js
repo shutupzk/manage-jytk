@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 // import { Router } from '../../../routes'
 import Router from 'next/router'
-import {theme, Prompt, Loading, FilterCard, SelectFilterCard, KeywordCard} from 'components'
-import {fuzzyQuery} from 'utils'
+import {theme, Prompt, Loading, FilterCard, SelectFilterCard, KeywordCard, PageCard} from 'components'
+import {fuzzyQuery, isArray} from 'utils'
 import {HOSPITALINFO} from '../config'
 import {ListTitle} from 'modules/common/components'
 import { querynotices, showPrompt, createVisitNotice, updateVisitNotice, queryNoticesGroups } from '../../../ducks'
@@ -18,14 +18,22 @@ class HospitalVisitGuideScreen extends Component {
 			showModal: false,
 			selectedNotice: {},
 			modalType: '', // add\modify\delete
-			isfilterkeyword: false
+			page: 1
     }
   }
 
   componentWillMount() {
-		this.props.querynotices(this.props.client)
+		this.querynotices()
 		this.props.queryNoticesGroups(this.props.client)
-  }
+	}
+	
+	async querynotices() {
+		let error = await this.props.querynotices(this.props.client, {limit: 10, skip: (this.state.page - 1) * 10})
+    if (error) {
+      this.props.showPrompt({text: error})
+      return
+    }
+	}
 	
 	async clickModalOk(data, modalType, values) {
 		let error;
@@ -43,7 +51,7 @@ class HospitalVisitGuideScreen extends Component {
 		}
 		this.onHide();
 		// await this.props.showPrompt('更新成功');
-		await this.props.querynotices(this.props.client)
+		this.querynotices()
 	}
 
 	onHide() {
@@ -78,10 +86,10 @@ class HospitalVisitGuideScreen extends Component {
 						data={this.props.noticesGroups}
 						status={this.state.status}
 						config= {{selectTitle: '全部指南类型', valueKey: 'id', titleKey: 'name'}}
-						changeStatus={(status) => {this.setState({status: status})}} />
+						changeStatus={(status) => {this.setState({status: status, page: 1}, () => this.querynotices())}} />
 					<KeywordCard
 						config={{placeholder: '指南编号／指南名称／指南内容'}}
-						clickfilter={(keyword) => {this.setState({keyword: keyword})}} />
+						clickfilter={(keyword) => {this.setState({keyword: keyword, page: 1}, () => this.querynotices())}} />
 				</FilterCard>
 				 <article style={{textAlign: 'right', paddingBottom: theme.lrmargin}}>
 					<button style={{width: '1rem'}} className='btnBG btnBGMain btnBGLitt'
@@ -105,6 +113,23 @@ class HospitalVisitGuideScreen extends Component {
 						})
 					: 'no data'
 				}
+        <PageCard data={isArray(notices) ? notices : []} page={this.state.page}
+          clickPage={(type) => {
+            const prevPage = this.state.page
+            let curPage
+            if (type === 'prev') {
+              curPage = prevPage - 1
+            } else if (type === 'next') {
+              curPage = prevPage + 1
+            } else {
+              curPage = type
+            }
+            this.setState({
+              page: curPage
+            }, () => {
+              this.querynotices()
+            })
+          }} />
       </div>
     )
   }

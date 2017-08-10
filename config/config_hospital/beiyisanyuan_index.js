@@ -30,9 +30,7 @@ const MAINFUNCTION = [
     short_name: 'order',
     navigateName: '/order',
     children: [
-      {title: '订单管理', navigateName: '/order', color: '#5D75A6', navigateNameDetail: 'detail'},
-      {title: '交易管理', navigateName: '', color: '#5D75A6'},
-      {title: '服务记录', navigateName: '', color: '#5D75A6'},
+      {title: '订单管理', navigateName: '/order', color: '#5D75A6', navigateNameDetail: 'detail'}
     ]
   },
   {

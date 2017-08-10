@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import _ from 'lodash'
 import Router from 'next/router'
 import {isArray, fuzzyQuery} from 'utils'
-import {theme, Prompt, Loading, FilterCard, SelectFilterCard, KeywordCard} from 'components'
+import {theme, Prompt, Loading, FilterCard, SelectFilterCard, KeywordCard, PageCard} from 'components'
 import {DEPARTMENTINFO} from '../config'
 import { ListTitle} from 'modules/common/components'
 import { queryDepartments, showPrompt, updateDepartment } from '../../../ducks'
@@ -19,11 +19,20 @@ class DepartmentRecommandScreen extends Component {
 			showModal: false,
 			selectedDepartment: {},
 			modalType: '', // add\modify\delete
+			page: 1
     }
   }
 
   componentWillMount() {
-    this.props.queryDepartments(this.props.client)
+    this.queryDepartments()
+	}
+	
+	async queryDepartments() {
+		let error = await this.props.queryDepartments(this.props.client, {limit: 10, skip: (this.state.page - 1) * 10})
+    if (error) {
+      this.props.showPrompt({text: error})
+      return
+    }
 	}
 	
 	async clickModalOk(data, modalType, values) {
@@ -62,7 +71,7 @@ class DepartmentRecommandScreen extends Component {
 				<FilterCard>
 					<KeywordCard
 						config={{placeholder: '科室编码／科室名称／科室介绍'}}
-						clickfilter={(keyword) => {this.setState({keyword: keyword})}} />
+						clickfilter={(keyword) => {this.setState({keyword: keyword, page: 1}, () => this.queryDepartments())}} />
 				</FilterCard>
 				<DepartmentDetailModal selectedDepartment={this.state.selectedDepartment}
 					showModal={this.state.showModal}
@@ -87,6 +96,23 @@ class DepartmentRecommandScreen extends Component {
 						})
 					: 'no data'
 				}
+        <PageCard data={isArray(departments) ? departments : []} page={this.state.page}
+          clickPage={(type) => {
+            const prevPage = this.state.page
+            let curPage
+            if (type === 'prev') {
+              curPage = prevPage - 1
+            } else if (type === 'next') {
+              curPage = prevPage + 1
+            } else {
+              curPage = type
+            }
+            this.setState({
+              page: curPage
+            }, () => {
+              this.queryDepartments()
+            })
+          }} />
       </div>
     )
   }

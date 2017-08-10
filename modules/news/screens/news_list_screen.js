@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
 // import { Router } from '../../../routes'
 import Router from 'next/router'
-import {theme, Prompt, Loading, FilterCard, SelectFilterCard, KeywordCard} from 'components'
+import {theme, Prompt, Loading, FilterCard, SelectFilterCard, KeywordCard, PageCard} from 'components'
 import {ORDERTYPE} from 'config'
 import {NEWSINFO} from '../config'
 import {ListTitle} from 'modules/common/components'
-import {fuzzyQuery} from 'utils'
+import {fuzzyQuery, isArray} from 'utils'
 import { queryNews, queryHospitals,queryNewGroups, showPrompt,
 	createNews,
 	updateNews,
@@ -22,13 +22,22 @@ class NewsListsScreen extends Component {
 			showModal: false,
 			selectedNews: {},
 			modalType: '', // add\modify\delete
+			page: 1
     }
   }
 
   componentWillMount() {
-		this.props.queryNews(this.props.client)
+		this.queryNews()
 		this.props.queryNewGroups(this.props.client)
   }
+
+	async queryNews() {
+		let error = await this.props.queryNews(this.props.client, {limit: 10, skip: (this.state.page - 1) * 10})
+    if (error) {
+      this.props.showPrompt({text: error})
+      return
+    }
+	}
 	
 	async clickModalOk(data, modalType, values) {
 		let error;
@@ -45,6 +54,7 @@ class NewsListsScreen extends Component {
 				}
 			}
 			error = await this.props.createNews(this.props.client, values)
+			this.setState({page: 1})
 		} else if (modalType === 'delete') {
 			values.id = this.state.selectedNews.id
 			error = await this.props.removeNews(this.props.client, values)
@@ -52,9 +62,11 @@ class NewsListsScreen extends Component {
 		if (error) {
 			this.props.showPrompt({text: error});
 			return
+		} else {
+			this.props.showPrompt({text: '操作成功'});
+			this.onHide();
+			this.queryNews()
 		}
-		this.onHide();
-		await this.props.queryNews(this.props.client, {forceFetch: true})
 	}
 
 	onHide() {
@@ -87,10 +99,10 @@ class NewsListsScreen extends Component {
 						data={this.props.newsGroups}
 						status={this.state.status}
 						config= {{selectTitle: '全部资讯类型', valueKey: 'id', titleKey: 'type'}}
-						changeStatus={(status) => {this.setState({status: status})}} />
+						changeStatus={(status) => {this.setState({status: status, page: 1}, () => this.queryNews())}} />
 					<KeywordCard
 						config={{placeholder: '资讯标题／资讯类型'}}
-						clickfilter={(keyword) => {this.setState({keyword: keyword})}} />
+						clickfilter={(keyword) => {this.setState({keyword: keyword, page: 1}, () => this.queryNews())}} />
 				</FilterCard>
 				<article style={{textAlign: 'right', paddingBottom: theme.lrmargin}}>
 					<button style={{width: '1rem'}} className='btnBG btnBGMain btnBGLitt'
@@ -113,6 +125,23 @@ class NewsListsScreen extends Component {
 					modalType={this.state.modalType}
 					newsGroups={this.props.newsGroups}
 					clickModalOk={(data, modalType, values) => this.clickModalOk(data, modalType, values)} />
+        <PageCard data={isArray(news) ? news : []} page={this.state.page}
+          clickPage={(type) => {
+            const prevPage = this.state.page
+            let curPage
+            if (type === 'prev') {
+              curPage = prevPage - 1
+            } else if (type === 'next') {
+              curPage = prevPage + 1
+            } else {
+              curPage = type
+            }
+            this.setState({
+              page: curPage
+            }, () => {
+              this.queryNews()
+            })
+          }} />
       </div>
     )
   }
