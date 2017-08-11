@@ -3,7 +3,7 @@ import {prompt, showPrompt, hidePrompt} from './prompt'
 import {order, queryOrderList, queryOrderDetail} from './order'
 import {doctor, queryDoctors, updateDoctor, createDoctor} from './doctor'
 import {department, queryDepartments, updateDepartment, createDepartment} from './department'
-import {hospital, queryHospitals, updateHospital, createHospital} from './hospital'
+import {hospital, queryHospitals, updateHospital, createHospital, selectHospital, queryHospital} from './hospital'
 import {news, queryNews, queryNewGroups, createGroups, updateNewsGroup, removeNewsGroup, createNews, updateNews, removeNews} from './news'
 import {buildings, createbuilding, createFloor, createRoom, queryBuildings, queryBuildingDetail, updateBuilding, updateFloor, updateRoom} from './buildings'
 import {notices, createVisitNotice, querynotices, queryNoticesGroups, createNoticesGroups, updateNoticesGroups, updateVisitNotice} from './notice'
@@ -51,6 +51,8 @@ export {
     queryHospitals,
     updateHospital,
     createHospital,
+    selectHospital,
+    queryHospital,
     queryNews,
     queryNewGroups,
     createGroups,

@@ -1,53 +1,24 @@
 import React, { Component } from 'react'
 // import { Router } from '../../../routes'
 import Router from 'next/router'
-import {theme, Prompt, Loading} from 'components'
+import {theme, Prompt, Loading, DraftCard} from 'components'
 import {ORDERTYPE} from 'config'
 import {HOSPITALINFO} from '../config'
 import {TopFilterCard, ListTitle} from 'modules/common/components'
-import { queryHospitals, showPrompt, createHospital, updateHospital } from '../../../ducks'
+import { queryHospitals, showPrompt, selectHospital } from '../../../ducks'
 import { connect } from 'react-redux'
 import {HospitalListItem, HospitalDetailModal} from '../components'
-
 
 class HospitalIntroScreen extends Component {
   constructor (props) {
     super(props)
     this.state = {
-			keyword: '',
-			showModal: false,
-			selectedHospital: {},
-			modalType: '', // add\modify\delete
-			isfilterkeyword: false
-    }
+		}
   }
 
   componentWillMount() {
 		this.props.queryHospitals(this.props.client)
   }
-	
-	async clickModalOk(data, modalType, values) {
-		let error;
-		if (modalType === 'modify') {
-			values.id = this.state.selectedHospital.id
-			error = await this.props.updateHospital(this.props.client, values)
-		}
-		else if (modalType === 'add') {
-			error = await this.props.createHospital(this.props.client, values)
-		}
-		if (error) {
-			this.onHide();
-			this.props.showPrompt({text: error});
-			// return
-		}
-		this.onHide();
-		// await this.props.showPrompt('更新成功');
-		await this.props.queryHospitals(this.props.client)
-	}
-
-	onHide() {
-		this.setState({showModal: false, selectedHospital: {}, modalType: ''})
-	}
 
   render () {
     if (this.props.loading) {
@@ -59,20 +30,14 @@ class HospitalIntroScreen extends Component {
 			return <div>{this.props.error}</div>
 		}
 		let hospital = this.props.hospital
-		console.log('--------this.props', this.props)
     return (
       <div>
 				<article style={{textAlign: 'right', paddingBottom: theme.lrmargin}}>
 					<button style={{width: '1rem'}} className='btnBG btnBGMain btnBGLitt'
-						onClick={() => this.setState({showModal: true, modalType: 'add'})}>添加医院</button>
+						onClick={() => {
+							this.props.selectHospital({data: {}});
+							Router.push('/hospital/hospital_introduct_detail?type=add')}}>添加医院</button>
 				</article>
-				<HospitalDetailModal selectedData={this.state.selectedHospital}
-					showModal={this.state.showModal}
-					onHide={() => this.onHide()}
-					titleInfo={HOSPITALINFO.hospitalInfo_list_title}
-					modalType={this.state.modalType}
-					newsGroups={this.props.newsGroups}
-					clickModalOk={(data, modalType, values) => this.clickModalOk(data, modalType, values)} />
 				<ListTitle data={HOSPITALINFO.hospitalInfo_list_title} />
 				{
 					hospital && hospital.length > 0 ?
@@ -80,7 +45,7 @@ class HospitalIntroScreen extends Component {
 							return <HospitalListItem data={hospitalItem} key={iKey} index={iKey}
 							 titleInfo={HOSPITALINFO.hospitalInfo_list_title}
 							 page='intro'
-							 clickShowModal={(data, modalType) => {this.setState({selectedHospital: data, modalType: modalType, showModal: true})}} />
+							 clickShowModal={(data) => Router.push(`/hospital/hospital_introduct_detail?type=modify&id=${data.id}`)} />
 						})
 					: 'no data'
 				}
@@ -92,12 +57,10 @@ class HospitalIntroScreen extends Component {
 
 function mapStateToProps (state) {
   return {
-    news: state.news.data.news,
-    loading: state.news.loading,
+    loading: state.hospital.loading,
 		error: state.news.error,
 		hospital: state.hospital.data,
-		newsGroups: state.news.data.newsGroups
   }
 }
 
-export default connect(mapStateToProps, { queryHospitals, showPrompt, createHospital, updateHospital })(HospitalIntroScreen)
+export default connect(mapStateToProps, { queryHospitals, showPrompt, selectHospital })(HospitalIntroScreen)

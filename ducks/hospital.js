@@ -5,10 +5,14 @@ const HOSPITAL_QUERY_HOSPITAL = 'hospital/queryhospital'
 const HOSPITAL_QUERY_HOSPITAL_SUCCESS = 'hospital/queryhospital/success'
 const HOSPITAL_QUERY_HOSPITAL_FAIL = 'hospital/queryhospital/fail'
 
+const HOSPITAL_SELECT_HOSPITAL = 'hospital/selecthospital'
+const HOSPITAL_QUERY_HOSPITAL_DETAIL_SUCCESS = 'hospital/queryhospital/detail/success'
+
 const initState = {
   data: {},
   loading: false,
-  error: null
+  error: null,
+  selectedHospital: {}
 }
 
 // reducer
@@ -19,12 +23,19 @@ export function hospital (state = initState, action = {}) {
       return Object.assign({}, state, { loading: true, error: null })
     case HOSPITAL_QUERY_HOSPITAL_FAIL:
       return Object.assign({}, state, { loading: false, error: action.error })
-		case HOSPITAL_QUERY_HOSPITAL_SUCCESS:
+    case HOSPITAL_QUERY_HOSPITAL_SUCCESS:
+    case HOSPITAL_QUERY_HOSPITAL_DETAIL_SUCCESS:
       return Object.assign(
         {},
         state,
         { data: action.hospital },
         { loading: false, error: null }
+      )
+    case HOSPITAL_SELECT_HOSPITAL:
+      return Object.assign(
+        {},
+        state,
+        { selectedHospital: action.selectedHospital }
       )
     default:
       return state
@@ -34,7 +45,7 @@ export function hospital (state = initState, action = {}) {
 // query hospital
 const QUERY_HOSPITALS = gql`
   query {
-		hospitals(limit: 1000) {
+		hospitals(limit: 100) {
 			id
       hospitalName
       hospitalCode
@@ -62,6 +73,49 @@ export const queryHospitals = (client) => async dispatch => {
     dispatch({
       type: HOSPITAL_QUERY_HOSPITAL_SUCCESS,
       hospital: data.data.hospitals
+    })
+    return null
+  } catch (e) {
+    console.log(e)
+    dispatch({
+      type: HOSPITAL_QUERY_HOSPITAL_FAIL,
+      error: e.message
+    })
+    return e.message
+  }
+}
+
+// query hospital
+const QUERY_HOSPITAL = gql`
+  query($id: ObjID!) {
+		hospital(id: $id) {
+			id
+      hospitalName
+      hospitalCode
+      phone
+      logo
+      address
+      description
+		}
+	}
+`
+
+export const queryHospital = (client, {id}) => async dispatch => {
+  dispatch({
+    type: HOSPITAL_QUERY_HOSPITAL
+  })
+  try {
+		const data = await client.query({ query: QUERY_HOSPITAL, variables: {id}, fetchPolicy: 'network-only'})
+    if (data.error) {
+      dispatch({
+        type: HOSPITAL_QUERY_HOSPITAL_FAIL,
+        error: data.error.message
+      })
+      return data.error.message
+    }
+    dispatch({
+      type: HOSPITAL_QUERY_HOSPITAL_DETAIL_SUCCESS,
+      hospital: data.data.hospital
     })
     return null
   } catch (e) {
@@ -154,4 +208,11 @@ export const createHospital = (client, { hospitalName, hospitalCode, phone, logo
     })
     return e.message
   }
+}
+
+export const selectHospital = ({data}) => async dispatch => {
+  dispatch({
+    type: HOSPITAL_SELECT_HOSPITAL,
+    selectedHospital: data
+  })
 }
