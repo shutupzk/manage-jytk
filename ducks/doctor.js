@@ -116,28 +116,29 @@ const UPDATE_DOCTOR = gql`
     $videoOpen: Boolean,
     $quikePrice: Int,
     $imageAndTextPrice: Int,
-    $videoPrice: Int
+    $videoPrice: Int,
+    $avatar: String,
 ){
     updateDoctor(id: $id, input: {major: $major, sex: $sex,
       recommend: $recommend, hot: $hot, isAppointment: $isAppointment, phone: $phone,
       workingYears: $workingYears, description: $description,
       quikeOpen: $quikeOpen, imageAndTextOpen: $imageAndTextOpen, videoOpen: $videoOpen,
-      quikePrice: $quikePrice, imageAndTextPrice: $imageAndTextPrice, videoPrice: $videoPrice
+      quikePrice: $quikePrice, imageAndTextPrice: $imageAndTextPrice, videoPrice: $videoPrice, avatar: $avatar
     }){
       id
     }
   }
 `
 
-export const updateDoctor = (client, {id, major, recommend, hot, isAppointment, phone, workingYears, description, quikeOpen, imageAndTextOpen, videoOpen, quikePrice, imageAndTextPrice, videoPrice}) => async dispatch => {
-  console.log('---updateDoctor', id, major, recommend, hot, isAppointment, phone, workingYears, description, quikeOpen, imageAndTextOpen, videoOpen, quikePrice, imageAndTextPrice, videoPrice)
+export const updateDoctor = (client, {id, major, recommend, hot, isAppointment, phone, workingYears, description, quikeOpen, imageAndTextOpen, videoOpen, quikePrice, imageAndTextPrice, videoPrice, avatar}) => async dispatch => {
+  console.log('---updateDoctor', id, major, recommend, hot, isAppointment, phone, workingYears, description, quikeOpen, imageAndTextOpen, videoOpen, quikePrice, imageAndTextPrice, videoPrice, avatar)
   dispatch({
     type: DOCTOR_QUERY_DOCTOR
   })
   try {
     let data = await client.mutate({
       mutation: UPDATE_DOCTOR,
-      variables: { id, major, recommend, hot, isAppointment, phone, workingYears, description, quikeOpen, imageAndTextOpen, videoOpen, quikePrice, imageAndTextPrice, videoPrice}
+      variables: { id, major, recommend, hot, isAppointment, phone, workingYears, description, quikeOpen, imageAndTextOpen, videoOpen, quikePrice, imageAndTextPrice, videoPrice, avatar}
 		})
 		if (data.error) {
       dispatch({
@@ -163,24 +164,24 @@ export const updateDoctor = (client, {id, major, recommend, hot, isAppointment, 
 // create doctor
 const CREATE_DOCTOR = gql`
   mutation($doctorSn: String!, $doctorName: String!, $major: String, $sex: String, $recommend: Boolean,
-    $hot: Boolean, $isAppointment: Boolean, $phone: String, $workingYears: Int, $description: String){
+    $hot: Boolean, $isAppointment: Boolean, $phone: String, $workingYears: Int, $description: String, $avatar: String){
     createDoctor(input: {doctorSn: $doctorSn, doctorName: $doctorName, major: $major, sex: $sex,
       recommend: $recommend, hot: $hot, isAppointment: $isAppointment, phone: $phone,
-      workingYears: $workingYears, description: $description}){
+      workingYears: $workingYears, description: $description, avatar: $avatar}){
       id
     }
   }
 `
 
-export const createDoctor = (client, {doctorSn, doctorName, major, sex, recommend, hot, isAppointment, phone, workingYears, description}) => async dispatch => {
-  console.log('---createDoctor', doctorSn, doctorName, major, sex, recommend, hot, isAppointment, phone, workingYears, description)
+export const createDoctor = (client, {doctorSn, doctorName, major, sex, recommend, hot, isAppointment, phone, workingYears, description, avatar}) => async dispatch => {
+  console.log('---createDoctor', doctorSn, doctorName, major, sex, recommend, hot, isAppointment, phone, workingYears, description, avatar)
   dispatch({
     type: DOCTOR_QUERY_DOCTOR
   })
   try {
     let data = await client.mutate({
       mutation: CREATE_DOCTOR,
-      variables: { doctorSn, doctorName, major, recommend, hot, isAppointment, phone, workingYears, description }
+      variables: { doctorSn, doctorName, major, recommend, hot, isAppointment, phone, workingYears, description, avatar }
 		})
 		if (data.error) {
       dispatch({
