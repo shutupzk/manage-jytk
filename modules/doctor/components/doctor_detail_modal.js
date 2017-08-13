@@ -69,6 +69,8 @@ const renderModal = (self) => {
 								if (refName !== 'Ref') {
 									if (titleInfo[titleInfoItem].type === 'checkbox') {
 										values[titleInfo[titleInfoItem].apiKey] = self.refs[refName] && self.refs[refName].checked
+									} else if(titleInfo[titleInfoItem].type === 'number') {
+										values[titleInfo[titleInfoItem].apiKey] = self.refs[refName] && self.refs[refName].value || 0
 									} else {
 										values[titleInfo[titleInfoItem].apiKey] = self.refs[refName] && self.refs[refName].value
 									}

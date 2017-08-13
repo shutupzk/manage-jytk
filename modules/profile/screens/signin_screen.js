@@ -27,23 +27,23 @@ class SigninScreen extends Component {
       this.props.showPrompt({text: '请输入密码'})
       return
     }
-    // if (username === 'admin' && password === '123456') {
-    //   localforage.setItem('token', 'token')
-    //   localforage.setItem('adminId', 'adminId')
-    //   localforage.setItem('username', username)
-    //   localforage.setItem('password', password)
-    //   // Router.push('/')
-    //   Router.push(HOME_PAGE.url)
-    // } else {
-    //   this.props.showPrompt({text: '用户名或密码错误'})
-    //   return
-    // }
-    const error = await this.props.signin({ username, password })
-    if (error) {
-      this.props.showPrompt({text: error})
+    if (username === 'admin' && password === '123456') {
+      localforage.setItem('token', 'token')
+      localforage.setItem('adminId', 'adminId')
+      localforage.setItem('username', username)
+      localforage.setItem('password', password)
+      // Router.push('/')
+      Router.push(HOME_PAGE.url)
+    } else {
+      this.props.showPrompt({text: '用户名或密码错误'})
       return
     }
-    Router.push(HOME_PAGE.url)
+    // const error = await this.props.signin({ username, password })
+    // if (error) {
+    //   this.props.showPrompt({text: error})
+    //   return
+    // }
+    // Router.push(HOME_PAGE.url)
   }
   render () {
     return (
