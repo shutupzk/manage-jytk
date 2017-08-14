@@ -9,7 +9,7 @@ import {UI} from './UI'
 export default class DraftCard extends Component {
   constructor(props) {
     super(props);
-    const html = props.defaultValue || '<p>123</p>'
+    const html = props.defaultValue || '<p></p>'
     const contentBlock = process.browser ? htmlToDraft(html) : '';
     if (contentBlock) {
       const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);

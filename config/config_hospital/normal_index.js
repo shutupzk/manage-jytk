@@ -84,7 +84,7 @@ const MAINFUNCTION = [
   {
     title: '医院信息管理',
     short_name: 'hospital',
-    navigateName: '/hospital',
+    navigateName: '/hospital/hospital_introduct',
     children: [
       {title: '医院介绍', navigateName: '/hospital/hospital_introduct', navigateNameDetail: 'hospital_introduct', color: '#5D75A6'},
       {title: '功能清单', navigateName: '/hospital/hospital_funlist', color: '#5D75A6'},
@@ -106,7 +106,7 @@ const MAINFUNCTION = [
 ]
 
 // home页面  登录成功，默认进入的页面
-const HOME_PAGE = {url: '/hospital_introduct'}
+const HOME_PAGE = {url: '/hospital/hospital_introduct'}
 
 // 主题颜色
 const MAINCOLOR = '#2A4680'

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Router from 'next/router'
-import {theme, DraftCard} from 'components'
+import {theme, Modal, ModalHeader, ModalFooter} from 'components'
 import Link from 'next/link'
 import {DEPARTMENTINFO} from '../config'
 
@@ -31,15 +31,16 @@ export default class HospitalDetailModal extends Component {
 }
 
 const renderModal = (self) => {
-	const {selectedData, modalType, data, selectedType, titleInfo} = self.props;
+	const {selectedData, modalType, data, selectedType, titleInfo, showModal} = self.props;
 	return (
-		<div>
+		<Modal showModalState={self.props.showModal} style={{top: '12%'}} sectionStyle={{width: modalType === 'delete' ? '30%': '50%'}}>
+			{modalHeaderView(self)}
 			{
 				selectedType === 1 ?
 					''
 				: renderDepartmentInfoModal(self)
 			}
-			<div>
+			<ModalFooter>
 				<article style={{width: '50%'}}>
 					<button className='btnBorder'
 						style={{display: 'inline-block', width: '100%', borderRadius: '2px 0 0 2px', lineHeight: '36px', border: 'none', fontSize: theme.mainfontsize,
@@ -59,18 +60,37 @@ const renderModal = (self) => {
 							console.log('-----values---modal', values)
 							self.props.clickModalOk(data, modalType, values)}
 						}>确定</button>
+			</ModalFooter>
+		</Modal>
+	)
+}
+const modalHeaderView = (self) => {
+	let headerItemStyle ={
+		borderBottom: `4px solid #fff`,
+		paddingBottom: theme.midmargin,
+		marginRight: theme.tbmargin, cursor: 'pointer'
+	}
+	let curHaderItemStyle = {
+		borderBottom: `4px solid ${theme.maincolor}`,
+		color: theme.maincolor,
+		paddingBottom: theme.midmargin,
+		marginRight: theme.tbmargin, cursor: 'pointer'
+	}
+	return (
+		<ModalHeader showCloseBtn
+			onHide={() => self.props.onHide()}>
+			<div style={{borderBottom: `1px solid ${theme.bordercolor}`, width:'80%', fontSize: theme.nfontsize, color: theme.nfontcolor}}>
+				<span className='left' style={curHaderItemStyle}
+					onClick={() => self.props.changeType(0)}>基本信息</span>
+				<p className='clearfix'></p>
 			</div>
-		</div>
+		</ModalHeader>
 	)
 }
 
 const renderDepartmentInfoModal = (self) => {
 	// const modalHeight = document && document.body.clientWidth * 0.3
 	const {selectedData, modalType, titleInfo, noticesGroups, hospital, page} = self.props;
-	return (
-
-				<input type='text' defaultValue={selectedData.hospitalName} />
-	)
 	if (modalType === 'delete') {
 		return (
 			<div style={{padding: '.3rem .25rem', color: theme.mainfontcolor}}>您确定要删除<span style={{color: theme.maincolor}}>{selectedData.hospitalName}</span>吗？</div>
@@ -100,13 +120,9 @@ const renderDepartmentInfoModal = (self) => {
 									style={{fontSize: theme.fontsize, color: theme.mainfontcolor}}>
 									<dt>{titleInfoItem.title}</dt>
 									<dd style={{width: '80%'}}>
-
-										<DraftCard onEditorStateChange={(html) => {
-											{/* this.setState({editorState: html}) */}
-										}} />
-										{/* <textarea
+										 <textarea
 											style={{width: '100%', border: `1px solid ${theme.bordercolor}`, minHeight: '1rem'}}
-											defaultValue={selectedData[titleInfoItem.apiKey]} ref={`${titleInfoItem.apiKey}Ref`}></textarea> */}
+											defaultValue={selectedData[titleInfoItem.apiKey]} ref={`${titleInfoItem.apiKey}Ref`}></textarea> 
 									</dd>
 								</dl>
 							)
