@@ -8,6 +8,7 @@ export default class HospitalDetailModal extends Component {
   constructor (props) {
     super(props)
     this.state = {
+			editorState: ''
     }
 	}
 
@@ -44,7 +45,13 @@ const renderModal = (self) => {
 						for (const titleInfoItem in titleInfo) {
 							const refName = titleInfo[titleInfoItem].apiKey + 'Ref'
 							if (refName !== 'Ref') {
-								values[titleInfo[titleInfoItem].apiKey] = self.refs[refName] && self.refs[refName].value
+								if (titleInfo[titleInfoItem].type === 'checkbox') {
+									values[titleInfo[titleInfoItem].apiKey] = self.refs[refName] && self.refs[refName].checked
+								} else if (titleInfo[titleInfoItem].type === 'textarea') {
+									values[titleInfo[titleInfoItem].apiKey] = self.editorState || selectedData[titleInfo[titleInfoItem].apiKey]
+								} else {
+									values[titleInfo[titleInfoItem].apiKey] = self.refs[refName] && self.refs[refName].value
+								}
 							}
 						}
 						self.props.clickModalOk(values)}
@@ -86,9 +93,8 @@ const renderDepartmentInfoModal = (self) => {
 									style={{fontSize: theme.fontsize, color: theme.mainfontcolor}}>
 									<dt>{titleInfoItem.title}</dt>
 									<dd style={{width: '80%'}}>
-
-										<DraftCard onEditorStateChange={(html) => {
-											{/* this.setState({editorState: html}) */}
+										<DraftCard defaultValue={selectedData[titleInfoItem.apiKey]} onEditorStateChange={(html) => {
+											 self.setState({editorState: html}) 
 										}} />
 										{/* <textarea
 											style={{width: '100%', border: `1px solid ${theme.bordercolor}`, minHeight: '1rem'}}
@@ -151,24 +157,6 @@ const renderDepartmentInfoModal = (self) => {
 					}
 				`}</style>
 			</div>
-		)
-	}
-}
-const showHtml = (self, titleInfoItem) => {
-	const {selectedData, modalType, titleInfo} = self.props;
-	if (titleInfoItem.title.indexOf('名称') > -1 ||
-		titleInfoItem.title.indexOf('编码') > -1 ||
-		titleInfoItem.title.indexOf('联系电话') > -1 ||
-		titleInfoItem.title.indexOf('所在地址') > -1) {
-		return (<dd><input type='text' defaultValue={selectedData[titleInfoItem.apiKey]} ref={`${titleInfoItem.apiKey}Ref`} /></dd>)
-	}
-	if (titleInfoItem.title.indexOf('医院介绍') > -1) {
-		return (
-			<dd style={{width: '80%'}}>
-				<textarea
-					style={{width: '100%', border: `1px solid ${theme.bordercolor}`, minHeight: '1rem'}}
-					defaultValue={selectedData[titleInfoItem.apiKey]} ref={`${titleInfoItem.apiKey}Ref`}></textarea>
-			</dd>
 		)
 	}
 }
