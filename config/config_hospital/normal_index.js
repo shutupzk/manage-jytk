@@ -64,6 +64,14 @@ const MAINFUNCTION = [
     ]
   },
   {
+    title: '内容管理',
+    short_name: 'article',
+    navigateName: '/article',
+    children: [
+      {title: '内容管理', navigateName: '/article', color: '#5D75A6',}
+    ]
+  },
+  {
     title: '资讯管理',
     short_name: 'news',
     navigateName: '/news',

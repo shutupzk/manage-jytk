@@ -9,6 +9,7 @@ import {buildings, createbuilding, createFloor, createRoom, queryBuildings, quer
 import {notices, createVisitNotice, querynotices, queryNoticesGroups, createNoticesGroups, updateNoticesGroups, updateVisitNotice} from './notice'
 import {appointments, queryAppointments, cancelAppointment, queryAppointmentDetail} from './appoint'
 import {schedule, querySchedules} from './schedule'
+import {article, queryArticles} from './article'
 
 // key
 export {
@@ -22,7 +23,8 @@ export {
     buildings,
     notices,
     appointments,
-    schedule
+    schedule,
+    article
 }
 
 // action
@@ -78,5 +80,6 @@ export {
     queryAppointments,
     cancelAppointment,
     queryAppointmentDetail,
-    querySchedules
+    querySchedules,
+    queryArticles
 }
