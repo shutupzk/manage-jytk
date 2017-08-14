@@ -49,6 +49,10 @@ const orderCon2 = (props, item, iKey) => {
 }
 
 const orderCon3 = (props, item, iKey) => {
+	return (normalHtml(props.data[item.apiKey], item, iKey))
+}
+
+const orderCon4 = (props, item, iKey) => {
 	return (btnHtml(props, item, iKey))
 }
 
