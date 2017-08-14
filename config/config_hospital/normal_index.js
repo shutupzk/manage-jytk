@@ -6,6 +6,7 @@ import withData from 'config/withData'
 const HOSPITAL_NAME = '北大医疗标准管理平台'
 // const API_SERVER = '218.58.137.218:9002'
 const API_SERVER = '120.92.57.18:9199'
+// const API_SERVER = '120.92.57.18:9198'
 // const API_SERVER = 'api.bysy.uthealth.com.cn'
 const PORT = '9003' // 前端端口
 
@@ -83,9 +84,9 @@ const MAINFUNCTION = [
   {
     title: '医院信息管理',
     short_name: 'hospital',
-    navigateName: '/hospital',
+    navigateName: '/hospital/hospital_introduct',
     children: [
-      {title: '医院介绍', navigateName: '/hospital', navigateNameDetail: 'hospital', color: '#5D75A6'},
+      {title: '医院介绍', navigateName: '/hospital/hospital_introduct', navigateNameDetail: 'hospital_introduct', color: '#5D75A6'},
       {title: '功能清单', navigateName: '/hospital/hospital_funlist', color: '#5D75A6'},
       {title: '院内导航', navigateName: '/hospital/hospital_navigation', navigateNameDetail: 'navigation', color: '#5D75A6'},
       {title: '就诊指南', navigateName: 'visitGuide', color: '#5D75A6', childs: [
@@ -105,7 +106,7 @@ const MAINFUNCTION = [
 ]
 
 // home页面  登录成功，默认进入的页面
-const HOME_PAGE = {url: '/hospital'}
+const HOME_PAGE = {url: '/hospital/hospital_introduct'}
 
 // 主题颜色
 const MAINCOLOR = '#2A4680'

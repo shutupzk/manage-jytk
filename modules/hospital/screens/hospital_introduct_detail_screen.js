@@ -7,17 +7,12 @@ import {HOSPITALINFO} from '../config'
 import {TopFilterCard, ListTitle} from 'modules/common/components'
 import { queryHospital, showPrompt, createHospital, updateHospital } from '../../../ducks'
 import { connect } from 'react-redux'
-import {HospitalListItem, HospitalDetailModal} from '../components'
+import {HospitalListItem, HospitalDetailPage} from '../components'
 
 class HospitalIntroDetailScreen extends Component {
   constructor (props) {
     super(props)
     this.state = {
-			keyword: '',
-			showModal: false,
-			selectedHospital: {},
-			modalType: '', // add\modify\delete
-			editorState: ''
 		}
   }
 
@@ -26,14 +21,13 @@ class HospitalIntroDetailScreen extends Component {
 		if (type === 'modify') {
 			this.props.queryHospital(this.props.client, {id})
 		}
-  }
+	}
 	
-	async clickModalOk(data, values) {
+	async clickModalOk(values) {
 		let error;
-		const {type} = this.props.url && this.props.url.query || {}
+		const {type, id} = this.props.url && this.props.url.query || {}
 		if(type === 'modify') {
-			values.id = this.state.selectedHospital.id
-			error = await this.props.updateHospital(this.props.client, values)
+			error = await this.props.updateHospital(this.props.client, Object.assign({}, values, {id}))
 		}
 		else if (type === 'add') {
 			error = await this.props.createHospital(this.props.client, values)
@@ -42,8 +36,8 @@ class HospitalIntroDetailScreen extends Component {
 			this.props.showPrompt({text: error});
 			// return
 		}
-		// await this.props.showPrompt('更新成功');
-		await this.props.queryHospital(this.props.client)
+		await this.props.showPrompt('更新成功');
+		Router.push('/hospital')
 	}
 
   render () {
@@ -56,17 +50,14 @@ class HospitalIntroDetailScreen extends Component {
 			return <div>{this.props.error}</div>
 		}
 		let hospital = this.props.hospital
-		console.log('======hospital', this.props.hospital, hospital.hospitalName)
     return (
       <div>
-				<input type='text' defaultValue={hospital.hospitalName} />
-				<HospitalDetailModal selectedData={this.props.hospital}
+				<HospitalDetailPage selectedData={this.props.selectedHospital}
 					showModal={true}
-					onHide={() => {alert('')}}
 					titleInfo={HOSPITALINFO.hospitalInfo_list_title}
-					modalType={'add'}
+					modalType={'modify'}
 					newsGroups={this.props.newsGroups}
-					clickModalOk={(data, modalType, values) => this.clickModalOk(data, modalType, values)} />
+					clickModalOk={(values) => this.clickModalOk(values)} />
       </div>
     )
   }

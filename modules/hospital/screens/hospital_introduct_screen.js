@@ -45,7 +45,10 @@ class HospitalIntroScreen extends Component {
 							return <HospitalListItem data={hospitalItem} key={iKey} index={iKey}
 							 titleInfo={HOSPITALINFO.hospitalInfo_list_title}
 							 page='intro'
-							 clickShowModal={(data) => Router.push(`/hospital/hospital_introduct_detail?type=modify&id=${data.id}`)} />
+							 clickShowModal={(data) => {
+								 this.props.selectHospital({data})
+								 Router.push(`/hospital/hospital_introduct_detail?type=modify&id=${data.id}`)
+								}} />
 						})
 					: 'no data'
 				}

@@ -1,38 +1,44 @@
-import React, { Component } from 'react'
-import {theme} from 'components'
-import { EditorState, convertToRaw } from 'draft-js';
+import React, { Component } from 'react';
+import { EditorState, convertToRaw, ContentState } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import draftToHtml from 'draftjs-to-html';
-import UI from './UI'
+import htmlToDraft from 'html-to-draftjs';
+import {UI} from './UI'
+
 
 export default class DraftCard extends Component {
-  constructor (props) {
-    super(props)
-    this.state = {
-			editorState: EditorState.createEmpty()
+  constructor(props) {
+    super(props);
+    const html = props.defaultValue || '<p></p>'
+    const contentBlock = process.browser ? htmlToDraft(html) : '';
+    if (contentBlock) {
+      const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
+      const editorState = EditorState.createWithContent(contentState);
+      this.state = {
+        editorState,
+      };
     }
   }
-  render () {
+
+  render() {
+    const { editorState } = this.state;
     return (
-			<div style={{fontSize: theme.fontsize, marginBottom: theme.tbmargin}}>
-				<Editor
-          editorState={this.state.editorState}
+      <div>
+        <Editor
+          editorState={editorState}
           wrapperClassName="demo-wrapper"
           editorClassName="demo-editor"
           onEditorStateChange={(editorState) => {
-						this.setState({
-							editorState
-						}, () => {
-							this.props.onEditorStateChange(draftToHtml(convertToRaw(this.state.editorState.getCurrentContent())))
-						});
-					}}
+            this.setState({editorState})
+            this.props.onEditorStateChange(draftToHtml(convertToRaw(editorState.getCurrentContent())))
+          }}
         />
         {/* <textarea
           disabled
-          value={draftToHtml(convertToRaw(this.state.editorState.getCurrentContent()))}
+          value={draftToHtml(convertToRaw(editorState.getCurrentContent()))}
         /> */}
-				 {UI()} 
-			</div>
-    )
+        {UI()}
+      </div>
+    );
   }
 }

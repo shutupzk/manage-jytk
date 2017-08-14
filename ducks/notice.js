@@ -13,10 +13,13 @@ const NOTICES_UPDATE_NOTICES_GROUPS_SUCCESS = 'notices/update_notices_groups/suc
 
 const NOTICES_CREATE_NOTICES_GROUPS_SUCCESS = 'notices/create_notices_groups/success'
 
+const NOTICES_SELECTED_NOTICES = 'notices/selected_notices'
+
 const initState = {
   data: {},
   loading: false,
-  error: null
+  error: null,
+  selectedNotice: {}
 }
 
 // reducer
@@ -48,6 +51,13 @@ export function notices (state = initState, action = {}) {
         {},
         state,
         { data: Object.assign({}, state.data, {createNewsId: action.createNotices}) },
+        { loading: false, error: null }
+      )
+    case NOTICES_SELECTED_NOTICES:
+      return Object.assign(
+        {},
+        state,
+        { selectedNotice: action.selectedNotice },
         { loading: false, error: null }
       )
     default:
@@ -306,4 +316,11 @@ export const createVisitNotice = (client, {code, title, content, image, visitNot
     })
     return e.message
   }
+}
+
+export const selectNotice = ({data}) => async dispatch => {
+  dispatch({
+    type: HOSPITAL_SELECT_HOSPITAL,
+    selectedNotice: data
+  })
 }

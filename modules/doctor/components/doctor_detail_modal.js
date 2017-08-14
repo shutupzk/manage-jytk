@@ -101,6 +101,8 @@ export default class DoctorDetailModal extends Component {
 								if (refName !== 'Ref') {
 									if (titleInfo[titleInfoItem].type === 'checkbox') {
 										values[titleInfo[titleInfoItem].apiKey] = this.refs[refName] && this.refs[refName].checked
+									} else if(titleInfo[titleInfoItem].type === 'number') {
+										values[titleInfo[titleInfoItem].apiKey] = this.refs[refName] && this.refs[refName].value || 0
 									} else if (titleInfo[titleInfoItem].type === 'image') {
 										values[titleInfo[titleInfoItem].apiKey] = this.state.baseImg || selectedDoctor[titleInfo[titleInfoItem].apiKey]
 									} else {

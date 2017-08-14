@@ -23,32 +23,7 @@ class HospitalFunListScreen extends Component {
   }
 
   componentWillMount() {
-		this.props.queryNews(this.props.client)
-		this.props.queryNewGroups(this.props.client)
   }
-	
-	async clickModalOk(data, modalType, values) {
-		let error;
-		if (modalType === 'modify') {
-			values.id = this.state.selectedNews.id
-			error = await this.props.updateNews(this.props.client, values)
-		}
-		else if (modalType === 'add') {
-			error = await this.props.createNews(this.props.client, values)
-		}
-		if (error) {
-			this.onHide();
-			this.props.showPrompt({text: error});
-			// return
-		}
-		this.onHide();
-		// await this.props.showPrompt('更新成功');
-		await this.props.queryNews(this.props.client)
-	}
-
-	onHide() {
-		this.setState({showModal: false, selectedNews: {}, modalType: ''})
-	}
 
   render () {
     if (this.props.loading) {
@@ -68,17 +43,6 @@ class HospitalFunListScreen extends Component {
 		console.log('--------this.props', this.props)
     return (
       <div>
-				{/* <article style={{textAlign: 'right', paddingBottom: theme.lrmargin}}>
-					<button style={{width: '1rem'}} className='btnBG btnBGMain btnBGLitt'
-						onClick={() => this.setState({showModal: true, modalType: 'add'})}>添加医院</button>
-				</article> */}
-				<HospitalDetailModal selectedNews={this.state.selectedNews}
-					showModal={this.state.showModal}
-					onHide={() => this.onHide()}
-					titleInfo={HOSPITALINFO.hospitalFun_list_title}
-					modalType={this.state.modalType}
-					newsGroups={this.props.newsGroups}
-					clickModalOk={(data, modalType, values) => this.clickModalOk(data, modalType, values)} />
 				<ListTitle data={HOSPITALINFO.hospitalFun_list_title} />
 				{
 					news && news.length > 0 ?
