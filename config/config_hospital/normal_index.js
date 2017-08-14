@@ -5,9 +5,9 @@ import withData from 'config/withData'
 // 医院名称
 const HOSPITAL_NAME = '北大医疗标准管理平台'
 // const API_SERVER = '218.58.137.218:9002'
-const API_SERVER = '120.92.57.18:9199'
+// const API_SERVER = '120.92.57.18:9199'
 // const API_SERVER = '120.92.57.18:9198'
-// const API_SERVER = 'api.bysy.uthealth.com.cn'
+const API_SERVER = 'api.bysy.uthealth.com.cn'
 const PORT = '9003' // 前端端口
 
 // 医院信息
@@ -69,7 +69,7 @@ const MAINFUNCTION = [
     short_name: 'article',
     navigateName: '/article',
     children: [
-      {title: '内容管理', navigateName: '/article', color: '#5D75A6',}
+      {title: '内容管理', navigateName: '/article', navigateNameDetail: 'article', color: '#5D75A6',}
     ]
   },
   {

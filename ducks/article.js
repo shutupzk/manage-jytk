@@ -5,14 +5,15 @@ const ARTICLE_QUERY_ARTICLES = 'article/queryarticles'
 const ARTICLE_QUERY_ARTICLES_SUCCESS = 'article/queryarticles/success'
 const ARTICLE_QUERY_ARTICLE_FAIL = 'article/queryarticles/fail'
 
-const ARTICLE_QUERY_ARTICLEGROUPS_SUCCESS = 'article/queryarticleGroups/success'
-
 const ARTICLE_CREATE_ARTICLE_SUCCESS = 'article/createArticle/success'
+
+const ARTICLE_SELECTED_ARTICLE = 'article/selectedArticle'
 
 const initState = {
   data: {},
   loading: false,
-  error: null
+  error: null,
+  selectedArticle: {}
 }
 
 // reducer
@@ -30,18 +31,18 @@ export function article (state = initState, action = {}) {
         { data: Object.assign({}, state.data, {article: action.article}) },
         { loading: false, error: null }
       )
-    case ARTICLE_QUERY_ARTICLEGROUPS_SUCCESS:
-      return Object.assign(
-        {},
-        state,
-        { data: Object.assign({}, state.data, {articleGroups: action.articleGroups}) },
-        { loading: false, error: null }
-      )
     case ARTICLE_CREATE_ARTICLE_SUCCESS:
       return Object.assign(
         {},
         state,
-        { data: Object.assign({}, state.data, {createNewsId: action.createNews}) },
+        { data: Object.assign({}, state.data, {createArticle: action.createArticle}) },
+        { loading: false, error: null }
+      )
+    case ARTICLE_SELECTED_ARTICLE:
+      return Object.assign(
+        {},
+        state,
+        { selectedArticle: action.selectedArticle},
         { loading: false, error: null }
       )
     default:
@@ -49,179 +50,14 @@ export function article (state = initState, action = {}) {
   }
 }
 
-// article groups
-const QUERY_ARTICLEGROUPS = gql`
-  query {
-    articleGroups(limit: 1000) {
-      id
-      type
-      hospital{
-        hospitalName
-        id
-      }
-    }
-	}
-`
-
-export const queryArticleGroups = (client) => async dispatch => {
-  dispatch({
-    type: ARTICLE_QUERY_ARTICLES
-  })
-  try {
-		const data = await client.query({ query: QUERY_ARTICLEGROUPS, fetchPolicy: 'network-only'})
-    if (data.error) {
-      return dispatch({
-        type: ARTICLE_QUERY_ARTICLE_FAIL,
-        error: data.error.message
-      })
-    }
-    dispatch({
-      type: ARTICLE_QUERY_ARTICLEGROUPS_SUCCESS,
-      articleGroups: data.data.articleGroups
-    })
-  } catch (e) {
-    console.log(e)
-    dispatch({
-      type: ARTICLE_QUERY_ARTICLE_FAIL,
-      error: e.message
-    })
-  }
-}
-// create article groups
-const CREATE_GROUPS = gql`
-	mutation($type: String!, $hospitalId: ObjID!){
-    createNewsGroup(input: {hospitalId: $hospitalId, type: $type}) {
-      id
-    }
-	}
-`
-
-export const createArticleGroups = (client, {hospitalId, type}) => async dispatch => {
-  // console.log('---updateDepartment', id, deptName, hot)
-  dispatch({
-    type: ARTICLE_QUERY_ARTICLES
-  })
-  try {
-		console.log('-----value', hospitalId, type)
-    let data = await client.mutate({
-      mutation: CREATE_GROUPS,
-      variables: {hospitalId, type}
-		})
-		if (data.error) {
-      dispatch({
-        type: ARTICLE_QUERY_ARTICLE_FAIL,
-        error: data.error.message
-      })
-      return data.error.message
-    }
-    dispatch({
-      type: ARTICLE_CREATE_ARTICLE_SUCCESS,
-      createNewsGroup: data.data.createNewsGroup
-		})
-		return null
-  } catch (e) {
-    dispatch({
-      trype: ARTICLE_QUERY_ARTICLE_FAIL,
-      error: e.message
-    })
-    return e.message
-  }
-}
-
-// update article groups
-const UPDATE_ARTICLE_GROUPS = gql`
-	mutation($id: ObjID!, $type: String!, $hospitalId: ObjID!){
-    updateNewsGroup(id: $id, input: {hospitalId: $hospitalId, type: $type}) {
-      id
-    }
-	}
-`
-export const updateArticleGroup = (client, {id, hospitalId, type}) => async dispatch => {
-  // console.log('---updateDepartment', id, deptName, hot)
-  dispatch({
-    type: ARTICLE_QUERY_ARTICLES
-  })
-  try {
-		console.log('---update---article--value', id, hospitalId, type)
-    let data = await client.mutate({
-      mutation: UPDATE_ARTICLE_GROUPS,
-      variables: {id, hospitalId, type}
-		})
-		if (data.error) {
-      dispatch({
-        type: ARTICLE_QUERY_ARTICLE_FAIL,
-        error: data.error.message
-      })
-      return data.error.message
-    }
-    dispatch({
-      type: ARTICLE_CREATE_ARTICLE_SUCCESS,
-      createNewsGroup: data.data.updateNewsGroup
-		})
-		return null
-  } catch (e) {
-    dispatch({
-      trype: ARTICLE_QUERY_ARTICLE_FAIL,
-      error: e.message
-    })
-    return e.message
-  }
-}
-// remove article groups
-const REMOVE_NEWS_GROUPS = gql`
-	mutation($id: ObjID!){
-    removeNewsGroup(id: $id)
-	}
-`
-
-export const removeArticleGroup = (client, {id}) => async dispatch => {
-  // console.log('---updateDepartment', id, deptName, hot)
-  dispatch({
-    type: ARTICLE_QUERY_ARTICLES
-  })
-  try {
-		console.log('---remove---article--value', id)
-    let data = await client.mutate({
-      mutation: REMOVE_NEWS_GROUPS,
-      variables: {id}
-		})
-		if (data.error) {
-      dispatch({
-        type: ARTICLE_QUERY_ARTICLE_FAIL,
-        error: data.error.message
-      })
-      return data.error.message
-    }
-    dispatch({
-      type: ARTICLE_CREATE_ARTICLE_SUCCESS,
-      createNewsGroup: data.data.removeNewsGroup
-		})
-		return null
-  } catch (e) {
-    dispatch({
-      trype: ARTICLE_QUERY_ARTICLE_FAIL,
-      error: e.message
-    })
-    return e.message
-  }
-}
-
 // article list
 const QUERY_ARTICLES = gql`
   query($limit: Int, $skip: Int) {
-    newss(limit: $limit, skip: $skip) {
-			id
-			title
-			summary
-			time
-			author
-			content
-			url
-			image
-			newsGroup{
-				id
-				type
-			}
+    protocols(limit: $limit, skip: $skip) {
+      id
+      code
+      name
+      description
     }
 	}
 `
@@ -238,10 +74,9 @@ export const queryArticles = (client, {limit, skip}) => async dispatch => {
         error: data.error.message
       })
     }
-    console.log('----article', data)
     dispatch({
       type: ARTICLE_QUERY_ARTICLES_SUCCESS,
-      article: data.data.newss
+      article: data.data.protocols
     })
   } catch (e) {
     console.log(e)
@@ -254,24 +89,24 @@ export const queryArticles = (client, {limit, skip}) => async dispatch => {
 
 
 // update article
-const UPDATE_NEWS = gql`
-	mutation($id: ObjID!, $title: String!, $summary: String!, $time: String, $content: String, $newsGroupId: ObjID!){
-		updateNews(id: $id, input: {title: $title, summary: $summary, time: $time, content: $content, newsGroupId: $newsGroupId}) {
+const UPDATE_ARTICLE = gql`
+	mutation($id: ObjID!, $code: String, $name: String, $description: String){
+		updateProtocol(id: $id, input: {code: $code, name: $name, description: $description}) {
 			id
 		}
 	}
 `
 
-export const updateNews = (client, {id, title, summary, time, content, newsGroupId}) => async dispatch => {
+export const updateArticle = (client, {id, code, name, description}) => async dispatch => {
   // console.log('---updateDepartment', id, deptName, hot)
   dispatch({
     type: ARTICLE_QUERY_ARTICLES
   })
   try {
-		console.log('-----value', id, title, summary, time, content, newsGroupId)
+		console.log('-----value', id, code, name, description)
     let data = await client.mutate({
-      mutation: UPDATE_NEWS,
-      variables: {id, title, summary, time, content, newsGroupId}
+      mutation: UPDATE_ARTICLE,
+      variables: {id, code, name, description}
 		})
 		if (data.error) {
       dispatch({
@@ -282,7 +117,7 @@ export const updateNews = (client, {id, title, summary, time, content, newsGroup
     }
     dispatch({
       type: ARTICLE_CREATE_ARTICLE_SUCCESS,
-      createNews: data.data.updateNews
+      createArticle: data.data.updateProtocol
 		})
 		return null
   } catch (e) {
@@ -295,24 +130,24 @@ export const updateNews = (client, {id, title, summary, time, content, newsGroup
 }
 
 // create article
-const CREATE_NEWS = gql`
-	mutation($title: String!, $summary: String!, $time: String, $content: String, $newsGroupId: ObjID!){
-		createNews(input: {title: $title, summary: $summary, time: $time, content: $content, newsGroupId: $newsGroupId}) {
+const CREATE_ARTICLE = gql`
+	mutation($code: String!, $name: String, $description: String){
+		createProtocol(input: {code: $code, name: $name, description: $description}) {
 			id
 		}
 	}
 `
 
-export const createNews = (client, {title, summary, time, content, newsGroupId}) => async dispatch => {
+export const createArticle = (client, {code, name, description}) => async dispatch => {
   // console.log('---updateDepartment', id, deptName, hot)
   dispatch({
     type: ARTICLE_QUERY_ARTICLES
   })
   try {
-		console.log('-----createNews----value', title, summary, time, content, newsGroupId)
+		console.log('-----createArticle----value', code, name, description)
     let data = await client.mutate({
-      mutation: CREATE_NEWS,
-      variables: {title, summary, time, content, newsGroupId}
+      mutation: CREATE_ARTICLE,
+      variables: {code, name, description}
 		})
 		if (data.error) {
       dispatch({
@@ -323,7 +158,7 @@ export const createNews = (client, {title, summary, time, content, newsGroupId})
     }
     dispatch({
       type: ARTICLE_CREATE_ARTICLE_SUCCESS,
-      createNews: data.data.createNews
+      createArticle: data.data.createProtocol
 		})
 		return null
   } catch (e) {
@@ -335,21 +170,21 @@ export const createNews = (client, {title, summary, time, content, newsGroupId})
   }
 }
 
-// article
-const REMOVE_NEWS = gql`
+// article remove
+const REMOVE_ARTICLE = gql`
 	mutation($id: ObjID!){
-		removeNews(id: $id)
+		removeProtocol(id: $id)
 	}
 `
 
-export const removeNews = (client, {id}) => async dispatch => {
+export const removeArticle = (client, {id}) => async dispatch => {
   dispatch({
     type: ARTICLE_QUERY_ARTICLES
   })
   try {
 		console.log('--remove---article---value', id)
     let data = await client.mutate({
-      mutation: REMOVE_NEWS,
+      mutation: REMOVE_ARTICLE,
       variables: {id}
 		})
 		if (data.error) {
@@ -361,7 +196,7 @@ export const removeNews = (client, {id}) => async dispatch => {
     }
     dispatch({
       type: ARTICLE_CREATE_ARTICLE_SUCCESS,
-      createNews: data.data.removeNews
+      createArticle: data.data.removeProtocol
 		})
 		return null
   } catch (e) {
@@ -371,4 +206,11 @@ export const removeNews = (client, {id}) => async dispatch => {
     })
     return e.message
   }
+}
+
+export const selecteArticle = ({data}) => async dispatch => {
+  dispatch({
+    type: ARTICLE_SELECTED_ARTICLE,
+    selectedArticle: data
+  })
 }

@@ -4,7 +4,7 @@ import {theme, DraftCard} from 'components'
 import Link from 'next/link'
 import {DEPARTMENTINFO} from '../config'
 
-export default class HospitalDetailPage extends Component {
+export default class ArticleDetailPage extends Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -35,7 +35,7 @@ const renderModal = (self) => {
 					''
 				: renderDepartmentInfoModal(self)
 			}
-			<div className='flex tb-flex lr-flex'>
+			<div className='flex lr-flex'>
 				<button className='btnBorder btnBorderMain'
 					style={{lineHeight: '26px', width: '20%', color: '#fff', background: theme.maincolor}}
 					onClick={() => {
@@ -62,6 +62,7 @@ const renderModal = (self) => {
 const renderDepartmentInfoModal = (self) => {
 	// const modalHeight = document && document.body.clientWidth * 0.3
 	const {modalType, titleInfo, noticesGroups, hospital, page} = self.props;
+	console.log('---titleInfo', titleInfo)
 	const selectedData = self.props.selectedData || {}
 	if (modalType === 'delete') {
 		return (
@@ -73,8 +74,7 @@ const renderDepartmentInfoModal = (self) => {
 			<div style={{padding: '20px 30px'}}>
 				{
 					titleInfo.map((titleInfoItem, iKey) => {
-						if (titleInfoItem.title.indexOf('设置') > -1 ||
-							titleInfoItem.title.indexOf('医院logo') > -1) {
+						if (titleInfoItem.title.indexOf('设置') > -1) {
 							return
 						}
 						if (titleInfoItem.type === 'input') {
@@ -100,41 +100,6 @@ const renderDepartmentInfoModal = (self) => {
 										{/* <textarea
 											style={{width: '100%', border: `1px solid ${theme.bordercolor}`, minHeight: '1rem'}}
 											defaultValue={selectedData[titleInfoItem.apiKey]} ref={`${titleInfoItem.apiKey}Ref`}></textarea> */}
-									</dd>
-								</dl>
-							)
-						}
-						if (titleInfoItem.type === 'select') {
-							let selectData = page === 'guideType' ?
-															{data: hospital, valueKey: 'id', valueName: 'hospitalName'} :
-															{data: noticesGroups, valueKey: 'id', valueName: 'name'}
-							return (
-								<dl key={iKey} className='flex tb-flex'
-									style={{fontSize: theme.fontsize, color: theme.mainfontcolor}}>
-									<dt>{titleInfoItem.title}</dt>
-									<dd className='select' style={{borderRadius: 0, padding: 0, width: '80%'}}>
-										<select defaultValue={selectedData[titleInfoItem.apiKey]} ref={`${titleInfoItem.apiKey}Ref`}>
-											{
-												selectData.data && selectData.data.map((noticesGroup) => {
-													return (
-														<option value={noticesGroup[selectData.valueKey]} key={noticesGroup[selectData.valueKey]}>{noticesGroup[selectData.valueName]}</option>
-													)
-												})
-											}
-										</select>
-									</dd>
-								</dl>
-							)
-						}
-						if (titleInfoItem.type === 'image') {
-							return (
-								<dl key={iKey} className='flex tb-flex'
-									style={{fontSize: theme.fontsize, color: theme.mainfontcolor, display: 'none'}}>
-									<dt>{titleInfoItem.title}</dt>
-									<dd className='select' style={{borderRadius: 0, padding: 0, width: '80%'}}>
-										<input type='file' defaultValue={selectedData[titleInfoItem.apiKey]}
-										ref={`${titleInfoItem.apiKey}Ref`}
-										value={'image'} />
 									</dd>
 								</dl>
 							)

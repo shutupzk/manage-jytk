@@ -1,7 +1,9 @@
-import NewsListItem from './news_list_item'
-import NewsDetailModal from './news_detail_modal'
+import ArticleListItem from './articles_list_item'
+import ArticleDetailPage from './article_detail_page'
+import ArticleModal from './article_modal'
 
 export {
-    NewsListItem,
-    NewsDetailModal,
+    ArticleListItem,
+    ArticleDetailPage,
+    ArticleModal
 }

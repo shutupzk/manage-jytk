@@ -37,7 +37,7 @@ class HospitalIntroDetailScreen extends Component {
 			// return
 		}
 		await this.props.showPrompt('更新成功');
-		Router.push('/hospital')
+		Router.push('/hospital/hospital_introduct')
 	}
 
   render () {

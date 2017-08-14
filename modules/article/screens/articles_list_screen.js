@@ -1,87 +1,62 @@
 import React, { Component } from 'react'
-// import { Router } from '../../../routes'
 import Router from 'next/router'
-import {theme, Prompt, Loading, FilterCard, SelectFilterCard, KeywordCard, PageCard} from 'components'
+import {theme, Prompt, Loading, FilterCard, KeywordCard, PageCard} from 'components'
 import {ORDERTYPE} from 'config'
-import {NEWSINFO} from '../config'
+import {ARTICLESINFO} from '../config'
 import {ListTitle} from 'modules/common/components'
 import {fuzzyQuery, isArray} from 'utils'
-import { queryNews, queryHospitals,queryNewGroups, showPrompt,
-	createNews,
-	updateNews,
-	removeNews } from '../../../ducks'
+import { queryArticles, showPrompt, selecteArticle, removeArticle } from '../../../ducks'
 import { connect } from 'react-redux'
-import {NewsListItem, NewsDetailModal} from '../components'
+import {ArticleListItem, ArticleModal} from '../components'
 
 
 class ArticleListsScreen extends Component {
   constructor (props) {
     super(props)
     this.state = {
-			status: '',
-			showModal: false,
-			selectedNews: {},
-			modalType: '', // add\modify\delete
-			page: 1
+			keyword: '',
+			page: 1,
+			showDeleteModal: false
     }
   }
 
   componentWillMount() {
-		this.queryNews()
-		this.props.queryNewGroups(this.props.client)
+		this.queryArticles()
+		this.props.selecteArticle({data: {}})
   }
 
-	async queryNews() {
-		let error = await this.props.queryNews(this.props.client, {limit: 10, skip: (this.state.page - 1) * 10})
+	async queryArticles() {
+		let error = await this.props.queryArticles(this.props.client, {limit: 10, skip: (this.state.page - 1) * 10})
     if (error) {
       this.props.showPrompt({text: error})
       return
     }
 	}
-	
-	async clickModalOk(data, modalType, values) {
-		let error;
-		if (modalType === 'modify') {
-			values.id = this.state.selectedNews.id
-			error = await this.props.updateNews(this.props.client, values)
-		}
-		else if (modalType === 'add') {
-			for (const titleKey in NEWSINFO.news_list_title) {
-				const titleItem = NEWSINFO.news_list_title[titleKey] || {}
-				if (titleItem.addRequireKey && !values[titleItem.apiKey]) {
-					this.props.showPrompt({text: titleItem.title + '必填'})
-					return;
-				}
-			}
-			error = await this.props.createNews(this.props.client, values)
-			this.setState({page: 1})
-		} else if (modalType === 'delete') {
-			values.id = this.state.selectedNews.id
-			error = await this.props.removeNews(this.props.client, values)
-		}
+
+	async clickModalOk() {
+		const {id} = this.props.selectedArticle
+		let error = await this.props.removeArticle(this.props.client, {id})
 		if (error) {
-			this.props.showPrompt({text: error});
+			this.onHide()
+			this.props.showPrompt({text: error})
 			return
 		} else {
-			this.props.showPrompt({text: '操作成功'});
-			this.onHide();
-			this.queryNews()
+			this.onHide()
+			this.queryArticles()
 		}
 	}
 
 	onHide() {
-		this.setState({showModal: false, selectedNews: {}, modalType: ''})
+		this.setState({showDeleteModal: false})
+		this.props.selecteArticle({data: {}})
 	}
 
-	filterCard(news) {
-		let filterNews = news
+	filterCard(articles) {
+		let filterArticles = articles
 		if (this.state.keyword) {
-			filterNews = fuzzyQuery(filterNews, this.state.keyword, ['title', 'summary'])
+			filterArticles = fuzzyQuery(filterArticles, this.state.keyword, ['code', 'name', 'description'])
 		}
-		if (this.state.status) {
-			filterNews = filterNews.filter((newsItem) => {return newsItem.newsGroup.id === this.state.status})
-		}
-		return filterNews
+		return filterArticles
 	}
 
   render () {
@@ -91,41 +66,45 @@ class ArticleListsScreen extends Component {
 		if (this.props.error) {
 			return <div>{this.props.error}</div>
 		}
-		let news = this.filterCard(this.props.news)
+		let articles = this.filterCard(this.props.articles)
+		const {selectedArticle} = this.props
     return (
       <div>
 				<FilterCard>
-					<SelectFilterCard
-						data={this.props.newsGroups}
-						status={this.state.status}
-						config= {{selectTitle: '全部资讯类型', valueKey: 'id', titleKey: 'type'}}
-						changeStatus={(status) => {this.setState({status: status, page: 1}, () => this.queryNews())}} />
 					<KeywordCard
-						config={{placeholder: '资讯标题／资讯类型'}}
-						clickfilter={(keyword) => {this.setState({keyword: keyword, page: 1}, () => this.queryNews())}} />
+						config={{placeholder: '编码／标题／内容'}}
+						clickfilter={(keyword) => {this.setState({keyword: keyword, page: 1}, () => this.queryArticles())}} />
 				</FilterCard>
 				<article style={{textAlign: 'right', paddingBottom: theme.lrmargin}}>
 					<button style={{width: '1rem'}} className='btnBG btnBGMain btnBGLitt'
-						onClick={() => this.setState({showModal: true, modalType: 'add'})}>添加资讯</button>
+						onClick={() => Router.push('/article/article_detail?type=add')}>添加</button>
 				</article>
-				<ListTitle data={NEWSINFO.news_list_title} />
+				<ArticleModal showDeleteModal={this.state.showDeleteModal}
+					onHide={() => this.onHide()}
+					clickModalOk={() => this.clickModalOk()}
+					>
+					<p style={{padding: '.3rem'}}>您确定要删除<span style={{color: '#f00'}}>{selectedArticle.name}</span>吗？</p>
+				</ArticleModal>
+				<ListTitle data={ARTICLESINFO.articles_list_title} />
 				{
-					news && news.length > 0 ?
-						news.map((newsItem, iKey) => {
-							return <NewsListItem data={newsItem} key={iKey} index={iKey}
-							 titleInfo={NEWSINFO.news_list_title}
-							 clickShowModal={(data, modalType) => {this.setState({selectedNews: data, modalType: modalType, showModal: true})}} />
+					articles && articles.length > 0 ?
+						articles.map((articlesItem, iKey) => {
+							return <ArticleListItem data={articlesItem} key={iKey} index={iKey}
+							 titleInfo={ARTICLESINFO.articles_list_title}
+							 clickShowModal={(data, modalType) => {
+								 this.props.selecteArticle({data})
+								 if (modalType === 'modify') {
+									Router.push(`/article/article_detail?type=modify&id=${data.id}`)
+								 } else {
+									this.setState({
+										showDeleteModal: true
+									})
+								 }
+								}} />
 						})
 					: 'no data'
 				}
-				<NewsDetailModal selectedNews={this.state.selectedNews}
-					showModal={this.state.showModal}
-					onHide={() => this.onHide()}
-					titleInfo={NEWSINFO.news_list_title}
-					modalType={this.state.modalType}
-					newsGroups={this.props.newsGroups}
-					clickModalOk={(data, modalType, values) => this.clickModalOk(data, modalType, values)} />
-        <PageCard data={isArray(news) ? news : []} page={this.state.page}
+        <PageCard data={isArray(articles) ? articles : []} page={this.state.page}
           clickPage={(type) => {
             const prevPage = this.state.page
             let curPage
@@ -139,7 +118,7 @@ class ArticleListsScreen extends Component {
             this.setState({
               page: curPage
             }, () => {
-              this.queryNews()
+              this.queryArticles()
             })
           }} />
       </div>
@@ -150,12 +129,11 @@ class ArticleListsScreen extends Component {
 
 function mapStateToProps (state) {
   return {
-    news: state.news.data.news,
-    loading: state.news.loading,
-		error: state.news.error,
-		hospital: state.hospital.data,
-		newsGroups: state.news.data.newsGroups
+    articles: state.article.data.article,
+    loading: state.article.loading,
+		error: state.article.error,
+		selectedArticle: state.article.selectedArticle
   }
 }
 
-export default connect(mapStateToProps, { queryNews, queryHospitals, queryNewGroups, showPrompt, createNews, updateNews, removeNews })(ArticleListsScreen)
+export default connect(mapStateToProps, { queryArticles, showPrompt, selecteArticle, removeArticle })(ArticleListsScreen)
