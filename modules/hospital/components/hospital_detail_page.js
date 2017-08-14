@@ -4,16 +4,12 @@ import {theme, DraftCard} from 'components'
 import Link from 'next/link'
 import {DEPARTMENTINFO} from '../config'
 
-export default class HospitalDetailModal extends Component {
+export default class HospitalDetailPage extends Component {
   constructor (props) {
     super(props)
     this.state = {
-			fastSchedules: [],
-			videoSchedules: [],
-			videoTime: {
-				time: '',
-				num: ''
-			}
+			editorState: '',
+			// hospitalName: props.selectedData && props.selectedData.hospitalName
     }
 	}
 
@@ -31,7 +27,7 @@ export default class HospitalDetailModal extends Component {
 }
 
 const renderModal = (self) => {
-	const {selectedData, modalType, data, selectedType, titleInfo} = self.props;
+	const {selectedData, selectedType, titleInfo} = self.props;
 	return (
 		<div>
 			{
@@ -39,26 +35,28 @@ const renderModal = (self) => {
 					''
 				: renderDepartmentInfoModal(self)
 			}
-			<div>
-				<article style={{width: '50%'}}>
-					<button className='btnBorder'
-						style={{display: 'inline-block', width: '100%', borderRadius: '2px 0 0 2px', lineHeight: '36px', border: 'none', fontSize: theme.mainfontsize,
-							borderRight: `1px solid ${theme.bordercolor}`}}
+			<div className='flex tb-flex lr-flex'>
+				<button className='btnBorder btnBorderMain'
+						style={{lineHeight: '26px', width: '20%', color: '#fff', background: theme.nfontcolor, borderColor: theme.nfontcolor, marginRight: 15}}
 						onClick={() => self.props.onHide()}>取消</button>
-				</article>
-					<button className='btnBorder'
-						style={{display: 'inline-block', lineHeight: '36px', border: 'none', width: '50%', fontSize: theme.mainfontsize, color: theme.maincolor}}
-						onClick={() => {
-							let values = {}
-							for (const titleInfoItem in titleInfo) {
-								const refName = titleInfo[titleInfoItem].apiKey + 'Ref'
-								if (refName !== 'Ref') {
+				<button className='btnBorder btnBorderMain'
+					style={{lineHeight: '26px', width: '20%', color: '#fff', background: theme.maincolor}}
+					onClick={() => {
+						let values = {}
+						for (const titleInfoItem in titleInfo) {
+							const refName = titleInfo[titleInfoItem].apiKey + 'Ref'
+							if (refName !== 'Ref') {
+								if (titleInfo[titleInfoItem].type === 'checkbox') {
+									values[titleInfo[titleInfoItem].apiKey] = self.refs[refName] && self.refs[refName].checked
+								} else if (titleInfo[titleInfoItem].type === 'textarea') {
+									values[titleInfo[titleInfoItem].apiKey] = self.state.editorState || selectedData[titleInfo[titleInfoItem].apiKey]
+								} else {
 									values[titleInfo[titleInfoItem].apiKey] = self.refs[refName] && self.refs[refName].value
 								}
 							}
-							console.log('-----values---modal', values)
-							self.props.clickModalOk(data, modalType, values)}
-						}>确定</button>
+						}
+						self.props.clickModalOk(values)}
+					}>确定</button>
 			</div>
 		</div>
 	)
@@ -66,11 +64,8 @@ const renderModal = (self) => {
 
 const renderDepartmentInfoModal = (self) => {
 	// const modalHeight = document && document.body.clientWidth * 0.3
-	const {selectedData, modalType, titleInfo, noticesGroups, hospital, page} = self.props;
-	return (
-
-				<input type='text' defaultValue={selectedData.hospitalName} />
-	)
+	const {modalType, titleInfo, noticesGroups, hospital, page} = self.props;
+	const selectedData = self.props.selectedData || {}
 	if (modalType === 'delete') {
 		return (
 			<div style={{padding: '.3rem .25rem', color: theme.mainfontcolor}}>您确定要删除<span style={{color: theme.maincolor}}>{selectedData.hospitalName}</span>吗？</div>
@@ -90,7 +85,9 @@ const renderDepartmentInfoModal = (self) => {
 								<dl key={iKey} className='flex tb-flex'
 									style={{fontSize: theme.fontsize, color: theme.mainfontcolor}}>
 									<dt>{titleInfoItem.title}</dt>
-									<dd><input type='text' defaultValue={selectedData[titleInfoItem.apiKey]} ref={`${titleInfoItem.apiKey}Ref`} /></dd>
+									<dd>
+										<input type='text' defaultValue={selectedData[titleInfoItem.apiKey]} ref={`${titleInfoItem.apiKey}Ref`} />
+									</dd>
 								</dl>
 							)
 						}
@@ -100,9 +97,8 @@ const renderDepartmentInfoModal = (self) => {
 									style={{fontSize: theme.fontsize, color: theme.mainfontcolor}}>
 									<dt>{titleInfoItem.title}</dt>
 									<dd style={{width: '80%'}}>
-
-										<DraftCard onEditorStateChange={(html) => {
-											{/* this.setState({editorState: html}) */}
+										<DraftCard defaultValue={selectedData[titleInfoItem.apiKey]} onEditorStateChange={(html) => {
+											 self.setState({editorState: html}) 
 										}} />
 										{/* <textarea
 											style={{width: '100%', border: `1px solid ${theme.bordercolor}`, minHeight: '1rem'}}
@@ -165,24 +161,6 @@ const renderDepartmentInfoModal = (self) => {
 					}
 				`}</style>
 			</div>
-		)
-	}
-}
-const showHtml = (self, titleInfoItem) => {
-	const {selectedData, modalType, titleInfo} = self.props;
-	if (titleInfoItem.title.indexOf('名称') > -1 ||
-		titleInfoItem.title.indexOf('编码') > -1 ||
-		titleInfoItem.title.indexOf('联系电话') > -1 ||
-		titleInfoItem.title.indexOf('所在地址') > -1) {
-		return (<dd><input type='text' defaultValue={selectedData[titleInfoItem.apiKey]} ref={`${titleInfoItem.apiKey}Ref`} /></dd>)
-	}
-	if (titleInfoItem.title.indexOf('医院介绍') > -1) {
-		return (
-			<dd style={{width: '80%'}}>
-				<textarea
-					style={{width: '100%', border: `1px solid ${theme.bordercolor}`, minHeight: '1rem'}}
-					defaultValue={selectedData[titleInfoItem.apiKey]} ref={`${titleInfoItem.apiKey}Ref`}></textarea>
-			</dd>
 		)
 	}
 }

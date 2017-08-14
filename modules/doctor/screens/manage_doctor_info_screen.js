@@ -33,7 +33,7 @@ class ManageDoctorInfoScreen extends Component {
     }
 	}
 	
-	async clickModalOk(data, modalType, values) {
+	async clickModalOk(modalType, values) {
 		let error;
 		if (modalType === 'modify') {
 			values.id = this.state.selectedDoctor.id
@@ -95,7 +95,7 @@ class ManageDoctorInfoScreen extends Component {
 					onHide={() => this.onHide()}
 					titleInfo={DOCTORINFO.doctor_info_list_title}
 					modalType={this.state.modalType}
-					clickModalOk={(data, modalType, values) => this.clickModalOk(data, modalType, values)} />
+					clickModalOk={(modalType, values) => this.clickModalOk(modalType, values)} />
 				{/* {renderModal(this)} */}
         {/* <TopFilterCard status={this.state.status} changeStatus={(status) => {this.setState({status: status})}}
           changeKeyword={(keyword) => {this.setState({keyword: keyword})}}

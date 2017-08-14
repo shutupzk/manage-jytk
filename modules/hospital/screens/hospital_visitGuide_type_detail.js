@@ -18,6 +18,7 @@ class HospitalVisitGuideTypeScreen extends Component {
 			showModal: false,
 			selectedNotice: {},
 			modalType: '', // add\modify\delete
+			isfilterkeyword: false
     }
   }
 
@@ -121,5 +122,6 @@ function mapStateToProps (state) {
 		hospital: state.hospital.data,
   }
 }
+
 
 export default connect(mapStateToProps, { queryHospitals, showPrompt, createNoticesGroups, updateNoticesGroups, queryNoticesGroups })(HospitalVisitGuideTypeScreen)

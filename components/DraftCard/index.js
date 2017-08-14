@@ -9,8 +9,8 @@ import {UI} from './UI'
 export default class DraftCard extends Component {
   constructor(props) {
     super(props);
-    const html = props.defaultValue
-    const contentBlock = htmlToDraft(html);
+    const html = props.defaultValue || '<p>123</p>'
+    const contentBlock = process.browser ? htmlToDraft(html) : '';
     if (contentBlock) {
       const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
       const editorState = EditorState.createWithContent(contentState);
@@ -19,12 +19,6 @@ export default class DraftCard extends Component {
       };
     }
   }
-
-  onEditorStateChange(editorState) {
-    this.setState({
-      editorState,
-    });
-  };
 
   render() {
     const { editorState } = this.state;
