@@ -7,7 +7,8 @@ const HOSPITAL_NAME = '北大医疗标准管理平台'
 // const API_SERVER = '218.58.137.218:9002'
 // const API_SERVER = '120.92.57.18:9199'
 // const API_SERVER = '120.92.57.18:9198'
-const API_SERVER = 'api.bysy.uthealth.com.cn'
+// const API_SERVER = 'api.bysy.uthealth.com.cn'
+const API_SERVER = '192.168.20.108:9000'
 const PORT = '9003' // 前端端口
 
 // 医院信息

@@ -43,6 +43,7 @@ const QUERY_CONSULATIONS = gql`
 			status
 			content
 			fee
+			consultationNo
 			refundReason
 			createdAt
 			consultationReason {

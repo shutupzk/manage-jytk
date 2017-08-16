@@ -3,6 +3,7 @@ import Router from 'next/router'
 import {theme} from 'components'
 import {ORDERINFO} from 'config'
 import OrderItemDoctor from './order_item_doctor'
+import {moment} from 'moment'
 
 export default class OrderListItem extends Component {
   constructor (props) {
@@ -18,8 +19,8 @@ export default class OrderListItem extends Component {
 			<div key={data.id} style={{border: `1px solid ${theme.nbordercolor}`,borderRadius: 3, margin: `${theme.tbmargin} 0px`, background: '#fff', color: theme.mainfontcolor}}>
         <header style={{background: '#E8EEFA', lineHeight: '.24rem', padding: `${theme.midmargin} ${theme.lrmargin}`, fontSize: '.12rem'}}>
           {/* <input type="checkbox" id='orderId' className="left" style={{background: 'transparent',margin: '.06rem .06rem 0 0'}} /> */}
-          <p className="left">{data.createdAt|| '无'}</p>
-          <p className="left" style={{color: theme.fontcolor,padding: '0 10px'}}>订单编号 {data.id|| '无'}</p>
+          <p className="left">{data.createdAt || '无'}</p>
+          <p className="left" style={{color: theme.fontcolor,padding: '0 10px'}}>订单编号 {data.consultationNo|| '无'}</p>
           {/*<p className="left">距离关闭还有&nbsp;<i style={{color: #FF8A00,font-style: normal}}>00:28:06</i></p>*/}
 					<article className='clearfix'></article>
         </header>
@@ -43,17 +44,17 @@ const orderCon0 = (item, props, iKey) => {
 	)
 }
 
-const normalHtml = (item, data, iKey, style) => {
+const normalHtml = (item, data, iKey, style, type) => {
 	style.color = theme.mainfontcolor
 	return (
 		<li className={'left'} key={iKey} style={style}>
-			￥{data|| '无'}
+			<span style={{display: type === 'fee' ? 'inline-block' : 'none'}}>￥</span>{data|| '无'}
 		</li>
 	)
 }
 
 const orderCon1 = (item, props, iKey) => {
-	return (normalHtml(item, props.data && props.data.fee, iKey, Object.assign({}, item.style, {lineHeight: '.54rem'})))
+	return (normalHtml(item, props.data && props.data.fee, iKey, Object.assign({}, item.style, {lineHeight: '.54rem'}), 'fee'))
 }
 
 const orderCon2 = (item, props, iKey) => {

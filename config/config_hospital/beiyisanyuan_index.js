@@ -6,6 +6,7 @@ import withData from 'config/withData'
 const HOSPITAL_NAME = '北医三院管理平台'
 // const API_SERVER = '120.92.57.18:9198'
 const API_SERVER = 'api.bysy.uthealth.com.cn'
+// const API_SERVER = '192.168.20.108:9000'
 const PORT = '9003' // 前端端口
 
 // 医院信息
@@ -49,6 +50,14 @@ const MAINFUNCTION = [
       {title: '排班管理', navigateName: '/doctor/manage_schedule', color: '#5D75A6',},
       {title: '费用管理', navigateName: '/doctor/manage_fee', color: '#5D75A6'},
       {title: '全部排版', navigateName: '/doctor/manage_all_schedule', color: '#5D75A6'},
+    ]
+  },
+  {
+    title: '用户管理',
+    short_name: 'profile',
+    navigateName: '/profile/update_password',
+    children: [
+      {title: '修改密码', navigateName: '/profile/update_password', color: '#5D75A6',}
     ]
   }
 ]

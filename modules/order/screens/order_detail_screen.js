@@ -141,7 +141,7 @@ const productInfoView = (orderDetail) => {
 			</p></article>
 			<article style={{marginTop: theme.tbmargin,paddingBottom: theme.lrmargin,marginLeft: '.3rem'}}><p className="">
 				<span className="left">实付款：</span>
-				<i className="left" style={{fontSize: '.16rem', color: '#FF8A00'}}>￥{orderDetail.payment&&orderDetail.payment.fee || '无'}</i>
+				<i className="left" style={{fontSize: '.16rem', color: '#FF8A00'}}>￥{orderDetail.payment && orderDetail.payment.totalFee || '无'}</i>
 				<strong className='clearfix'></strong>
 			</p></article>
 			<style jsx>{`
@@ -188,10 +188,10 @@ const productDetailView = (orderDetail) => {
 	return (
 		<div style={{padding: '0 .3rem .6rem',fontSize: theme.mainfontsize,color: theme.mainfontcolor,}}>
 			<header style={{lineHeight: '.34rem', fontWeight: 500,textIndent: 10}}>订单信息</header>
-			<p style={{lineHeight: '.3rem', fontSize: '.12rem', margin: '.06rem 0 .04rem .46rem'}}>订单编号 {orderDetail.id}</p>
+			<p style={{lineHeight: '.3rem', fontSize: '.12rem', margin: '.06rem 0 .04rem .46rem'}}>订单编号 {orderDetail.consultationNo}</p>
 			<ul style={{borderLeft: `1px solid ${theme.nbordercolor}`, marginLeft: '.3rem'}}>
 				<li><i></i>下单时间 {orderDetail.createdAt}</li>
-				<li><i></i>支付时间 {orderDetail.payment.createdAt}&nbsp;&nbsp;支付流水号{orderDetail.payment.tradeNo}</li>
+				<li><i></i>支付时间 {orderDetail.payment.createdAt}&nbsp;&nbsp;支付流水号{orderDetail.payment.transactionNo}</li>
 				{/* {orderDetail. ? <li><i></i>申请退款时间 {orderDetail.refundTime}</li> : <strong></strong>} */}
 			</ul>
 			<style jsx>{`
