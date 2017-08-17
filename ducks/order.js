@@ -36,8 +36,8 @@ export function order (state = initState, action = {}) {
 
 // order list
 const QUERY_CONSULATIONS = gql`
-  query($skip: Int, $limit: Int) {
-		consultations(limit: $limit, skip: $skip){
+  query($skip: Int, $limit: Int, $status: String) {
+		consultations(limit: $limit, skip: $skip, status: $status){
 			id
 			type
 			status
@@ -53,6 +53,7 @@ const QUERY_CONSULATIONS = gql`
 			doctor{
 				id
 				doctorName
+				avatar
 				departmentHasDoctors{
 					department{
 						hospital{
@@ -69,6 +70,7 @@ const QUERY_CONSULATIONS = gql`
 					id
 					phone
 					name
+					avatar
 				}
 			}
 			payment{
@@ -84,13 +86,12 @@ const QUERY_CONSULATIONS = gql`
 	}
 `
 
-export const queryOrderList = (client, {limit, skip}) => async dispatch => {
+export const queryOrderList = (client, {limit, skip, status}) => async dispatch => {
   dispatch({
     type: ORDER_QUERY_ORDER
   })
   try {
-		const data = await client.query({ query: QUERY_CONSULATIONS, variables: { limit, skip }, fetchPolicy: 'network-only'})
-		console.log('------limit', limit, '---skip', skip)
+		const data = await client.query({ query: QUERY_CONSULATIONS, variables: { limit, skip, status }, fetchPolicy: 'network-only'})
     if (data.error) {
       return dispatch({
         type: ORDER_QUERY_ORDER_FAIL,
@@ -122,6 +123,7 @@ const QUERY_CONSULATION_DETAIL = gql`
 			content
 			fee
 			refundReason
+			consultationNo
 			createdAt
 			consultationReason {
 				id
@@ -130,6 +132,7 @@ const QUERY_CONSULATION_DETAIL = gql`
 			doctor{
 				id
 				doctorName
+				avatar
 				departmentHasDoctors{
 					department{
 						hospital{
@@ -150,6 +153,7 @@ const QUERY_CONSULATION_DETAIL = gql`
 					name
 					sex
 					birthday
+					avatar
 				}
 			}
 			payment{

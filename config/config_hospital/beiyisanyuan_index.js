@@ -5,8 +5,8 @@ import withData from 'config/withData'
 // 医院名称
 const HOSPITAL_NAME = '北医三院管理平台'
 // const API_SERVER = '120.92.57.18:9198'
-const API_SERVER = 'api.bysy.uthealth.com.cn'
-// const API_SERVER = '192.168.20.108:9000'
+// const API_SERVER = 'api.bysy.uthealth.com.cn'
+const API_SERVER = '192.168.20.108:9000'
 const PORT = '9003' // 前端端口
 
 // 医院信息
@@ -81,7 +81,7 @@ const ORDERINFO = {
   order_type:  [
     {title: '待支付', value: '01'},
     {title: '已取消', value: '02'},
-    {title: '待执行', value: '03'},
+    {title: '已支付', value: '03'},
     {title: '执行中', value: '04'},
     {title: '已过期', value: '05'},
     {title: '退款申请', value: '06'},

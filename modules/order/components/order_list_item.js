@@ -3,7 +3,7 @@ import Router from 'next/router'
 import {theme} from 'components'
 import {ORDERINFO} from 'config'
 import OrderItemDoctor from './order_item_doctor'
-import {moment} from 'moment'
+import moment from 'moment'
 
 export default class OrderListItem extends Component {
   constructor (props) {
@@ -17,9 +17,9 @@ export default class OrderListItem extends Component {
 		const props = this.props
     return (
 			<div key={data.id} style={{border: `1px solid ${theme.nbordercolor}`,borderRadius: 3, margin: `${theme.tbmargin} 0px`, background: '#fff', color: theme.mainfontcolor}}>
-        <header style={{background: '#E8EEFA', lineHeight: '.24rem', padding: `${theme.midmargin} ${theme.lrmargin}`, fontSize: '.12rem'}}>
+				<header style={{background: '#E8EEFA', lineHeight: '.24rem', padding: `${theme.midmargin} ${theme.lrmargin}`, fontSize: '.12rem'}}>
           {/* <input type="checkbox" id='orderId' className="left" style={{background: 'transparent',margin: '.06rem .06rem 0 0'}} /> */}
-          <p className="left">{data.createdAt || '无'}</p>
+          <p className="left">{moment(data.createdAt).format('YYYY-MM-DD HH:mm:ss')}</p>
           <p className="left" style={{color: theme.fontcolor,padding: '0 10px'}}>订单编号 {data.consultationNo|| '无'}</p>
           {/*<p className="left">距离关闭还有&nbsp;<i style={{color: #FF8A00,font-style: normal}}>00:28:06</i></p>*/}
 					<article className='clearfix'></article>
@@ -78,7 +78,7 @@ const orderCon4 = (item, props, iKey) => {
 	return (
 		<li className={'left'} key={iKey} style={item.style}>
 			<p style={{fontSize: 12}}>{curStatus[0] && curStatus[0].title || '无'}</p>
-			<article style={{display: props.data && props.data.payment ? 'block' : 'none', lineHeight: '18px'}} onClick={() => props.clickConfirm(props.data)}>退款</article>
+			<article style={{display: (props.data && props.data.status === '03' || props.data && props.data.status === '05') ? 'block' : 'none', lineHeight: '18px'}} onClick={() => props.clickConfirm(props.data)}>退款</article>
 			<article style={{lineHeight: '16px'}} onClick={() => {Router.push(`/order/detail?id=${props.data && props.data.id}`)}}>查看详情</article>
 			<style jsx>{`
 				article{
@@ -102,13 +102,15 @@ const orderCon5 = (item, props, iKey) => {
 	} else if (data.payment && data.payment.payWay === 'NATIVE') {
 		payway = {title: '微信支付', imgurl: 'wxPay'}
 	} 
-	let html = <li className={'left'} key={iKey} style={item.style}>
+	let html
+	if (data.status === '01') {
+		html = <li className={'left'} key={iKey} style={item.style}>
 				<p>{'无'}</p>
 			</li>
-	if (data.payment) {
+	} else {
 		html = <li className={'left'} key={iKey} style={item.style}>
 					<p style={{color: theme.nfontcolor}}><span style={{fontSize: 12}}>实付&nbsp;</span><strong style={{color: '#FF8A00'}}>￥{data.payment && data.payment.totalFee|| '无'}</strong></p>
-					<p style={{lineHeight: '18px'}}>{data.payment.createdAt|| '无'}</p>
+					<p style={{lineHeight: '18px'}}>{moment(data.payment.createdAt).format('YYYY-MM-DD HH:mm:ss')}</p>
 					<p className='flex tb-flex lr-flex' style={{lineHeight: '.16rem'}}>
 						<img height='14px' src={`/static/icons/${payway.imgurl}.png`} alt="" />&nbsp;{payway.title}
 					</p>

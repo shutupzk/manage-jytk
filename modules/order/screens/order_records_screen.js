@@ -27,7 +27,9 @@ class OrderRecordsScreen extends Component {
   }
 
   async queryOrderList() {
-    let error = await this.props.queryOrderList(this.props.client, {limit: 10, skip: (this.state.page - 1) * 10})
+    let status = this.state.status
+    if (!status) status = '-1'
+    let error = await this.props.queryOrderList(this.props.client, {limit: 10, skip: (this.state.page - 1) * 10, status})
     if (error) {
       this.props.showPrompt({text: error})
       return
@@ -48,22 +50,23 @@ class OrderRecordsScreen extends Component {
 		this.queryOrderList()
 	}
 
-  filterCard(orderlist) {
-		let filterOrderList = orderlist
-		if (this.state.keyword) {
-			filterOrderList = fuzzyQuery(filterOrderList, this.state.keyword, ['title', 'summary'])
-		}
-		if (this.state.status) {
-			filterOrderList = filterOrderList.filter((orderItem) => {return orderItem.status === this.state.status})
-		}
-		return filterOrderList
-  }
+  // filterCard(orderlist) {
+	// 	let filterOrderList = orderlist
+	// 	if (this.state.keyword) {
+	// 		filterOrderList = fuzzyQuery(filterOrderList, this.state.keyword, ['title', 'summary'])
+	// 	}
+	// 	if (this.state.status) {
+	// 		filterOrderList = filterOrderList.filter((orderItem) => {return orderItem.status === this.state.status})
+	// 	}
+	// 	return filterOrderList
+  // }
 
   render () {
     if (this.props.loading) {
       return <Loading showLoading />
     }
-    let orderlist = this.filterCard(this.props.orderlist)
+    // let orderlist = this.filterCard(this.props.orderlist)
+    let orderlist = this.props.orderlist
     return (
       <div className={'orderRecordsPage'}>
 				<FilterCard>
@@ -112,11 +115,12 @@ class OrderRecordsScreen extends Component {
         }
         <PageCard data={orderlist} page={this.state.page}
           clickPage={(type) => {
-            const prevPage = this.state.page
+            const prevPage = parseInt(this.state.page, 10)
             let curPage
             if (type === 'prev') {
               curPage = prevPage - 1
             } else if (type === 'next') {
+              console.log('======next')
               curPage = prevPage + 1
             } else {
               curPage = type

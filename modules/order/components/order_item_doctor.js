@@ -20,8 +20,8 @@ export default class OrderItemDoctor extends Component {
 		]
 		const curType = type.filter((item) => item.value === data.type) || []
     return (
-			<li className={'left orderCon1'}>
-				<img className="left" src={data.docPic} style={{display: data.docPic ? 'block' : 'none'}} />
+			<li className={'left flex tb-flex orderCon1'}>
+				<img className="left" src={data.doctor && data.doctor.avatar || '/static/icons/doctor.png'} />
 				<dl className="left">
 					<dt>{data.doctor && data.doctor.doctorName || '医生'}</dt>
 					<dd style={{lineHeight: '18px'}}>{hospitalName || '无'}</dd>
@@ -33,10 +33,9 @@ export default class OrderItemDoctor extends Component {
 						width: 30%
 					}
 					img{
-						width: 46px;
-						height: 46px;
-						margin-top: 6px;
-						margin-right: 6px;
+						width: .5rem;
+						margin-top: 0;
+						margin-right: .1rem;
 					}
 					dt{
 						font-weight: bold;
