@@ -5,9 +5,9 @@ import withData from 'config/withData'
 // 医院名称
 const HOSPITAL_NAME = '北医三院管理平台'
 // const API_SERVER = '120.92.57.18:9198'
-const API_SERVER = 'api.bysy.uthealth.com.cn'
+// const API_SERVER = 'api.bysy.uthealth.com.cn'
 // const API_SERVER = '192.168.20.108:9000'
-// const API_SERVER = '0.0.0.1:9000'
+const API_SERVER = '127.0.0.1:9000'
 const PORT = '9003' // 前端端口
 
 // 医院信息
