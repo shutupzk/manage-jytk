@@ -14,7 +14,7 @@ const PORT = '9003' // 前端端口
 const HOSPITALINFO = {
   hospital_short_name: 'beiyisanyuan',
   hospital_loginlogo: '../static/beiyisanyuan/loginLogo.png',
-  department_level: 2, // 设置一级可以，用于添加按钮的显示。  如果没有默认是2级科室
+  department_level: 1, // 设置一级可以，用于添加按钮的显示。  如果没有默认是2级科室
   footerbar_background_color: '#36486C',
   headerImg: {imgstyle: {height: '.4rem', margin: '.1rem .1rem 0 .2rem'}},
   contact: [
@@ -51,6 +51,16 @@ const MAINFUNCTION = [
       {title: '排班管理', navigateName: '/doctor/manage_schedule', color: '#5D75A6',},
       {title: '费用管理', navigateName: '/doctor/manage_fee', color: '#5D75A6'},
       {title: '全部排版', navigateName: '/doctor/manage_all_schedule', color: '#5D75A6'},
+    ]
+  },
+  {
+    title: '科室管理',
+    short_name: 'department',
+    navigateName: '/department/department_level1',
+    children: [
+      {title: '科室管理', navigateName: '/department/department_level1', color: '#5D75A6',},
+      {title: '推荐科室管理', navigateName: '/department/department_recommand', color: '#5D75A6'},
+      {title: '挂号科室管理', navigateName: '/department/department_isAppoint', color: '#5D75A6'},
     ]
   },
   {
