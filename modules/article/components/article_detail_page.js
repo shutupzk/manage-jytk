@@ -45,6 +45,8 @@ const renderModal = (self) => {
 							if (refName !== 'Ref') {
 								if (titleInfo[titleInfoItem].type === 'checkbox') {
 									values[titleInfo[titleInfoItem].apiKey] = self.refs[refName] && self.refs[refName].checked
+								}else if (titleInfo[titleInfoItem].type === 'textarea') {
+									values[titleInfo[titleInfoItem].apiKey] = self.state.editorState || selectedData[titleInfo[titleInfoItem].apiKey]
 								} else {
 									values[titleInfo[titleInfoItem].apiKey] = self.refs[refName] && self.refs[refName].value
 								}
