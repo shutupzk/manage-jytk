@@ -92,12 +92,12 @@ const renderDepartmentInfoModal = (self) => {
 									style={{fontSize: theme.fontsize, color: theme.mainfontcolor}}>
 									<dt>{titleInfoItem.title}</dt>
 									<dd style={{width: '80%'}}>
-										{/* <DraftCard defaultValue={selectedData[titleInfoItem.apiKey]} onEditorStateChange={(html) => {
+										 <DraftCard defaultValue={selectedData[titleInfoItem.apiKey]} onEditorStateChange={(html) => {
 											 self.setState({editorState: html}) 
-										}} /> */}
-										 <textarea
+										}} /> 
+										 {/* <textarea
 											style={{width: '100%', border: `1px solid ${theme.bordercolor}`, minHeight: '2rem'}}
-											defaultValue={selectedData[titleInfoItem.apiKey]} ref={`${titleInfoItem.apiKey}Ref`}></textarea> 
+											defaultValue={selectedData[titleInfoItem.apiKey]} ref={`${titleInfoItem.apiKey}Ref`}></textarea>  */}
 									</dd>
 								</dl>
 							)
