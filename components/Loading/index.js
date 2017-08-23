@@ -26,7 +26,7 @@ function Loading (props) {
                 {/*background: ${theme.maincolor};*/}
                 background: transparent;
                 border-radius: 7px;
-                z-index: 100;
+                z-index: 110;
               }
             `}</style>
           </div> : ''

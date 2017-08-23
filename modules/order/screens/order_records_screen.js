@@ -9,6 +9,12 @@ import {TopFilterCard, ListTitle} from 'modules/common/components'
 import { queryOrderList, showPrompt } from '../../../ducks'
 import { connect } from 'react-redux'
 
+let filterOrderType = [{title: '待支付', value: '01'},
+  {title: '待退款', value: '06'},
+  {title: '待执行', value: '03'},
+  {title: '执行中', value: '04'},
+  {title: '已完成', value: '07'},
+  {title: '已关闭', value: '02'}] // 已关闭 05/02/08
 
 class OrderRecordsScreen extends Component {
   constructor (props) {
@@ -48,7 +54,18 @@ class OrderRecordsScreen extends Component {
 			return
 		}
 		this.queryOrderList()
-	}
+  }
+  
+  changeStatus(status) {
+    if (status === '02') {
+      // status
+    }
+    this.setState({
+      page: 1, status: status
+    }, () => {
+      this.queryOrderList()
+    })
+  }
 
   // filterCard(orderlist) {
 	// 	let filterOrderList = orderlist
@@ -62,35 +79,26 @@ class OrderRecordsScreen extends Component {
   // }
 
   render () {
-    if (this.props.loading) {
-      return <Loading showLoading />
-    }
+    // if (this.props.loading) {
+    //   return <Loading showLoading />
+    // }
     // let orderlist = this.filterCard(this.props.orderlist)
     let orderlist = this.props.orderlist
     return (
       <div className={'orderRecordsPage'}>
+        <Loading showLoading={this.props.loading} />
 				<FilterCard>
 					<SelectFilterCard
-						data={ORDERINFO.order_type}
+						data={filterOrderType}
 						status={this.state.status}
 						config= {{selectTitle: '全部订单类型', valueKey: 'value', titleKey: 'title'}}
-						changeStatus={(status) => {
-              this.setState({
-                page: 1, status: status
-              }, () => {
-                this.queryOrderList()
-              })}
-            } />
+						changeStatus={(status) => this.changeStatus(status)} />
 					{/* <KeywordCard
 						config={{placeholder: '资讯标题／资讯类型'}}
 						clickfilter={(keyword) => {this.setState({keyword: keyword})}} /> */}
 				</FilterCard>
         {renderModal(this)}
-        <OrderTab status={this.state.status} changeStatus={(status) => {this.setState({
-            page: 1, status: status
-          }, () => {
-            this.queryOrderList()
-          })}} />
+        <OrderTab data={filterOrderType} status={this.state.status} changeStatus={(status) => this.changeStatus(status)} />
         {/* <div className={'orderConTop'} style={{marginBottom: theme.tbmargin}}>
           <button className='right btnBGGray btnBGLitt'
             style={{height: '.24rem', lineHeight: '.24rem',backgroundImage: 'linear-gradient(-180deg, #FAFAFA 0%, #F2F2F2 100%)', 

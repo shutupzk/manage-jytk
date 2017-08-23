@@ -17,7 +17,8 @@ import {
   notices,
   appointments,
   schedule,
-  article
+  article,
+  qiniu
 } from '../ducks'
 // 服务地址
 // export const API_SERVER = 'localhost:3000'
@@ -81,7 +82,8 @@ function getReducer (client) {
     notices,
     appointments,
     schedule,
-    article
+    article,
+    qiniu
   })
 }
 

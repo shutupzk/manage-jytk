@@ -13,6 +13,7 @@ import HeaderBar from './HeaderBar'
 import FooterBar from './FooterBar'
 import PageCard from './PageCard'
 import DraftCard from './DraftCard'
+import ImgCard from './ImgCard'
 
 export {
     CardWhite,
@@ -36,7 +37,8 @@ export {
     HeaderBar,
     FooterBar,
     PageCard,
-    DraftCard
+    DraftCard,
+    ImgCard
 }
 
 

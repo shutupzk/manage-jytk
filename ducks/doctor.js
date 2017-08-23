@@ -7,7 +7,9 @@ const DOCTOR_QUERY_DOCTOR_FAIL = 'doctor/querydoctor/fail'
 
 const DOCTOR_QUERY_DOCTOR_DETAIL_SUCCESS = 'doctor/querydoctor/detail/success'
 
-const UPDATE_DOCTOR_SUCCESS = 'doctor/updatedoctor/success'
+const UPDATE_DOCTOR_INFO_SUCCESS = 'doctor/updatedoctor/info/success'
+
+const DOCTOR_SELECT_DOCTOR = 'doctor/selectdoctor'
 
 const initState = {
   data: {},
@@ -25,12 +27,18 @@ export function doctor (state = initState, action = {}) {
       return Object.assign({}, state, { loading: false, error: action.error })
 		case DOCTOR_QUERY_DOCTOR_SUCCESS:
 		case DOCTOR_QUERY_DOCTOR_DETAIL_SUCCESS:
-		case UPDATE_DOCTOR_SUCCESS:
+    case UPDATE_DOCTOR_INFO_SUCCESS:
       return Object.assign(
         {},
         state,
         { data: action.doctor },
         { loading: false, error: null }
+      )
+    case DOCTOR_SELECT_DOCTOR:
+      return Object.assign(
+        {},
+        state,
+        Object.assign({}, state.data, {selectedDoctor: action.data})
       )
     default:
       return state
@@ -39,8 +47,10 @@ export function doctor (state = initState, action = {}) {
 
 // doctor list
 const QUERY_DOCTORS = gql`
-  query($skip: Int, $limit: Int) {
-		doctors(limit: $limit, skip: $skip) {
+  query($skip: Int, $limit: Int, $keyword: String, $quikeOpen: Boolean,
+    $imageAndTextOpen: Boolean,
+    $videoOpen: Boolean) {
+		doctors(limit: $limit, skip: $skip, keyword: $keyword, quikeOpen: $quikeOpen, imageAndTextOpen: $imageAndTextOpen, videoOpen: $videoOpen) {
 			id
 			doctorSn
 			doctorName
@@ -63,6 +73,8 @@ const QUERY_DOCTORS = gql`
 			serviceTotal
 			workingYears
 			favorableRate
+      showInternet
+      isShow
 			departmentHasDoctors{
 				department{
 					childs {
@@ -74,17 +86,22 @@ const QUERY_DOCTORS = gql`
 						hospitalName
 					}
 				}
-			}
+      }
+      doctorSchedules(limit: 21){
+        ampm
+        week
+        channel
+      }
     }
 	}
 `
 
-export const queryDoctors = (client, {limit, skip}) => async dispatch => {
+export const queryDoctors = (client, {limit, skip, keyword, quikeOpen, imageAndTextOpen, videoOpen}) => async dispatch => {
   dispatch({
     type: DOCTOR_QUERY_DOCTOR
   })
   try {
-		const data = await client.query({ query: QUERY_DOCTORS, variables: { limit, skip }, fetchPolicy: 'network-only'})
+		const data = await client.query({ query: QUERY_DOCTORS, variables: { limit, skip, keyword, quikeOpen, imageAndTextOpen, videoOpen }, fetchPolicy: 'network-only'})
     if (data.error) {
       dispatch({
         type: DOCTOR_QUERY_DOCTOR_FAIL,
@@ -110,35 +127,37 @@ export const queryDoctors = (client, {limit, skip}) => async dispatch => {
 // update doctor
 const UPDATE_DOCTOR = gql`
   mutation($id: ObjID!, $major: String, $sex: String, $recommend: Boolean,
-    $hot: Boolean, $isAppointment: Boolean, $phone: String, $workingYears: Int, $description: String,
-    $quikeOpen: Boolean,
-    $imageAndTextOpen: Boolean,
-    $videoOpen: Boolean,
-    $quikePrice: Int,
-    $imageAndTextPrice: Int,
-    $videoPrice: Int,
-    $avatar: String,
-){
+      $hot: Boolean, $isAppointment: Boolean, $phone: String, $workingYears: Int, $description: String,
+      $quikeOpen: Boolean,
+      $imageAndTextOpen: Boolean,
+      $videoOpen: Boolean,
+      $quikePrice: Int,
+      $imageAndTextPrice: Int,
+      $videoPrice: Int,
+      $avatar: String,
+      $showInternet: Boolean
+  ){
     updateDoctor(id: $id, input: {major: $major, sex: $sex,
       recommend: $recommend, hot: $hot, isAppointment: $isAppointment, phone: $phone,
       workingYears: $workingYears, description: $description,
       quikeOpen: $quikeOpen, imageAndTextOpen: $imageAndTextOpen, videoOpen: $videoOpen,
-      quikePrice: $quikePrice, imageAndTextPrice: $imageAndTextPrice, videoPrice: $videoPrice, avatar: $avatar
+      quikePrice: $quikePrice, imageAndTextPrice: $imageAndTextPrice, videoPrice: $videoPrice, avatar: $avatar,
+      showInternet: $showInternet
     }){
       id
     }
   }
 `
 
-export const updateDoctor = (client, {id, major, recommend, hot, isAppointment, phone, workingYears, description, quikeOpen, imageAndTextOpen, videoOpen, quikePrice, imageAndTextPrice, videoPrice, avatar}) => async dispatch => {
-  console.log('---updateDoctor', id, major, recommend, hot, isAppointment, phone, workingYears, description, quikeOpen, imageAndTextOpen, videoOpen, quikePrice, imageAndTextPrice, videoPrice, avatar)
+export const updateDoctor = (client, {id, major, recommend, hot, isAppointment, phone, workingYears, description, quikeOpen, imageAndTextOpen, videoOpen, quikePrice, imageAndTextPrice, videoPrice, avatar, showInternet}) => async dispatch => {
+  console.log('---updateDoctor', id, major, recommend, hot, isAppointment, phone, workingYears, description, quikeOpen, imageAndTextOpen, videoOpen, quikePrice, imageAndTextPrice, videoPrice, avatar, showInternet)
   dispatch({
     type: DOCTOR_QUERY_DOCTOR
   })
   try {
     let data = await client.mutate({
       mutation: UPDATE_DOCTOR,
-      variables: { id, major, recommend, hot, isAppointment, phone, workingYears, description, quikeOpen, imageAndTextOpen, videoOpen, quikePrice, imageAndTextPrice, videoPrice, avatar}
+      variables: { id, major, recommend, hot, isAppointment, phone, workingYears, description, quikeOpen, imageAndTextOpen, videoOpen, quikePrice, imageAndTextPrice, videoPrice, avatar, showInternet}
 		})
 		if (data.error) {
       dispatch({
@@ -148,7 +167,7 @@ export const updateDoctor = (client, {id, major, recommend, hot, isAppointment, 
       return data.error.message
     }
     dispatch({
-      type: UPDATE_DOCTOR_SUCCESS,
+      type: UPDATE_DOCTOR_INFO_SUCCESS,
       doctor: data.data.updateDoctor
     })
     return null
@@ -191,7 +210,7 @@ export const createDoctor = (client, {doctorSn, doctorName, major, sex, recommen
       return data.error.message
     }
     dispatch({
-      type: UPDATE_DOCTOR_SUCCESS,
+      type: UPDATE_DOCTOR_INFO_SUCCESS,
       doctor: data.data.createDoctor
     })
     return null
@@ -203,3 +222,12 @@ export const createDoctor = (client, {doctorSn, doctorName, major, sex, recommen
     return e.message
   }
 }
+
+export const selectdoctor = ({doctor}) => async dispatch => {
+	dispatch({
+		type: DOCTOR_SELECT_DOCTOR,
+		data: doctor
+  })
+  return doctor
+}
+

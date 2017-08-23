@@ -189,41 +189,95 @@ export function styles() {
       :-ms-input-placeholder { color:${theme.nfontcolor}; }
       .radio, .checkbox{
         position: relative;
-        width: .22rem;
-        height: .22rem;
+        width: .16rem;
+        height: .16rem;
       }
       .radio label, .radio input, .radio label:before, .checkbox label, .checkbox input, .checkbox label:before{
         position: absolute;
         top: 0;
         left: 0;
-        width: .22rem;
-        height: .22rem;
-        border: 1px solid $border-color;
-        background: #fff;
+        width: .16rem;
+        height: .16rem;
+        background: #f2f2f2;
         margin: 0 !important;
+        border-radius: 2px;
       }
       .radio label:before, .checkbox label:before{
         content: '';
-        background: $main-color;
-        border: 1px solid $main-color;
+        background: ${theme.maincolor};
         opacity: 0;
       }
       .radio label:after, .checkbox label:after{
         content: '';
         position: absolute;
-        width: .14rem;
-        height: .08rem;
-        border-left: .028rem solid #fff;
-        border-bottom: .028rem solid #fff;
+        width: .08rem;
+        height: .04rem;
+        border-left: .02rem solid #fff;
+        border-bottom: .02rem solid #fff;
         transform: rotate(-45deg);
-        top: .04rem;
-        left: .04rem;
+        top: .03rem;
+        left: .03rem;
         opacity: 0;
       }
       .radio input[type=radio]:checked + label:before, .checkbox input[type=radio]:checked + label:before,
       .radio input[type=radio]:checked + label:after, .checkbox input[type=radio]:checked + label:after,
       .radio input[type=checkbox]:checked + label:before, .checkbox input[type=checkbox]:checked + label:before,
       .radio input[type=checkbox]:checked + label:after, .checkbox input[type=checkbox]:checked + label:after {
+        opacity: 1;
+      }
+
+      // 左右推拉checkbox manage_list_item
+      .checkboxRow{
+        position: relative;
+        height: 24px;
+        width: 56px;
+        display: inline-block;
+      }
+      .checkboxRow label{
+        color: #b4b4b4;
+        border: 1px solid #D8D8D8;
+        background: #f2f2f2;
+        padding-left: 10px;
+        padding-right: 0;
+        border-radius: 16px;
+        line-height: .19rem;
+        text-align: center;
+        width: .44rem;
+        font-size: 12px;
+        position: absolute;
+        display: block;
+        top:0;left:0;
+      }
+      .checkboxRow label:nth-of-type(1) {
+        color: #3464CA;
+        border: 1px solid #3464CA;
+        padding-right: 10px;
+        padding-left: 0;
+        background: #E4EDFF;
+        opacity: 0;
+        z-index: 1;
+      }
+      .checkboxRow label:nth-of-type(1):after, .checkboxRow label:nth-of-type(2):before{
+        display: inline-block;
+        content: '';
+        width: .14rem;
+        height: .14rem;
+        background: #D8D8D8;
+        border-radius: 100%;
+        position: absolute;
+        top: 2px;
+      }
+      .checkboxRow label:nth-of-type(1):after{
+        right: 2px;
+        background: #3464CA;
+      }
+      .checkboxRow label:nth-of-type(2):before{
+        left: 2px;
+      }
+      .checkboxRow input[type='checkbox']:checked+label:nth-of-type(2){
+        opacity: 0;
+      }
+      .checkboxRow input[type='checkbox']:checked+label:nth-of-type(1){
         opacity: 1;
       }
 

@@ -98,7 +98,7 @@ const normalHtml = (item, data, iKey, style, type) => {
 	style.color = theme.mainfontcolor
 	return (
 		<li className={'left'} key={iKey} style={style}>
-			<span style={{display: type === 'fee' ? 'inline-block' : 'none'}}>￥</span>{data|| '无'}
+			<span style={{display: 'inline-block'}}>{type === 'fee' ? '￥' : 'x'}</span>{data|| '无'}
 		</li>
 	)
 }
@@ -109,7 +109,7 @@ const orderCon1 = (item, props, iKey) => {
 
 const orderCon2 = (item, props, iKey) => {
 	// item.style.lineHeight = '.54rem'
-	return (normalHtml(item, props.data && props.data.count || '1', iKey, Object.assign({}, item.style, {lineHeight: '.54rem'})))
+	return (normalHtml(item, props.data && props.data.count || '1', iKey, Object.assign({}, item.style, {lineHeight: '.54rem'}), 'count'))
 }
 
 const orderCon3 = (item, props, iKey) => {

@@ -1,15 +1,16 @@
 import { user, signup, signin, signout, queryUser, updatePassword, currentUser, forgotPassword, sendVerifyCode, checkVerifyCode, getUserCookie, getUserCookie2 } from './user'
 import {prompt, showPrompt, hidePrompt} from './prompt'
 import {order, queryOrderList, queryOrderDetail} from './order'
-import {doctor, queryDoctors, updateDoctor, createDoctor} from './doctor'
+import {doctor, queryDoctors, updateDoctor, createDoctor, selectdoctor} from './doctor'
 import {department, queryDepartments, updateDepartment, createDepartment} from './department'
 import {hospital, queryHospitals, updateHospital, createHospital, selectHospital, queryHospital} from './hospital'
 import {news, queryNews, queryNewGroups, createGroups, updateNewsGroup, removeNewsGroup, createNews, updateNews, removeNews} from './news'
 import {buildings, createbuilding, createFloor, createRoom, queryBuildings, queryBuildingDetail, updateBuilding, updateFloor, updateRoom} from './buildings'
 import {notices, createVisitNotice, querynotices, queryNoticesGroups, createNoticesGroups, updateNoticesGroups, updateVisitNotice} from './notice'
 import {appointments, queryAppointments, cancelAppointment, queryAppointmentDetail} from './appoint'
-import {schedule, querySchedules} from './schedule'
+import {schedule, queryDoctorSchedules, upsertQuickSchedule, selectFastSchedules} from './schedule'
 import {article, queryArticles, createArticle, updateArticle, removeArticle, selecteArticle} from './article'
+import {qiniu, getQiniuUpToken, selectImgFiles, changeImgBase64} from './qiniu'
 
 // key
 export {
@@ -24,7 +25,8 @@ export {
     notices,
     appointments,
     schedule,
-    article
+    article,
+    qiniu
 }
 
 // action
@@ -47,6 +49,7 @@ export {
     queryDoctors,
     updateDoctor,
     createDoctor,
+    selectdoctor,
     queryDepartments,
     updateDepartment,
     createDepartment,
@@ -80,10 +83,15 @@ export {
     queryAppointments,
     cancelAppointment,
     queryAppointmentDetail,
-    querySchedules,
+    queryDoctorSchedules,
+    upsertQuickSchedule,
+    selectFastSchedules,
     queryArticles,
     createArticle,
     updateArticle,
     removeArticle,
-    selecteArticle
+    selecteArticle,
+    getQiniuUpToken,
+    selectImgFiles,
+    changeImgBase64
 }

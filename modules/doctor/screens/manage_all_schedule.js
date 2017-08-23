@@ -4,9 +4,10 @@ import Router from 'next/router'
 import {theme, Prompt, Loading, PageCard} from 'components'
 import {ORDERINFO, DOCTORINFO, HOSPITALINFO} from 'config'
 import {TopFilterCard, ListTitle} from 'modules/common/components'
-import { queryDoctors, showPrompt } from '../../../ducks'
+import { queryDoctorSchedules, showPrompt } from '../../../ducks'
 import { connect } from 'react-redux'
 import {ManageListItem, ManageDoctorModal} from '../components'
+import {apTh} from '../config'
 
 
 class ManageAllScheduleScreen extends Component {
@@ -17,11 +18,11 @@ class ManageAllScheduleScreen extends Component {
   }
 
   componentWillMount() {
-    // this.queryDoctors()
+    this.queryDoctorSchedules()
   }
 
-	async queryDoctors() {
-		let error = await this.props.queryDoctors(this.props.client, {limit: 10, skip: (this.state.page - 1) * 10})
+	async queryDoctorSchedules() {
+		let error = await this.props.queryDoctorSchedules(this.props.client)
     if (error) {
       this.props.showPrompt({text: error})
       return
@@ -33,7 +34,7 @@ class ManageAllScheduleScreen extends Component {
       return <Loading showLoading />
 		}
 		if (this.props.error) {
-			this.props.showPrompt(this.props.error)
+			// this.props.showPrompt(this.props.error)
 			// return console.log(this.props.error)
 			return <div>{this.props.error}</div>
 		}
@@ -51,23 +52,6 @@ class ManageAllScheduleScreen extends Component {
 					<p className='clearfix'></p>
 				</div>
 				{tableView(this)}
-        {/* <PageCard data={this.props.doctors} page={this.state.page}
-          clickPage={(type) => {
-            const prevPage = this.state.page
-            let curPage
-            if (type === 'prev') {
-              curPage = prevPage - 1
-            } else if (type === 'next') {
-              curPage = prevPage + 1
-            } else {
-              curPage = type
-            }
-            this.setState({
-              page: curPage
-            }, () => {
-              this.queryDoctors()
-            })
-          }} /> */}
       </div>
     )
   }
@@ -75,43 +59,50 @@ class ManageAllScheduleScreen extends Component {
 
 const tableView = (self) => {
 	const tableTh = [
-		{title: '', width: '20px', height: '94px'},
-		{title: '一', width: '14%'},
-		{title: '二', width: '14%'},
-		{title: '三', width: '14%'},
-		{title: '四', width: '14%'},
-		{title: '五', width: '14%'},
-		{title: '六', width: '14%'},
-		{title: '日', width: '14%'}
+		{title: '', width: '20px', height: '94px', value: 0},
+		{title: '一', width: '14%', value: 1},
+		{title: '二', width: '14%', value: 2},
+		{title: '三', width: '14%', value: 3},
+		{title: '四', width: '14%', value: 4},
+		{title: '五', width: '14%', value: 5},
+		{title: '六', width: '14%', value: 6},
+		{title: '日', width: '14%', value: 7}
 	]
+	const fastSchedules = self.props.fastSchedules || {}
 	return (
-		<table className='left' style={{cellPadding: 0, borderSpacing: 0, marginTop: theme.lrmargin}}>
+		<table className='left' style={{cellPadding: 0, borderSpacing: 0, margin: `${theme.lrmargin} 0`, width: '90%'}}>
 			<tr className='flex'>
 				{
 					tableTh.map((item, iKey) => {
 						return (
 							<th className='flex tb-flex lr-flex' style={{background: '#E8EEFA', lineHeight: '30px', width: item.width}} key={iKey}>
-								{item.title}<i style={{height: '31px'}}></i>
+								{item.title}
 							</th>
 						)
 					})
 				}
 			</tr>
 			{
-				['上', '下', '晚'].map((time, index) => {
+				apTh.map((time, index) => {
 					return (
 						<tr key={index} className='flex'>
 							{
 								tableTh.map((item, iKey) => {
 									if (iKey === 0) {
 										return (
-											<td className='flex tb-flex lr-flex' style={{width: item.width, minHeight: '120px'}} key={iKey}>{time}<i></i></td>
+											<td className='flex tb-flex lr-flex' style={{width: item.width, minHeight: '120px'}} key={iKey}>{time.title}</td>
 										)
 									} else {
 										return (
 											<td className='' style={{width: item.width, minHeight: '120px'}} key={iKey}>
-												<span style={{width: '49%', display: 'inline-block'}}>陈米粒</span><span style={{width: '49%', display: 'inline-block'}}>陈米粒</span><span style={{width: '49%', display: 'inline-block'}}>陈米粒</span>
-												<i></i>
+												{
+													fastSchedules[item.value + time.value] && fastSchedules[item.value + time.value].map((item, itemkey) => {
+														console.log('====fastSchedules[item.value + time.value]', fastSchedules[item.value + time.value])
+														return (
+															<span key={itemkey} style={{width: '49%', display: 'inline-block', lineHeight: '26px'}}>{item.doctorName}</span>
+														)
+													})
+												}
 											</td>
 										)
 									}
@@ -133,26 +124,15 @@ const tableView = (self) => {
 					font-size: 12px;
 					position: relative;
 					font-weight: 300;
+					
 				}
 				th{
 					text-align: center;}
-				td i, th i{
-					position: absolute;
-					height: 100%;
-					width: 100%;
-					top: -1px;
-					left: -1px;
-					border: 1px solid ${theme.maincolor};
-					display: none;
+				td:not(:first-child){
+					padding:  10px;
 				}
-				td:first-child i{width: 21px;}
-				td:not(:first-child) {cursor: pointer;}
-				td:not(:first-child):hover i{
-					{/* border: 1px solid ${theme.maincolor}
-					width: 100%;
-					height: 100%;
-					z-index: 100; */}
-					display: block;
+				th:not(:first-child) {
+					padding: 0 10px;
 				}
 			`}</style>
 		</table>
@@ -163,10 +143,10 @@ const tableView = (self) => {
 
 function mapStateToProps (state) {
   return {
-    doctors: state.doctor.data,
-    loading: state.doctor.loading,
-    error: state.doctor.error
+    loading: state.schedule.loading,
+		error: state.schedule.error,
+		fastSchedules: state.schedule.data.fastSchedules,
   }
 }
 
-export default connect(mapStateToProps, { queryDoctors, showPrompt })(ManageAllScheduleScreen)
+export default connect(mapStateToProps, { queryDoctorSchedules, showPrompt })(ManageAllScheduleScreen)

@@ -45,12 +45,10 @@ const MAINFUNCTION = [
   {
     title: '医生管理',
     short_name: 'doctor',
-    navigateName: '/doctor/manage_info',
+    navigateName: '/doctor/manage_schedule',
     children: [
-      {title: '资料管理', navigateName: '/doctor/manage_info', color: '#5D75A6',},
-      {title: '排班管理', navigateName: '/doctor/manage_schedule', color: '#5D75A6',},
-      {title: '费用管理', navigateName: '/doctor/manage_fee', color: '#5D75A6'},
-      {title: '全部排版', navigateName: '/doctor/manage_all_schedule', color: '#5D75A6'},
+      {title: '业务开通', navigateName: '/doctor/manage_schedule', color: '#5D75A6',},
+      {title: '排班结果', navigateName: '/doctor/manage_all_schedule', color: '#5D75A6'},
     ]
   },
   {
@@ -89,6 +87,16 @@ const ORDERINFO = {
     {title: '订单状态', value: '', style: {width: '16%', textAlign: 'center'}, apiKey: ''},
     {title: '支付信息(元)', value: '', style: {width: '20%', textAlign: 'center'}, apiKey: ''},
   ],
+  // order_type:  [
+  //   {title: '待支付', value: '01'},
+  //   {title: '待退款', value: '06'},
+  //   {title: '待执行', value: '03'},
+  //   {title: '执行中', value: '04'},
+  //   {title: '已完成', value: '07'},
+  //   {title: '已关闭', value: '02'},
+  //   {title: '已关闭', value: '05'},
+  //   {title: '已关闭', value: '08'}
+  // ]
   order_type:  [
     {title: '待支付', value: '01'},
     {title: '已取消', value: '02'},
@@ -104,36 +112,20 @@ const ORDERINFO = {
 const DOCTORINFO = {
   modal_type_title: [
     {title: '基本信息', value: 0},
-    {title: '服务设置', value: 1},
+    {title: '服务设置', value: 1, section: [
+      {title: '专家图文问诊', priceApiKey: 'imageAndTextPrice', openApiKey: 'imageAndTextOpen'},
+      {title: '快速问诊', priceApiKey: 'quikePrice', openApiKey: 'quikeOpen'},
+      {title: '视频问诊', priceApiKey: 'videoPrice', openApiKey: 'videoOpen'}
+    ]}, // 根据modal_type_title 是否有第2个数组， 决定是否有图文问诊
   ],
   doctor_info_list_title: [
     {title: '编号', value: '', style: {width: '8%'}, apiKey: ''},
     {title: '医生工号', value: '', style: {width: '12%'}, apiKey: 'doctorSn'},
-    {title: '姓名', value: '', style: {width: '12%'}, apiKey: 'doctorName'},
-    {title: '所属机构', value: '', style: {width: '20%'}, apiKey: ''},
-    {title: '专业', value: '', style: {width: '12%'}, apiKey: ''},
-    {title: '设置', value: '', style: {width: '8%', textAlign: 'center'}, apiKey: ''},
-  ],
-  fee_list_title: [
-    {title: '编号', value: '', style: {width: '8%'}, apiKey: ''},
-    {title: '医生工号', value: '', style: {width: '12%'}, apiKey: ''},
-    {title: '姓名', value: '', style: {width: '10%'}, apiKey: ''},
+    {title: '姓名', value: '', style: {width: '10%'}, apiKey: 'doctorName'},
     {title: '所属机构', value: '', style: {width: '16%'}, apiKey: ''},
     {title: '专业', value: '', style: {width: '10%'}, apiKey: ''},
-    {title: '亚专业', value: '', style: {width: '10%'}, apiKey: ''},
-    {title: '图文问诊', value: '', style: {width: '8%', textAlign: 'center'}, apiKey: ''},
-    {title: '快速问诊', value: '', style: {width: '8%', textAlign: 'center'}, apiKey: ''},
-    {title: '视频问诊', value: '', style: {width: '8%', textAlign: 'center'}, apiKey: ''},
-    {title: '设置', value: '', style: {width: '8%', textAlign: 'center'}, apiKey: ''},
-  ],
-  schedule_list_title: [
-    {title: '编号', value: '', style: {width: '8%'}, apiKey: ''},
-    {title: '医生工号', value: '', style: {width: '12%'}, apiKey: ''},
-    {title: '姓名', value: '', style: {width: '12%'}, apiKey: ''},
-    {title: '所属机构', value: '', style: {width: '20%'}, apiKey: ''},
-    {title: '专业', value: '', style: {width: '12%'}, apiKey: ''},
-    {title: '亚专业', value: '', style: {width: '12%'}, apiKey: ''},
-    {title: '服务开通状态', value: '', style: {width: '14%'}, apiKey: ''},
+    {title: '互联网诊疗', value: '', style: {width: '16%', textAlign: 'center'}, apiKey: 'showInternet'},
+    {title: '服务开通状态', value: '', style: {width: '16%', textAlign: 'center'}, apiKey: ''},
     {title: '设置', value: '', style: {width: '8%', textAlign: 'center'}, apiKey: ''},
   ]
 }

@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import {theme} from 'components'
-import {ORDERINFO} from 'config'
 
 export default class OrderTab extends Component {
   constructor (props) {
@@ -12,7 +11,7 @@ export default class OrderTab extends Component {
     return (
 			<ul className={'orderNav'}>
 				{
-					ORDERINFO.order_type.map((item, iKey) => {
+					this.props.data.map((item, iKey) => {
 						return (
 							<li key={iKey}
 								className={this.props.status === item.value ? 'curLi left' : 'left'}
