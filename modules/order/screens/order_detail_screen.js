@@ -204,8 +204,13 @@ const productDetailView = (orderDetail) => {
 				{
 					orderDetail.payment ?
 						<li>
-							<i></i><p style={{lineHeight: '.3rem'}}>支付时间 {moment(orderDetail.payment.createdAt).format('YYYY-MM-DD HH:mm:ss')}</p>
+							<i></i><p style={{lineHeight: '.3rem'}}>支付时间 {moment(orderDetail.payTime).format('YYYY-MM-DD HH:mm:ss')}</p>
 							<p style={{color: theme.fontcolor, fontSize: 12, lineHeight: '14px'}}>&nbsp;&nbsp;支付流水号&nbsp;{orderDetail.payment.transactionNo}</p></li>
+					: ''
+				}
+				{
+					orderDetail.status === '07' ?
+						<li><i></i>开始时间 {moment(orderDetail.createdAt).format('YYYY-MM-DD HH:mm:ss')}</li>
 					: ''
 				}
 				{/* {orderDetail. ? <li><i></i>申请退款时间 {orderDetail.refundTime}</li> : <strong></strong>} */}

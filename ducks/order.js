@@ -45,6 +45,7 @@ const QUERY_CONSULATIONS = gql`
 			fee
 			consultationNo
 			refundReason
+			payTime
 			createdAt
 			consultationReason {
 				id
@@ -122,6 +123,7 @@ const QUERY_CONSULATION_DETAIL = gql`
 			status
 			content
 			fee
+			payTime
 			refundReason
 			consultationNo
 			createdAt

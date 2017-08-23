@@ -120,7 +120,6 @@ class OrderRecordsScreen extends Component {
             if (type === 'prev') {
               curPage = prevPage - 1
             } else if (type === 'next') {
-              console.log('======next')
               curPage = prevPage + 1
             } else {
               curPage = type
@@ -138,7 +137,6 @@ class OrderRecordsScreen extends Component {
 
 const renderModal = (self) => {
   const {selectOrder, showModal} = self.state;
-  console.log('=====selectOrder', selectOrder)
 	return (
 		<OrderTipModal showModalState={showModal}
 			onHide={() => self.setState({selectOrder: {}, showModal: false})}
