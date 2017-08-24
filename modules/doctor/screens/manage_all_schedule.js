@@ -97,7 +97,6 @@ const tableView = (self) => {
 											<td className='' style={{width: item.width, minHeight: '120px'}} key={iKey}>
 												{
 													fastSchedules[item.value + time.value] && fastSchedules[item.value + time.value].map((item, itemkey) => {
-														console.log('====fastSchedules[item.value + time.value]', fastSchedules[item.value + time.value])
 														return (
 															<span key={itemkey} style={{width: '49%', display: 'inline-block', lineHeight: '26px'}}>{item.doctorName}</span>
 														)

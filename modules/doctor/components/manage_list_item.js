@@ -103,8 +103,19 @@ const orderCon5 = (props, item, iKey) => {
 	return (
 		<li className={'left textoverflow1'} key={iKey} style={item.style}>
 			<article className='checkboxRow'>
-				<input style={{display: 'none'}} onClick={(e) => props.changeShowInternet(props.data, e)} defaultChecked={props.data[item.apiKey]} type='checkbox'
-					id={`showInternet${props.data.id}`} ref={`${item.apiKey}Ref`} />
+				{
+					props.data.showInternet ?
+						<input style={{display: 'none'}}
+							onClick={(e) => props.changeShowInternet(props.data, e)}
+							checked type='checkbox'
+							id={`showInternet${props.data.id}`} ref={`${item.apiKey}Ref`} />
+					:
+						<input style={{display: 'none'}}
+							checked={false}
+							onClick={(e) => props.changeShowInternet(props.data, e)}
+						 type='checkbox'
+						id={`showInternet${props.data.id}`} ref={`${item.apiKey}Ref`} />
+				}
 				<label style={{top: '8px'}} htmlFor={`showInternet${props.data.id}`}>开启</label>
 				<label style={{top: '8px'}} htmlFor={`showInternet${props.data.id}`}>关闭</label>
 			</article>

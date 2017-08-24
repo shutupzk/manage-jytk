@@ -49,11 +49,6 @@ class ManageScheduleScreen extends Component {
 	}
 	
 	async clickModalOk(doctor, schedule) {
-		// const {workingYears} = doctor
-		// if (workingYears < 0) {
-		// 	this.props.showPrompt({text: '工作年限不能小于0'})
-		// 	return
-		// }
 		let scheduleError;
 		let error
 		error = await this.props.updateDoctor(this.props.client, doctor)
@@ -91,6 +86,7 @@ class ManageScheduleScreen extends Component {
 			return <div>{this.props.error}</div>
 		}
 		let doctors = this.props.doctors
+		console.log('=-=-this.state.page', this.state.page)
     return (
       <div>
 				{this.props.loading ?
@@ -130,7 +126,7 @@ class ManageScheduleScreen extends Component {
 					doctors && doctors.length > 0 ?
 						doctors.map((doctor, iKey) => {
 							return (
-								<ManageListItem data={doctor} key={iKey} index={iKey}
+								<ManageListItem data={doctor} key={iKey} index={iKey + ((this.state.page-1)*10)}
 									titleInfo={DOCTORINFO.doctor_info_list_title}
 									changeShowInternet={(item, e) => this.changeShowInternet(item, e)}
 									clickShowModal={(item, modalType) => {

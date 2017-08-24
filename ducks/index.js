@@ -1,6 +1,6 @@
 import { user, signup, signin, signout, queryUser, updatePassword, currentUser, forgotPassword, sendVerifyCode, checkVerifyCode, getUserCookie, getUserCookie2 } from './user'
 import {prompt, showPrompt, hidePrompt} from './prompt'
-import {order, queryOrderList, queryOrderDetail} from './order'
+import {order, queryOrderList, queryOrderDetail, updateConsultation} from './order'
 import {doctor, queryDoctors, updateDoctor, createDoctor, selectdoctor} from './doctor'
 import {department, queryDepartments, updateDepartment, createDepartment} from './department'
 import {hospital, queryHospitals, updateHospital, createHospital, selectHospital, queryHospital} from './hospital'
@@ -46,6 +46,7 @@ export {
     hidePrompt,
     queryOrderList,
     queryOrderDetail,
+    updateConsultation,
     queryDoctors,
     updateDoctor,
     createDoctor,

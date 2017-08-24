@@ -3,5 +3,5 @@ import ArticleDetailScreen from './screens/article_detail_screen'
 
 export {
     ArticleListsScreen,
-    ArticleDetailScreen
+    ArticleDetailScreen,
 }

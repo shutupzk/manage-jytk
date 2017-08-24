@@ -1,20 +1,21 @@
 import React, { Component } from 'react'
 // import { Router } from '../../../routes'
+// import {Link} from 'next/router'
 import Router from 'next/router'
 import {theme, Prompt, Loading, FilterCard, SelectFilterCard, KeywordCard, PageCard} from 'components'
 import {ORDERINFO} from 'config'
 import {fuzzyQuery} from 'utils'
 import {OrderTab, OrderListItem, OrderTipModal} from '../components'
 import {TopFilterCard, ListTitle} from 'modules/common/components'
-import { queryOrderList, showPrompt } from '../../../ducks'
+import { queryOrderList, showPrompt, updateConsultation } from '../../../ducks'
 import { connect } from 'react-redux'
 
 let filterOrderType = [{title: '待支付', value: '01'},
-  {title: '待退款', value: '06'},
-  {title: '待执行', value: '03'},
-  {title: '执行中', value: '04'},
-  {title: '已完成', value: '07'},
-  {title: '已关闭', value: '02'}] // 已关闭 05/02/08
+  {title: '待退款', value: ['06']},
+  {title: '待执行', value: ['03']},
+  {title: '执行中', value: ['04']},
+  {title: '已完成', value: ['07']},
+  {title: '已关闭', value: ['02', '05', '08', '09', '10']}] // 已关闭 05/02/08
 
 class OrderRecordsScreen extends Component {
   constructor (props) {
@@ -34,8 +35,11 @@ class OrderRecordsScreen extends Component {
 
   async queryOrderList() {
     let status = this.state.status
-    if (!status) status = '-1'
-    let error = await this.props.queryOrderList(this.props.client, {limit: 10, skip: (this.state.page - 1) * 10, status})
+    let keyword = this.state.keyword
+    if (!status) {
+      status = null
+    }
+    let error = await this.props.queryOrderList(this.props.client, {limit: 10, skip: (this.state.page - 1) * 10, status, keyword})
     if (error) {
       this.props.showPrompt({text: error})
       return
@@ -43,23 +47,18 @@ class OrderRecordsScreen extends Component {
   }
 
 	async clickModalOk() {
-		const {selectOrder, modalType} = this.state;
-		let error;
-		if (modalType === 'cancel') {
-			error = await this.props.cancelAppointment(this.props.client, {id: selectOrder.id})
-		}
+		const {selectOrder} = this.state;
+		let error = await this.props.updateConsultation(this.props.client, {id: selectOrder.id, status: '10'})
 		this.setState({showModal: false, selectOrder: {}})
 		if (error) {
 			this.props.showPrompt({text: error})
 			return
-		}
+    }
+    this.props.showPrompt({text: '退款成功'})
 		this.queryOrderList()
   }
   
   changeStatus(status) {
-    if (status === '02') {
-      // status
-    }
     this.setState({
       page: 1, status: status
     }, () => {
@@ -67,22 +66,10 @@ class OrderRecordsScreen extends Component {
     })
   }
 
-  // filterCard(orderlist) {
-	// 	let filterOrderList = orderlist
-	// 	if (this.state.keyword) {
-	// 		filterOrderList = fuzzyQuery(filterOrderList, this.state.keyword, ['title', 'summary'])
-	// 	}
-	// 	if (this.state.status) {
-	// 		filterOrderList = filterOrderList.filter((orderItem) => {return orderItem.status === this.state.status})
-	// 	}
-	// 	return filterOrderList
-  // }
-
   render () {
     // if (this.props.loading) {
     //   return <Loading showLoading />
     // }
-    // let orderlist = this.filterCard(this.props.orderlist)
     let orderlist = this.props.orderlist
     return (
       <div className={'orderRecordsPage'}>
@@ -93,9 +80,10 @@ class OrderRecordsScreen extends Component {
 						status={this.state.status}
 						config= {{selectTitle: '全部订单类型', valueKey: 'value', titleKey: 'title'}}
 						changeStatus={(status) => this.changeStatus(status)} />
-					{/* <KeywordCard
-						config={{placeholder: '资讯标题／资讯类型'}}
-						clickfilter={(keyword) => {this.setState({keyword: keyword})}} /> */}
+					 <KeywordCard
+						config={{placeholder: '订单编号/患者姓名/手机号'}}
+						clickfilter={(keyword) => {this.setState({keyword: keyword}, () => {this.queryOrderList()})}} />
+            <span style={{float: 'right', fontSize: 12, lineHeight: '30px', cursor: 'pointer'}} onClick={() => Router.push('/order/order_help?id=')}>问题和帮助QA</span> 
 				</FilterCard>
         {renderModal(this)}
         <OrderTab data={filterOrderType} status={this.state.status} changeStatus={(status) => this.changeStatus(status)} />
@@ -150,11 +138,10 @@ const renderModal = (self) => {
 			onHide={() => self.setState({selectOrder: {}, showModal: false})}
 			clickModalOk={() => self.clickModalOk()}>
 			<dl style={{padding: '.2rem .25rem', color: theme.fontcolor, marginTop: theme.tbmargin, borderTop: `1px solid ${theme.bordercolor}`, fontSize: 13, lineHeight: '.3rem'}}>
-				<dt><span>订单编号：</span>{selectOrder.id}</dt>
+				<dt><span>订单编号：</span>{selectOrder.consultationNo}</dt>
 				<dt><span>医生名称：</span>{selectOrder.doctor && selectOrder.doctor.doctorName}</dt>
 				{/* <dt><span>所属医院：</span>{selectOrder.patient && selectOrder.patient.name}</dt>
 				<dt><span>所属类型：</span>{selectOrder.patient && selectOrder.patient.name}</dt> */}
-        <dt></dt>
 				<dt><span>买家姓名：</span>{selectOrder.patient && selectOrder.patient.name}</dt>
 				<dt><span>买家电话：</span>{selectOrder.patient && selectOrder.patient.phone}</dt>
 				<dt><span>实付：</span>{selectOrder.fee}</dt>
@@ -173,4 +160,4 @@ function mapStateToProps (state) {
   }
 }
 
-export default connect(mapStateToProps, { queryOrderList, showPrompt })(OrderRecordsScreen)
+export default connect(mapStateToProps, { queryOrderList, showPrompt, updateConsultation })(OrderRecordsScreen)

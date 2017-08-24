@@ -102,15 +102,15 @@ class ManageDoctorModal extends Component {
     files.map((f) => {
       f.uploadPromise.then(function (res) {
         if (res.statusCode === 200) {
-          console.log('上传成功')
-					console.log(res.body)
+          // console.log('上传成功')
+					// console.log(res.body)
 					let img = 'http://7xwhc1.com1.z0.glb.clouddn.com/' + res.body.key
 					_this.props.changeImgBase64({imgBase64: img})
 					// todo 同步走， 等更新完七牛云后，再去走提交资料
 					_this.props.selectdoctor({doctor: Object.assign({}, _this.props.selectedDoctor, {avatar: img})})
 					_this.props.clickModalOk(Object.assign({}, _this.props.selectedDoctor, {avatar: img}), _this.props.selectedFastSchedules) 
         } else {
-					console.log('头像上传失败', res.error)
+					// console.log('头像上传失败', res.error)
 					_this.props.showPrompt({text: `头像上传失败${res.error}`})
 					_this.props.changeImgBase64({imgBase64: null});
 					return false
@@ -172,7 +172,6 @@ const renderModal = (self) => {
 const renderDoctorInfoModal = (self) => {
 	const modalHeight = process.browser? document && document.body.clientWidth * 0.4 : 500
 	const selectedDoctor = self.props.selectedDoctor || {};
-	console.log('====selectedDoctor==', selectedDoctor)
 	const department = selectedDoctor.departmentHasDoctors && selectedDoctor.departmentHasDoctors[0] && selectedDoctor.departmentHasDoctors[0].department && selectedDoctor.departmentHasDoctors[0].department || {}
 	return (
 		<div style={{height: modalHeight, overflow: 'auto', padding: '0 .15rem'}}>
@@ -360,7 +359,6 @@ const tableView = (self) => {
 											<td className='flex tb-flex lr-flex' style={{width: item.width, height: item.width}} key={iKey}
 												onClick={() => {
 													const prevSchedule = selectedFastSchedules[item.value+time.value] || {}
-													{/* console.log('=====prevChannel===', Object.assign({}, prevSchedule, {channel: !prevSchedule.channel})) */}
 													let newSchedule = {week: item.value, ampm: time.value, channel: !prevSchedule.channel, doctorId: selectedDoctor.id}
 													self.props.selectFastSchedules({schedule: 
 														Object.assign({}, 

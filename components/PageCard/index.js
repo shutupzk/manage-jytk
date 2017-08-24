@@ -17,6 +17,7 @@ class PageCard extends Component {
 	
 	render() {
 		const props = this.props
+		const prevPage = parseInt(this.state.numberValue, 10)
 		return (
 			<div>
 				<footer className={'fenye flex tb-flex lr-flex'}>
@@ -25,14 +26,15 @@ class PageCard extends Component {
 					<span className='fenyeItem' style={{color: props.page === 1 ? theme.nfontcolor : theme.fontcolor}}
 						onClick={() => {
 							if (props.page === 1) return
+							this.setState({numberValue: prevPage - 1})
 							props.clickPage('prev')
 						}}>上一页</span>
 					{/* <span className={'fenyeItem otherPage'}>1</span> */}
 					<span className={'fenyeItem curPageCss'}>{props.page}</span>
 					<span className='fenyeItem' style={{color: props.data.length < 10 ? theme.nfontcolor : theme.fontcolor}}
 						onClick={() => {
-							console.log('----props.data.length', props.data.length)
 							if (props.data.length < 10) return
+							this.setState({numberValue: prevPage + 1})
 							props.clickPage('next')
 						}}>下一页</span>
 					<article>
@@ -46,18 +48,22 @@ class PageCard extends Component {
 									min='1'
 									value={this.state.numberValue}
 									onChange = {(e) => {
-										if (e.target.value < 1) {
-											this.setState({
-												numberValue: props.page
-											})
-										} else {
-											this.setState({
-												numberValue: e.target.value
-											})
-										}
+										this.setState({
+											numberValue: e.target.value
+										})
 									}}
 									onKeyUp = {(e) => {
 										if (e.keyCode === 13) {
+											if (e.target.value < 1) {
+												this.setState({
+													numberValue: props.page
+												})
+												this.props.showPrompt({text: '页码不能小于1'})
+												return
+											}
+											this.setState({
+												numberValue: e.target.value
+											})
 											props.clickPage(e.target.value)
 										}
 									}} />

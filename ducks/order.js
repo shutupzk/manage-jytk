@@ -7,6 +7,8 @@ const ORDER_QUERY_ORDER_FAIL = 'order/queryorder/fail'
 
 const ORDER_QUERY_ORDER_DETAIL_SUCCESS = 'order/queryorder/detail/success'
 
+const UPDATE_ORDER_SUCCESS = 'order/updateorder/success'
+
 const initState = {
   data: {},
   loading: false,
@@ -28,7 +30,9 @@ export function order (state = initState, action = {}) {
         state,
         { data: action.order },
         { loading: false, error: null }
-      )
+			)
+		case UPDATE_ORDER_SUCCESS:
+			return Object.assign({}, state, Object.assign({}, state.data, {updateOrder: action.data}))
     default:
       return state
   }
@@ -36,8 +40,8 @@ export function order (state = initState, action = {}) {
 
 // order list
 const QUERY_CONSULATIONS = gql`
-  query($skip: Int, $limit: Int, $status: String) {
-		consultations(limit: $limit, skip: $skip, status: $status){
+  query($skip: Int, $limit: Int, $status: [String], $keyword: String) {
+		consultations(limit: $limit, skip: $skip, status: $status, keyword: $keyword){
 			id
 			type
 			status
@@ -87,12 +91,13 @@ const QUERY_CONSULATIONS = gql`
 	}
 `
 
-export const queryOrderList = (client, {limit, skip, status}) => async dispatch => {
+export const queryOrderList = (client, {limit, skip, status, keyword}) => async dispatch => {
   dispatch({
     type: ORDER_QUERY_ORDER
   })
   try {
-		const data = await client.query({ query: QUERY_CONSULATIONS, variables: { limit, skip, status }, fetchPolicy: 'network-only'})
+		console.log('====keyword===', keyword)
+		const data = await client.query({ query: QUERY_CONSULATIONS, variables: { limit, skip, status, keyword }, fetchPolicy: 'network-only'})
     if (data.error) {
       return dispatch({
         type: ORDER_QUERY_ORDER_FAIL,
@@ -197,3 +202,43 @@ export const queryOrderDetail = (client, {id}) => async dispatch => {
   }
 }
 
+
+// update consultation
+const UPDATE_CONSULTATION = gql`
+	mutation($id: ObjID!, $status: String){
+    updateConsultation(id: $id, input: {status: $status}) {
+      id
+    }
+	}
+`
+export const updateConsultation = (client, {id, status}) => async dispatch => {
+  // console.log('---updateDepartment', id, deptName, hot)
+  dispatch({
+    type: ORDER_QUERY_ORDER
+  })
+  try {
+		console.log('---update---consultation--value', id, status)
+    let data = await client.mutate({
+      mutation: UPDATE_CONSULTATION,
+      variables: {id, status}
+		})
+		if (data.error) {
+      dispatch({
+        type: ORDER_QUERY_ORDER_FAIL,
+        error: data.error.message
+      })
+      return data.error.message
+    }
+    dispatch({
+      type: UPDATE_ORDER_SUCCESS,
+      data: data.data.updateConsultation
+		})
+		return null
+  } catch (e) {
+    dispatch({
+      trype: ORDER_QUERY_ORDER_FAIL,
+      error: e.message
+    })
+    return e.message
+  }
+}

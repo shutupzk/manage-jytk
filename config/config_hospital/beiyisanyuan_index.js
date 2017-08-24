@@ -31,7 +31,7 @@ const MAINFUNCTION = [
     short_name: 'order',
     navigateName: '/order',
     children: [
-      {title: '订单管理', navigateName: '/order', color: '#5D75A6', navigateNameDetail: 'detail'}
+      {title: '订单管理', navigateName: '/order', color: '#5D75A6', navigateNameDetail: 'order'}
     ]
   },
   {
@@ -87,16 +87,6 @@ const ORDERINFO = {
     {title: '订单状态', value: '', style: {width: '16%', textAlign: 'center'}, apiKey: ''},
     {title: '支付信息(元)', value: '', style: {width: '20%', textAlign: 'center'}, apiKey: ''},
   ],
-  // order_type:  [
-  //   {title: '待支付', value: '01'},
-  //   {title: '待退款', value: '06'},
-  //   {title: '待执行', value: '03'},
-  //   {title: '执行中', value: '04'},
-  //   {title: '已完成', value: '07'},
-  //   {title: '已关闭', value: '02'},
-  //   {title: '已关闭', value: '05'},
-  //   {title: '已关闭', value: '08'}
-  // ]
   order_type:  [
     {title: '待支付', value: '01'},
     {title: '已取消', value: '02'},
@@ -105,7 +95,11 @@ const ORDERINFO = {
     {title: '已过期', value: '05'},
     {title: '退款申请', value: '06'},
     {title: '已完成', value: '07'},
-    {title: '已退款', value: '08'}
+    {title: '已退款', value: '08'},
+    {title: '待执行订单已退款', value: '09'},
+    {title: '后台退款', value: '10'}
+    // #01：待支付，02：已取消，03：待执行，04：执行中，05：已过期未退款，
+    // 06：待执行退款申请，07：已完成，08：过期已退款，09:待执行订单已退款，10：后台退款,
   ]
 }
 
