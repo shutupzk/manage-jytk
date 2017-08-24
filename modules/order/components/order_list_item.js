@@ -116,8 +116,8 @@ const orderCon3 = (item, props, iKey) => {
 	item.style.color = theme.mainfontcolor
 	return (
 		<li className={'left'} key={iKey} style={item.style}>
-			<p>{props.data && props.data.patient && props.data.patient.name || '无'}</p>
-			<p>{props.data && props.data.patient && props.data.patient.phone|| '无'}</p>
+			<p>{props.data && props.data.patient && props.data.patient.user && props.data.patient.user.name || '无'}</p>
+			<p>{props.data && props.data.patient && props.data.patient.user && props.data.patient.user.phone|| '无'}</p>
 		</li>
 	)
 }
@@ -128,7 +128,7 @@ const orderCon4 = (item, props, iKey) => {
 	return (
 		<li className={'left'} key={iKey} style={item.style}>
 			<p style={{fontSize: 12}}>{curStatus[0] && curStatus[0].title || '无'}</p>
-			<article style={{display: (props.data && props.data.status === '03' || props.data && props.data.status === '05') ? 'block' : 'none', lineHeight: '18px'}} onClick={() => props.clickConfirm(props.data, 'cancel')}>退款</article>
+			<article style={{display: (curStatus[0] && curStatus[0].isRefound) ? 'block' : 'none', lineHeight: '18px'}} onClick={() => props.clickConfirm(props.data, 'cancel')}>退款</article>
 			<article style={{lineHeight: '16px'}} onClick={() => {Router.push(`/order/detail?id=${props.data && props.data.id}`)}}>查看详情</article>
 			<style jsx>{`
 				article{

@@ -10,12 +10,13 @@ import {TopFilterCard, ListTitle} from 'modules/common/components'
 import { queryOrderList, showPrompt, updateConsultation } from '../../../ducks'
 import { connect } from 'react-redux'
 
-let filterOrderType = [{title: '待支付', value: '01'},
-  {title: '待退款', value: ['06']},
+let filterOrderType = [
+  {title: '待支付', value: ['01']},
+  {title: '待退款', value: ['05']},
   {title: '待执行', value: ['03']},
   {title: '执行中', value: ['04']},
   {title: '已完成', value: ['07']},
-  {title: '已关闭', value: ['02', '05', '08', '09', '10']}] // 已关闭 05/02/08
+  {title: '已关闭', value: ['02', '08', '09', '10', '06']}]
 
 class OrderRecordsScreen extends Component {
   constructor (props) {
@@ -46,9 +47,9 @@ class OrderRecordsScreen extends Component {
     }
   }
 
-	async clickModalOk() {
+	async clickModalOk(reason, refundRemark) {
 		const {selectOrder} = this.state;
-		let error = await this.props.updateConsultation(this.props.client, {id: selectOrder.id, status: '10'})
+		let error = await this.props.updateConsultation(this.props.client, {id: selectOrder.id, status: '10', refundReason: reason, refundRemark: refundRemark})
 		this.setState({showModal: false, selectOrder: {}})
 		if (error) {
 			this.props.showPrompt({text: error})
@@ -136,17 +137,8 @@ const renderModal = (self) => {
 	return (
 		<OrderTipModal showModalState={showModal}
 			onHide={() => self.setState({selectOrder: {}, showModal: false})}
-			clickModalOk={() => self.clickModalOk()}>
-			<dl style={{padding: '.2rem .25rem', color: theme.fontcolor, marginTop: theme.tbmargin, borderTop: `1px solid ${theme.bordercolor}`, fontSize: 13, lineHeight: '.3rem'}}>
-				<dt><span>订单编号：</span>{selectOrder.consultationNo}</dt>
-				<dt><span>医生名称：</span>{selectOrder.doctor && selectOrder.doctor.doctorName}</dt>
-				{/* <dt><span>所属医院：</span>{selectOrder.patient && selectOrder.patient.name}</dt>
-				<dt><span>所属类型：</span>{selectOrder.patient && selectOrder.patient.name}</dt> */}
-				<dt><span>买家姓名：</span>{selectOrder.patient && selectOrder.patient.name}</dt>
-				<dt><span>买家电话：</span>{selectOrder.patient && selectOrder.patient.phone}</dt>
-				<dt><span>实付：</span>{selectOrder.fee}</dt>
-				<dd style={{fontSize: 14, paddingTop: 10, color: theme.mainfontcolor}}>您确定要<span style={{color: '#f00'}}>退款</span>吗？</dd>
-			</dl>
+			clickModalOk={(refundReason, refundRemark) => self.clickModalOk(refundReason, refundRemark)}
+      selectOrder={selectOrder}>
 		</OrderTipModal>
 	)
 }

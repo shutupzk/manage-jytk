@@ -90,16 +90,17 @@ const ORDERINFO = {
   order_type:  [
     {title: '待支付', value: '01'},
     {title: '已取消', value: '02'},
-    {title: '已支付', value: '03'},
-    {title: '执行中', value: '04'},
-    {title: '已过期', value: '05'},
+    {title: '已支付', value: '03', isRefound: true}, // 可退款
+    {title: '执行中', value: '04', isRefound: true}, // 可退款
+    {title: '已过期', value: '05', isRefound: true}, // 可退款
     {title: '退款申请', value: '06'},
-    {title: '已完成', value: '07'},
-    {title: '已退款', value: '08'},
+    {title: '已完成', value: '07', isRefound: true}, // 可退款
+    {title: '过期已退款', value: '08'},
     {title: '待执行订单已退款', value: '09'},
     {title: '后台退款', value: '10'}
     // #01：待支付，02：已取消，03：待执行，04：执行中，05：已过期未退款，
-    // 06：待执行退款申请，07：已完成，08：过期已退款，09:待执行订单已退款，10：后台退款,
+    // 06：待执行退款申请(买家申请退款，相当于取消订单，钱会直接退回账户，不会走运营人员这一步。 所以和09合并了)，
+    // 07：已完成，08：过期已退款(过期自动退款)，06、09 已退款:待执行订单已退款(买家申请退款)，10：后台退款(高级运营人员退款),
   ]
 }
 

@@ -130,8 +130,14 @@ const QUERY_CONSULATION_DETAIL = gql`
 			fee
 			payTime
 			refundReason
+			refundRemark
 			consultationNo
 			createdAt
+			consultationOperations{
+				operationTime
+				operationCode
+				operationPeople
+			}
 			consultationReason {
 				id
 				reason
@@ -205,22 +211,22 @@ export const queryOrderDetail = (client, {id}) => async dispatch => {
 
 // update consultation
 const UPDATE_CONSULTATION = gql`
-	mutation($id: ObjID!, $status: String){
-    updateConsultation(id: $id, input: {status: $status}) {
+	mutation($id: ObjID!, $status: String, $refundReason: String, $refundRemark: String){
+    updateConsultation(id: $id, input: {status: $status, refundReason: $refundReason, refundRemark: $refundRemark}) {
       id
     }
 	}
 `
-export const updateConsultation = (client, {id, status}) => async dispatch => {
+export const updateConsultation = (client, {id, status, refundReason, refundRemark}) => async dispatch => {
   // console.log('---updateDepartment', id, deptName, hot)
   dispatch({
     type: ORDER_QUERY_ORDER
   })
   try {
-		console.log('---update---consultation--value', id, status)
+		console.log('---update---consultation--value', id, status, refundReason, refundRemark)
     let data = await client.mutate({
       mutation: UPDATE_CONSULTATION,
-      variables: {id, status}
+      variables: {id, status, refundReason, refundRemark}
 		})
 		if (data.error) {
       dispatch({

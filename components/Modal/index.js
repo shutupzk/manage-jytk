@@ -44,7 +44,7 @@ export function Modal(props) {
 export function ModalHeader(props) {
   const {showCloseBtn} = props;
   return (
-    <header className={props.classChild + ' modalheader'}>
+    <header className={props.classChild + ' modalheader'} style={props.style}>
       {props.children}
       {
         showCloseBtn ?

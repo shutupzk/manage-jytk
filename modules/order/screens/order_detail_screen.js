@@ -5,7 +5,7 @@ import Link from 'next/link'
 import {theme, Prompt, Loading} from 'components'
 import {ORDERINFO, HOSPITALINFO} from 'config'
 import {OrderTab, OrderTipModal, OrderItemDoctor} from '../components'
-import { queryOrderDetail, updateConsultation } from '../../../ducks'
+import { queryOrderDetail, updateConsultation, showPrompt } from '../../../ducks'
 import { connect } from 'react-redux'
 import {ages, sex} from 'utils'
 import moment from 'moment'
@@ -24,17 +24,26 @@ class OrderRecordDetailScreen extends Component {
     this.props.queryOrderDetail(this.props.client, {id})
   }
 
-	async clickModalOk() {
+	async clickModalOk(reason, refundRemark) {
 		const {id} = this.props.url && this.props.url.query || {}
-		let error = await this.props.updateConsultation(this.props.client, {id: id, status: '10'})
+		let error = await this.props.updateConsultation(this.props.client, {id: id, status: '10', refundReason: reason, refundRemark: refundRemark})
 		if (error) {
 			this.props.showPrompt({text: error})
 			return
     }
 		this.setState({showModal: false})
     this.props.showPrompt({text: '退款成功'})
-		this.queryOrderList()
-  }
+		this.props.queryOrderDetail(this.props.client, {id})
+	}
+	
+	filterOpationTime(status) {
+		const orderDetail = this.props.orderDetail || {};
+		let statusTime = orderDetail.consultationOperations && orderDetail.consultationOperations.filter((item) => {return item.operationCode === status}) || []
+		if (statusTime.length === 0) {
+			return ''
+		}
+		return moment(statusTime && statusTime[0] && statusTime[0].operationTime).format('YYYY-MM-DD HH:mm:ss')
+	}
 
   render () {
     if (this.props.loading) {
@@ -48,7 +57,7 @@ class OrderRecordDetailScreen extends Component {
 				{statusView(this, orderDetail)}
 				{userInfoView(orderDetail)}
 				{productInfoView(orderDetail)}
-				{productDetailView(orderDetail)}
+				{productDetailView(this, orderDetail)}
       </div>
     )
   }
@@ -58,18 +67,9 @@ const renderModal = (self, data) => {
   const {showModal} = self.state;
 	return (
 		<OrderTipModal showModalState={showModal}
+			selectOrder={data}
 			onHide={() => self.setState({showModal: false})}
-			clickModalOk={() => self.clickModalOk()}>
-			<dl style={{padding: '.2rem .25rem', color: theme.fontcolor, marginTop: theme.tbmargin, borderTop: `1px solid ${theme.bordercolor}`, fontSize: 13, lineHeight: '.3rem'}}>
-				<dt><span>订单编号：</span>{data.consultationNo}</dt>
-				<dt><span>医生名称：</span>{data.doctor && data.doctor.doctorName}</dt>
-				{/* <dt><span>所属医院：</span>{data.patient && data.patient.name}</dt>
-				<dt><span>所属类型：</span>{data.patient && data.patient.name}</dt> */}
-				<dt><span>买家姓名：</span>{data.patient && data.patient.name}</dt>
-				<dt><span>买家电话：</span>{data.patient && data.patient.phone}</dt>
-				<dt><span>实付：</span>{data.fee}</dt>
-				<dd style={{fontSize: 14, paddingTop: 10, color: theme.mainfontcolor}}>您确定要<span style={{color: '#f00'}}>退款</span>吗？</dd>
-			</dl>
+			clickModalOk={(refundReason, refundRemark) => self.clickModalOk(refundReason, refundRemark)}>
 		</OrderTipModal>
 	)
 }
@@ -99,15 +99,17 @@ const topView = () => {
 
 const statusView = (self, data) => {
 	let curStatus = ORDERINFO.order_type.filter((item) => item.value === data.status) || []
-	let imgUrl = 'ordering'
-	if (data.status === '07' || data.status === '08') {
-		imgUrl = 'pass'
+	let imgUrl = 'pass'
+	if (data.status === '01' || data.status === '03' || data.status === '04') {
+		imgUrl = 'ordering'
+	} else if (data.status === '05') {
+		imgUrl = 'ordercancel'
 	}
 	return (
 		<div className='flex tb-flex' style={{minHeight: '.7rem', margin: '.2rem .3rem .1rem', border: `1px solid ${theme.maincolor}`, borderRadius: 3, color: theme.maincolor}}>
 			<img src={`/static/${HOSPITALINFO.hospital_short_name}/${imgUrl}.png`} style={{margin: '0 .1rem 0 .3rem', height: '.2rem'}} />
 			<h3>当前状态：{curStatus[0] && curStatus[0].title || '无'}</h3>
-			{data.status === '03' || data.status === '05' ?
+			{curStatus[0] && curStatus[0].isRefound ?
 				<button className='btnBGGray' style={{marginLeft: theme.tbmargin, width: 100, border: `1px solid ${theme.bordercolor}`}} onClick={() => {self.setState({showModal: true})}}>退款</button> : ''}
 		</div>
 	)
@@ -122,11 +124,11 @@ const userInfoView = (orderDetail) => {
 				<div>
 					<dl>
 						<dt>买家信息</dt>
-						<dd>姓名：{orderDetail.patient && orderDetail.patient.name || '无'}&nbsp;&nbsp;&nbsp;&nbsp;手机号：{orderDetail.patient && orderDetail.patient.phone || '无'}</dd>
+						<dd>姓名：{orderDetail.patient && orderDetail.patient.user && orderDetail.patient.user.name || '无'}&nbsp;&nbsp;&nbsp;&nbsp;手机号：{orderDetail.patient && orderDetail.patient.user && orderDetail.patient.user.phone || '无'}</dd>
 					</dl>
 					<dl>
 						<dt>就诊人信息</dt>
-						<dd>姓名：{orderDetail.patient && orderDetail.patient.user && orderDetail.patient.user.name || '无'}&nbsp;&nbsp;性别：{sex(orderDetail.patient && orderDetail.patient.user && orderDetail.patient.user.sex) || '无'}&nbsp;&nbsp;年龄：{ages(orderDetail.patient && orderDetail.patient.user && orderDetail.patient.user.birthday) || '无'}岁</dd> 
+						<dd>姓名：{orderDetail.patient && orderDetail.patient.name || '无'}&nbsp;&nbsp;性别：{sex(orderDetail.patient && orderDetail.patient.sex) || '无'}&nbsp;&nbsp;年龄：{ages(orderDetail.patient && orderDetail.patient.birthday) || '无'}岁</dd> 
 					</dl>
 				</div>
 			</section>
@@ -185,7 +187,7 @@ const productInfoView = (orderDetail) => {
 			</p></article>
 			<article style={{marginTop: theme.tbmargin,paddingBottom: theme.lrmargin,marginLeft: '.3rem'}}><p className="">
 				<span className="left">实付款：</span>
-				<i className="left" style={{fontSize: '.16rem', color: '#FF8A00'}}>￥{orderDetail.status === '01' ? '0' : orderDetail.payment && orderDetail.payment.totalFee}</i>
+				<i className="left" style={{fontSize: '.16rem', color: '#FF8A00'}}>{orderDetail.status === '01' || orderDetail.status === '02' ? '' : `￥${orderDetail.payment && orderDetail.payment.totalFee}`}</i>
 				<strong className='clearfix'></strong>
 			</p></article>
 			<style jsx>{`
@@ -229,29 +231,16 @@ const productInfoView = (orderDetail) => {
 	)
 }
 
-const productDetailView = (orderDetail) => {
+const productDetailView = (self, orderDetail) => {
 	return (
 		<div style={{padding: '0 .3rem .6rem',fontSize: theme.mainfontsize,color: theme.mainfontcolor,}}>
 			<header style={{lineHeight: '.34rem', fontWeight: 500,textIndent: 10}}>订单信息</header>
 			<p style={{lineHeight: '.3rem', margin: '.06rem 0 .04rem .46rem'}}>订单编号 {orderDetail.consultationNo}</p>
-			<ul style={{borderLeft: `1px solid ${theme.nbordercolor}`, marginLeft: '.3rem'}}>
-				<li><i></i>下单时间 {moment(orderDetail.createdAt).format('YYYY-MM-DD HH:mm:ss')}</li>
-				{
-					orderDetail.payment ?
-						<li>
-							<i></i><p style={{lineHeight: '.3rem'}}>支付时间 {moment(orderDetail.payTime).format('YYYY-MM-DD HH:mm:ss')}</p>
-							<p style={{color: theme.fontcolor, fontSize: 12, lineHeight: '14px'}}>&nbsp;&nbsp;支付流水号&nbsp;{orderDetail.payment.transactionNo}</p></li>
-					: ''
-				}
-				{
-					orderDetail.status === '07' ?
-						<li><i></i>开始时间 {moment(orderDetail.createdAt).format('YYYY-MM-DD HH:mm:ss')}</li>
-					: ''
-				}
-				{/* {orderDetail. ? <li><i></i>申请退款时间 {orderDetail.refundTime}</li> : <strong></strong>} */}
+			<ul className='opeartionItem' style={{borderLeft: `1px solid ${theme.nbordercolor}`, marginLeft: '.3rem'}}>
+				{detailOpationHtml(self, orderDetail)}
 			</ul>
-			<style jsx>{`
-				li{
+			<style jsx global>{`
+				ul.opeartionItem li{
 					color: ${theme.mainfontcolor};
 					font-size: .13rem
 					line-height: .3rem
@@ -259,7 +248,7 @@ const productDetailView = (orderDetail) => {
 					padding-left: .16rem
 					position: relative;
 				}
-				i{
+				ul.opeartionItem i{
 					width: .08rem;
 					height: .08rem;
 					background: ${theme.bordercolor};
@@ -273,6 +262,152 @@ const productDetailView = (orderDetail) => {
 	)
 }
 
+const detailOpationHtml = (self, orderDetail) => {
+	if (orderDetail.status === '01') {
+		return (status1Html(self))
+	}
+	if (orderDetail.status === '02') {
+		return (
+			<div>
+				{status1Html(self)}
+				<li><i></i>取消时间：{self.filterOpationTime('02')}</li>
+			</div>
+		)
+	}
+	if (orderDetail.status === '03') {
+		return (
+			<div>
+				{status1Html(self)}
+				{status3Html(self, orderDetail)}
+			</div>
+		)
+	}
+	if (orderDetail.status === '04') {
+		return (
+			<div>
+				{status1Html(self)}
+				{status3Html(self, orderDetail)}
+				{status4Html(self)}
+			</div>
+		)
+	}
+	if (orderDetail.status === '05') {
+		return (
+			<div>
+				{status1Html(self)}
+				{status3Html(self, orderDetail)}
+				{status5Html(self)}
+			</div>
+		)
+	}
+	if (orderDetail.status === '07') {
+		return (
+			<div>
+				{status1Html(self)}
+				{status3Html(self, orderDetail)}
+				{status4Html(self)}
+				{status7Html(self)}
+			</div>
+		)
+	}
+	if (orderDetail.status === '08') {
+		return (
+			<div>
+				{status1Html(self)}
+				{status3Html(self, orderDetail)}
+				{status5Html(self)}
+				{refoundHtml(self, orderDetail)}
+			</div>
+		)
+	}
+	if (orderDetail.status === '06' || orderDetail.status === '09') {
+		return (
+			<div>
+				{status1Html(self)}
+				{status3Html(self, orderDetail)}
+				{status6Html(self, orderDetail)}
+				{refoundHtml(self, orderDetail)}
+			</div>
+		)
+	}
+	if (orderDetail.status === '10') {
+		return (
+			<div>
+				{status1Html(self)}
+				{status3Html(self, orderDetail)}
+				{status4Html(self)}
+				{status7Html(self)}
+				{refoundHtml(self, orderDetail)}
+			</div>
+		)
+	}
+}
+
+const refoundHtml = (self, orderDetail) => {
+	return (
+		<li>
+			<i></i><p style={{lineHeight: '.3rem', fontSize: 13}}>退款时间： {self.filterOpationTime('06')}</p>
+			<p style={{display: orderDetail.operationPeople ? 'block' : 'none'}}><span style={{padding: '0 .02rem 0 .06rem'}}>退款操作员</span>{orderDetail.operationPeople}</p>
+			<p style={{display: orderDetail.fee ? 'block' : 'none'}}><span style={{padding: '0 .02rem 0 .06rem'}}>退款金额</span>{orderDetail.fee}元</p>
+			<p style={{display: orderDetail.refundReason ? 'block' : 'none'}}><span style={{padding: '0 .02rem 0 .06rem'}}>退款原因</span>{orderDetail.refundReason}</p>
+			<p style={{display: orderDetail.refundRemark ? 'block' : 'none'}}><span style={{padding: '0 .02rem 0 .06rem'}}>备注信息</span>{orderDetail.refundRemark}</p>
+			<style jsx>{`
+				p{
+					color: ${theme.fontcolor};
+					font-size: 12px;
+					line-height: 14px;
+					margin-bottom: ${theme.midmargin};
+				}
+			`}</style>
+		</li>
+	)
+}
+
+const status1Html = (self) => {
+	const time = self.filterOpationTime('01')
+	return (
+		<li><i></i>下单时间：{time}</li>
+	)
+}
+
+const status3Html = (self, orderDetail) => {
+	const time = self.filterOpationTime('03')
+	return (
+		<li style={{display: time ? 'block' : 'none'}}>
+			<i></i><p style={{lineHeight: '.3rem', fontSize: 13}}>支付时间 {time}</p>
+			<p style={{color: theme.fontcolor, fontSize: 12, lineHeight: '14px', marginBottom: theme.midmargin}}><span style={{padding: '0 .02rem 0 .06rem'}}>支付流水号</span>{orderDetail.payment && orderDetail.payment.transactionNo}</p>
+		</li>
+	)
+}
+
+const status4Html = (self, orderDetail) => {
+	const time = self.filterOpationTime('04')
+	return (
+		<li style={{display: time ? 'block' : 'none'}}><i></i>开始时间：{time}</li>
+	)
+}
+
+const status5Html = (self, orderDetail) => {
+	const time = self.filterOpationTime('05')
+	return (
+		<li style={{display: time ? 'block' : 'none'}}><i></i>过期时间：{time}</li>
+	)
+}
+
+const status6Html = (self, orderDetail) => {
+	const time = self.filterOpationTime('06')
+	return (
+		<li style={{display: time ? 'block' : 'none'}}><i></i>买家申请退款时间：{time}</li>
+	)
+}
+
+const status7Html = (self, orderDetail) => {
+	const time = self.filterOpationTime('07')
+	return (
+		<li style={{display: time ? 'block' : 'none'}}><i></i>结束时间：{time}</li>
+	)
+}
+
 function mapStateToProps (state) {
   return {
     orderDetail: state.order.data,
@@ -281,4 +416,4 @@ function mapStateToProps (state) {
   }
 }
 
-export default connect(mapStateToProps, { queryOrderDetail, updateConsultation })(OrderRecordDetailScreen)
+export default connect(mapStateToProps, { queryOrderDetail, updateConsultation, showPrompt })(OrderRecordDetailScreen)

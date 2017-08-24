@@ -202,7 +202,6 @@ export function getSex (certificateNo) {
 
 // 判断性别
 export function sex (sex) {
-  console.log('----sex', sex)
   switch (sex) {
     case '0':
       return '女'
