@@ -51,8 +51,8 @@ export function department (state = initState, action = {}) {
 
 // department list
 const QUERY_DEPARTMENTS = gql`
-  query($skip: Int, $limit: Int) {
-    departments(limit: $limit, skip: $skip) {
+  query($skip: Int, $limit: Int, $keyword: String) {
+    departments(limit: $limit, skip: $skip, keyword: $keyword) {
       id
       deptSn
       deptName
@@ -79,13 +79,12 @@ const QUERY_DEPARTMENTS = gql`
 	}
 `
 
-export const queryDepartments = (client, {limit, skip}) => async dispatch => {
+export const queryDepartments = (client, {limit, skip, keyword}) => async dispatch => {
   dispatch({
     type: DEPARTMENT_QUERY_DEPARTMENT
   })
   try {
-		console.log('-----queryDepartments')
-		const data = await client.query({ query: QUERY_DEPARTMENTS, variables: { limit, skip }, fetchPolicy: 'network-only'})
+		const data = await client.query({ query: QUERY_DEPARTMENTS, variables: { limit, skip, keyword }, fetchPolicy: 'network-only'})
     if (data.error) {
       dispatch({
         type: DEPARTMENT_QUERY_DEPARTMENT_FAIL,

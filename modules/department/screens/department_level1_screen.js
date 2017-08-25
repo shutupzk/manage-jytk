@@ -4,13 +4,15 @@ import Router from 'next/router'
 import {theme, Prompt, Loading, FilterCard, SelectFilterCard, KeywordCard, PageCard} from 'components'
 import {isArray, fuzzyQuery} from 'utils'
 import {HOSPITALINFO} from 'config'
-import {DEPARTMENTINFO} from '../config'
+import {DEPARTMENTINFO, BYSY_DEPARTMENTINFO} from '../config'
 import {ListTitle} from 'modules/common/components'
 import { queryDepartments, showPrompt, updateDepartment, createDepartment, queryHospitals } from '../../../ducks'
 import { connect } from 'react-redux'
 import {DepartmentListItem, DepartmentDetailModal} from '../components'
 
 
+const level = HOSPITALINFO && HOSPITALINFO.department_level
+const hosName = HOSPITALINFO && HOSPITALINFO.hospital_short_name
 class DepartmentLevel1Screen extends Component {
   constructor (props) {
     super(props)
@@ -29,7 +31,8 @@ class DepartmentLevel1Screen extends Component {
   }
 
 	async queryDepartments() {
-		let error = await this.props.queryDepartments(this.props.client, {limit: 10, skip: (this.state.page - 1) * 10})
+		const keyword = this.state.keyword
+		let error = await this.props.queryDepartments(this.props.client, {limit: 10, skip: (this.state.page - 1) * 10, keyword: keyword})
     if (error) {
       this.props.showPrompt({text: error})
       return
@@ -40,14 +43,13 @@ class DepartmentLevel1Screen extends Component {
 		let error;
 		if (modalType === 'modify') {
 			values.id = this.state.selectedDepartment.id
-			values.level = HOSPITALINFO && HOSPITALINFO.department_level && HOSPITALINFO.department_level === 1 ? '2' : '1'
+			values.level = level === 1 ? '2' : '1'
 			error = await this.props.updateDepartment(this.props.client, values)
-		}
-		else if (modalType === 'add') {
+		} else if (modalType === 'add') {
 			if (!values.deptSn) {this.props.showPrompt({text: '科室编码必填'}); return;}
 			if (!values.deptName) {this.props.showPrompt({text: '科室名称必填'}); return;}
 			if (!values.hospitalId) {this.props.showPrompt({text: '所属医院必选'}); return;}
-			values.level = HOSPITALINFO && HOSPITALINFO.department_level && HOSPITALINFO.department_level === 1 ? '2' : '1'
+			values.level = level === 1 ? '2' : '1'
 			error = await this.props.createDepartment(this.props.client, values)
 			this.setState({page: 1})
 		}
@@ -64,30 +66,14 @@ class DepartmentLevel1Screen extends Component {
 		this.setState({showModal: false, selectedDepartment: {}, modalType: ''})
 	}
 
-	filterCard(departmentsLevel1) {
-		let filterlevelDepartments = departmentsLevel1
-		console.log('--------depar10000', departmentsLevel1)
-		if (this.state.keyword) {
-			filterlevelDepartments = fuzzyQuery(filterlevelDepartments, this.state.keyword, ['deptSn', 'deptName'])
-		}
-		if (this.state.status) {
-			filterlevelDepartments = filterlevelDepartments.filter((departmentItem) => {return (departmentItem.parent && departmentItem.parent.deptSn) === this.state.status})
-		}
-		return filterlevelDepartments
-	}
-
   render () {
-    if (this.props.loading) {
-      return <Loading showLoading />
-		}
 		if (this.props.error) {
-			this.props.showPrompt(this.props.error)
-			// return console.log(this.props.error)
 			return <div>{this.props.error}</div>
 		}
-		let departmentsLevel1 = this.filterCard(this.props.departmentsLevel1)
+		let departmentsLevel1 = this.props.departmentsLevel1
     return (
       <div>
+				<Loading showLoading={this.props.loading} />
 				<FilterCard>
 					<KeywordCard
 						config={{placeholder: '科室编码／科室名称', keyword: this.state.keyword}}
@@ -97,7 +83,7 @@ class DepartmentLevel1Screen extends Component {
 					<button style={{width: '1rem'}} className='btnBG btnBGMain btnBGLitt'
 						onClick={() => this.setState({showModal: true, modalType: 'add'})}>
 						{
-							HOSPITALINFO && HOSPITALINFO.department_level && HOSPITALINFO.department_level === 1 ?
+							level === 1 ?
 								'添加科室'
 							: '添加一级科室'
 						}</button>
