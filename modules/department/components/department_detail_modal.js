@@ -157,8 +157,9 @@ class DepartmentDetailModal extends Component {
 
 const renderModal = (self) => {
 	const {selectedDepartment, modalType, data, selectedType, titleInfo} = self.props;
+	const modalHeight = process.browser? document && document.body.clientWidth * 0.82  : 500
 	return (
-		<Modal showModalState={self.props.showModal} style={{top: '12%'}} sectionStyle={{width: modalType === 'delete' ? '30%': '50%'}}>
+		<Modal showModalState={self.props.showModal} style={{top: '12%'}} sectionStyle={{width: modalType === 'delete' ? '30%': '50%', maxHeight: modalHeight, minHeight: '200px'}}>
 			{modalHeaderView(self)}
 			{
 				selectedType === 1 ?
@@ -204,7 +205,6 @@ const modalHeaderView = (self) => {
 }
 
 const renderDepartmentInfoModal = (self) => {
-	const modalHeight = process.browser? document && document.body.clientWidth * 0.4 : 500
 	const {modalType, titleInfo, departmentSelect, config} = self.props;
 	const selectedDepartment = self.props.selectedDepartment || {}
 	const detailPage = self.props.detailPage
@@ -218,7 +218,7 @@ const renderDepartmentInfoModal = (self) => {
 	if (modalType === 'modify' || modalType === 'add') {
 		let curSelect = config.filter((configItem) => {return configItem.title.indexOf('所属医院') > -1})
 		return (
-			<div style={{height: modalHeight, overflow: 'auto', padding: '0 .15rem'}}>
+			<div style={{overflow: 'auto', padding: '0 .15rem'}}>
 				<ul>
 					<li style={{paddingBottom: '.06rem'}}><span className='left'>科室编码：</span>
 						{

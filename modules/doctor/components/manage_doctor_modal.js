@@ -295,10 +295,9 @@ const modalHeaderView = (self) => {
 }
 
 const renderServiceModal = (self) => {
-	const modalHeight = process.browser? document.body.clientWidth * 0.4 : 500
 	const {selectedDoctor, selectedType, pageType} = self.props;
 	return (
-		<div style={{height: modalHeight, overflow: 'auto', padding: `${theme.tbmargin} .25rem`}}>
+		<div style={{overflow: 'auto', padding: `${theme.tbmargin} .25rem`}}>
 			{
 				serviceCon.map((item, index) => {
 					return (
