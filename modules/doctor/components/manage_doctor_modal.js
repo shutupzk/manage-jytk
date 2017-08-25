@@ -151,8 +151,9 @@ class ManageDoctorModal extends Component {
 
 const renderModal = (self) => {
 	const {selectedDoctor, selectedType, pageType} = self.props;
+	const modalHeight = process.browser? document && document.body.clientWidth * 0.82  : 500
 	return (
-		<Modal showModalState={self.props.showModal} style={{top: '9%'}}>
+		<Modal showModalState={self.props.showModal} style={{top: '9%'}} sectionStyle={{maxHeight: modalHeight, minHeight: '200px'}}>
 			{modalHeaderView(self)}
 			{
 				selectedType === 1 ?
@@ -174,11 +175,10 @@ const renderModal = (self) => {
 }
 
 const renderDoctorInfoModal = (self) => {
-	const modalHeight = process.browser? document && document.body.clientWidth * 0.4 : 500
 	const selectedDoctor = self.props.selectedDoctor || {};
 	const department = selectedDoctor.departmentHasDoctors && selectedDoctor.departmentHasDoctors[0] && selectedDoctor.departmentHasDoctors[0].department && selectedDoctor.departmentHasDoctors[0].department || {}
 	return (
-		<div style={{height: modalHeight, overflow: 'auto', padding: '0 .15rem'}}>
+		<div style={{overflow: 'auto', padding: '0 .15rem'}}>
 			<div style={{padding: '.1rem 0', width: '80%', borderBottom: `1px solid ${theme.nbordercolor}`}} className='flex'>
 				<div style={{marginLeft: '.1rem'}}><ImgCard avatar={selectedDoctor.avatar} /></div>
 				<section style={{color: theme.mainfontcolor, fontSize: 12, paddingLeft: theme.tbmargin}}>

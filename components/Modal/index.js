@@ -29,6 +29,7 @@ export function Modal(props) {
                 width: 60%;
                 top: 0;
                 margin: 0 auto 0;
+                overflow: auto;
               }
             `}</style>
           </div>
