@@ -12,7 +12,6 @@ const initState = {
 
 // reducer
 export function prompt (state = initState, action = {}) {
-  console.log('action', action)
   switch (action.type) {
     case PROMPT_SHOW:
       return Object.assign(
@@ -34,8 +33,6 @@ export function prompt (state = initState, action = {}) {
 }
 
 export const showPrompt = ({text, timer}) => dispatch => {
-  console.log(text)
-	console.log(timer)
   dispatch({
     type: PROMPT_SHOW,
     text,

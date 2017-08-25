@@ -8,7 +8,6 @@ const DEPARTMENTINFO = {
     {title: '所属医院', value: '', style: {width: '22%'}, apiKey: 'hospitalId', inputType: 'select'},
     {title: '是否推荐', value: '', style: {width: '10%'}, apiKey: 'hot', inputType: 'checkbox'},
     {title: '是否可挂号', value: '', style: {width: '10%'}, apiKey: 'isAppointment', inputType: 'checkbox'},
-    {title: '科室介绍', value: '', style: {width: '36%'}, apiKey: 'description', inputType: 'textarea'},
     {title: '设置一级科室', value: '', style: {width: '10%'}, apiKey: ''},
   ],
   department_list_title2: [
@@ -20,7 +19,6 @@ const DEPARTMENTINFO = {
     {title: '父级科室', value: '', style: {width: '14%'}, apiKey: 'parentId', inputType: 'select'},
     {title: '是否推荐', value: '', style: {width: '10%'}, apiKey: 'hot', inputType: 'checkbox'},
     {title: '是否可挂号', value: '', style: {width: '10%'}, apiKey: 'isAppointment', inputType: 'checkbox'},
-    {title: '科室介绍', value: '', style: {width: '36%'}, apiKey: 'description', inputType: 'textarea'},
     {title: '设置', value: '', style: {width: '10%'}, apiKey: ''},
   ]
 }
@@ -28,11 +26,15 @@ const DEPARTMENTINFO = {
 const BYSY_DEPARTMENTINFO = {
   department_list_title1: [
     {title: '编码', value: '', style: {width: '8%'}, apiKey: ''},
-    {title: '科室编码', value: '', style: {width: '8%'}, apiKey: 'deptSn', inputType: 'text'},
-    {title: '科室名称', value: '', style: {width: '14%'}, apiKey: 'deptName', inputType: 'text'},
+    {title: '科室编码', value: '', style: {width: '14%'}, apiKey: 'deptSn', inputType: 'text'},
+    {title: '科室名称', value: '', style: {width: '20%'}, apiKey: 'deptName', inputType: 'text'},
     {title: '所属医院', value: '', style: {width: '22%'}, apiKey: 'hospitalId', inputType: 'select'},
-    {title: '特色科室', value: '', style: {width: '10%'}, apiKey: 'hot', inputType: 'checkbox'},
-    {title: '设置一级科室', value: '', style: {width: '10%'}, apiKey: ''},
+    {title: '特色科室', value: '', style: {width: '12%'}, apiKey: 'hot', inputType: 'checkbox'},
+    {title: '设置一级科室', value: '', style: {width: '22%'}, apiKey: ''},
+    // {title: '页面权重', value: '', style: {width: '12%'}, apiKey: 'weight', inputType: 'checkbox'},
+    // {title: '科室位置', value: '', style: {width: '12%'}, apiKey: 'position', inputType: 'checkbox'},
+    // {title: '科室介绍', value: '', style: {width: '12%'}, apiKey: 'description', inputType: 'checkbox'},
+    // 科室图标 deptPic
   ],
 }
 

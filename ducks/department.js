@@ -1,5 +1,7 @@
 import localforage from 'localforage'
 import gql from 'graphql-tag'
+import {HOSPITALINFO} from 'config'
+const level = HOSPITALINFO || {}
 
 const DEPARTMENT_QUERY_DEPARTMENT = 'department/querydepartment'
 const DEPARTMENT_QUERY_DEPARTMENT_SUCCESS = 'department/querydepartment/success'
@@ -11,6 +13,8 @@ const UPDATE_DEPARTMENT_SUCCESS = 'department/updatedepartment/success'
 
 const CREATE_DEPARTMENT_SUCCESS = 'department/createdepartment/success'
 
+const DEPARTMENT_SELECT_DEPARTMENT = 'department/selectdepartment'
+
 const initState = {
   data: {},
   loading: false,
@@ -19,7 +23,7 @@ const initState = {
 
 // reducer
 export function department (state = initState, action = {}) {
-  // console.log('action', action)
+  console.log('action', action)
   switch (action.type) {
     case DEPARTMENT_QUERY_DEPARTMENT:
       return Object.assign({}, state, { loading: true, error: null })
@@ -44,6 +48,12 @@ export function department (state = initState, action = {}) {
         { data: Object.assign({}, state.data, {department: action.department})},
         { loading: false, error: null }
       )
+    case DEPARTMENT_SELECT_DEPARTMENT:
+      return Object.assign(
+        {},
+        state,
+        Object.assign({}, state.data, {selectedDepartment: action.data})
+      )
     default:
       return state
   }
@@ -51,15 +61,17 @@ export function department (state = initState, action = {}) {
 
 // department list
 const QUERY_DEPARTMENTS = gql`
-  query($skip: Int, $limit: Int, $keyword: String) {
-    departments(limit: $limit, skip: $skip, keyword: $keyword) {
+  query($skip: Int, $limit: Int, $keyword: String, $hot: Boolean) {
+    departments(limit: $limit, skip: $skip, keyword: $keyword, hot: $hot) {
       id
       deptSn
       deptName
       description
       features
       position
+      deptPic
       hot
+      weight
       isAppointment
       level
       image
@@ -79,12 +91,12 @@ const QUERY_DEPARTMENTS = gql`
 	}
 `
 
-export const queryDepartments = (client, {limit, skip, keyword}) => async dispatch => {
+export const queryDepartments = (client, {limit, skip, keyword, hot}) => async dispatch => {
   dispatch({
     type: DEPARTMENT_QUERY_DEPARTMENT
   })
   try {
-		const data = await client.query({ query: QUERY_DEPARTMENTS, variables: { limit, skip, keyword }, fetchPolicy: 'network-only'})
+    const data = await client.query({ query: QUERY_DEPARTMENTS, variables: { limit, skip, keyword, hot }, fetchPolicy: 'network-only'})
     if (data.error) {
       dispatch({
         type: DEPARTMENT_QUERY_DEPARTMENT_FAIL,
@@ -93,9 +105,11 @@ export const queryDepartments = (client, {limit, skip, keyword}) => async dispat
 			return data.error.message
     }
     let departments = data.data.departments
-    let departmentsLevel1 = departments.filter((department) => {return department.level == '1'})
-    if (departments.length > 0 && departmentsLevel1.length === 0) {
+    let departmentsLevel1
+    if (HOSPITALINFO.department_level === 1) {
       departmentsLevel1 = departments
+    } else {
+      departmentsLevel1 = departments.filter((department) => {return department.level == '1'})
     }
     let departmentsLevel2 = departments.filter((department) => {return department.level == '2'})
     dispatch({
@@ -117,33 +131,30 @@ export const queryDepartments = (client, {limit, skip, keyword}) => async dispat
 
 // update department
 const UPDATE_DEPARTMENT = gql`
-	mutation($id: ObjID!, $deptName: String, $hot: Boolean, $description: String, $isAppointment: Boolean, $level: String, $parentId: ObjID){
-		updateDepartment(id: $id, input: {deptName: $deptName, hot: $hot, description: $description, isAppointment: $isAppointment, level: $level, parentId: $parentId}) {
+  mutation($id: ObjID!, $deptName: String, $hot: Boolean, $description: String, $isAppointment: Boolean,
+    $level: String, $parentId: ObjID,
+    $deptPic: String,
+    $weight: Int,
+    $position: String){
+    updateDepartment(id: $id, input: {deptName: $deptName, hot: $hot, description: $description,
+      isAppointment: $isAppointment, level: $level, parentId: $parentId,
+      deptPic: $deptPic,
+      weight: $weight,
+      position: $position}) {
 			id
-			deptName
-			deptSn
-			hot
-			childs {
-				id
-				deptSn
-				deptName
-			}
-			parent {
-				id
-			}
 		}
 	}
 `
 
-export const updateDepartment = (client, {id, deptName, deptSn, hot, description, isAppointment, level, parentId}) => async dispatch => {
-  // console.log('---updateDepartment', id, deptName, hot)
+export const updateDepartment = (client, {id, deptName, deptSn, hot, description, isAppointment, level, parentId, deptPic, weight, position}) => async dispatch => {
+  console.log('---updateDepartment', id, description)
   dispatch({
     type: DEPARTMENT_QUERY_DEPARTMENT
   })
   try {
     let data = await client.mutate({
       mutation: UPDATE_DEPARTMENT,
-      variables: { id, deptName, hot, description, isAppointment, level, parentId}
+      variables: { id, deptName, hot, description, isAppointment, level, parentId, deptPic, weight, position}
 		})
 		if (data.error) {
       dispatch({
@@ -205,4 +216,11 @@ export const createDepartment = (client, {deptName, deptSn, hot, hospitalId, des
     })
     return e.message
   }
+}
+
+export const selectdepartment = ({department}) => async dispatch => {
+	dispatch({
+		type: DEPARTMENT_SELECT_DEPARTMENT,
+		data: department
+  })
 }

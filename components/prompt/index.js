@@ -18,8 +18,7 @@ class Prompt extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log('=====prompt===', nextProps.timer)
-    if (!this.props.text && nextProps.text) {
+    if (nextProps.text) {
       this.setState({show: true});
       clearTimeout(timer);
       timer = setTimeout(() => {

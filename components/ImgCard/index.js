@@ -57,7 +57,7 @@ class ImgCard extends Component {
 		const doctorImg = this.props.imgBase64 || this.props.avatar || '/static/icons/doctor_normal_header.png';
 		return (
 			<div>
-				<label htmlFor='addImg' style={{marginLeft: '.1rem', height: 50, width: 50, backgroundImage: `url(${doctorImg})`, backgroundSize: 46, display: 'block'}}></label>
+				<label htmlFor='addImg' style={{ height: 50, width: 50, backgroundImage: `url(${doctorImg})`, backgroundSize: 46, display: 'block'}}></label>
 					<input type="file" accept="image/*" id="addImg" style={{display: 'none'}}
               onChange={(e) => this.clickDescribeAddImg(e)} />
 			</div>

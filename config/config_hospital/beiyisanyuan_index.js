@@ -56,9 +56,7 @@ const MAINFUNCTION = [
     short_name: 'department',
     navigateName: '/department/department_level1',
     children: [
-      {title: '科室管理', navigateName: '/department/department_level1', color: '#5D75A6',},
-      {title: '推荐科室管理', navigateName: '/department/department_recommand', color: '#5D75A6'},
-      {title: '挂号科室管理', navigateName: '/department/department_isAppoint', color: '#5D75A6'},
+      {title: '科室管理', navigateName: '/department/department_level1', color: '#5D75A6',}
     ]
   },
   {

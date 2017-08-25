@@ -2,7 +2,7 @@ import { user, signup, signin, signout, queryUser, updatePassword, currentUser, 
 import {prompt, showPrompt, hidePrompt} from './prompt'
 import {order, queryOrderList, queryOrderDetail, updateConsultation} from './order'
 import {doctor, queryDoctors, updateDoctor, createDoctor, selectdoctor} from './doctor'
-import {department, queryDepartments, updateDepartment, createDepartment} from './department'
+import {department, queryDepartments, updateDepartment, createDepartment, selectdepartment} from './department'
 import {hospital, queryHospitals, updateHospital, createHospital, selectHospital, queryHospital} from './hospital'
 import {news, queryNews, queryNewGroups, createGroups, updateNewsGroup, removeNewsGroup, createNews, updateNews, removeNews} from './news'
 import {buildings, createbuilding, createFloor, createRoom, queryBuildings, queryBuildingDetail, updateBuilding, updateFloor, updateRoom} from './buildings'
@@ -54,6 +54,7 @@ export {
     queryDepartments,
     updateDepartment,
     createDepartment,
+    selectdepartment,
     queryHospitals,
     updateHospital,
     createHospital,

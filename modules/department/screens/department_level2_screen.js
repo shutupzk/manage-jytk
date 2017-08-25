@@ -6,7 +6,7 @@ import {ORDERTYPE} from 'config'
 import {isArray, fuzzyQuery} from 'utils'
 import {DEPARTMENTINFO} from '../config'
 import { ListTitle} from 'modules/common/components'
-import { queryDepartments, showPrompt, updateDepartment, queryHospitals, createDepartment } from '../../../ducks'
+import { queryDepartments, showPrompt, updateDepartment, queryHospitals, createDepartment, selectdoctor } from '../../../ducks'
 import { connect } from 'react-redux'
 import {DepartmentListItem, DepartmentDetailModal} from '../components'
 
@@ -17,7 +17,6 @@ class DepartmentLevel2Screen extends Component {
     this.state = {
 			keyword: '',
 			showModal: false,
-			selectedDepartment: {},
 			modalType: '', // add\modify\delete
 			status: '',
 			page: 1
@@ -30,20 +29,22 @@ class DepartmentLevel2Screen extends Component {
   }
 
 	async queryDepartments() {
-		let error = await this.props.queryDepartments(this.props.client, {limit: 10, skip: (this.state.page - 1) * 10})
+		let params = {limit: 10, skip: (this.state.page - 1) * 10, keyword: this.state.keyword}
+		let status = this.state.status
+		if (status === 'hot') {
+			params = Object.assign({}, params, {hot: true})
+		}
+		let error = await this.props.queryDepartments(this.props.client, params)
     if (error) {
       this.props.showPrompt({text: error})
       return
     }
 	}
 	
-	async clickModalOk(data, modalType, values) {
+	async clickModalOk(values) {
 		let error;
 		if (!values.parentId) {this.props.showPrompt({text: '一级科室必选'}); return;}
 		if (modalType === 'modify') {
-			values.id = this.state.selectedDepartment.id
-			values.level = '2'
-			console.log('------values', values)
 			error = await this.props.updateDepartment(this.props.client, values)
 		}
 		else if (modalType === 'add') {
@@ -51,7 +52,6 @@ class DepartmentLevel2Screen extends Component {
 			if (!values.deptName) {this.props.showPrompt({text: '科室名称必填'}); return;}
 			if (!values.hospitalId) {this.props.showPrompt({text: '所属医院必选'}); return;}
 			values.level = '2'
-			console.log('---add---values', values)
 			error = await this.props.createDepartment(this.props.client, values)
 			this.setState({page: 1})
 		}
@@ -59,24 +59,23 @@ class DepartmentLevel2Screen extends Component {
 			this.props.showPrompt({text: error});
 			return
 		}
-		this.onHide();
+		// this.onHide();
 		// await this.props.showPrompt('更新成功');
 		await this.queryDepartments()
 	}
 
 	onHide() {
-		this.setState({showModal: false, selectedDepartment: {}, modalType: ''})
+		this.props.selectdepartment({department: {}})
+		this.setState({showModal: false, modalType: ''})
 	}
 
-	filterCard(departmentsLevel2) {
-		let filterlevelDepartments = departmentsLevel2
-		if (this.state.keyword) {
-			filterlevelDepartments = fuzzyQuery(filterlevelDepartments, this.state.keyword, ['deptSn', 'deptName'])
+	async changeRecommnad(data, value, key) {
+		let error = await this.props.updateDepartment(this.props.client, {id: data.id, [key]: value})
+		if (error) {
+			this.props.showPrompt({text: error});
+			return
 		}
-		if (this.state.status) {
-			filterlevelDepartments = filterlevelDepartments.filter((departmentItem) => {return (departmentItem.parent && departmentItem.parent.deptSn) === this.state.status})
-		}
-		return filterlevelDepartments
+		this.queryDepartments()
 	}
 
   render () {
@@ -88,7 +87,7 @@ class DepartmentLevel2Screen extends Component {
 			// return console.log(this.props.error)
 			return <div>{this.props.error}</div>
 		}
-		let departmentsLevel2 = this.filterCard(this.props.departmentsLevel2)
+		let departmentsLevel2 = this.props.departmentsLevel2
     return (
       <div>
 				<FilterCard>
@@ -105,7 +104,7 @@ class DepartmentLevel2Screen extends Component {
 					<button style={{width: '1rem'}} className='btnBG btnBGMain btnBGLitt'
 						onClick={() => this.setState({showModal: true, modalType: 'add'})}>添加二级科室</button>
 				</article>
-				<DepartmentDetailModal selectedDepartment={this.state.selectedDepartment}
+				<DepartmentDetailModal selectedDepartment={this.props.selectedDepartment}
 					showModal={this.state.showModal}
 					onHide={() => this.onHide()}
 					titleInfo={DEPARTMENTINFO.department_list_title2}
@@ -121,8 +120,11 @@ class DepartmentLevel2Screen extends Component {
 						departmentsLevel2.map((department, iKey) => {
 							return <DepartmentListItem data={department} key={iKey} index={iKey + ((this.state.page -1) * 10)}
 							 titleInfo={DEPARTMENTINFO.department_list_title2}
+							 changeRecommnad={(data, value, key) => this.changeRecommnad(data, value, key)}
 							 page={'level2'}
-							 clickShowModal={(data, modalType) => {this.setState({selectedDepartment: data, modalType: modalType, showModal: true})}} />
+							 clickShowModal={(data, modalType) => {
+								 this.props.selectdepartment({department: data})
+								 this.setState({modalType: modalType, showModal: true})}} />
 						})
 					: 'no data'
 				}
@@ -155,8 +157,9 @@ function mapStateToProps (state) {
     loading: state.department.loading,
 		error: state.department.error,
 		departmentsLevel2: state.department.data.departmentsLevel2,
-		hospitals: state.hospital.data
+		hospitals: state.hospital.data,
+		selectedDepartment: state.department.selectedDepartment
   }
 }
 
-export default connect(mapStateToProps, { queryDepartments, showPrompt, updateDepartment, queryHospitals, createDepartment })(DepartmentLevel2Screen)
+export default connect(mapStateToProps, { queryDepartments, showPrompt, updateDepartment, queryHospitals, createDepartment, selectdoctor })(DepartmentLevel2Screen)
