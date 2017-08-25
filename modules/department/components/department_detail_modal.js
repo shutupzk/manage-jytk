@@ -118,8 +118,16 @@ class DepartmentDetailModal extends Component {
 	}
 
 	clickModalOk() {
-		const {weightRef, deptNameRef, hotRef, isAppointmentRef, positionRef, descriptionRef} = this.refs || {}
+		const {weightRef, deptNameRef, hotRef, isAppointmentRef, positionRef, descriptionRef, hospitalIdRef, deptSnRef} = this.refs || {}
+		const {selectedDepartment} = this.props
 		let weight = (weightRef.value == '' || weightRef.value == null) ? null : parseInt(weightRef.value, 10)
+		const {modalType} = this.props
+		let hospitalId = selectedDepartment.hospitalId
+		let deptSn = selectedDepartment.deptSn
+		if (modalType === 'add') {
+			hospitalId = hospitalIdRef.value
+			deptSn = deptSnRef
+		}
 		if (weight < 0) {
 			this.props.showPrompt({text: '权重不能小于0'})
 			return
@@ -127,7 +135,9 @@ class DepartmentDetailModal extends Component {
 		const values = {
 			weight, deptName: deptNameRef.value, hot: hotRef.checked, isAppointment: isAppointmentRef.checked,
 			position: positionRef.value,
-			description: descriptionRef.value
+			description: descriptionRef.value,
+			hospitalId: hospitalId,
+			deptSn: deptSn
 		}
 		this.props.selectdepartment({department: Object.assign({}, this.props.selectedDepartment, values)})
 		{/* 点击确定， 图片上传七牛云 检验base64是否存在，如果存在就说明需要上传七牛云 */}
@@ -195,7 +205,8 @@ const modalHeaderView = (self) => {
 
 const renderDepartmentInfoModal = (self) => {
 	const modalHeight = process.browser? document && document.body.clientWidth * 0.4 : 500
-	const {selectedDepartment, modalType, titleInfo, departmentSelect, config} = self.props;
+	const {modalType, titleInfo, departmentSelect, config} = self.props;
+	const selectedDepartment = self.props.selectedDepartment || {}
 	const detailPage = self.props.detailPage
 	const recommandPage = self.props.recommandPage
 	const isAppointPage = self.props.isAppointPage
@@ -205,11 +216,36 @@ const renderDepartmentInfoModal = (self) => {
 		)
 	}
 	if (modalType === 'modify' || modalType === 'add') {
+		let curSelect = config.filter((configItem) => {return configItem.title.indexOf('所属医院') > -1})
 		return (
 			<div style={{height: modalHeight, overflow: 'auto', padding: '0 .15rem'}}>
 				<ul>
-					<li style={{paddingBottom: '.06rem'}}><span className='left'>科室编码：</span>{selectedDepartment.deptSn}</li>
-					<li><span className='left'>所属机构：</span>{selectedDepartment.hospital && selectedDepartment.hospital.hospitalName}</li>
+					<li style={{paddingBottom: '.06rem'}}><span className='left'>科室编码：</span>
+						{
+							modalType === 'add' ?
+								<input defaultValue={selectedDepartment.deptSn} ref='deptSnRef' className='left' type='text' />
+							:
+								<span className='left' ref='deptSnRef'>{selectedDepartment.deptSn}</span>
+						}
+						<span className='left'></span>
+					</li>
+					<li><span className='left'>所属机构：</span>
+						{
+							modalType === 'add' ?
+								<select className='left' defaultValue={selectedDepartment.hospitalId} ref={`hospitalIdRef`}>
+									{
+										curSelect[0].selectData && curSelect[0].selectData.map((departmentSelectItem, deptKey) => {
+											return (
+												<option value={departmentSelectItem[curSelect[0].valueKey]} key={deptKey}>{departmentSelectItem[curSelect[0].titleKey]}</option>
+											)
+										})
+									}
+								</select>
+							:
+								<span className='left'>{selectedDepartment.hospital && selectedDepartment.hospital.hospitalName}</span>
+						}
+						<span className='clearfix'></span>
+					</li>
 					<li><span className='left'>科室名称：</span>
 						<input defaultValue={selectedDepartment.deptName} ref='deptNameRef' className='left' type='text' /><span className='clearfix'></span></li>
 					<li><span className='left'>科室权重：</span>
@@ -270,119 +306,6 @@ const renderDepartmentInfoModal = (self) => {
 					}
 				`}</style>
 			</div>
-			// <div style={{padding: '20px 30px'}}>
-			// 	{/* <ImgCard avatar={selectedDepartment.avatar} /> */}
-			// 	{
-			// 		titleInfo.map((titleInfoItem, iKey) => {
-			// 			if (titleInfoItem.inputType === 'checkbox') {
-			// 				return (
-			// 				<dl key={iKey} className='flex tb-flex'
-			// 					style={{fontSize: theme.fontsize, color: theme.mainfontcolor}}>
-			// 					<dt>{titleInfoItem.title}</dt>
-			// 					<dd>
-			// 						{
-			// 							(isAppointPage && titleInfoItem.title.indexOf('推荐') > -1) || (recommandPage && titleInfoItem.title.indexOf('挂号') > -1) ?
-			// 								<input type='checkbox' disabled defaultChecked={selectedDepartment[titleInfoItem.apiKey]} ref={`${titleInfoItem.apiKey}Ref`} />
-			// 							:
-			// 								<input type='checkbox' defaultChecked={selectedDepartment[titleInfoItem.apiKey]} ref={`${titleInfoItem.apiKey}Ref`} />
-			// 						}
-			// 					</dd>
-			// 				</dl>
-			// 				)
-			// 			}
-			// 			if (titleInfoItem.inputType === 'text') {
-			// 				return (
-			// 				<dl key={iKey} className='flex tb-flex'
-			// 					style={{fontSize: theme.fontsize, color: theme.mainfontcolor}}>
-			// 					<dt>{titleInfoItem.title}</dt>
-			// 					<dd>
-			// 						{
-			// 							detailPage ?
-			// 								<input type='text' disabled defaultValue={selectedDepartment[titleInfoItem.apiKey]} ref={`${titleInfoItem.apiKey}Ref`} />
-			// 							:
-			// 								<input type='text' defaultValue={selectedDepartment[titleInfoItem.apiKey]} ref={`${titleInfoItem.apiKey}Ref`} />
-			// 						}</dd>
-			// 				</dl>
-			// 				)
-			// 			}
-			// 			if (titleInfoItem.inputType === 'select') {
-			// 				let curSelect = config.filter((configItem) => {return configItem.title.indexOf(titleInfoItem.title) > -1})
-			// 				return (
-			// 				<dl key={iKey} className='flex tb-flex'
-			// 					style={{fontSize: theme.fontsize, color: theme.mainfontcolor}}>
-			// 					<dt>{titleInfoItem.title}</dt>
-			// 					<dd className='select' style={{borderRadius: 0, padding: 0}}>
-			// 						{
-			// 							detailPage ?
-			// 								<select disabled defaultValue={selectedDepartment[titleInfoItem.apiKey]} ref={`${titleInfoItem.apiKey}Ref`}>
-			// 									{
-			// 										curSelect[0].selectData && curSelect[0].selectData.map((departmentSelectItem, deptKey) => {
-			// 											return (
-			// 												<option value={departmentSelectItem[curSelect[0].valueKey]} key={deptKey}>{departmentSelectItem[curSelect[0].titleKey]}</option>
-			// 											)
-			// 										})
-			// 									}
-			// 								</select>
-			// 							:
-			// 								<select defaultValue={selectedDepartment[titleInfoItem.apiKey]} ref={`${titleInfoItem.apiKey}Ref`}>
-			// 									{
-			// 										curSelect[0].selectData && curSelect[0].selectData.map((departmentSelectItem, deptKey) => {
-			// 											return (
-			// 												<option value={departmentSelectItem[curSelect[0].valueKey]} key={deptKey}>{departmentSelectItem[curSelect[0].titleKey]}</option>
-			// 											)
-			// 										})
-			// 									}
-			// 								</select>
-			// 						}
-			// 					</dd>
-			// 				</dl>
-			// 				)
-			// 			}
-			// 			if (titleInfoItem.inputType === 'textarea') {
-			// 				return (
-			// 				<dl key={iKey} className='flex tb-flex'
-			// 					style={{fontSize: theme.fontsize, color: theme.mainfontcolor}}>
-			// 					<dt>{titleInfoItem.title}</dt>
-			// 					<dd style={{width: '80%'}}>
-			// 						{
-			// 							detailPage ?
-			// 								<textarea disabled
-			// 									style={{width: '100%', border: `1px solid ${theme.bordercolor}`, minHeight: '1rem'}}
-			// 									defaultValue={selectedDepartment[titleInfoItem.apiKey]} ref={`${titleInfoItem.apiKey}Ref`}></textarea>
-			// 							: 
-			// 								<textarea
-			// 									style={{width: '100%', border: `1px solid ${theme.bordercolor}`, minHeight: '1rem'}}
-			// 									defaultValue={selectedDepartment[titleInfoItem.apiKey]} ref={`${titleInfoItem.apiKey}Ref`}></textarea>
-			// 						}
-			// 					</dd>
-			// 				</dl>
-			// 				)
-			// 			}
-						
-			// 		})
-			// 	}
-			// 	<style jsx>{`
-			// 		dl{
-			// 			padding: ${theme.tbmargin} 0;
-			// 		}
-			// 		dt{
-			// 			color: theme.fontcolor;
-			// 			{/* padding-right: ${theme.tbmargin}; */}
-			// 			width: 18%;
-			// 			padding-right: 2%;
-			// 			text-align: right;
-			// 		}
-			// 		dd{
-			// 			width: 80%;
-					
-			// 		}
-			// 		input{
-			// 			width: 100%;
-			// 			border: 1px solid ${theme.bordercolor};
-			// 			line-height: 30px;
-			// 		}
-			// 	`}</style>
-			// </div>
 		)
 	}
 }
