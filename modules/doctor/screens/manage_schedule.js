@@ -86,7 +86,6 @@ class ManageScheduleScreen extends Component {
 			return <div>{this.props.error}</div>
 		}
 		let doctors = this.props.doctors
-		console.log('=-=-this.state.page', this.state.page)
     return (
       <div>
 				{this.props.loading ?

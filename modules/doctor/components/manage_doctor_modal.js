@@ -8,7 +8,7 @@ import {ORDERTYPE, DOCTORINFO, HOSPITALINFO, HOSPITAL_NAME} from 'config'
 import {tableTh, apTh, serviceCon, doctorInfo} from '../config'
 // qiniu
 import request from 'superagent-bluebird-promise'
-import {getQiniuUpToken, showPrompt, changeImgBase64, queryDoctorSchedule, selectdoctor, selectFastSchedules} from '/ducks'
+import {showPrompt, changeImgBase64, selectdoctor, selectFastSchedules} from '/ducks'
 
 var isFunction = function (fn) {
   var getType = {}
@@ -176,7 +176,7 @@ const renderDoctorInfoModal = (self) => {
 	return (
 		<div style={{height: modalHeight, overflow: 'auto', padding: '0 .15rem'}}>
 			<div style={{padding: '.1rem 0', width: '80%', borderBottom: `1px solid ${theme.nbordercolor}`}} className='flex'>
-				<ImgCard avatar={selectedDoctor.avatar} />
+				<div style={{marginLeft: '.1rem'}}><ImgCard avatar={selectedDoctor.avatar} /></div>
 				<section style={{color: theme.mainfontcolor, fontSize: 12, paddingLeft: theme.tbmargin}}>
 					<article><strong style={{paddingRight: '.06rem', fontSize: 14}}>{selectedDoctor.doctorName}</strong>{selectedDoctor.sex ? sex(selectedDoctor.sex) : ''}</article>
 					<article>{department.deptName} {selectedDoctor.title ? <span><span style={{padding: '0 .06rem'}}>|</span>{selectedDoctor.title}</span> : ''}</article>
@@ -480,4 +480,4 @@ function mapStateToProps (state) {
   }
 }
 
-export default connect(mapStateToProps, { showPrompt, getQiniuUpToken, changeImgBase64, queryDoctorSchedule, selectdoctor, selectFastSchedules })(ManageDoctorModal)
+export default connect(mapStateToProps, { showPrompt, changeImgBase64, selectdoctor, selectFastSchedules })(ManageDoctorModal)
