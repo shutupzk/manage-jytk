@@ -69,12 +69,16 @@ const QUERY_DOCTORS = gql`
       evaluate
       quikePrice
 			imageAndTextPrice
-			videoPrice
+      videoPrice
+      workExperience
+      prizes
+      weight
 			serviceTotal
 			workingYears
 			favorableRate
       showInternet
       isShow
+      weight
 			departmentHasDoctors{
 				department{
 					childs {
@@ -135,29 +139,34 @@ const UPDATE_DOCTOR = gql`
       $imageAndTextPrice: Int,
       $videoPrice: Int,
       $avatar: String,
-      $showInternet: Boolean
+      $showInternet: Boolean,
+      $weight: Int,
+      $workExperience: String,
+      $prizes: String,
   ){
     updateDoctor(id: $id, input: {major: $major, sex: $sex,
       recommend: $recommend, hot: $hot, isAppointment: $isAppointment, phone: $phone,
       workingYears: $workingYears, description: $description,
       quikeOpen: $quikeOpen, imageAndTextOpen: $imageAndTextOpen, videoOpen: $videoOpen,
       quikePrice: $quikePrice, imageAndTextPrice: $imageAndTextPrice, videoPrice: $videoPrice, avatar: $avatar,
-      showInternet: $showInternet
+      showInternet: $showInternet,
+      weight: $weight,
+      workExperience: $workExperience,
+      prizes: $prizes
     }){
       id
     }
   }
 `
 
-export const updateDoctor = (client, {id, major, recommend, hot, isAppointment, phone, workingYears, description, quikeOpen, imageAndTextOpen, videoOpen, quikePrice, imageAndTextPrice, videoPrice, avatar, showInternet}) => async dispatch => {
-  console.log('---updateDoctor', id, major, recommend, hot, isAppointment, phone, workingYears, description, quikeOpen, imageAndTextOpen, videoOpen, quikePrice, imageAndTextPrice, videoPrice, avatar, showInternet)
+export const updateDoctor = (client, {id, major, recommend, hot, isAppointment, phone, workingYears, description, quikeOpen, imageAndTextOpen, videoOpen, quikePrice, imageAndTextPrice, videoPrice, avatar, showInternet, weight, workExperience, prizes}) => async dispatch => {
   dispatch({
     type: DOCTOR_QUERY_DOCTOR
   })
   try {
     let data = await client.mutate({
       mutation: UPDATE_DOCTOR,
-      variables: { id, major, recommend, hot, isAppointment, phone, workingYears, description, quikeOpen, imageAndTextOpen, videoOpen, quikePrice, imageAndTextPrice, videoPrice, avatar, showInternet}
+      variables: { id, major, recommend, hot, isAppointment, phone, workingYears, description, quikeOpen, imageAndTextOpen, videoOpen, quikePrice, imageAndTextPrice, videoPrice, avatar, showInternet, weight, workExperience, prizes}
 		})
 		if (data.error) {
       dispatch({

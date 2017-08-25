@@ -121,13 +121,17 @@ class ManageDoctorModal extends Component {
 	}
 
 	clickModalOk() {
-		const {workingYears, imageAndTextPrice, quikePrice} = this.props.selectedDoctor
+		const {workingYears, imageAndTextPrice, quikePrice, weight} = this.props.selectedDoctor
 		if (workingYears < 0) {
 			this.props.showPrompt({text: '工作年限不能小于0'})
 			return
 		}
 		if (imageAndTextPrice < 0 || quikePrice < 0) {
 			this.props.showPrompt({text: '费用不能小于0'})
+			return
+		}
+		if (weight < 0) {
+			this.props.showPrompt({text: '页面权重不能小于0'})
 			return
 		}
 		{/* 点击确定， 图片上传七牛云 检验base64是否存在，如果存在就说明需要上传七牛云 */}
@@ -202,6 +206,10 @@ const renderDoctorInfoModal = (self) => {
 				</dl>
 			</div>
 			<ul>
+				<li><span className='left'>医生权重</span>
+					<input min='0' onChange={(e) => {
+						self.props.selectdoctor({doctor: Object.assign({}, self.props.selectedDoctor, {weight: parseInt(e.target.value, 10)})})
+					}} className='left' type='number' defaultValue={selectedDoctor.weight} className='left' type='text' /><span className='clearfix'></span></li>
 				<li><span className='left'>联系电话</span>
 					<input onChange={(e) => {self.props.selectdoctor({doctor: Object.assign({}, self.props.selectedDoctor, {phone: e.target.value})})}} defaultValue={selectedDoctor.phone} className='left' type='text' /><span className='clearfix'></span></li>
 				<li><span className='left'>工作年限</span>
@@ -220,6 +228,10 @@ const renderDoctorInfoModal = (self) => {
 					<textarea className='left' onChange={(e) => {
 						self.props.selectdoctor({doctor: Object.assign({}, self.props.selectedDoctor, {workExperience: e.target.value})})
 					}} defaultValue={selectedDoctor.workExperience}></textarea><span className='clearfix'></span></li>
+				<li><span className='left'>个人简介</span>
+					<textarea className='left' onChange={(e) => {
+						self.props.selectdoctor({doctor: Object.assign({}, self.props.selectedDoctor, {description: e.target.value})})
+					}} defaultValue={selectedDoctor.description}></textarea><span className='clearfix'></span></li>
 			</ul>
 			<style jsx>{`
 				ul{

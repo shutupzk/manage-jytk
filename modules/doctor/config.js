@@ -29,7 +29,9 @@ const doctorInfo = [
 	{title: '工作经历', apiKey: 'workExperience', inputType: 'textarea'},
 	{title: '是否热门', apiKey: 'hot', inputType: 'checkbox'},
 	{title: '是否推荐', apiKey: 'recommend', inputType: 'checkbox'},
-	{title: '是否可挂号', apiKey: 'isAppointment', inputType: 'checkbox'}
+	{title: '是否可挂号', apiKey: 'isAppointment', inputType: 'checkbox'},
+	{title: '权重', apiKey: 'weight', inputType: 'number'},
+	{title: '个人简介', apiKey: 'description', inputType: 'textarea'}
 ]
 
 export {
