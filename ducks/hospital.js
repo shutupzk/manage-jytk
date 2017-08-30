@@ -1,4 +1,3 @@
-import localforage from 'localforage'
 import gql from 'graphql-tag'
 
 const HOSPITAL_QUERY_HOSPITAL = 'hospital/queryhospital'
@@ -17,7 +16,6 @@ const initState = {
 
 // reducer
 export function hospital (state = initState, action = {}) {
-  // console.log('action', action)
   switch (action.type) {
     case HOSPITAL_QUERY_HOSPITAL:
       return Object.assign({}, state, { loading: true, error: null })
@@ -25,18 +23,9 @@ export function hospital (state = initState, action = {}) {
       return Object.assign({}, state, { loading: false, error: action.error })
     case HOSPITAL_QUERY_HOSPITAL_SUCCESS:
     case HOSPITAL_QUERY_HOSPITAL_DETAIL_SUCCESS:
-      return Object.assign(
-        {},
-        state,
-        { data: action.hospital },
-        { loading: false, error: null }
-      )
+      return Object.assign({}, state, { data: action.hospital }, { loading: false, error: null })
     case HOSPITAL_SELECT_HOSPITAL:
-      return Object.assign(
-        {},
-        state,
-        { selectedHospital: action.selectedHospital }
-      )
+      return Object.assign({}, state, { selectedHospital: action.selectedHospital })
     default:
       return state
   }
@@ -45,24 +34,24 @@ export function hospital (state = initState, action = {}) {
 // query hospital
 const QUERY_HOSPITALS = gql`
   query {
-		hospitals(limit: 100) {
-			id
+    hospitals(limit: 100) {
+      id
       hospitalName
       hospitalCode
       phone
       logo
       address
       description
-		}
-	}
+    }
+  }
 `
 
-export const queryHospitals = (client) => async dispatch => {
+export const queryHospitals = client => async dispatch => {
   dispatch({
     type: HOSPITAL_QUERY_HOSPITAL
   })
   try {
-		const data = await client.query({ query: QUERY_HOSPITALS, fetchPolicy: 'network-only'})
+    const data = await client.query({ query: QUERY_HOSPITALS, fetchPolicy: 'network-only' })
     if (data.error) {
       dispatch({
         type: HOSPITAL_QUERY_HOSPITAL_FAIL,
@@ -88,24 +77,24 @@ export const queryHospitals = (client) => async dispatch => {
 // query hospital
 const QUERY_HOSPITAL = gql`
   query($id: ObjID!) {
-		hospital(id: $id) {
-			id
+    hospital(id: $id) {
+      id
       hospitalName
       hospitalCode
       phone
       logo
       address
       description
-		}
-	}
+    }
+  }
 `
 
-export const queryHospital = (client, {id}) => async dispatch => {
+export const queryHospital = (client, { id }) => async dispatch => {
   dispatch({
     type: HOSPITAL_QUERY_HOSPITAL
   })
   try {
-		const data = await client.query({ query: QUERY_HOSPITAL, variables: {id}, fetchPolicy: 'network-only'})
+    const data = await client.query({ query: QUERY_HOSPITAL, variables: { id }, fetchPolicy: 'network-only' })
     if (data.error) {
       dispatch({
         type: HOSPITAL_QUERY_HOSPITAL_FAIL,
@@ -130,25 +119,25 @@ export const queryHospital = (client, {id}) => async dispatch => {
 
 // update hospital
 const UPDATE_HOSPITAL = gql`
-	mutation($id: ObjID!, $hospitalName: String, $hospitalCode: String, $phone: String, $logo: String, $address: String, $description: String){
-		updateHospital(id: $id, input: {hospitalName: $hospitalName, hospitalCode: $hospitalCode, phone: $phone, logo: $logo, address: $address, description: $description}) {
-			id
-		}
-	}
+  mutation($id: ObjID!, $hospitalName: String, $hospitalCode: String, $phone: String, $logo: String, $address: String, $description: String) {
+    updateHospital(id: $id, input: { hospitalName: $hospitalName, hospitalCode: $hospitalCode, phone: $phone, logo: $logo, address: $address, description: $description }) {
+      id
+    }
+  }
 `
 
-export const updateHospital = (client, {id, hospitalName, hospitalCode, phone, logo, address, description}) => async dispatch => {
+export const updateHospital = (client, { id, hospitalName, hospitalCode, phone, logo, address, description }) => async dispatch => {
   // console.log('---updateDepartment', id, deptName, hot)
   dispatch({
     type: HOSPITAL_QUERY_HOSPITAL
   })
   try {
-		console.log('-----value', id, hospitalName, hospitalCode, phone, logo, address, description)
+    console.log('-----value', id, hospitalName, hospitalCode, phone, logo, address, description)
     let data = await client.mutate({
       mutation: UPDATE_HOSPITAL,
-      variables: {id, hospitalName, hospitalCode, phone, logo, address, description}
-		})
-		if (data.error) {
+      variables: { id, hospitalName, hospitalCode, phone, logo, address, description }
+    })
+    if (data.error) {
       dispatch({
         type: HOSPITAL_QUERY_HOSPITAL_FAIL,
         error: data.error.message
@@ -158,8 +147,8 @@ export const updateHospital = (client, {id, hospitalName, hospitalCode, phone, l
     dispatch({
       type: HOSPITAL_QUERY_HOSPITAL_SUCCESS,
       hospital: data.data.updateHospital
-		})
-		return null
+    })
+    return null
   } catch (e) {
     dispatch({
       trype: HOSPITAL_QUERY_HOSPITAL_FAIL,
@@ -171,25 +160,25 @@ export const updateHospital = (client, {id, hospitalName, hospitalCode, phone, l
 
 // create hospital
 const CREATE_HOSPITAL = gql`
-	mutation($hospitalName: String!, $hospitalCode: String!, $phone: String, $logo: String, $address: String, $description: String){
-		createHospital(input: {hospitalName: $hospitalName, hospitalCode: $hospitalCode, phone: $phone, logo: $logo, address: $address, description: $description}) {
-			id
-		}
-	}
+  mutation($hospitalName: String!, $hospitalCode: String!, $phone: String, $logo: String, $address: String, $description: String) {
+    createHospital(input: { hospitalName: $hospitalName, hospitalCode: $hospitalCode, phone: $phone, logo: $logo, address: $address, description: $description }) {
+      id
+    }
+  }
 `
 
-export const createHospital = (client, { hospitalName, hospitalCode, phone, logo, address, description}) => async dispatch => {
+export const createHospital = (client, { hospitalName, hospitalCode, phone, logo, address, description }) => async dispatch => {
   // console.log('---updateDepartment', id, deptName, hot)
   dispatch({
     type: HOSPITAL_QUERY_HOSPITAL
   })
   try {
-		console.log('-----value', hospitalName, hospitalCode, phone, logo, address, description)
+    console.log('-----value', hospitalName, hospitalCode, phone, logo, address, description)
     let data = await client.mutate({
       mutation: CREATE_HOSPITAL,
-      variables: {hospitalName, hospitalCode, phone, logo, address, description}
-		})
-		if (data.error) {
+      variables: { hospitalName, hospitalCode, phone, logo, address, description }
+    })
+    if (data.error) {
       dispatch({
         type: HOSPITAL_QUERY_HOSPITAL_FAIL,
         error: data.error.message
@@ -199,8 +188,8 @@ export const createHospital = (client, { hospitalName, hospitalCode, phone, logo
     dispatch({
       type: HOSPITAL_QUERY_HOSPITAL_SUCCESS,
       hospital: data.data.createHospital
-		})
-		return null
+    })
+    return null
   } catch (e) {
     dispatch({
       trype: HOSPITAL_QUERY_HOSPITAL_FAIL,
@@ -210,7 +199,7 @@ export const createHospital = (client, { hospitalName, hospitalCode, phone, logo
   }
 }
 
-export const selectHospital = ({data}) => async dispatch => {
+export const selectHospital = ({ data }) => async dispatch => {
   dispatch({
     type: HOSPITAL_SELECT_HOSPITAL,
     selectedHospital: data

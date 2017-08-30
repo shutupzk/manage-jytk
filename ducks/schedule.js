@@ -1,7 +1,6 @@
-import localforage from 'localforage'
 import gql from 'graphql-tag'
-import {tableTh, apTh} from '../modules/doctor/config'
-import {isArray} from 'utils'
+import { tableTh, apTh } from '../modules/doctor/config'
+import { isArray } from 'utils'
 
 const SCHEDULE_QUERY_SCEDULES = 'schedule/queryschedule'
 const SCHEDULE_QUERY_SCEDULES_SUCCESS = 'schedule/queryschedule/success'
@@ -19,7 +18,6 @@ const initState = {
 
 // reducer
 export function schedule (state = initState, action = {}) {
-  // console.log('action', action)
   switch (action.type) {
     case SCHEDULE_QUERY_SCEDULES:
       return Object.assign({}, state, { loading: true, error: null })
@@ -29,19 +27,15 @@ export function schedule (state = initState, action = {}) {
       return Object.assign(
         {},
         state,
-        { data: Object.assign({}, state.data,
-          {fastSchedules: action.fastSchedules}) },
+        {
+          data: Object.assign({}, state.data, { fastSchedules: action.fastSchedules })
+        },
         { loading: false, error: null }
       )
     case UPSERT_QUICK_SCHEDULE_SUCCESS:
-      return Object.assign(
-        {},
-        state,
-        { data: action.schedule },
-        { loading: false, error: null }
-      )
+      return Object.assign({}, state, { data: action.schedule }, { loading: false, error: null })
     case SELECT_QUICK_SCHEDULE:
-      return Object.assign({}, state, Object.assign({}, state.data, {selectedFastSchedules: action.data}))
+      return Object.assign({}, state, Object.assign({}, state.data, { selectedFastSchedules: action.data }))
     default:
       return state
   }
@@ -61,15 +55,15 @@ const QUERY_DOCTOR_SCHEDULES = gql`
         doctorName
       }
     }
-	}
+  }
 `
 
-export const queryDoctorSchedules = (client) => async dispatch => {
+export const queryDoctorSchedules = client => async dispatch => {
   dispatch({
     type: SCHEDULE_QUERY_SCEDULES
   })
   try {
-		const data = await client.query({ query: QUERY_DOCTOR_SCHEDULES, variables: {}, fetchPolicy: 'network-only'})
+    const data = await client.query({ query: QUERY_DOCTOR_SCHEDULES, variables: {}, fetchPolicy: 'network-only' })
     if (data.error) {
       dispatch({
         type: SCHEDULE_QUERY_SCEDULES_FAIL,
@@ -91,9 +85,9 @@ export const queryDoctorSchedules = (client) => async dispatch => {
     //     }
     //   ]
     // }
-    for(let tableItem of tableTh) {
+    for (let tableItem of tableTh) {
       for (let apThItem of apTh) {
-        if(tableItem.value !== 0) {
+        if (tableItem.value !== 0) {
           for (let key of totalSchedules) {
             if (tableItem.value === key.week && apThItem.value === key.ampm && key.channel && key.scheduleTypeCode === '01') {
               let prev = fastSchedules[tableItem.value + apThItem.value] || []
@@ -121,12 +115,12 @@ export const queryDoctorSchedules = (client) => async dispatch => {
 
 // update doctor schedule
 const UPSERT_QUICK_SCHEDULE = gql`
-  mutation($arraySchedule: [upsertQuickScheduleInput!]){
+  mutation($arraySchedule: [upsertQuickScheduleInput!]) {
     upsertQuickSchedule(input: $arraySchedule)
   }
 `
 
-export const upsertQuickSchedule = (client, {arraySchedule}) => async dispatch => {
+export const upsertQuickSchedule = (client, { arraySchedule }) => async dispatch => {
   console.log('---upsertQuickSchedule', arraySchedule)
   dispatch({
     type: SCHEDULE_QUERY_SCEDULES
@@ -134,9 +128,9 @@ export const upsertQuickSchedule = (client, {arraySchedule}) => async dispatch =
   try {
     let data = await client.mutate({
       mutation: UPSERT_QUICK_SCHEDULE,
-      variables: {arraySchedule}
-		})
-		if (data.error) {
+      variables: { arraySchedule }
+    })
+    if (data.error) {
       dispatch({
         type: SCHEDULE_QUERY_SCEDULES_FAIL,
         error: data.error.message
@@ -157,13 +151,13 @@ export const upsertQuickSchedule = (client, {arraySchedule}) => async dispatch =
   }
 }
 
-export const selectFastSchedules = ({schedule, doctorId}) => async dispatch => {
+export const selectFastSchedules = ({ schedule, doctorId }) => async dispatch => {
   let newschedules = {}
-  if (!schedule || isArray(schedule) && schedule.length === 0) {
-    for(let tableItem of tableTh) {
+  if (!schedule || (isArray(schedule) && schedule.length === 0)) {
+    for (let tableItem of tableTh) {
       for (let apThItem of apTh) {
-        let newschedule = {week: tableItem.value, ampm: apThItem.value, channel: false, doctorId}
-        if(tableItem.value !== 0) {
+        let newschedule = { week: tableItem.value, ampm: apThItem.value, channel: false, doctorId }
+        if (tableItem.value !== 0) {
           newschedules[tableItem.value + apThItem.value] = newschedule
         }
       }
@@ -171,15 +165,15 @@ export const selectFastSchedules = ({schedule, doctorId}) => async dispatch => {
   } else if (isArray(schedule)) {
     for (let key in schedule) {
       let scheduleItem = schedule[key]
-      let newschedule = {week: scheduleItem.week, ampm: scheduleItem.ampm, channel: scheduleItem.channel, doctorId}
+      let newschedule = { week: scheduleItem.week, ampm: scheduleItem.ampm, channel: scheduleItem.channel, doctorId }
       newschedules[scheduleItem.week + scheduleItem.ampm] = newschedule
     }
   } else {
     newschedules = schedule
   }
-	dispatch({
-		type: SELECT_QUICK_SCHEDULE,
-		data: newschedules
+  dispatch({
+    type: SELECT_QUICK_SCHEDULE,
+    data: newschedules
   })
   return null
 }

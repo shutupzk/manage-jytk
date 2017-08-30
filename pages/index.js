@@ -1,29 +1,11 @@
 import { HomeScreen } from '../modules/home'
 import { Layout } from '../modules/common'
 import withData from '../config/withData'
-import {HOSPITAL_NAME} from 'config'
-// import React, { Component } from 'react'
-// import App from '../config/App'
-
-export default withData((props) => {
+import { HOSPITAL_NAME } from '../config'
+export default withData(props => {
   return (
     <Layout title={HOSPITAL_NAME} {...props}>
       <HomeScreen {...props} />
     </Layout>
   )
 })
-// export default withData((props) => {
-//   return (
-//     <MyHome {...props} />
-//   )
-// })
-// const MyHome = (props) => {
-//   console.log(props)
-//   return (<h2>my Home</h2>)
-// }
-// MyHome.getInitialProps = async function (context) {
-//   const query = context.query
-//   console.log(query)
-//   console.log('query')
-//   return { user: 'baek' }
-// }

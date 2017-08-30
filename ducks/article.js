@@ -1,4 +1,3 @@
-import localforage from 'localforage'
 import gql from 'graphql-tag'
 
 const ARTICLE_QUERY_ARTICLES = 'article/queryarticles'
@@ -18,33 +17,18 @@ const initState = {
 
 // reducer
 export function article (state = initState, action = {}) {
-  // console.log('action', action)
+  //
   switch (action.type) {
     case ARTICLE_QUERY_ARTICLES:
       return Object.assign({}, state, { loading: true, error: null })
     case ARTICLE_QUERY_ARTICLE_FAIL:
       return Object.assign({}, state, { loading: false, error: action.error })
-		case ARTICLE_QUERY_ARTICLES_SUCCESS:
-      return Object.assign(
-        {},
-        state,
-        { data: Object.assign({}, state.data, {article: action.article}) },
-        { loading: false, error: null }
-      )
+    case ARTICLE_QUERY_ARTICLES_SUCCESS:
+      return Object.assign({}, state, { data: Object.assign({}, state.data, { article: action.article }) }, { loading: false, error: null })
     case ARTICLE_CREATE_ARTICLE_SUCCESS:
-      return Object.assign(
-        {},
-        state,
-        { data: Object.assign({}, state.data, {createArticle: action.createArticle}) },
-        { loading: false, error: null }
-      )
+      return Object.assign({}, state, { data: Object.assign({}, state.data, { createArticle: action.createArticle }) }, { loading: false, error: null })
     case ARTICLE_SELECTED_ARTICLE:
-      return Object.assign(
-        {},
-        state,
-        { selectedArticle: action.selectedArticle},
-        { loading: false, error: null }
-      )
+      return Object.assign({}, state, { selectedArticle: action.selectedArticle }, { loading: false, error: null })
     default:
       return state
   }
@@ -59,15 +43,15 @@ const QUERY_ARTICLES = gql`
       name
       description
     }
-	}
+  }
 `
 
-export const queryArticles = (client, {limit, skip}) => async dispatch => {
+export const queryArticles = (client, { limit, skip }) => async dispatch => {
   dispatch({
     type: ARTICLE_QUERY_ARTICLES
   })
   try {
-		const data = await client.query({ query: QUERY_ARTICLES, variables: {limit, skip}, fetchPolicy: 'network-only'})
+    const data = await client.query({ query: QUERY_ARTICLES, variables: { limit, skip }, fetchPolicy: 'network-only' })
     if (data.error) {
       return dispatch({
         type: ARTICLE_QUERY_ARTICLE_FAIL,
@@ -87,28 +71,27 @@ export const queryArticles = (client, {limit, skip}) => async dispatch => {
   }
 }
 
-
 // update article
 const UPDATE_ARTICLE = gql`
-	mutation($id: ObjID!, $code: String, $name: String, $description: String){
-		updateProtocol(id: $id, input: {code: $code, name: $name, description: $description}) {
-			id
-		}
-	}
+  mutation($id: ObjID!, $code: String, $name: String, $description: String) {
+    updateProtocol(id: $id, input: { code: $code, name: $name, description: $description }) {
+      id
+    }
+  }
 `
 
-export const updateArticle = (client, {id, code, name, description}) => async dispatch => {
+export const updateArticle = (client, { id, code, name, description }) => async dispatch => {
   // console.log('---updateDepartment', id, deptName, hot)
   dispatch({
     type: ARTICLE_QUERY_ARTICLES
   })
   try {
-		console.log('-----value', id, code, name, description)
+    console.log('-----value', id, code, name, description)
     let data = await client.mutate({
       mutation: UPDATE_ARTICLE,
-      variables: {id, code, name, description}
-		})
-		if (data.error) {
+      variables: { id, code, name, description }
+    })
+    if (data.error) {
       dispatch({
         type: ARTICLE_QUERY_ARTICLE_FAIL,
         error: data.error.message
@@ -118,8 +101,8 @@ export const updateArticle = (client, {id, code, name, description}) => async di
     dispatch({
       type: ARTICLE_CREATE_ARTICLE_SUCCESS,
       createArticle: data.data.updateProtocol
-		})
-		return null
+    })
+    return null
   } catch (e) {
     dispatch({
       trype: ARTICLE_QUERY_ARTICLE_FAIL,
@@ -131,25 +114,25 @@ export const updateArticle = (client, {id, code, name, description}) => async di
 
 // create article
 const CREATE_ARTICLE = gql`
-	mutation($code: String!, $name: String, $description: String){
-		createProtocol(input: {code: $code, name: $name, description: $description}) {
-			id
-		}
-	}
+  mutation($code: String!, $name: String, $description: String) {
+    createProtocol(input: { code: $code, name: $name, description: $description }) {
+      id
+    }
+  }
 `
 
-export const createArticle = (client, {code, name, description}) => async dispatch => {
+export const createArticle = (client, { code, name, description }) => async dispatch => {
   // console.log('---updateDepartment', id, deptName, hot)
   dispatch({
     type: ARTICLE_QUERY_ARTICLES
   })
   try {
-		console.log('-----createArticle----value', code, name, description)
+    console.log('-----createArticle----value', code, name, description)
     let data = await client.mutate({
       mutation: CREATE_ARTICLE,
-      variables: {code, name, description}
-		})
-		if (data.error) {
+      variables: { code, name, description }
+    })
+    if (data.error) {
       dispatch({
         type: ARTICLE_QUERY_ARTICLE_FAIL,
         error: data.error.message
@@ -159,8 +142,8 @@ export const createArticle = (client, {code, name, description}) => async dispat
     dispatch({
       type: ARTICLE_CREATE_ARTICLE_SUCCESS,
       createArticle: data.data.createProtocol
-		})
-		return null
+    })
+    return null
   } catch (e) {
     dispatch({
       trype: ARTICLE_QUERY_ARTICLE_FAIL,
@@ -172,22 +155,22 @@ export const createArticle = (client, {code, name, description}) => async dispat
 
 // article remove
 const REMOVE_ARTICLE = gql`
-	mutation($id: ObjID!){
-		removeProtocol(id: $id)
-	}
+  mutation($id: ObjID!) {
+    removeProtocol(id: $id)
+  }
 `
 
-export const removeArticle = (client, {id}) => async dispatch => {
+export const removeArticle = (client, { id }) => async dispatch => {
   dispatch({
     type: ARTICLE_QUERY_ARTICLES
   })
   try {
-		console.log('--remove---article---value', id)
+    console.log('--remove---article---value', id)
     let data = await client.mutate({
       mutation: REMOVE_ARTICLE,
-      variables: {id}
-		})
-		if (data.error) {
+      variables: { id }
+    })
+    if (data.error) {
       dispatch({
         type: ARTICLE_QUERY_ARTICLE_FAIL,
         error: data.error.message
@@ -197,8 +180,8 @@ export const removeArticle = (client, {id}) => async dispatch => {
     dispatch({
       type: ARTICLE_CREATE_ARTICLE_SUCCESS,
       createArticle: data.data.removeProtocol
-		})
-		return null
+    })
+    return null
   } catch (e) {
     dispatch({
       trype: ARTICLE_QUERY_ARTICLE_FAIL,
@@ -208,7 +191,7 @@ export const removeArticle = (client, {id}) => async dispatch => {
   }
 }
 
-export const selecteArticle = ({data}) => async dispatch => {
+export const selecteArticle = ({ data }) => async dispatch => {
   dispatch({
     type: ARTICLE_SELECTED_ARTICLE,
     selectedArticle: data

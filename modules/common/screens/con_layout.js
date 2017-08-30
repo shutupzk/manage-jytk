@@ -16,11 +16,9 @@ class ConLayout extends Component {
   // 自动登陆，
   async autoSignin () {
     const adminId = await localforage.getItem('adminId')
-    console.log('adminId', adminId)
     if (this.props.adminId) {
       // Router.push(HOME_PAGE.url)
     } else if (!this.props.adminId && adminId) {
-      console.log('====autosing')
       const error = await this.props.signin({ username: null, password: null })
       if (error) {
         this.props.showPrompt({ text: error })

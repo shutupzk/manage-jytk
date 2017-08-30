@@ -1,25 +1,10 @@
 import ApolloClient, { createNetworkInterface } from 'apollo-client'
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux'
-import { persistStore, autoRehydrate } from 'redux-persist'
+import { autoRehydrate } from 'redux-persist'
 import thunk from 'redux-thunk'
-import localforage from 'localforage'
-import {API_SERVER} from 'config'
+import { API_SERVER } from 'config'
 
-import {
-  user,
-  prompt,
-  order,
-  doctor,
-  department,
-  hospital,
-  news,
-  buildings,
-  notices,
-  appointments,
-  schedule,
-  article,
-  qiniu
-} from '../ducks'
+import { user, prompt, order, doctor, department, hospital, news, buildings, notices, appointments, schedule, article, qiniu } from '../ducks'
 // 服务地址
 // export const API_SERVER = 'localhost:3000'
 let apolloClient = null
@@ -51,20 +36,15 @@ export const initClient = (headers, initialState = {}) => {
 
 // middleware
 function createMiddleware (clientMiddleware) {
-  // const middleware = applyMiddleware(clientMiddleware)
   if (process.browser && window.devToolsExtension) {
     return compose(
-        applyMiddleware(thunk),
-        autoRehydrate(),
-        // If you are using the devToolsExtension, you can add it here also
-        (typeof window.__REDUX_DEVTOOLS_EXTENSION__ !== 'undefined') ? window.__REDUX_DEVTOOLS_EXTENSION__() : f => f,
+      applyMiddleware(thunk),
+      autoRehydrate(),
+      // If you are using the devToolsExtension, you can add it here also
+      typeof window.__REDUX_DEVTOOLS_EXTENSION__ !== 'undefined' ? window.__REDUX_DEVTOOLS_EXTENSION__() : f => f
     )
-    // return compose(middleware, window.devToolsExtension())
   }
-  return compose(
-        applyMiddleware(thunk),
-        autoRehydrate()
-  )
+  return compose(applyMiddleware(thunk), autoRehydrate())
 }
 
 // reducer

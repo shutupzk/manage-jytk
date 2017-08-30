@@ -23,11 +23,8 @@ const PROFILE_FORGOT_PASSWORD = 'profile/forget/password'
 const PROFILE_FORGOT_PASSWORD_SUCCESS = 'profile/forget/password/success'
 const PROFILE_FORGOT_PASSWORD_FAIL = 'profile/forget/password/fail'
 
-const PROFILE_VERIFY_CODE = 'profile/send/verify/code'
 const PROFILE_VERIFY_CODE_SUCCESS = 'profile/send/verify/code/success'
-const PROFILE_VERIFY_CODE_FAIL = 'profile/send/verify/code/fail'
 
-const CHECK_VERIFY_CODE = 'profile/check/verify/code'
 const CHECK_VERIFY_CODE_SUCCESS = 'profile/check/verify/code/success'
 const CHECK_VERIFY_CODE_FAIL = 'profile/check/verify/code/fail'
 
@@ -36,7 +33,6 @@ const PROFILE_USER_COOKIE_SUCCESS = 'profile/user/cookie/success'
 const PROFILE_USER_COOKIE_FAIL = 'profile/user/cookie/fail'
 
 const PROFILE_USER_COOKIE2_SUCCESS = 'profile/user/cookie2/success'
-const PROFILE_USER_COOKIE2 = 'profile/user/cookie2'
 
 const initState = {
   data: {
@@ -49,7 +45,7 @@ const initState = {
 
 // reducer
 export function user (state = initState, action = {}) {
-  // console.log('action', action)
+  //
   switch (action.type) {
     case PROFILE_USER_COOKIE:
     case PROFILE_USER_SIGNUP:
@@ -76,42 +72,17 @@ export function user (state = initState, action = {}) {
         { loading: false, error: null }
       )
     case PROFILE_USER_SIGNOUT_SUCCESS:
-      return Object.assign(
-        {},
-        state,
-        { data: {token: null, id: null} },
-        { loading: false, error: null }
-      )
+      return Object.assign({}, state, { data: { token: null, id: null } }, { loading: false, error: null })
     case PROFILE_USER_QUERYUSER_SUCCESS:
-      return Object.assign(
-        {},
-        state,
-        { data: Object.assign({}, state.data, action.user) },
-        { loading: false, error: null }
-      )
+      return Object.assign({}, state, { data: Object.assign({}, state.data, action.user) }, { loading: false, error: null })
     case PROFILE_USER_UPDATEPASSWORD_SUCCESS:
-      return Object.assign(
-        {},
-        state,
-        { data: Object.assign({}, state.data, { password: action.password }) },
-        { loading: false, error: null }
-      )
+      return Object.assign({}, state, { data: Object.assign({}, state.data, { password: action.password }) }, { loading: false, error: null })
     case PROFILE_VERIFY_CODE_SUCCESS:
     case CHECK_VERIFY_CODE_SUCCESS:
-      return Object.assign(
-        {},
-        state,
-        { data: Object.assign({}, state.data, { code: action.code }) },
-        { loading: false, error: null }
-      )
+      return Object.assign({}, state, { data: Object.assign({}, state.data, { code: action.code }) }, { loading: false, error: null })
     case PROFILE_USER_COOKIE2_SUCCESS:
     case PROFILE_USER_COOKIE_SUCCESS:
-      return Object.assign(
-        {},
-        state,
-        { data: Object.assign({}, state.data, { cookie: action.data }) },
-        { loading: false, error: null }
-      )
+      return Object.assign({}, state, { data: Object.assign({}, state.data, { cookie: action.data }) }, { loading: false, error: null })
     default:
       return state
   }
@@ -119,8 +90,8 @@ export function user (state = initState, action = {}) {
 
 // 注册
 const SIGNUP = gql`
-  mutation($phone: String!,$password: String!,$certificateNo: String!, $name: String! ){
-    signUp(input:{phone: $phone,password:$password,certificateNo: $certificateNo,name: $name}){
+  mutation($phone: String!, $password: String!, $certificateNo: String!, $name: String!) {
+    signUp(input: { phone: $phone, password: $password, certificateNo: $certificateNo, name: $name }) {
       id
     }
   }
@@ -163,7 +134,7 @@ export const signup = (client, { phone, password, certificateNo, name }, callbac
 }
 
 // 登陆
-export const signin = ({ username, password }) => async (dispatch) => {
+export const signin = ({ username, password }) => async dispatch => {
   let localUsername = await localforage.getItem('username')
   let loacalPassword = await localforage.getItem('password')
   let token = await localforage.getItem('token')
@@ -172,7 +143,7 @@ export const signin = ({ username, password }) => async (dispatch) => {
   if (!username && !localUsername) return
   if (username || (username !== localUsername && password)) {
     if (!password) return
-    return doSignin(dispatch, {username, password})
+    return doSignin(dispatch, { username, password })
   }
   password = loacalPassword
   dispatch({
@@ -275,14 +246,14 @@ export const queryUser = (client, { adminId }) => async dispatch => {
 }
 
 const UPDATE_ADMIN = gql`
-  mutation ($adminId: ObjID!, $password: String) {
-    updateAdmin(id: $adminId, input: {password: $password}) {
+  mutation($adminId: ObjID!, $password: String) {
+    updateAdmin(id: $adminId, input: { password: $password }) {
       id
     }
   }
 `
 // 修改密码
-export const updatePassword = (client, {adminId, password}) => async dispatch => {
+export const updatePassword = (client, { adminId, password }) => async dispatch => {
   dispatch({
     type: PROFILE_USER_UPDATEPASSWORD
   })
@@ -315,13 +286,13 @@ export const updatePassword = (client, {adminId, password}) => async dispatch =>
 }
 
 const FORGETPASSWORD = gql`
-  mutation($phone: String!, $password: String!, $code: String!){
-    updatePassword(phone: $phone, input: {verifyCode: $code, newPassword: $password}){
+  mutation($phone: String!, $password: String!, $code: String!) {
+    updatePassword(phone: $phone, input: { verifyCode: $code, newPassword: $password }) {
       id
     }
   }
 `
-export const forgotPassword = (client, {phone, password, code}) => async dispatch => {
+export const forgotPassword = (client, { phone, password, code }) => async dispatch => {
   dispatch({
     type: PROFILE_FORGOT_PASSWORD
   })
