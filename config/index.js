@@ -12,7 +12,7 @@ import {
   MAINFUNCTION,
   ORDERINFO,
   DOCTORINFO
-} from './config_hospital/beiyisanyuan_index'
+} from './config'
 
 export {
   server,
