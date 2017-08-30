@@ -91,7 +91,6 @@ class SignupCompletionScreen extends Component {
       }, 1000)
       return
     }
-    console.log('--------will target-----')
     Router.push('/signin')
   }
   render () {
