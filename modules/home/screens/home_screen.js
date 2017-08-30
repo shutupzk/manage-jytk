@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import {HOSPITAL_NAME, HOME_PAGE} from 'config'
-import {HeaderBar, Loading} from 'components'
+import { HOME_PAGE } from 'config'
+import { Loading } from 'components'
 import Router from 'next/router'
 import { signin, showPrompt } from 'ducks'
 import { connect } from 'react-redux'
@@ -9,11 +9,10 @@ import localforage from 'localforage'
 class Home extends Component {
   constructor (props) {
     super(props)
-    this.state = {
-    }
+    this.state = {}
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.autoSignin()
   }
 
@@ -39,12 +38,9 @@ class Home extends Component {
 
   render () {
     if (this.props.loading) {
-      return (<Loading showLoading />)
+      return <Loading showLoading />
     }
-    return (
-      <div>
-      </div>
-    )
+    return <div />
   }
 }
 
