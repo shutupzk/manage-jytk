@@ -1,5 +1,5 @@
 {
-  "name": "hospital-management",
+  "name": "manage-jytk",
   "version": "0.0.1",
   "description": "management project.",
   "main": "./server.js",
