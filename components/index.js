@@ -2,8 +2,8 @@ import CardWhite from './CardWhite'
 import Loading from './Loading'
 import theme from './theme'
 import Prompt from './prompt'
-import {FilterCard, SelectFilterCard, KeywordCard, SeniorSoso, LinkQuestion} from './FilterCard'
-import {Modal, ModalHeader, ModalFooter, FilterTimeResult} from './Modal'
+import { FilterCard, SelectFilterCard, KeywordCard, SeniorSoso, LinkQuestion } from './FilterCard'
+import { Modal, ModalHeader, ModalFooter, FilterTimeResult } from './Modal'
 import TabHeader from './TabHeader'
 import NoDataCard from './NoDataCard'
 import LoadErrCard from './LoadErrCard'
@@ -16,29 +16,27 @@ import DraftCard from './DraftCard'
 import ImgCard from './ImgCard'
 
 export {
-    CardWhite,
-    Loading,
-    theme,
-    Prompt,
-    FilterCard,
-    SelectFilterCard,
-    KeywordCard,
-    SeniorSoso,
-    LinkQuestion,
-    Modal,
-    ModalHeader,
-    ModalFooter,
-    FilterTimeResult,
-    TabHeader,
-    NoDataCard,
-    LoadErrCard,
-    ErrCard,
-    PayWay,
-    HeaderBar,
-    FooterBar,
-    PageCard,
-    DraftCard,
-    ImgCard
+  CardWhite,
+  Loading,
+  theme,
+  Prompt,
+  FilterCard,
+  SelectFilterCard,
+  KeywordCard,
+  SeniorSoso,
+  LinkQuestion,
+  Modal,
+  ModalHeader,
+  ModalFooter,
+  FilterTimeResult,
+  TabHeader,
+  NoDataCard,
+  LoadErrCard,
+  ErrCard,
+  PayWay,
+  HeaderBar,
+  FooterBar,
+  PageCard,
+  DraftCard,
+  ImgCard
 }
-
-

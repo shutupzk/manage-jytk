@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import Link from 'next/link'
-import { HOME_PAGE, MAINFUNCTION } from '../../../config'
+// import Link from 'next/link'
+import { MAINFUNCTION } from '../../../config'
 import Router from 'next/router'
 import { theme } from '../../../components'
 import Navigation from './foot_navigation'
@@ -31,7 +31,7 @@ class ConLayout extends Component {
   }
   render () {
     const url = (this.props.url && this.props.url.pathname) || '/'
-    console.log('---ConLayout url', this.props.url && this.props.url.pathname)
+    // console.log('---ConLayout url', this.props.url && this.props.url.pathname)
     const conList = MAINFUNCTION.filter(item => url.indexOf(item.short_name) > -1)
     const screenHeight = process.browser ? document.documentElement.clientHeight : 1000
     const appConHeight = screenHeight - 126
