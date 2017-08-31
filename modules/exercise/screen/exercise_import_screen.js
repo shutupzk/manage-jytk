@@ -49,7 +49,7 @@ class ExerciseImportScreen extends Component {
       let file = this.files[0]
       console.log(file)
       request
-        .post('http://10.1.253.173:9000/upload')
+        .post('http://47.92.71.113:9000/upload')
         .attach('files', this.files[0])
         .set('Accept', 'application/json')
         .then(res => {
@@ -78,13 +78,6 @@ class ExerciseImportScreen extends Component {
   }
 
   render () {
-    const options = {
-      baseUrl: 'http://10.1.253.173:9000/upload',
-      multiple: true,
-      param: {
-        fid: 0
-      }
-    }
     return (
       <div style={{ width: '40%', margin: '0 auto' }}>
         <input
