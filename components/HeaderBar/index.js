@@ -6,6 +6,7 @@ import canlendarStyles from './Wrapper'
 import { theme } from '../../components'
 import { signout } from '../../ducks'
 import { connect } from 'react-redux'
+import localforage from 'localforage'
 
 class HeaderBar extends Component {
   constructor (props) {
@@ -19,6 +20,7 @@ class HeaderBar extends Component {
   async doSignout () {
     // let error = await this.props.signout()
     // console.log(error)
+    localforage.clear()
     Router.push('/signin')
   }
 
