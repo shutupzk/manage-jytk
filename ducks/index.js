@@ -1,85 +1,71 @@
-import { user, signup, signin, signout, queryUser, updatePassword, currentUser, forgotPassword, sendVerifyCode, checkVerifyCode, getUserCookie, getUserCookie2 } from './user'
+import { user, signup, signin, signout, queryUser, updatePassword, savePhone, createVerifyCode, checkVerifyCode } from './user'
 import { prompt, showPrompt, hidePrompt } from './prompt'
-import { order, queryOrderList, queryOrderDetail, updateConsultation } from './order'
-import { doctor, queryDoctors, updateDoctor, createDoctor, selectdoctor } from './doctor'
-import { department, queryDepartments, updateDepartment, createDepartment, selectdepartment } from './department'
-import { hospital, queryHospitals, updateHospital, createHospital, selectHospital, queryHospital } from './hospital'
-import { news, queryNews, queryNewGroups, createGroups, updateNewsGroup, removeNewsGroup, createNews, updateNews, removeNews } from './news'
-import { buildings, createbuilding, createFloor, createRoom, queryBuildings, queryBuildingDetail, updateBuilding, updateFloor, updateRoom } from './buildings'
-import { notices, createVisitNotice, querynotices, queryNoticesGroups, createNoticesGroups, updateNoticesGroups, updateVisitNotice } from './notice'
-import { appointments, queryAppointments, cancelAppointment, queryAppointmentDetail } from './appoint'
-import { schedule, queryDoctorSchedules, upsertQuickSchedule, selectFastSchedules } from './schedule'
-import { article, queryArticles, createArticle, updateArticle, removeArticle, selecteArticle } from './article'
-import { qiniu, getQiniuUpToken, selectImgFiles, changeImgBase64 } from './qiniu'
+import { subjects, querySubjects, selectSubject, selectSubjectType } from './subjects'
+import { chapters, queryChapters, selectChapter } from './chapters'
+import { sections, querySections, selectSection } from './sections'
+import {
+  exercises,
+  querySectionExercises,
+  selectExercise,
+  querySubjectExercises,
+  createUserAnswer,
+  queryErrorExercises,
+  queryOfficialExercises,
+  createExerciseCollect,
+  queryCollectExercises,
+  queryExercises,
+  queryChapterExercises
+} from './exercises'
+import { officialexaminations, queryOfficialexaminations, selectOfficialexamination } from './officialexaminations'
+import { courses, queryCourses, selectCourse, createCourseCollect, queryCollectCourses } from './courses'
+import { examinationtypes, queryExaminationTypes, selectExaminationType } from './examinationtypes'
+import { examinationdifficultys, queryExaminationDifficultys, selectExaminationDifficulty } from './examinationdifficultys'
+import { examinations, queryExaminations, createExamination, selectExamination, submitExamination } from './examinations'
 
-// key
-export { user, prompt, order, doctor, department, hospital, news, buildings, notices, appointments, schedule, article, qiniu }
+// export reducers by it's keys
+export { user, prompt, subjects, chapters, sections, exercises, officialexaminations, courses, examinationtypes, examinationdifficultys, examinations }
 
-// action
+// export actions
 export {
   signup,
   signin,
   signout,
   queryUser,
   updatePassword,
-  currentUser,
-  forgotPassword,
-  sendVerifyCode,
+  savePhone,
+  createVerifyCode,
   checkVerifyCode,
-  getUserCookie,
-  getUserCookie2,
+  querySubjects,
+  queryChapters,
+  selectSubject,
+  selectChapter,
+  querySections,
+  selectSection,
+  querySectionExercises,
+  querySubjectExercises,
+  selectExercise,
+  selectSubjectType,
+  createUserAnswer,
+  queryErrorExercises,
+  queryOfficialexaminations,
+  selectOfficialexamination,
+  queryOfficialExercises,
+  queryCourses,
+  selectCourse,
+  createExerciseCollect,
+  queryCollectExercises,
+  createCourseCollect,
+  queryCollectCourses,
+  queryExaminationTypes,
+  selectExaminationType,
+  queryExaminationDifficultys,
+  selectExaminationDifficulty,
+  queryExaminations,
+  createExamination,
+  selectExamination,
+  submitExamination,
   showPrompt,
   hidePrompt,
-  queryOrderList,
-  queryOrderDetail,
-  updateConsultation,
-  queryDoctors,
-  updateDoctor,
-  createDoctor,
-  selectdoctor,
-  queryDepartments,
-  updateDepartment,
-  createDepartment,
-  selectdepartment,
-  queryHospitals,
-  updateHospital,
-  createHospital,
-  selectHospital,
-  queryHospital,
-  queryNews,
-  queryNewGroups,
-  createGroups,
-  updateNewsGroup,
-  removeNewsGroup,
-  createNews,
-  updateNews,
-  removeNews,
-  createbuilding,
-  createFloor,
-  createRoom,
-  queryBuildings,
-  queryBuildingDetail,
-  updateBuilding,
-  updateFloor,
-  updateRoom,
-  createVisitNotice,
-  querynotices,
-  queryNoticesGroups,
-  createNoticesGroups,
-  updateNoticesGroups,
-  updateVisitNotice,
-  queryAppointments,
-  cancelAppointment,
-  queryAppointmentDetail,
-  queryDoctorSchedules,
-  upsertQuickSchedule,
-  selectFastSchedules,
-  queryArticles,
-  createArticle,
-  updateArticle,
-  removeArticle,
-  selecteArticle,
-  getQiniuUpToken,
-  selectImgFiles,
-  changeImgBase64
+  queryExercises,
+  queryChapterExercises
 }

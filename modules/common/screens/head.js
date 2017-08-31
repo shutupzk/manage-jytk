@@ -2,7 +2,6 @@ import NextHead from 'next/head'
 
 const defaultDescription = ''
 const defaultOGURL = ''
-// const defaultOGImage = ''
 
 export const Head = props => (
   <NextHead>
@@ -18,13 +17,6 @@ export const Head = props => (
     <meta property='og:title' content={props.title || ''} />
     <meta property='og:description' content={props.description || defaultDescription} />
     <script src='https://res.wx.qq.com/open/js/jweixin-1.0.0.js' />
-    {/* <script src='https://code.jquery.com/jquery-3.2.1.min.js'></script> */}
-    {/* <link href='/static/styles/swal2.css' rel='stylesheet' type='text/css' /> */}
-    {/* <script src='https://maps.googleapis.com/maps/api/js'></script> */}
-    {/* <script src='http://api.map.baidu.com/api?v=1.4&s=1' type='text/javascript'></script> */}
-    {/* <script type='text/javascript' src='http://api.map.baidu.com/api?v=2.0&ak=W33OWk9gH40hXlGmUAek73qV'></script> */}
-    {/* <link href='/static/mobiscroll-2.6.2/css/mobiscroll.custom-2.6.2.min.css' rel='stylesheet' type='text/css' /> */}
-    {/* <script src='/static/mobiscroll-2.6.2/js/mobiscroll.custom-2.6.2.min.js' type='text/javascript'></script> */}
   </NextHead>
 )
 

@@ -1,7 +1,7 @@
 import Head from './head'
 import ConLayout from './con_layout'
 import { styles } from '../../../components/styles'
-import { HeaderBar, Prompt, FooterBar } from '../../../components'
+import { HeaderBar, FooterBar } from '../../../components'
 
 const Layout = props => {
   return (
@@ -9,7 +9,7 @@ const Layout = props => {
       <Head title={props.title} />
       <div>
         <HeaderBar {...props} />
-        <Prompt />
+        {/* <Prompt /> */}
         <div style={{ overflow: 'auto' }}>
           <ConLayout {...props} />
         </div>

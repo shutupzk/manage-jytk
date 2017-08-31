@@ -2,9 +2,9 @@ import ApolloClient, { createNetworkInterface } from 'apollo-client'
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux'
 import { autoRehydrate } from 'redux-persist'
 import thunk from 'redux-thunk'
-import { API_SERVER } from 'config'
+import { API_SERVER } from '../config'
 
-import { user, prompt, order, doctor, department, hospital, news, buildings, notices, appointments, schedule, article, qiniu } from '../ducks'
+import { user, prompt, subjects, chapters, sections, exercises, officialexaminations, courses, examinationtypes, examinationdifficultys, examinations } from '../ducks'
 // 服务地址
 // export const API_SERVER = 'localhost:3000'
 let apolloClient = null
@@ -53,17 +53,15 @@ function getReducer (client) {
     // apollo: client.reducer(),
     user,
     prompt,
-    order,
-    doctor,
-    department,
-    hospital,
-    news,
-    buildings,
-    notices,
-    appointments,
-    schedule,
-    article,
-    qiniu
+    subjects,
+    chapters,
+    sections,
+    exercises,
+    officialexaminations,
+    courses,
+    examinationtypes,
+    examinationdifficultys,
+    examinations
   })
 }
 

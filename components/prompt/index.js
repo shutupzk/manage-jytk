@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { hidePrompt } from 'ducks'
 import { connect } from 'react-redux'
 let timer
 
@@ -9,23 +8,23 @@ class Prompt extends Component {
     this.state = {
       closeTime: 2,
       autoClose: false,
-      show: false,
+      show: true,
       promptContent: ''
     }
   }
 
   componentWillMount () {}
 
-  componentWillReceiveProps (nextProps) {
-    if (nextProps.text) {
-      this.setState({ show: true })
-      clearTimeout(timer)
-      timer = setTimeout(() => {
-        this.setState({ show: false })
-        this.props.hidePrompt()
-      }, nextProps.timer)
-    }
-  }
+  // componentWillReceiveProps (nextProps) {
+  //   if (nextProps.text) {
+  //     this.setState({ show: true })
+  //     clearTimeout(timer)
+  //     timer = setTimeout(() => {
+  //       this.setState({ show: false })
+  //       // this.props.hidePrompt()
+  //     }, nextProps.timer)
+  //   }
+  // }
 
   componentWillUpdate () {
   }
@@ -75,4 +74,4 @@ function mapStateToProps (state) {
   }
 }
 
-export default connect(mapStateToProps, { hidePrompt })(Prompt)
+export default connect(mapStateToProps)(Prompt)

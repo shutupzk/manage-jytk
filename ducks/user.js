@@ -1,8 +1,7 @@
-import localforage from 'localforage'
 import gql from 'graphql-tag'
-import axios from 'axios'
 import { API_SERVER } from '../config'
 
+const PROFILE_USER_SAVEPHONE = 'profile/user/savephone'
 const PROFILE_USER_SIGNUP = 'profile/user/signup'
 const PROFILE_USER_SIGNUP_SUCCESS = 'profile/user/signup/success'
 const PROFILE_USER_SIGNUP_FAIL = 'profile/user/signup/fail'
@@ -18,49 +17,50 @@ const PROFILE_USER_QUERYUSER_FAIL = 'profile/user/queryuser/fail'
 const PROFILE_USER_UPDATEPASSWORD = 'profile/user/updatepassword'
 const PROFILE_USER_UPDATEPASSWORD_SUCCESS = 'profile/user/updatepassword/success'
 const PROFILE_USER_UPDATEPASSWORD_FAIL = 'profile/user/updatepassword/fail'
-
-const PROFILE_FORGOT_PASSWORD = 'profile/forget/password'
-const PROFILE_FORGOT_PASSWORD_SUCCESS = 'profile/forget/password/success'
-const PROFILE_FORGOT_PASSWORD_FAIL = 'profile/forget/password/fail'
-
-const PROFILE_VERIFY_CODE_SUCCESS = 'profile/send/verify/code/success'
-
-const CHECK_VERIFY_CODE_SUCCESS = 'profile/check/verify/code/success'
-const CHECK_VERIFY_CODE_FAIL = 'profile/check/verify/code/fail'
-
-const PROFILE_USER_COOKIE = 'profile/user/cookie'
-const PROFILE_USER_COOKIE_SUCCESS = 'profile/user/cookie/success'
-const PROFILE_USER_COOKIE_FAIL = 'profile/user/cookie/fail'
-
-const PROFILE_USER_COOKIE2_SUCCESS = 'profile/user/cookie2/success'
-
+const PROFILE_USER_CREATEHASDOCTOR = 'profile/user/createhasdoctor'
+const PROFILE_USER_CREATEHASDOCTOR_SUCCESS = 'profile/user/createhasdoctor/success'
+const PROFILE_USER_CREATEHASDOCTOR_FAIL = 'profile/user/createhasdoctor/fail'
+const PROFILE_USER_REMOVEHASDOCTOR = 'profile/user/removehasdoctor'
+const PROFILE_USER_REMOVEHASDOCTOR_SUCCESS = 'profile/user/removehasdoctor/success'
+const PROFILE_USER_REMOVEHASDOCTOR_FAIL = 'profile/user/removehasdoctor/fail'
+const PROFILE_USER_QUERYHASDOCTORS = 'profile/user/queryhasdoctors'
+const PROFILE_USER_QUERYHASDOCTORS_SUCCESS = 'profile/user/queryhasdoctors/success'
+const PROFILE_USER_QUERYHASDOCTORS_FAIL = 'profile/user/queryhasdoctors/fail'
+const CREATE_VERIFY_CODE = 'create/verify/code'
+const CREATE_VERIFY_CODE_SUCCESS = 'create/verify/code/success'
+const CREATE_VERIFY_CODE_FAIL = 'create/verify/code/fail'
 const initState = {
   data: {
     token: null,
     id: null
   },
+  hasDoctors: {},
   loading: false,
   error: null
 }
 
 // reducer
 export function user (state = initState, action = {}) {
-  //
   switch (action.type) {
-    case PROFILE_USER_COOKIE:
     case PROFILE_USER_SIGNUP:
     case PROFILE_USER_SIGNIN:
     case PROFILE_USER_SIGNOUT:
     case PROFILE_USER_QUERYUSER:
+    case PROFILE_USER_CREATEHASDOCTOR:
+    case PROFILE_USER_REMOVEHASDOCTOR:
+    case PROFILE_USER_QUERYHASDOCTORS:
     case PROFILE_USER_UPDATEPASSWORD:
+    case CREATE_VERIFY_CODE:
       return Object.assign({}, state, { loading: true, error: null })
-    case PROFILE_USER_COOKIE_FAIL:
     case PROFILE_USER_SIGNUP_FAIL:
     case PROFILE_USER_SIGNIN_FAIL:
     case PROFILE_USER_SIGNOUT_FAIL:
     case PROFILE_USER_QUERYUSER_FAIL:
+    case PROFILE_USER_CREATEHASDOCTOR_FAIL:
+    case PROFILE_USER_REMOVEHASDOCTOR_FAIL:
+    case PROFILE_USER_QUERYHASDOCTORS_FAIL:
     case PROFILE_USER_UPDATEPASSWORD_FAIL:
-    case PROFILE_FORGOT_PASSWORD_FAIL:
+    case CREATE_VERIFY_CODE_FAIL:
       return Object.assign({}, state, { loading: false, error: action.error })
     case PROFILE_USER_SIGNUP_SUCCESS:
       return Object.assign({}, state, { loading: false, error: null })
@@ -68,21 +68,66 @@ export function user (state = initState, action = {}) {
       return Object.assign(
         {},
         state,
-        { data: Object.assign({}, state.data, { token: action.token, id: action.adminId, username: action.username, password: action.password }) },
+        { data: Object.assign({}, state.data, { token: action.token, id: action.userId, username: action.username, password: action.password }) },
+        { loading: false, error: null }
+      )
+    case CREATE_VERIFY_CODE_SUCCESS:
+      return Object.assign(
+        {},
+        state,
         { loading: false, error: null }
       )
     case PROFILE_USER_SIGNOUT_SUCCESS:
-      return Object.assign({}, state, { data: { token: null, id: null } }, { loading: false, error: null })
+      return Object.assign(
+        {},
+        state,
+        { data: { token: null, id: null } },
+        { loading: false, error: null }
+      )
     case PROFILE_USER_QUERYUSER_SUCCESS:
-      return Object.assign({}, state, { data: Object.assign({}, state.data, action.user) }, { loading: false, error: null })
+      return Object.assign(
+        {},
+        state,
+        { data: Object.assign({}, state.data, action.user) },
+        { loading: false, error: null }
+      )
     case PROFILE_USER_UPDATEPASSWORD_SUCCESS:
-      return Object.assign({}, state, { data: Object.assign({}, state.data, { password: action.password }) }, { loading: false, error: null })
-    case PROFILE_VERIFY_CODE_SUCCESS:
-    case CHECK_VERIFY_CODE_SUCCESS:
-      return Object.assign({}, state, { data: Object.assign({}, state.data, { code: action.code }) }, { loading: false, error: null })
-    case PROFILE_USER_COOKIE2_SUCCESS:
-    case PROFILE_USER_COOKIE_SUCCESS:
-      return Object.assign({}, state, { data: Object.assign({}, state.data, { cookie: action.data }) }, { loading: false, error: null })
+      return Object.assign(
+        {},
+        state,
+        { data: Object.assign({}, state.data, { password: action.password }) },
+        { loading: false, error: null }
+      )
+    case PROFILE_USER_SAVEPHONE:
+      return Object.assign(
+        {},
+        state,
+        { data: Object.assign({}, state.data, { phone: action.phone, password: action.password }) },
+        { loading: false, error: null }
+      )
+    case PROFILE_USER_CREATEHASDOCTOR_SUCCESS:
+      return Object.assign(
+        {},
+        state,
+        { hasDoctors: Object.assign({}, state.hasDoctors, action.hasDoctors) },
+        { loading: false, error: null }
+      )
+    case PROFILE_USER_REMOVEHASDOCTOR_SUCCESS:
+      let newData = Object.assign({}, state.hasDoctors)
+      delete newData[action.removeId]
+      return Object.assign(
+        {},
+        state,
+        { hasDoctors: newData },
+        { loading: false, error: null }
+      )
+    case PROFILE_USER_QUERYHASDOCTORS_SUCCESS:
+      return Object.assign(
+        {},
+        state,
+        { data: Object.assign({}, state.data, { hasDoctors: action.hasDoctors }) },
+        { loading: false, error: null }
+      )
     default:
       return state
   }
@@ -90,14 +135,13 @@ export function user (state = initState, action = {}) {
 
 // 注册
 const SIGNUP = gql`
-  mutation($phone: String!, $password: String!, $certificateNo: String!, $name: String!) {
-    signUp(input: { phone: $phone, password: $password, certificateNo: $certificateNo, name: $name }) {
+  mutation($phone: String!,$password: String!, $sex: String!, $name: String! ){
+    signUp(input:{phone: $phone,password:$password,sex: $sex,name: $name}){
       id
     }
   }
 `
-export const signup = (client, { phone, password, certificateNo, name }, callback) => async dispatch => {
-  console.log('-----------signUp', phone, password, certificateNo, name)
+export const signup = (client, { phone, password, sex, name }, callback) => async dispatch => {
   dispatch({
     type: PROFILE_USER_SIGNUP
   })
@@ -105,101 +149,86 @@ export const signup = (client, { phone, password, certificateNo, name }, callbac
     const data = await client.mutate({
       mutation: SIGNUP,
       variables: {
-        phone: phone,
-        password: password,
-        certificateNo: certificateNo,
-        name: name
+        phone,
+        password,
+        sex,
+        name
       }
     })
-    console.log('--------signUp---data-----', data)
-    if (data.errors) {
+    if (data.error) {
       dispatch({
         type: PROFILE_USER_SIGNUP_FAIL,
-        error: data.errors[0].message
+        error: data.error.message
       })
-      return data.errors[0].message
+      return data.data.error
     }
+    console.log('注册成功了', data)
     dispatch({
       type: PROFILE_USER_SIGNUP_SUCCESS
     })
     return null
   } catch (e) {
-    console.log(e)
+    console.log('注册失败了', e)
     dispatch({
       type: PROFILE_USER_SIGNUP_FAIL,
       error: e.message
     })
-    return e.message
+    return (e.message).replace('GraphQL error:', '')
   }
 }
 
-// 登陆
-export const signin = ({ username, password }) => async dispatch => {
-  let localUsername = await localforage.getItem('username')
-  let loacalPassword = await localforage.getItem('password')
-  let token = await localforage.getItem('token')
-  let adminId = await localforage.getItem('adminId')
-  console.log('signin:', username, password, localUsername, loacalPassword)
-  if (!username && !localUsername) return
-  if (username || (username !== localUsername && password)) {
-    if (!password) return
-    return doSignin(dispatch, { username, password })
+// 登录
+export const signin = ({ username, password }) => async (dispatch) => {
+  try {
+    if (!username) return { error: '请输入手机号' }
+    if (username && password) {
+      if (!password) return { error: '请输入密码' }
+      return doSignin(dispatch, { username, password })
+    }
+  } catch (e) {
+    console.log(e)
+    return { error: (e.message).replace('GraphQL error:', '') }
   }
-  password = loacalPassword
-  dispatch({
-    type: PROFILE_USER_SIGNIN_SUCCESS,
-    token,
-    adminId,
-    username,
-    password
-  })
-  return null
 }
 
 const doSignin = async (dispatch, { username, password }) => {
-  dispatch({
-    type: PROFILE_USER_SIGNIN
-  })
-  const url = `http://${API_SERVER}/admin/login`
+  const url = `http://${API_SERVER}/login`
+  console.log('登录接口', url)
   try {
-    const data = await axios.post(url, {
-      username: username,
-      password: password
+    let response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        username,
+        password
+      })
     })
-    console.log('====doSignin', data.data)
-    const token = data.data.token
-    const adminId = data.data.adminId
-    await localforage.setItem('token', token)
-    await localforage.setItem('adminId', adminId)
-    await localforage.setItem('username', username)
-    await localforage.setItem('password', password)
+    let data = await response.json()
+    let { token, userId } = data
+    console.log('登录了', data)
     dispatch({
       type: PROFILE_USER_SIGNIN_SUCCESS,
       token,
-      adminId,
+      userId,
       username,
       password
     })
-    return null
+    return {userId}
   } catch (e) {
     console.log(e)
     dispatch({
       type: PROFILE_USER_SIGNIN_FAIL,
       error: e.message
     })
-    return e.message
+    return {error: (e.message).replace('GraphQL error:', '')}
   }
 }
 
 // 登出
 export const signout = () => async dispatch => {
-  // await AsyncStorage.removeItem('user')
-  // await AsyncStorage.removeItem('patients')
-  // await AsyncStorage.removeItem('token')
-  // await AsyncStorage.removeItem('adminId')
-  // await AsyncStorage.removeItem('username')
-  // await AsyncStorage.removeItem('password')
-  await localforage.clear()
   dispatch({
     type: PROFILE_USER_SIGNOUT_SUCCESS
   })
@@ -208,24 +237,22 @@ export const signout = () => async dispatch => {
 
 // 获取用户信息
 const QUERY_USER = gql`
-  query($adminId: ObjID!) {
-    user(id: $adminId) {
+  query($userId: ObjID!) {
+    user(id: $userId) {
       id
       name
       phone
-      certificateNo
-      certificateType
       sex
       birthday
     }
   }
 `
-export const queryUser = (client, { adminId }) => async dispatch => {
+export const queryUser = (client, { userId }) => async dispatch => {
   dispatch({
     type: PROFILE_USER_QUERYUSER
   })
   try {
-    const data = await client.query({ query: QUERY_USER, variables: { adminId } })
+    const data = await client.query({ query: QUERY_USER, variables: { userId } })
     if (data.error) {
       return dispatch({
         type: PROFILE_USER_QUERYUSER_FAIL,
@@ -245,22 +272,20 @@ export const queryUser = (client, { adminId }) => async dispatch => {
   }
 }
 
-const UPDATE_ADMIN = gql`
-  mutation($adminId: ObjID!, $password: String) {
-    updateAdmin(id: $adminId, input: { password: $password }) {
+const UPDATE_USER = gql`
+  mutation ($phone: String!, $password: String, $newPassword: String, $verifyCode: String) {
+    updatePassword(phone: $phone, input: {password: $password, newPassword: $newPassword, verifyCode: $verifyCode}) {
       id
     }
   }
 `
+
 // 修改密码
-export const updatePassword = (client, { adminId, password }) => async dispatch => {
-  dispatch({
-    type: PROFILE_USER_UPDATEPASSWORD
-  })
+export const updatePassword = (client, { phone, password, newPassword, verifyCode }) => async dispatch => {
   try {
     let data = await client.mutate({
-      mutation: UPDATE_ADMIN,
-      variables: { adminId, password }
+      mutation: UPDATE_USER,
+      variables: { phone, password, newPassword, verifyCode }
     })
     if (data.error) {
       dispatch({
@@ -273,7 +298,6 @@ export const updatePassword = (client, { adminId, password }) => async dispatch 
       type: PROFILE_USER_UPDATEPASSWORD_SUCCESS,
       password
     })
-    await localforage.setItem('password', password)
     return null
   } catch (e) {
     console.log(e)
@@ -281,43 +305,63 @@ export const updatePassword = (client, { adminId, password }) => async dispatch 
       type: PROFILE_USER_UPDATEPASSWORD_FAIL,
       error: e.message
     })
-    return e.message
+    return (e.message).replace('GraphQL error:', '')
   }
 }
 
-const FORGETPASSWORD = gql`
-  mutation($phone: String!, $password: String!, $code: String!) {
-    updatePassword(phone: $phone, input: { verifyCode: $code, newPassword: $password }) {
+const CREATE_VERIFYCODE = gql`
+  mutation ($phone: String!) {
+    createVerifyCode(input: {phone: $phone}) {
+      id
+      verifyCode
+    }
+  }
+`
+// 发送验证码
+export const createVerifyCode = (client, {phone}) => async dispatch => {
+  try {
+    await client.mutate({
+      mutation: CREATE_VERIFYCODE,
+      variables: { phone }
+    })
+  } catch (e) {
+    console.log(e)
+    return (e.message).replace('GraphQL error:', '')
+  }
+}
+
+const CHECK_VERIFYCODE = gql`
+  mutation ($phone: String!, $code: String!) {
+    checkVerifyCode(input: {phone: $phone, code: $code}) {
       id
     }
   }
 `
-export const forgotPassword = (client, { phone, password, code }) => async dispatch => {
-  dispatch({
-    type: PROFILE_FORGOT_PASSWORD
-  })
+// 验证码校验
+export const checkVerifyCode = (client, { phone, code }) => async dispatch => {
   try {
     let data = await client.mutate({
-      mutation: FORGETPASSWORD,
-      variables: { phone, password, code }
+      mutation: CHECK_VERIFYCODE,
+      variables: { phone, code }
     })
-    if (data.errors) {
+    if (data.error) {
       dispatch({
-        type: CHECK_VERIFY_CODE_FAIL,
-        error: data.errors[0].message
+        type: CREATE_VERIFY_CODE_FAIL,
+        error: data.error.message
       })
-      return data.error[0].message
+      return data.error.error
     }
-    dispatch({
-      type: PROFILE_FORGOT_PASSWORD_SUCCESS,
-      data: data.data.updatePassword
-    })
     return null
   } catch (e) {
-    dispatch({
-      type: PROFILE_FORGOT_PASSWORD_FAIL,
-      error: e.message
-    })
-    return e.message
+    console.log(e)
+    return (e.message).replace('GraphQL error:', '')
   }
+}
+
+export const savePhone = ({ phone, password }) => dispatch => {
+  dispatch({
+    type: PROFILE_USER_SAVEPHONE,
+    phone,
+    password
+  })
 }
