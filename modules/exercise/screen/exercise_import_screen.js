@@ -73,12 +73,19 @@ class ExerciseImportScreen extends Component {
           } else {
             console.log('上传失败', res)
             this.setState({ loading: false })
+            this.msg.show('上传失败', {
+              time: 2000,
+              type: 'success'
+            })
           }
         })
         .catch(e => {
           console.log(e)
-          console.log('上传失败')
           this.setState({ loading: false })
+          this.msg.show('上传失败', {
+            time: 2000,
+            type: 'success'
+          })
         })
     }
   }
@@ -99,8 +106,6 @@ class ExerciseImportScreen extends Component {
           type='file'
           accept='application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
           onChange={e => {
-            console.log('e ====== ', e.target.value)
-            console.log('e ====== ', e.target.files)
             this.files = e.target.files
           }}
         />

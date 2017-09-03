@@ -47,7 +47,7 @@ class PageCard extends Component {
           >
             下一页
           </span>
-          <article>
+          {/* <article>
             跳转至
             {props.page === 1 && props.data.length < 10 ? (
               <input type='number' disabled style={{ border: '1px solid #f2f2f2' }} />
@@ -79,7 +79,7 @@ class PageCard extends Component {
               />
             )}
             页
-          </article>
+          </article> */}
         </footer>
         <style jsx>{`
           .fenye {
