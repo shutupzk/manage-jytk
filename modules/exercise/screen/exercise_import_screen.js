@@ -2,14 +2,23 @@ import React, { Component } from 'react'
 // import { Router } from '../../../routes'
 // import Router from 'next/router'
 import { Loading, theme } from '../../../components'
+import { API_SERVER } from '../../../config'
 import { queryExercises } from '../../../ducks'
 import { connect } from 'react-redux'
 import request from 'superagent-bluebird-promise'
+import AlertContainer from 'react-alert'
 class ExerciseImportScreen extends Component {
   constructor (props) {
     super(props)
     this.state = {
       loading: false
+    }
+    this.alertOptions = {
+      offset: 14,
+      position: 'top right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
     }
   }
 
@@ -49,16 +58,20 @@ class ExerciseImportScreen extends Component {
       let file = this.files[0]
       console.log(file)
       request
-        .post('http://47.92.71.113:9000/upload')
+        .post(`http://${API_SERVER}/upload`)
         .attach('files', this.files[0])
         .set('Accept', 'application/json')
         .then(res => {
           if (res.statusCode === 200) {
-            console.log('上传成功')
-            console.log(res.body)
+            console.log(res.text)
             this.setState({ loading: false })
+            console.log('bbbbb')
+            this.msg.show(res.text, {
+              time: 2000,
+              type: 'success'
+            })
           } else {
-            console.log('上传失败', res.error)
+            console.log('上传失败', res)
             this.setState({ loading: false })
           }
         })
@@ -80,6 +93,7 @@ class ExerciseImportScreen extends Component {
   render () {
     return (
       <div style={{ width: '40%', margin: '0 auto' }}>
+        <AlertContainer ref={a => (this.msg = a)} {...this.alertOptions} />
         <input
           disabled={this.state.loading}
           type='file'

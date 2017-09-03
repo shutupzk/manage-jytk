@@ -28,6 +28,7 @@
     "next-routes": "^1.0.24",
     "prop-types": "^15.5.8",
     "react": "^15.5.4",
+    "react-alert": "^2.2.0",
     "react-apollo": "^1.2.0",
     "react-dom": "^15.5.4",
     "react-draft-wysiwyg": "^1.10.7",

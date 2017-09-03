@@ -4,7 +4,8 @@ import withData from 'config/withData'
 
 // 医院名称
 const HOSPITAL_NAME = '文润检验题库'
-const API_SERVER = '47.92.71.113:9000'
+// const API_SERVER = '47.92.71.113:9000'
+const API_SERVER = 'localhost:9000'
 const PORT = '9003' // 前端端口
 
 // 医院信息
