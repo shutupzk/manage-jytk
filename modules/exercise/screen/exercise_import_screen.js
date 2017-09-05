@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 // import { Router } from '../../../routes'
 // import Router from 'next/router'
-import { Loading, theme } from '../../../components'
+import { Loading, theme, FilterCard, SelectFilterCard } from '../../../components'
 import { API_SERVER } from '../../../config'
-import { queryExercises } from '../../../ducks'
+import { queryExaminationDifficultys } from '../../../ducks'
 import { connect } from 'react-redux'
 import request from 'superagent-bluebird-promise'
 import AlertContainer from 'react-alert'
@@ -11,7 +11,8 @@ class ExerciseImportScreen extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      loading: false
+      loading: false,
+      examinationDifficultyId: null
     }
     this.alertOptions = {
       offset: 14,
@@ -22,49 +23,42 @@ class ExerciseImportScreen extends Component {
     }
   }
 
-  async clickModalOk () {
-    const { selectedAppoint, modalType } = this.state
-    let error
-    if (modalType === 'cancel') {
-      error = await this.props.cancelAppointment(this.props.client, { id: selectedAppoint.id })
-    }
-    this.setState({ showModal: false, selectedAppoint: {} })
-    if (error) {
-      this.props.showPrompt({ text: error })
-      return
-    }
-    this.queryAppointments()
+  componentWillMount () {
+    const { client, queryExaminationDifficultys } = this.props
+    queryExaminationDifficultys(client)
   }
 
-  getListData () {
+  getExaminationdifficultys () {
+    const { examinationdifficultys } = this.props
     let array = []
-    let { exercises } = this.props
-    let skip = (this.state.page - 1) * 10
-    let count = 0
-    for (let key in exercises) {
-      let limit = count - skip
-      if (limit > -1 && limit < 10) {
-        array.push(Object.assign({}, exercises[key], { key, index: count }))
-      }
-      count++
+    for (let key in examinationdifficultys) {
+      array.push({ title: examinationdifficultys[key].name, value: key })
     }
     return array
   }
 
   submit () {
-    if (!this.files && this.files.length > 0) return
-    if (!this.state.loading) {
+    if (!this.files || !this.files.length > 0) return
+    const { examinationDifficultyId, loading } = this.state
+    if (!examinationDifficultyId) {
+      this.setState({ loading: false, examinationDifficultyId: null })
+      return this.msg.show('请选择考试等级', {
+        time: 2000,
+        type: 'success'
+      })
+    }
+    if (!loading) {
       this.setState({ loading: true })
       let file = this.files[0]
       console.log(file)
       request
-        .post(`http://${API_SERVER}/upload`)
+        .post(`http://${API_SERVER}/upload?examinationDifficultyId=` + examinationDifficultyId)
         .attach('files', this.files[0])
         .set('Accept', 'application/json')
         .then(res => {
           if (res.statusCode === 200) {
             console.log(res.text)
-            this.setState({ loading: false })
+            this.setState({ loading: false, examinationDifficultyId: null })
             console.log('bbbbb')
             this.msg.show(res.text, {
               time: 2000,
@@ -72,7 +66,7 @@ class ExerciseImportScreen extends Component {
             })
           } else {
             console.log('上传失败', res)
-            this.setState({ loading: false })
+            this.setState({ loading: false, examinationDifficultyId: null })
             this.msg.show('上传失败', {
               time: 2000,
               type: 'success'
@@ -81,7 +75,7 @@ class ExerciseImportScreen extends Component {
         })
         .catch(e => {
           console.log(e)
-          this.setState({ loading: false })
+          this.setState({ loading: false, examinationDifficultyId: null })
           this.msg.show('上传失败', {
             time: 2000,
             type: 'success'
@@ -100,6 +94,16 @@ class ExerciseImportScreen extends Component {
   render () {
     return (
       <div style={{ width: '40%', margin: '0 auto' }}>
+        <FilterCard>
+          <SelectFilterCard
+            data={this.getExaminationdifficultys()}
+            status={this.state.status}
+            config={{ selectTitle: '考试级别', valueKey: 'value', titleKey: 'title' }}
+            changeStatus={examinationDifficultyId => {
+              this.setState({ examinationDifficultyId })
+            }}
+          />
+        </FilterCard>
         <AlertContainer ref={a => (this.msg = a)} {...this.alertOptions} />
         <input
           disabled={this.state.loading}
@@ -153,8 +157,8 @@ class ExerciseImportScreen extends Component {
 }
 function mapStateToProps (state) {
   return {
-    exercises: state.exercises.data
+    examinationdifficultys: state.examinationdifficultys.data
   }
 }
 
-export default connect(mapStateToProps, { queryExercises })(ExerciseImportScreen)
+export default connect(mapStateToProps, { queryExaminationDifficultys })(ExerciseImportScreen)
