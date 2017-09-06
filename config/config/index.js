@@ -4,8 +4,8 @@ import withData from 'config/withData'
 
 // 医院名称
 const HOSPITAL_NAME = '文润检验题库'
-const API_SERVER = '47.92.71.113:9000'
-// const API_SERVER = 'localhost:9000'
+// const API_SERVER = '47.92.71.113:9000'
+const API_SERVER = 'localhost:9000'
 const PORT = '9003' // 前端端口
 
 // 医院信息
@@ -24,7 +24,7 @@ const MAINFUNCTION = [
     title: '题库管理',
     short_name: 'exercise',
     navigateName: '/exercise',
-    children: [{ title: '题库列表', navigateName: '/exercise', color: '#5D75A6' }, { title: '题库导入', navigateName: '/exercise/import', color: '#5D75A6' }]
+    children: [{ title: '基础题库列表', navigateName: '/exercise', color: '#5D75A6' }, { title: '真题题库列表', navigateName: '/exercise/real', color: '#5D75A6' }, { title: '基础题库导入', navigateName: '/exercise/import', color: '#5D75A6' }, { title: '真题题库导入', navigateName: '/exercise/real/import', color: '#5D75A6' }]
   }
   // {
   //   title: '订单管理',
