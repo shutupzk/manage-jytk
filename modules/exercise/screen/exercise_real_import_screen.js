@@ -7,12 +7,14 @@ import { queryExaminationDifficultys } from '../../../ducks'
 import { connect } from 'react-redux'
 import request from 'superagent-bluebird-promise'
 import AlertContainer from 'react-alert'
+import moment from 'moment'
 class ExerciseRealImportScreen extends Component {
   constructor (props) {
     super(props)
     this.state = {
       loading: false,
-      examinationDifficultyId: null
+      examinationDifficultyId: null,
+      year: null
     }
     this.alertOptions = {
       offset: 14,
@@ -37,12 +39,28 @@ class ExerciseRealImportScreen extends Component {
     return array
   }
 
+  getYears () {
+    let year = moment().year()
+    let array = []
+    for (let i = 0; i < 15; i++) {
+      array.push({ title: year - i, value: year - i })
+    }
+    return array
+  }
+
   submit () {
     if (!this.files || !this.files.length > 0) return
-    const { examinationDifficultyId, loading } = this.state
+    const { examinationDifficultyId, year, loading } = this.state
     if (!examinationDifficultyId) {
-      this.setState({ loading: false, examinationDifficultyId: null })
+      this.setState({ loading: false })
       return this.msg.show('请选择考试等级', {
+        time: 2000,
+        type: 'success'
+      })
+    }
+    if (!year) {
+      this.setState({ loading: false })
+      return this.msg.show('请选择年份', {
         time: 2000,
         type: 'success'
       })
@@ -52,13 +70,13 @@ class ExerciseRealImportScreen extends Component {
       let file = this.files[0]
       console.log(file)
       request
-        .post(`http://${API_SERVER}/uploadReal?examinationDifficultyId=` + examinationDifficultyId)
+        .post(`http://${API_SERVER}/uploadReal?examinationDifficultyId=` + examinationDifficultyId + '&year=' + year)
         .attach('files', this.files[0])
         .set('Accept', 'application/json')
         .then(res => {
           if (res.statusCode === 200) {
             console.log(res.text)
-            this.setState({ loading: false, examinationDifficultyId: null })
+            this.setState({ loading: false, examinationDifficultyId: null, year: null })
             console.log('bbbbb')
             this.msg.show(res.text, {
               time: 2000,
@@ -66,7 +84,7 @@ class ExerciseRealImportScreen extends Component {
             })
           } else {
             console.log('上传失败', res)
-            this.setState({ loading: false, examinationDifficultyId: null })
+            this.setState({ loading: false, examinationDifficultyId: null, year: null })
             this.msg.show('上传失败', {
               time: 2000,
               type: 'success'
@@ -75,7 +93,7 @@ class ExerciseRealImportScreen extends Component {
         })
         .catch(e => {
           console.log(e)
-          this.setState({ loading: false, examinationDifficultyId: null })
+          this.setState({ loading: false, examinationDifficultyId: null, year: null })
           this.msg.show('上传失败', {
             time: 2000,
             type: 'success'
@@ -101,6 +119,14 @@ class ExerciseRealImportScreen extends Component {
             config={{ selectTitle: '考试级别', valueKey: 'value', titleKey: 'title' }}
             changeStatus={examinationDifficultyId => {
               this.setState({ examinationDifficultyId })
+            }}
+          />
+          <SelectFilterCard
+            data={this.getYears()}
+            status={this.state.status}
+            config={{ selectTitle: '选择年份', valueKey: 'value', titleKey: 'title' }}
+            changeStatus={year => {
+              this.setState({ year })
             }}
           />
         </FilterCard>

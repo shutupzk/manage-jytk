@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 // import { Router } from '../../../routes'
-// import Router from 'next/router'
+import Router from 'next/router'
 import { Loading, PageCard, FilterCard, SelectFilterCard } from '../../../components'
-import { queryExercises, querySubjects, queryChapters, querySections, querySubjectExercises, queryChapterExercises, querySectionExercises } from '../../../ducks'
+import { queryExercises, queryExaminationDifficultys, querySubjects, queryChapters, querySections, selectExercise } from '../../../ducks'
 import { connect } from 'react-redux'
 
 class ExerciseListScreen extends Component {
@@ -10,147 +10,36 @@ class ExerciseListScreen extends Component {
     super(props)
     this.state = {
       page: 1,
+      examinationDifficultyId: null,
       subjectId: null,
       chapterId: null,
       sectionId: null
     }
+    this.type = '01'
   }
 
   componentWillMount () {
-    const { client, querySubjects } = this.props
+    const { client, querySubjects, queryExaminationDifficultys } = this.props
     this.queryExercises({})
     querySubjects(client)
+    queryExaminationDifficultys(client)
   }
 
   queryExercises (ops) {
-    let { subjectId, chapterId, sectionId } = ops || this.state
-    const { client, queryExercises, querySubjectExercises, queryChapterExercises, querySectionExercises } = this.props
+    let { examinationDifficultyId, subjectId, chapterId, sectionId } = ops || this.state
+    const { client, queryExercises } = this.props
     const { page } = this.state
     const skip = (page - 1) * 10
     const limit = 10
-    if (!subjectId && !sectionId && !chapterId) {
-      return queryExercises(client, { skip, limit, subjectId, sectionId })
-    }
-    if (subjectId && !chapterId && !sectionId) {
-      return querySubjectExercises(client, { subjectId, skip, limit })
-    }
-    if (subjectId && chapterId && !sectionId) {
-      queryChapterExercises(client, { chapterId, skip, limit })
-    }
-    if (subjectId && chapterId && sectionId) {
-      querySectionExercises(client, { sectionId, skip, limit })
-    }
-  }
-
-  renderTitle () {
-    return (
-      <ul className='flex tb-flex orderTitle'>
-        <li className={'numberText titleText'} key={1}>
-          序号
-        </li>
-        <li className={'contentText titleText '} key={2}>
-          题干
-        </li>
-        <li className={'subjectText titleText'} key={3}>
-          科目
-        </li>
-        <li className={'subjectText titleText'} key={4}>
-          章
-        </li>
-        <li className={'subjectText titleText'} key={5}>
-          节
-        </li>
-        <li className={'hotText titleText'} key={6}>
-          是否热门
-        </li>
-        <style jsx>{`
-          .orderTitle {
-            color: #797979;
-            background: #f2f2f2;
-            padding: 10px 15px;
-            border-radius: 3px;
-          }
-          .titleText {
-            padding: 0px, 10px;
-            font-size: 16px;
-          }
-          .numberText {
-            width: 5%;
-            text-align: left;
-          }
-          .contentText {
-            width: 40%;
-            text-align: left;
-          }
-          .subjectText {
-            width: 15%;
-            text-align: center;
-          }
-          .hotText {
-            width: 10%;
-            text-align: center;
-          }
-        `}</style>
-      </ul>
-    )
-  }
-
-  renderRow (item, index) {
-    return (
-      <ul className='flex tb-flex listItem' key={item.id}>
-        <li className={'numberText'} key={1}>
-          {item.index + 1}
-        </li>
-        <li className={'contentText textoverflow1'} key={2}>
-          {item.content || '无'}
-        </li>
-        <li className={'subjectText'} key={3}>
-          {item.subjectName || '无'}
-        </li>
-        <li className={'subjectText'} key={4}>
-          {item.chapterName || '无'}
-        </li>
-        <li className={'subjectText'} key={5}>
-          {item.sectionName || '无'}
-        </li>
-        <li className={'hotText'} key={6}>
-          {item.hot ? '是' : '否'}
-        </li>
-        <style jsx>{`
-          .numberText {
-            width: 5%;
-            text-align: left;
-          }
-          .contentText {
-            width: 40%;
-            text-align: left;
-          }
-          .subjectText {
-            width: 15%;
-            text-align: center;
-          }
-          .hotText {
-            width: 10%;
-            text-align: center;
-          }
-        `}</style>
-      </ul>
-    )
-  }
-
-  renderItem (value, key) {
-    return (
-      <li className={'left textoverflow1'} key={key} style={{ width: '30%', marginRight: 10 }}>
-        {value || '无'}
-      </li>
-    )
+    queryExercises(client, { skip, limit, type: this.type, examinationDifficultyId, subjectId, chapterId, sectionId })
   }
 
   changeStatus (key, value) {
-    if (!value) return
+    if (value === '') value = null
     let { subjectId, chapterId, sectionId } = this.state
     if (key === 'subjectId') {
       chapterId = null
+      sectionId = null
     }
     if (key === 'chapterId') {
       sectionId = null
@@ -161,13 +50,24 @@ class ExerciseListScreen extends Component {
   }
 
   queryChapters (subjectId) {
+    if (!subjectId) return
     const { client, queryChapters } = this.props
     queryChapters(client, { subjectId })
   }
 
   querySections (chapterId) {
+    if (!chapterId) return
     const { client, querySections } = this.props
     querySections(client, { chapterId })
+  }
+
+  getExaminationdifficultys () {
+    const { examinationdifficultys } = this.props
+    let array = []
+    for (let key in examinationdifficultys) {
+      array.push({ title: examinationdifficultys[key].name, value: key })
+    }
+    return array
   }
 
   getSubjects () {
@@ -201,14 +101,22 @@ class ExerciseListScreen extends Component {
     return array
   }
 
+  goToDetail (exerciseId) {
+    const { selectExercise } = this.props
+    selectExercise({ exerciseId })
+    Router.push('/exercise/detail')
+  }
+
   getListData () {
     let array = []
-    const { page, subjectId, chapterId, sectionId } = this.state
+    const { page, examinationDifficultyId, subjectId, chapterId, sectionId } = this.state
     let { exercises } = this.props
     let skip = (page - 1) * 10
     let count = 0
     for (let key in exercises) {
       let exercise = exercises[key]
+      if (exercise.type !== this.type) continue
+      if (examinationDifficultyId && exercise.examinationDifficultyId !== examinationDifficultyId) continue
       if (subjectId && exercise.subjectId !== subjectId) continue
       if (chapterId && exercise.chapterId !== chapterId) continue
       if (sectionId && exercise.sectionId !== sectionId) continue
@@ -221,6 +129,127 @@ class ExerciseListScreen extends Component {
     return array
   }
 
+  renderTitle () {
+    return (
+      <ul className='flex tb-flex orderTitle'>
+        <li className={'numberText titleText'} key={1}>
+          序号
+        </li>
+        <li className={'contentText titleText '} key={2}>
+          题干
+        </li>
+        <li className={'subjectText titleText'} key={3}>
+          考试类型
+        </li>
+        <li className={'subjectText titleText'} key={3}>
+          科目
+        </li>
+        <li className={'subjectText titleText'} key={4}>
+          章
+        </li>
+        <li className={'subjectText titleText'} key={5}>
+          节
+        </li>
+        <li className={'hotText titleText'} key={6}>
+          热门
+        </li>
+        <li className={'hotText titleText'} key={7}>
+          查看
+        </li>
+        <style jsx>{`
+          .orderTitle {
+            color: #797979;
+            background: #f2f2f2;
+            padding: 10px 15px;
+            border-radius: 3px;
+          }
+          .titleText {
+            padding: 0px, 10px;
+            font-size: 16px;
+          }
+          .numberText {
+            width: 5%;
+            text-align: left;
+          }
+          .contentText {
+            width: 52%;
+            text-align: left;
+          }
+          .subjectText {
+            width: 11%;
+            text-align: center;
+          }
+          .hotText {
+            width: 5%;
+            text-align: center;
+          }
+        `}</style>
+      </ul>
+    )
+  }
+
+  renderRow (item, index) {
+    return (
+      <ul className='flex tb-flex listItem' key={item.id}>
+        <li className={'numberText'} key={1}>
+          {item.index + 1}
+        </li>
+        <li className={'contentText textoverflow1'} key={2}>
+          {item.content || '无'}
+        </li>
+        <li className={'subjectText'} key={3}>
+          {item.examinationDifficultyName || '无'}
+        </li>
+        <li className={'subjectText'} key={3}>
+          {item.subjectName || '无'}
+        </li>
+        <li className={'subjectText'} key={4}>
+          {item.chapterName || '无'}
+        </li>
+        <li className={'subjectText'} key={5}>
+          {item.sectionName || '无'}
+        </li>
+        <li className={'hotText'} key={6}>
+          {item.hot ? '是' : '否'}
+        </li>
+        <li className={'hotText'} key={7}>
+          <button
+            className='fenyeItem'
+            onClick={() => this.goToDetail(item.id)}
+          >
+            查看
+          </button>
+        </li>
+        <style jsx>{`
+          .numberText {
+            width: 5%;
+            text-align: left;
+          }
+          .contentText {
+            width: 52%;
+            text-align: left;
+          }
+          .subjectText {
+            width: 11%;
+            text-align: center;
+          }
+          .hotText {
+            width: 5%;
+            text-align: center;
+          }
+          .fenyeItem {
+            background: #3ca0ff;
+            border-radius: 2px;
+            display: inline-block;
+            cursor: pointer;
+            border: 1px solid #3ca0ff;
+            color: #fff;
+          }
+        `}</style>
+      </ul>
+    )
+  }
+
   render () {
     if (this.props.loading) {
       return <Loading showLoading />
@@ -229,6 +258,15 @@ class ExerciseListScreen extends Component {
     return (
       <div className={'orderRecordsPage'}>
         <FilterCard>
+          <SelectFilterCard
+            data={this.getExaminationdifficultys()}
+            status={this.state.status}
+            config={{ selectTitle: '考试类型', valueKey: 'value', titleKey: 'title' }}
+            changeStatus={status => {
+              console.log('status ======== ', status)
+              this.changeStatus('examinationDifficultyId', status)
+            }}
+          />
           <SelectFilterCard
             data={this.getSubjects()}
             status={this.state.status}
@@ -292,8 +330,9 @@ function mapStateToProps (state) {
     exercises: state.exercises.data,
     subjects: state.subjects.data,
     chapters: state.chapters.data,
-    sections: state.sections.data
+    sections: state.sections.data,
+    examinationdifficultys: state.examinationdifficultys.data
   }
 }
 
-export default connect(mapStateToProps, { queryExercises, querySubjects, queryChapters, querySections, querySubjectExercises, queryChapterExercises, querySectionExercises })(ExerciseListScreen)
+export default connect(mapStateToProps, { queryExercises, queryExaminationDifficultys, querySubjects, queryChapters, querySections, selectExercise })(ExerciseListScreen)

@@ -3,27 +3,18 @@ import { prompt, showPrompt, hidePrompt } from './prompt'
 import { subjects, querySubjects, selectSubject, selectSubjectType } from './subjects'
 import { chapters, queryChapters, selectChapter } from './chapters'
 import { sections, querySections, selectSection } from './sections'
-import {
-  exercises,
-  querySectionExercises,
-  selectExercise,
-  querySubjectExercises,
-  createUserAnswer,
-  queryErrorExercises,
-  queryOfficialExercises,
-  createExerciseCollect,
-  queryCollectExercises,
-  queryExercises,
-  queryChapterExercises
-} from './exercises'
+import { exercises, queryExercises, selectExercise } from './exercises'
 import { officialexaminations, queryOfficialexaminations, selectOfficialexamination } from './officialexaminations'
 import { courses, queryCourses, selectCourse, createCourseCollect, queryCollectCourses } from './courses'
 import { examinationtypes, queryExaminationTypes, selectExaminationType } from './examinationtypes'
 import { examinationdifficultys, queryExaminationDifficultys, selectExaminationDifficulty } from './examinationdifficultys'
 import { examinations, queryExaminations, createExamination, selectExamination, submitExamination } from './examinations'
+import { yearexerciselists, queryYearExerciseLists, selectYearExerciseList } from './yearexerciselists'
+import { answers, queryAnswers } from './answers'
+import { analysiss, queryAnalysiss } from './analysiss'
 
 // export reducers by it's keys
-export { user, prompt, subjects, chapters, sections, exercises, officialexaminations, courses, examinationtypes, examinationdifficultys, examinations }
+export { user, prompt, subjects, chapters, sections, exercises, officialexaminations, courses, examinationtypes, examinationdifficultys, examinations, yearexerciselists, answers, analysiss }
 
 // export actions
 export {
@@ -41,19 +32,12 @@ export {
   selectChapter,
   querySections,
   selectSection,
-  querySectionExercises,
-  querySubjectExercises,
   selectExercise,
   selectSubjectType,
-  createUserAnswer,
-  queryErrorExercises,
   queryOfficialexaminations,
   selectOfficialexamination,
-  queryOfficialExercises,
   queryCourses,
   selectCourse,
-  createExerciseCollect,
-  queryCollectExercises,
   createCourseCollect,
   queryCollectCourses,
   queryExaminationTypes,
@@ -67,5 +51,8 @@ export {
   showPrompt,
   hidePrompt,
   queryExercises,
-  queryChapterExercises
+  queryYearExerciseLists,
+  selectYearExerciseList,
+  queryAnswers,
+  queryAnalysiss
 }

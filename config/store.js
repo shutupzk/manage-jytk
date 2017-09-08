@@ -4,7 +4,22 @@ import { autoRehydrate } from 'redux-persist'
 import thunk from 'redux-thunk'
 import { API_SERVER } from '../config'
 
-import { user, prompt, subjects, chapters, sections, exercises, officialexaminations, courses, examinationtypes, examinationdifficultys, examinations } from '../ducks'
+import {
+  user,
+  prompt,
+  subjects,
+  chapters,
+  sections,
+  exercises,
+  officialexaminations,
+  courses,
+  examinationtypes,
+  examinationdifficultys,
+  examinations,
+  yearexerciselists,
+  answers,
+  analysiss
+} from '../ducks'
 // 服务地址
 // export const API_SERVER = 'localhost:3000'
 let apolloClient = null
@@ -61,7 +76,10 @@ function getReducer (client) {
     courses,
     examinationtypes,
     examinationdifficultys,
-    examinations
+    examinations,
+    yearexerciselists,
+    answers,
+    analysiss
   })
 }
 

@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 // import { Router } from '../../../routes'
-// import Router from 'next/router'
+import Router from 'next/router'
 import { Loading, PageCard, FilterCard, SelectFilterCard } from '../../../components'
-import { queryExercises, querySubjects, queryChapters, querySections, querySubjectExercises, queryChapterExercises, querySectionExercises } from '../../../ducks'
+import { queryExercises, queryYearExerciseLists, queryExaminationDifficultys, selectExercise } from '../../../ducks'
 import { connect } from 'react-redux'
 
 class ExerciseRealListScreen extends Component {
@@ -10,36 +10,86 @@ class ExerciseRealListScreen extends Component {
     super(props)
     this.state = {
       page: 1,
-      subjectId: null,
-      chapterId: null,
-      sectionId: null
+      examinationDifficultyId: null,
+      yearExerciseListId: null
     }
+    this.type = '02'
   }
 
   componentWillMount () {
-    const { client, querySubjects } = this.props
+    const { client, queryExaminationDifficultys } = this.props
     this.queryExercises({})
-    querySubjects(client)
+    queryExaminationDifficultys(client)
   }
 
   queryExercises (ops) {
-    let { subjectId, chapterId, sectionId } = ops || this.state
-    const { client, queryExercises, querySubjectExercises, queryChapterExercises, querySectionExercises } = this.props
+    let { examinationDifficultyId, yearExerciseListId } = ops || this.state
+    const { client, queryExercises } = this.props
     const { page } = this.state
     const skip = (page - 1) * 10
     const limit = 10
-    if (!subjectId && !sectionId && !chapterId) {
-      return queryExercises(client, { skip, limit, subjectId, sectionId })
+    queryExercises(client, { skip, limit, type: this.type, examinationDifficultyId, yearExerciseListId })
+  }
+
+  changeStatus (key, value) {
+    if (value === '') value = null
+    let { examinationDifficultyId, yearExerciseListId } = this.state
+    if (key === 'examinationDifficultyId') {
+      yearExerciseListId = null
     }
-    if (subjectId && !chapterId && !sectionId) {
-      return querySubjectExercises(client, { subjectId, skip, limit })
+    let obj = Object.assign({}, { examinationDifficultyId, yearExerciseListId }, { [key]: value, page: 1 })
+    this.setState(obj)
+    this.queryExercises(obj)
+  }
+
+  goToDetail (exerciseId) {
+    const { selectExercise } = this.props
+    selectExercise({ exerciseId })
+    Router.push('/exercise/detail')
+  }
+
+  queryYearExerciseLists (examinationDifficultyId) {
+    if (!examinationDifficultyId) return
+    const { client, queryYearExerciseLists } = this.props
+    queryYearExerciseLists(client, { examinationDifficultyId })
+  }
+
+  getExaminationdifficultys () {
+    const { examinationdifficultys } = this.props
+    let array = []
+    for (let key in examinationdifficultys) {
+      array.push({ title: examinationdifficultys[key].name, value: key })
     }
-    if (subjectId && chapterId && !sectionId) {
-      queryChapterExercises(client, { chapterId, skip, limit })
+    return array
+  }
+
+  getYearExerciseLists () {
+    const { yearexerciselists } = this.props
+    let array = []
+    for (let key in yearexerciselists) {
+      array.push({ title: yearexerciselists[key].year, value: key })
     }
-    if (subjectId && chapterId && sectionId) {
-      querySectionExercises(client, { sectionId, skip, limit })
+    return array
+  }
+
+  getListData () {
+    let array = []
+    const { page, examinationDifficultyId, yearExerciseListId } = this.state
+    let { exercises } = this.props
+    let skip = (page - 1) * 10
+    let count = 0
+    for (let key in exercises) {
+      let exercise = exercises[key]
+      if (exercise.type !== this.type) continue
+      if (examinationDifficultyId && exercise.examinationDifficultyId !== examinationDifficultyId) continue
+      if (yearExerciseListId && exercise.yearExerciseListId !== yearExerciseListId) continue
+      let limit = count - skip
+      if (limit > -1 && limit < 10) {
+        array.push(Object.assign({}, exercise, { key, index: count }))
+      }
+      count++
     }
+    return array
   }
 
   renderTitle () {
@@ -52,16 +102,13 @@ class ExerciseRealListScreen extends Component {
           题干
         </li>
         <li className={'subjectText titleText'} key={3}>
-          科目
+          考试等级
         </li>
         <li className={'subjectText titleText'} key={4}>
-          章
+          年份
         </li>
         <li className={'subjectText titleText'} key={5}>
-          节
-        </li>
-        <li className={'hotText titleText'} key={6}>
-          是否热门
+          查看
         </li>
         <style jsx>{`
           .orderTitle {
@@ -79,15 +126,11 @@ class ExerciseRealListScreen extends Component {
             text-align: left;
           }
           .contentText {
-            width: 40%;
+            width: 50%;
             text-align: left;
           }
           .subjectText {
             width: 15%;
-            text-align: center;
-          }
-          .hotText {
-            width: 10%;
             text-align: center;
           }
         `}</style>
@@ -105,16 +148,18 @@ class ExerciseRealListScreen extends Component {
           {item.content || '无'}
         </li>
         <li className={'subjectText'} key={3}>
-          {item.subjectName || '无'}
+          {item.examinationDifficultyName || '无'}
         </li>
         <li className={'subjectText'} key={4}>
-          {item.chapterName || '无'}
+          {item.year || '无'}
         </li>
         <li className={'subjectText'} key={5}>
-          {item.sectionName || '无'}
-        </li>
-        <li className={'hotText'} key={6}>
-          {item.hot ? '是' : '否'}
+          <button
+            className='fenyeItem'
+            onClick={() => this.goToDetail(item.id)}
+          >
+            查看
+          </button>
         </li>
         <style jsx>{`
           .numberText {
@@ -122,16 +167,20 @@ class ExerciseRealListScreen extends Component {
             text-align: left;
           }
           .contentText {
-            width: 40%;
+            width: 50%;
             text-align: left;
           }
           .subjectText {
             width: 15%;
             text-align: center;
           }
-          .hotText {
-            width: 10%;
-            text-align: center;
+          .fenyeItem {
+            background: #3ca0ff;
+            border-radius: 2px;
+            display: inline-block;
+            cursor: pointer;
+            border: 1px solid #3ca0ff;
+            color: #fff;
           }
         `}</style>
       </ul>
@@ -146,81 +195,6 @@ class ExerciseRealListScreen extends Component {
     )
   }
 
-  changeStatus (key, value) {
-    if (!value) return
-    let { subjectId, chapterId, sectionId } = this.state
-    if (key === 'subjectId') {
-      chapterId = null
-    }
-    if (key === 'chapterId') {
-      sectionId = null
-    }
-    let obj = Object.assign({}, { subjectId, chapterId, sectionId }, { [key]: value, page: 1 })
-    this.setState(obj)
-    this.queryExercises(obj)
-  }
-
-  queryChapters (subjectId) {
-    const { client, queryChapters } = this.props
-    queryChapters(client, { subjectId })
-  }
-
-  querySections (chapterId) {
-    const { client, querySections } = this.props
-    querySections(client, { chapterId })
-  }
-
-  getSubjects () {
-    const { subjects } = this.props
-    let array = []
-    for (let key in subjects) {
-      array.push({ title: subjects[key].name, value: key })
-    }
-    return array
-  }
-
-  getChapters () {
-    const { subjectId } = this.state
-    const { chapters } = this.props
-    let array = []
-    for (let key in chapters) {
-      if (chapters[key].subjectId !== subjectId) continue
-      array.push({ title: chapters[key].name, value: key })
-    }
-    return array
-  }
-
-  getSections () {
-    const { chapterId } = this.state
-    const { sections } = this.props
-    let array = []
-    for (let key in sections) {
-      if (sections[key].chapterId !== chapterId) continue
-      array.push({ title: sections[key].name, value: key })
-    }
-    return array
-  }
-
-  getListData () {
-    let array = []
-    const { page, subjectId, chapterId, sectionId } = this.state
-    let { exercises } = this.props
-    let skip = (page - 1) * 10
-    let count = 0
-    for (let key in exercises) {
-      let exercise = exercises[key]
-      if (subjectId && exercise.subjectId !== subjectId) continue
-      if (chapterId && exercise.chapterId !== chapterId) continue
-      if (sectionId && exercise.sectionId !== sectionId) continue
-      let limit = count - skip
-      if (limit > -1 && limit < 10) {
-        array.push(Object.assign({}, exercise, { key, index: count }))
-      }
-      count++
-    }
-    return array
-  }
-
   render () {
     if (this.props.loading) {
       return <Loading showLoading />
@@ -230,18 +204,20 @@ class ExerciseRealListScreen extends Component {
       <div className={'orderRecordsPage'}>
         <FilterCard>
           <SelectFilterCard
-            data={this.getChapters()}
+            data={this.getExaminationdifficultys()}
             status={this.state.status}
-            config={{ selectTitle: '年份', valueKey: 'value', titleKey: 'title' }}
+            config={{ selectTitle: '考试类型', valueKey: 'value', titleKey: 'title' }}
             changeStatus={status => {
+              this.changeStatus('examinationDifficultyId', status)
+              this.queryYearExerciseLists(status)
             }}
           />
           <SelectFilterCard
-            data={this.getSubjects()}
+            data={this.getYearExerciseLists()}
             status={this.state.status}
-            config={{ selectTitle: '科目', valueKey: 'value', titleKey: 'title' }}
+            config={{ selectTitle: '年份', valueKey: 'value', titleKey: 'title' }}
             changeStatus={status => {
-              this.changeStatus('subjectId', status)
+              this.changeStatus('yearExerciseListId', status)
             }}
           />
         </FilterCard>
@@ -279,10 +255,9 @@ class ExerciseRealListScreen extends Component {
 function mapStateToProps (state) {
   return {
     exercises: state.exercises.data,
-    subjects: state.subjects.data,
-    chapters: state.chapters.data,
-    sections: state.sections.data
+    yearexerciselists: state.yearexerciselists.data,
+    examinationdifficultys: state.examinationdifficultys.data
   }
 }
 
-export default connect(mapStateToProps, { queryExercises, querySubjects, queryChapters, querySections, querySubjectExercises, queryChapterExercises, querySectionExercises })(ExerciseRealListScreen)
+export default connect(mapStateToProps, { queryExercises, queryYearExerciseLists, queryExaminationDifficultys, selectExercise })(ExerciseRealListScreen)

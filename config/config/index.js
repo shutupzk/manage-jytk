@@ -25,48 +25,15 @@ const MAINFUNCTION = [
     short_name: 'exercise',
     navigateName: '/exercise',
     children: [{ title: '基础题库列表', navigateName: '/exercise', color: '#5D75A6' }, { title: '真题题库列表', navigateName: '/exercise/real', color: '#5D75A6' }, { title: '基础题库导入', navigateName: '/exercise/import', color: '#5D75A6' }, { title: '真题题库导入', navigateName: '/exercise/real/import', color: '#5D75A6' }]
+  },
+  {
+    title: '用户管理',
+    short_name: 'profile',
+    navigateName: '/profile/update_password',
+    children: [
+      {title: '用户列表', navigateName: '/profile/update_password', color: '#5D75A6'}
+    ]
   }
-  // {
-  //   title: '订单管理',
-  //   short_name: 'order',
-  //   navigateName: '/order',
-  //   children: [
-  //     {title: '订单管理', navigateName: '/order', color: '#5D75A6', navigateNameDetail: 'order'}
-  //   ]
-  // },
-  // {
-  //   title: '内容管理',
-  //   short_name: 'article',
-  //   navigateName: '/article',
-  //   children: [
-  //     {title: '内容管理', navigateName: '/article', navigateNameDetail: 'article', color: '#5D75A6',}
-  //   ]
-  // },
-  // {
-  //   title: '医生管理',
-  //   short_name: 'doctor',
-  //   navigateName: '/doctor/manage_schedule',
-  //   children: [
-  //     {title: '业务开通', navigateName: '/doctor/manage_schedule', color: '#5D75A6',},
-  //     {title: '排班结果', navigateName: '/doctor/manage_all_schedule', color: '#5D75A6'},
-  //   ]
-  // },
-  // {
-  //   title: '科室管理',
-  //   short_name: 'department',
-  //   navigateName: '/department/department_level1',
-  //   children: [
-  //     {title: '科室管理', navigateName: '/department/department_level1', color: '#5D75A6',}
-  //   ]
-  // },
-  // {
-  //   title: '用户管理',
-  //   short_name: 'profile',
-  //   navigateName: '/profile/update_password',
-  //   children: [
-  //     {title: '修改密码', navigateName: '/profile/update_password', color: '#5D75A6',}
-  //   ]
-  // }
 ]
 
 // home 页面

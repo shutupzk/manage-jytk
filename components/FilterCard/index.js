@@ -41,7 +41,7 @@ export class SelectFilterCard extends Component {
           }}
           value={status}
         >
-          {config.selectTitle ? <option value=''>{config.selectTitle || '全部订单类型'}</option> : ''}
+          {config.selectTitle ? <option value=''>{config.selectTitle || '选择'}</option> : ''}
           {this.props.data &&
             this.props.data.map((item, iKey) => {
               return (
