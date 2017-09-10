@@ -78,7 +78,7 @@ class ExerciseImportScreen extends Component {
           <p style={{ backgroundColor: '#f2f2f2', padding: 10, fontSize: 20 }}>题目</p>
           <div style={{ marginTop: 20, marginBottom: 20, marginLeft: 40, marginRight: 40 }}>
             <p style={{ fontSize: 20, marginBottom: 15 }}>{exercise.content}</p>
-            {answers.map(item => <p style={{ fontSize: 15, marginBottom: 5 }}>{item}</p>)}
+            {answers.map((item, index) => <p key={index} style={{ fontSize: 15, marginBottom: 5 }}>{item}</p>)}
             {this.loadingView()}
             <p style={{ color: 'green', fontSize: 20 }}>
               正确答案：<span style={{ color: '#3ca0ff', fontSize: 20 }}>{answerKey}</span>
@@ -89,7 +89,7 @@ class ExerciseImportScreen extends Component {
           <p style={{ backgroundColor: '#f2f2f2', padding: 10, fontSize: 20 }}>解析</p>
           <div style={{ marginTop: 20, marginBottom: 20, marginLeft: 40, marginRight: 40 }}>
             {analysiss.map((item, index) => (
-              <div style={{marginBottom: 20}}>
+              <div style={{marginBottom: 20}} key={item.id}>
                 {index === 0 ? null : <div style={{backgroundColor: '#f2f2f2', height: 1, marginBottom: 20}} />}
                 <p style={{ fontSize: 18 }}>
                   发布者：

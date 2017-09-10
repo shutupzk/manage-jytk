@@ -141,19 +141,19 @@ class ExerciseListScreen extends Component {
         <li className={'subjectText titleText'} key={3}>
           考试类型
         </li>
-        <li className={'subjectText titleText'} key={3}>
+        <li className={'subjectText titleText'} key={4}>
           科目
         </li>
-        <li className={'subjectText titleText'} key={4}>
+        <li className={'subjectText titleText'} key={5}>
           章
         </li>
-        <li className={'subjectText titleText'} key={5}>
+        <li className={'subjectText titleText'} key={6}>
           节
         </li>
-        <li className={'hotText titleText'} key={6}>
+        <li className={'hotText titleText'} key={7}>
           热门
         </li>
-        <li className={'hotText titleText'} key={7}>
+        <li className={'hotText titleText'} key={8}>
           查看
         </li>
         <style jsx>{`
@@ -200,19 +200,19 @@ class ExerciseListScreen extends Component {
         <li className={'subjectText'} key={3}>
           {item.examinationDifficultyName || '无'}
         </li>
-        <li className={'subjectText'} key={3}>
+        <li className={'subjectText'} key={4}>
           {item.subjectName || '无'}
         </li>
-        <li className={'subjectText'} key={4}>
+        <li className={'subjectText'} key={5}>
           {item.chapterName || '无'}
         </li>
-        <li className={'subjectText'} key={5}>
+        <li className={'subjectText'} key={6}>
           {item.sectionName || '无'}
         </li>
-        <li className={'hotText'} key={6}>
+        <li className={'hotText'} key={7}>
           {item.hot ? '是' : '否'}
         </li>
-        <li className={'hotText'} key={7}>
+        <li className={'hotText'} key={8}>
           <button
             className='fenyeItem'
             onClick={() => this.goToDetail(item.id)}
