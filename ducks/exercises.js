@@ -62,6 +62,10 @@ const QUERY_EXERCISES = gql`
       yearExerciseList {
         id
         year
+        yearExerciseType{
+          id
+          name
+        }
       }
       examinationDifficulty {
         id
@@ -100,13 +104,15 @@ function formatExercise (exercises) {
   let json = {}
   for (let doc of exercises) {
     let type = doc.type
-    let yearExerciseListId, year, examinationDifficultyId, examinationDifficultyName, subjectId, subjectName, sectionId, chapterId, sectionName, chapterName
+    let yearExerciseListId, yearExerciseTypeId, yearExerciseTypeName, year, examinationDifficultyId, examinationDifficultyName, subjectId, subjectName, sectionId, chapterId, sectionName, chapterName
     if (doc.subject) {
       subjectId = doc.subject.id
       subjectName = doc.subject.name
     }
     if (doc.yearExerciseList) {
       yearExerciseListId = doc.yearExerciseList.id
+      yearExerciseTypeId = doc.yearExerciseList.yearExerciseType.id
+      yearExerciseTypeName = doc.yearExerciseList.yearExerciseType.name
       year = doc.yearExerciseList.year
     }
     if (doc.examinationDifficulty) {
@@ -121,6 +127,8 @@ function formatExercise (exercises) {
     }
     json[doc.id] = Object.assign({}, doc, {
       yearExerciseListId,
+      yearExerciseTypeId,
+      yearExerciseTypeName,
       year,
       examinationDifficultyId,
       examinationDifficultyName,

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 // import { Router } from '../../../routes'
 import Router from 'next/router'
 import { Loading, PageCard, FilterCard, SelectFilterCard } from '../../../components'
-import { queryExercises, queryYearExerciseLists, queryExaminationDifficultys, selectExercise } from '../../../ducks'
+import { queryExercises, queryYearExerciseLists, queryExaminationDifficultys, selectExercise, queryYearExerciseTypes } from '../../../ducks'
 import { connect } from 'react-redux'
 
 class ExerciseRealListScreen extends Component {
@@ -11,6 +11,7 @@ class ExerciseRealListScreen extends Component {
     this.state = {
       page: 1,
       examinationDifficultyId: null,
+      yearExerciseTypeId: null,
       yearExerciseListId: null
     }
     this.type = '02'
@@ -33,11 +34,15 @@ class ExerciseRealListScreen extends Component {
 
   changeStatus (key, value) {
     if (value === '') value = null
-    let { examinationDifficultyId, yearExerciseListId } = this.state
+    let { examinationDifficultyId, yearExerciseTypeId, yearExerciseListId } = this.state
     if (key === 'examinationDifficultyId') {
+      yearExerciseTypeId = null
       yearExerciseListId = null
     }
-    let obj = Object.assign({}, { examinationDifficultyId, yearExerciseListId }, { [key]: value, page: 1 })
+    if (key === 'yearExerciseTypeId') {
+      yearExerciseListId = null
+    }
+    let obj = Object.assign({}, { examinationDifficultyId, yearExerciseTypeId, yearExerciseListId }, { [key]: value, page: 1 })
     this.setState(obj)
     this.queryExercises(obj)
   }
@@ -48,10 +53,21 @@ class ExerciseRealListScreen extends Component {
     Router.push('/exercise/detail')
   }
 
-  queryYearExerciseLists (examinationDifficultyId) {
-    if (!examinationDifficultyId) return
+  queryYearExerciseLists (yearExerciseTypeId) {
+    if (!yearExerciseTypeId) return
     const { client, queryYearExerciseLists } = this.props
-    queryYearExerciseLists(client, { examinationDifficultyId })
+    queryYearExerciseLists(client, { yearExerciseTypeId })
+  }
+
+  getYearExerciseTypes () {
+    const { yearexercisetypes } = this.props
+    const { examinationDifficultyId } = this.state
+    let array = []
+    for (let key in yearexercisetypes) {
+      if (yearexercisetypes[key].examinationDifficultyId !== examinationDifficultyId) continue
+      array.push({ title: yearexercisetypes[key].name, value: key })
+    }
+    return array
   }
 
   getExaminationdifficultys () {
@@ -65,8 +81,10 @@ class ExerciseRealListScreen extends Component {
 
   getYearExerciseLists () {
     const { yearexerciselists } = this.props
+    const { yearExerciseTypeId } = this.state
     let array = []
     for (let key in yearexerciselists) {
+      if (yearexerciselists[key].yearExerciseTypeId !== yearExerciseTypeId) continue
       array.push({ title: yearexerciselists[key].year, value: key })
     }
     return array
@@ -74,7 +92,7 @@ class ExerciseRealListScreen extends Component {
 
   getListData () {
     let array = []
-    const { page, examinationDifficultyId, yearExerciseListId } = this.state
+    const { page, examinationDifficultyId, yearExerciseTypeId, yearExerciseListId } = this.state
     let { exercises } = this.props
     let skip = (page - 1) * 10
     let count = 0
@@ -82,6 +100,7 @@ class ExerciseRealListScreen extends Component {
       let exercise = exercises[key]
       if (exercise.type !== this.type) continue
       if (examinationDifficultyId && exercise.examinationDifficultyId !== examinationDifficultyId) continue
+      if (yearExerciseTypeId && exercise.yearExerciseTypeId !== yearExerciseTypeId) continue
       if (yearExerciseListId && exercise.yearExerciseListId !== yearExerciseListId) continue
       let limit = count - skip
       if (limit > -1 && limit < 10) {
@@ -148,7 +167,7 @@ class ExerciseRealListScreen extends Component {
           {item.content || '无'}
         </li>
         <li className={'subjectText'} key={3}>
-          {item.examinationDifficultyName || '无'}
+          {item.yearExerciseTypeName || '无'}
         </li>
         <li className={'subjectText'} key={4}>
           {item.year || '无'}
@@ -199,6 +218,7 @@ class ExerciseRealListScreen extends Component {
     if (this.props.loading) {
       return <Loading showLoading />
     }
+    const { client, queryYearExerciseTypes } = this.props
     let exercises = this.getListData()
     return (
       <div className={'orderRecordsPage'}>
@@ -206,9 +226,18 @@ class ExerciseRealListScreen extends Component {
           <SelectFilterCard
             data={this.getExaminationdifficultys()}
             status={this.state.status}
-            config={{ selectTitle: '考试类型', valueKey: 'value', titleKey: 'title' }}
+            config={{ selectTitle: '考试级别', valueKey: 'value', titleKey: 'title' }}
             changeStatus={status => {
               this.changeStatus('examinationDifficultyId', status)
+              queryYearExerciseTypes(client, { examinationDifficultyId: status })
+            }}
+          />
+          <SelectFilterCard
+            data={this.getYearExerciseTypes()}
+            status={this.state.status}
+            config={{ selectTitle: '考试类型', valueKey: 'value', titleKey: 'title' }}
+            changeStatus={status => {
+              this.changeStatus('yearExerciseTypeId', status)
               this.queryYearExerciseLists(status)
             }}
           />
@@ -256,8 +285,9 @@ function mapStateToProps (state) {
   return {
     exercises: state.exercises.data,
     yearexerciselists: state.yearexerciselists.data,
+    yearexercisetypes: state.yearexercisetypes.data,
     examinationdifficultys: state.examinationdifficultys.data
   }
 }
 
-export default connect(mapStateToProps, { queryExercises, queryYearExerciseLists, queryExaminationDifficultys, selectExercise })(ExerciseRealListScreen)
+export default connect(mapStateToProps, { queryExercises, queryYearExerciseLists, queryExaminationDifficultys, selectExercise, queryYearExerciseTypes })(ExerciseRealListScreen)

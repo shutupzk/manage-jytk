@@ -25,8 +25,8 @@ export function yearexerciselists (state = initState, action = {}) {
 }
 
 const QUERY_YEARS = gql`
-  query ($examinationDifficultyId: ObjID!) {
-    examinationDifficulty(id: $examinationDifficultyId) {
+  query ($yearExerciseTypeId: ObjID!) {
+    yearExerciseType(id: $yearExerciseTypeId) {
       id
       yearExerciseLists {
         id
@@ -36,13 +36,13 @@ const QUERY_YEARS = gql`
   }
 `
 
-export const queryYearExerciseLists = (client, { examinationDifficultyId }) => async dispatch => {
+export const queryYearExerciseLists = (client, { yearExerciseTypeId }) => async dispatch => {
   try {
-    const data = await client.query({ query: QUERY_YEARS, variables: { examinationDifficultyId }, fetchPolicy: 'network-only' })
-    const { yearExerciseLists } = data.data.examinationDifficulty
+    const data = await client.query({ query: QUERY_YEARS, variables: { yearExerciseTypeId }, fetchPolicy: 'network-only' })
+    const { yearExerciseLists } = data.data.yearExerciseType
     let json = {}
     for (let doc of yearExerciseLists) {
-      json[doc.id] = Object.assign({}, doc, { examinationDifficultyId })
+      json[doc.id] = Object.assign({}, doc, { yearExerciseTypeId })
     }
     dispatch({
       type: YEAR_LIST_SUCCESS,

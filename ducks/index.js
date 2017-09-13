@@ -12,9 +12,10 @@ import { examinations, queryExaminations, createExamination, selectExamination, 
 import { yearexerciselists, queryYearExerciseLists, selectYearExerciseList } from './yearexerciselists'
 import { answers, queryAnswers } from './answers'
 import { analysiss, queryAnalysiss } from './analysiss'
+import { yearexercisetypes, queryYearExerciseTypes, selectYearExerciseType } from './yearexercisetypes'
 
 // export reducers by it's keys
-export { user, prompt, subjects, chapters, sections, exercises, officialexaminations, courses, examinationtypes, examinationdifficultys, examinations, yearexerciselists, answers, analysiss }
+export { user, prompt, subjects, chapters, sections, exercises, officialexaminations, courses, examinationtypes, examinationdifficultys, examinations, yearexerciselists, answers, analysiss, yearexercisetypes }
 
 // export actions
 export {
@@ -54,5 +55,7 @@ export {
   queryYearExerciseLists,
   selectYearExerciseList,
   queryAnswers,
-  queryAnalysiss
+  queryAnalysiss,
+  queryYearExerciseTypes,
+  selectYearExerciseType
 }
