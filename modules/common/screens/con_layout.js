@@ -4,13 +4,13 @@ import { MAINFUNCTION } from '../../../config'
 import Router from 'next/router'
 import { theme } from '../../../components'
 import Navigation from './foot_navigation'
-import { signin, showPrompt } from 'ducks'
+// import {  signin, showPrompt } from 'ducks'
 import { connect } from 'react-redux'
 import localforage from 'localforage'
 
 class ConLayout extends Component {
   componentDidMount () {
-    this.autoSignin()
+    // this.autoSignin()
   }
 
   // 自动登陆，
@@ -76,11 +76,11 @@ class ConLayout extends Component {
 
 function mapStateToProps (state) {
   return {
-    token: state.user.data.token,
-    adminId: state.user.data.id,
-    loading: state.user.loading,
-    error: state.user.error
+    // token: state.user.data.token,
+    // adminId: state.user.data.id,
+    // loading: state.user.loading,
+    // error: state.user.error
   }
 }
 
-export default connect(mapStateToProps, { signin, showPrompt })(ConLayout)
+export default connect(mapStateToProps, {})(ConLayout)

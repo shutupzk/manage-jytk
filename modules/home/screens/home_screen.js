@@ -46,10 +46,10 @@ class Home extends Component {
 
 function mapStateToProps (state) {
   return {
-    token: state.user.data.token,
-    adminId: state.user.data.id,
-    loading: state.user.loading,
-    error: state.user.error
+    // token: state.user.data.token,
+    // adminId: state.user.data.id,
+    // loading: state.user.loading,
+    // error: state.user.error
   }
 }
 

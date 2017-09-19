@@ -5,7 +5,7 @@ import thunk from 'redux-thunk'
 import { API_SERVER } from '../config'
 
 import {
-  user,
+  users,
   prompt,
   subjects,
   chapters,
@@ -67,7 +67,7 @@ function createMiddleware (clientMiddleware) {
 function getReducer (client) {
   return combineReducers({
     // apollo: client.reducer(),
-    user,
+    users,
     prompt,
     subjects,
     chapters,
@@ -101,4 +101,4 @@ export const initStore = (client, initialState) => {
   return reduxStore
 }
 
-// persistStore(initStore(initClient(), {}), { storage: localforage, whitelist: ['departments', 'doctors', 'hospitals', 'user', 'patients'] })
+// persistStore(initStore(initClient(), {}), { storage: localforage, whitelist: ['departments', 'doctors', 'hospitals', 'users', 'patients'] })

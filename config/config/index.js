@@ -25,15 +25,15 @@ const MAINFUNCTION = [
     short_name: 'exercise',
     navigateName: '/exercise',
     children: [{ title: '基础题库列表', navigateName: '/exercise', color: '#5D75A6' }, { title: '真题题库列表', navigateName: '/exercise/real', color: '#5D75A6' }, { title: '基础题库导入', navigateName: '/exercise/import', color: '#5D75A6' }, { title: '真题题库导入', navigateName: '/exercise/real/import', color: '#5D75A6' }]
+  },
+  {
+    title: '用户管理',
+    short_name: 'user',
+    navigateName: '/user',
+    children: [
+      {title: '用户列表', navigateName: '/user', color: '#5D75A6'}
+    ]
   }
-  // {
-  //   title: '用户管理',
-  //   short_name: 'profile',
-  //   navigateName: '/profile/update_password',
-  //   children: [
-  //     {title: '用户列表', navigateName: '/profile/update_password', color: '#5D75A6'}
-  //   ]
-  // }
 ]
 
 // home 页面

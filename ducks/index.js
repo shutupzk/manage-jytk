@@ -1,4 +1,4 @@
-import { user, signup, signin, signout, queryUser, updatePassword, savePhone, createVerifyCode, checkVerifyCode } from './user'
+import { users, queryUsers } from './users'
 import { prompt, showPrompt, hidePrompt } from './prompt'
 import { subjects, querySubjects, selectSubject, selectSubjectType } from './subjects'
 import { chapters, queryChapters, selectChapter } from './chapters'
@@ -15,18 +15,11 @@ import { analysiss, queryAnalysiss } from './analysiss'
 import { yearexercisetypes, queryYearExerciseTypes, selectYearExerciseType } from './yearexercisetypes'
 
 // export reducers by it's keys
-export { user, prompt, subjects, chapters, sections, exercises, officialexaminations, courses, examinationtypes, examinationdifficultys, examinations, yearexerciselists, answers, analysiss, yearexercisetypes }
+export { users, prompt, subjects, chapters, sections, exercises, officialexaminations, courses, examinationtypes, examinationdifficultys, examinations, yearexerciselists, answers, analysiss, yearexercisetypes }
 
 // export actions
 export {
-  signup,
-  signin,
-  signout,
-  queryUser,
-  updatePassword,
-  savePhone,
-  createVerifyCode,
-  checkVerifyCode,
+  queryUsers,
   querySubjects,
   queryChapters,
   selectSubject,
