@@ -34,7 +34,7 @@ export class SelectFilterCard extends Component {
   render () {
     const { status, config } = this.props
     return (
-      <div className='left select flex tb-flex' style={{ border: '1px solid #E6E6E6', minWidth: 130, background: 'none', borderRadius: 4, width: 'auto' }}>
+      <div className='left select flex tb-flex' style={{ border: '1px solid #E6E6E6', minWidth: 130, background: 'none', borderRadius: 4, width: 'auto', marginLeft: 5 }}>
         <select
           onChange={e => {
             this.props.changeStatus(e.target.value)

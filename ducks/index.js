@@ -13,9 +13,26 @@ import { yearexerciselists, queryYearExerciseLists, selectYearExerciseList } fro
 import { answers, queryAnswers } from './answers'
 import { analysiss, queryAnalysiss } from './analysiss'
 import { yearexercisetypes, queryYearExerciseTypes, selectYearExerciseType } from './yearexercisetypes'
-
+import { qiniu, getQiniuUpToken, selectImgFiles, changeImgBase64 } from './qiniu'
 // export reducers by it's keys
-export { users, prompt, subjects, chapters, sections, exercises, officialexaminations, courses, examinationtypes, examinationdifficultys, examinations, yearexerciselists, answers, analysiss, yearexercisetypes }
+export {
+  users,
+  prompt,
+  subjects,
+  chapters,
+  sections,
+  exercises,
+  officialexaminations,
+  courses,
+  examinationtypes,
+  examinationdifficultys,
+  examinations,
+  yearexerciselists,
+  answers,
+  analysiss,
+  yearexercisetypes,
+  qiniu
+}
 
 // export actions
 export {
@@ -50,5 +67,8 @@ export {
   queryAnswers,
   queryAnalysiss,
   queryYearExerciseTypes,
-  selectYearExerciseType
+  selectYearExerciseType,
+  getQiniuUpToken,
+  selectImgFiles,
+  changeImgBase64
 }
