@@ -117,16 +117,23 @@ class CourseListScreen extends Component {
   }
 
   renderRow (item, index) {
+    let {url, type} = item
+    if (type === 'video') {
+      url = url + '?vframe/jpg/offset/0'
+      type = '视频'
+    } else if (type === 'image') {
+      type = '图文'
+    }
     return (
       <ul className='flex tb-flex listItem' key={item.id}>
         <li className={'imageText'} key={2}>
-          <img style={{ width: '80', margin: 10 }} src={item.url} />
+          <img style={{ width: '80px', height: '80px', margin: 10 }} src={url} />
         </li>
         <li className={'titleNameText'} key={21}>
           {item.title || ''}
         </li>
         <li className={'subjectText'} key={3}>
-          {item.courseType.typeName || ''}
+          {type || ''}
         </li>
         <li className={'contentText'} key={4}>
           {item.abstract || ''}

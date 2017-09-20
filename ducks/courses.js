@@ -57,10 +57,7 @@ const QUERY_COURSES = gql`
       teacher
       abstract
       createdAt
-      courseType {
-        id
-        typeName
-      }
+      type
     }
   }
 `
@@ -102,10 +99,7 @@ const QUERY_COLLECT_COURSE = gql`
           teacher
           abstract
           createdAt
-          courseType {
-            id
-            typeName
-          }
+          type
         }
       }
     }
@@ -131,6 +125,25 @@ export const queryCollectCourses = (client, { skip, limit, userId }) => async di
       type: COURSE_COURSE_FAIL,
       error: e.message
     })
+  }
+}
+
+const CREATE_COURSE = gql`
+  mutation($title: String!, $type: String!, $content: String!, $date: String!, $hot: Boolean, $url: String!, $teacher: String, $abstract: String) {
+    createCourse(input: { title: $title, type: $type, content: $content, date: $date, hot: $hot, url: $url, teacher: $teacher, abstract: $abstract }) {
+      id
+    }
+  }
+`
+
+export const createCourse = (client, { title, type, content, date, url, teacher, abstract }) => async dispatch => {
+  // console.log('hot::::::::', hot)
+  try {
+    await client.mutate({ mutation: CREATE_COURSE, variables: { title, type, content, date, url, teacher, abstract } })
+    return null
+  } catch (e) {
+    console.log(e.message)
+    return e.message
   }
 }
 

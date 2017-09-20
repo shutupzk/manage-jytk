@@ -5,7 +5,7 @@ import { chapters, queryChapters, selectChapter } from './chapters'
 import { sections, querySections, selectSection } from './sections'
 import { exercises, queryExercises, selectExercise } from './exercises'
 import { officialexaminations, queryOfficialexaminations, selectOfficialexamination } from './officialexaminations'
-import { courses, queryCourses, selectCourse, createCourseCollect, queryCollectCourses } from './courses'
+import { courses, queryCourses, selectCourse, createCourseCollect, queryCollectCourses, createCourse } from './courses'
 import { examinationtypes, queryExaminationTypes, selectExaminationType } from './examinationtypes'
 import { examinationdifficultys, queryExaminationDifficultys, selectExaminationDifficulty } from './examinationdifficultys'
 import { examinations, queryExaminations, createExamination, selectExamination, submitExamination } from './examinations'
@@ -14,6 +14,8 @@ import { answers, queryAnswers } from './answers'
 import { analysiss, queryAnalysiss } from './analysiss'
 import { yearexercisetypes, queryYearExerciseTypes, selectYearExerciseType } from './yearexercisetypes'
 import { qiniu, getQiniuUpToken, selectImgFiles, changeImgBase64 } from './qiniu'
+import { coursetypes, queryCourseTypes } from './coursetypes'
+
 // export reducers by it's keys
 export {
   users,
@@ -31,7 +33,8 @@ export {
   answers,
   analysiss,
   yearexercisetypes,
-  qiniu
+  qiniu,
+  coursetypes
 }
 
 // export actions
@@ -70,5 +73,7 @@ export {
   selectYearExerciseType,
   getQiniuUpToken,
   selectImgFiles,
-  changeImgBase64
+  changeImgBase64,
+  queryCourseTypes,
+  createCourse
 }
