@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
-// import { Router } from '../../../routes'
-// import Router from 'next/router'
+import Router from 'next/router'
 import { Loading, theme } from '../../../components'
 // import { API_SERVER } from '../../../config'
 import { queryExaminationDifficultys, queryAnswers, queryAnalysiss } from '../../../ducks'
@@ -75,10 +74,23 @@ class ExerciseImportScreen extends Component {
     return (
       <div>
         <div>
-          <p style={{ backgroundColor: '#f2f2f2', padding: 10, fontSize: 20 }}>题目</p>
+          <p style={{ backgroundColor: '#f2f2f2', padding: 10, fontSize: 20 }}>
+            题目<button
+              onClick={() => {
+                Router.push('/exercise/edit')
+              }}
+              style={{ marginLeft: '5%' }}
+            >
+              编辑
+            </button>
+          </p>
           <div style={{ marginTop: 20, marginBottom: 20, marginLeft: 40, marginRight: 40 }}>
             <p style={{ fontSize: 20, marginBottom: 15 }}>{exercise.content}</p>
-            {answers.map((item, index) => <p key={index} style={{ fontSize: 15, marginBottom: 5 }}>{item}</p>)}
+            {answers.map((item, index) => (
+              <p key={index} style={{ fontSize: 15, marginBottom: 5 }}>
+                {item}
+              </p>
+            ))}
             {this.loadingView()}
             <p style={{ color: 'green', fontSize: 20 }}>
               正确答案：<span style={{ color: '#3ca0ff', fontSize: 20 }}>{answerKey}</span>
@@ -89,8 +101,8 @@ class ExerciseImportScreen extends Component {
           <p style={{ backgroundColor: '#f2f2f2', padding: 10, fontSize: 20 }}>解析</p>
           <div style={{ marginTop: 20, marginBottom: 20, marginLeft: 40, marginRight: 40 }}>
             {analysiss.map((item, index) => (
-              <div style={{marginBottom: 20}} key={item.id}>
-                {index === 0 ? null : <div style={{backgroundColor: '#f2f2f2', height: 1, marginBottom: 20}} />}
+              <div style={{ marginBottom: 20 }} key={item.id}>
+                {index === 0 ? null : <div style={{ backgroundColor: '#f2f2f2', height: 1, marginBottom: 20 }} />}
                 <p style={{ fontSize: 18 }}>
                   发布者：
                   <span style={{ color: '#3ca0ff', fontSize: 18, marginRight: 20 }}>{item.user ? item.user.name : '管理员'}</span>
@@ -129,6 +141,7 @@ class ExerciseImportScreen extends Component {
             background-image: linear-gradient(-180deg, #fefefe, #fbfbfb);
             margin: 0 0.15rem;
             line-height: 0.36rem;
+            border-radius: 0.05rem;
             padding: 0 0.3rem;
             font-size: 0.16rem;
           }

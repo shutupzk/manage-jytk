@@ -39,6 +39,11 @@ const QUERY_ANSWERS = gql`
         num
         content
         isAnswer
+        answerImages {
+          id
+          text
+          image
+        }
       }
     }
   }
@@ -66,6 +71,38 @@ export const queryAnswers = (client, { exerciseId }) => async dispatch => {
       type: SUBJECT_ANSWERS_FAIL,
       error: e.message
     })
+  }
+}
+
+const UPDATE_ANSWER = gql`
+  mutation($answerId: ObjID!, $content: String, $isAnswer: Boolean) {
+    updateAnswer(id: $answerId, input: { content: $content, isAnswer: $isAnswer }) {
+      id
+      num
+      content
+      isAnswer
+      answerImages {
+        id
+        text
+        image
+      }
+    }
+  }
+`
+
+export const updateAnswer = (client, { exerciseId, answerId, content, isAnswer }) => async dispatch => {
+  try {
+    let data = await client.mutate({ mutation: UPDATE_ANSWER, variables: { answerId, content, isAnswer } })
+    const { updateAnswer } = data.data
+    let json = { [updateAnswer.id]: Object.assign({}, updateAnswer, { exerciseId }) }
+    dispatch({
+      type: SUBJECT_ANSWERS_SUCCESS,
+      data: json
+    })
+    return null
+  } catch (e) {
+    console.log(e)
+    return e.message
   }
 }
 

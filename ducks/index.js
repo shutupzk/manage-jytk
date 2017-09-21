@@ -3,14 +3,14 @@ import { prompt, showPrompt, hidePrompt } from './prompt'
 import { subjects, querySubjects, selectSubject, selectSubjectType } from './subjects'
 import { chapters, queryChapters, selectChapter } from './chapters'
 import { sections, querySections, selectSection } from './sections'
-import { exercises, queryExercises, selectExercise } from './exercises'
+import { exercises, queryExercises, selectExercise, updateExercise, createExerciseImages } from './exercises'
 import { officialexaminations, queryOfficialexaminations, selectOfficialexamination } from './officialexaminations'
 import { courses, queryCourses, selectCourse, createCourseCollect, queryCollectCourses, createCourse } from './courses'
 import { examinationtypes, queryExaminationTypes, selectExaminationType } from './examinationtypes'
 import { examinationdifficultys, queryExaminationDifficultys, selectExaminationDifficulty } from './examinationdifficultys'
 import { examinations, queryExaminations, createExamination, selectExamination, submitExamination } from './examinations'
 import { yearexerciselists, queryYearExerciseLists, selectYearExerciseList } from './yearexerciselists'
-import { answers, queryAnswers } from './answers'
+import { answers, queryAnswers, updateAnswer } from './answers'
 import { analysiss, queryAnalysiss } from './analysiss'
 import { yearexercisetypes, queryYearExerciseTypes, selectYearExerciseType } from './yearexercisetypes'
 import { qiniu, getQiniuUpToken, selectImgFiles, changeImgBase64 } from './qiniu'
@@ -75,5 +75,8 @@ export {
   selectImgFiles,
   changeImgBase64,
   queryCourseTypes,
-  createCourse
+  createCourse,
+  updateExercise,
+  createExerciseImages,
+  updateAnswer
 }

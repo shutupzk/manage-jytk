@@ -107,6 +107,12 @@ class ExerciseListScreen extends Component {
     Router.push('/exercise/detail')
   }
 
+  goToEdit (exerciseId) {
+    const { selectExercise } = this.props
+    selectExercise({ exerciseId })
+    Router.push('/exercise/edit')
+  }
+
   getListData () {
     let array = []
     const { page, examinationDifficultyId, subjectId, chapterId, sectionId } = this.state
@@ -153,8 +159,8 @@ class ExerciseListScreen extends Component {
         <li className={'hotText titleText'} key={7}>
           热门
         </li>
-        <li className={'hotText titleText'} key={8}>
-          查看
+        <li className={'buttonText titleText'} key={8}>
+          操作
         </li>
         <style jsx>{`
           .orderTitle {
@@ -177,6 +183,10 @@ class ExerciseListScreen extends Component {
           }
           .subjectText {
             width: 11%;
+            text-align: center;
+          }
+          .buttonText {
+            width: 10%;
             text-align: center;
           }
           .hotText {
@@ -212,12 +222,19 @@ class ExerciseListScreen extends Component {
         <li className={'hotText'} key={7}>
           {item.hot ? '是' : '否'}
         </li>
-        <li className={'hotText'} key={8}>
+        <li className={'buttonText'} key={8}>
           <button
             className='fenyeItem'
             onClick={() => this.goToDetail(item.id)}
           >
             查看
+          </button>
+          <button
+            style={{marginLeft: '5px'}}
+            className='fenyeItem'
+            onClick={() => this.goToEdit(item.id)}
+          >
+            编辑
           </button>
         </li>
         <style jsx>{`
@@ -235,6 +252,10 @@ class ExerciseListScreen extends Component {
           }
           .hotText {
             width: 5%;
+            text-align: center;
+          }
+          .buttonText {
+            width: 10%;
             text-align: center;
           }
           .fenyeItem {
@@ -263,7 +284,6 @@ class ExerciseListScreen extends Component {
             status={this.state.status}
             config={{ selectTitle: '考试类型', valueKey: 'value', titleKey: 'title' }}
             changeStatus={status => {
-              console.log('status ======== ', status)
               this.changeStatus('examinationDifficultyId', status)
             }}
           />

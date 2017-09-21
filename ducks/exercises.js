@@ -51,6 +51,11 @@ const QUERY_EXERCISES = gql`
         id
         name
       }
+      exerciseImages {
+        id
+        text
+        image
+      }
       section {
         id
         name
@@ -62,7 +67,7 @@ const QUERY_EXERCISES = gql`
       yearExerciseList {
         id
         year
-        yearExerciseType{
+        yearExerciseType {
           id
           name
         }
@@ -77,7 +82,11 @@ const QUERY_EXERCISES = gql`
 
 export const queryExercises = (client, { skip, limit, hot, type, examinationDifficultyId, yearExerciseListId, subjectId, chapterId, sectionId }) => async dispatch => {
   try {
-    const data = await client.query({ query: QUERY_EXERCISES, variables: { skip, limit, hot, type, examinationDifficultyId, yearExerciseListId, subjectId, chapterId, sectionId }, fetchPolicy: 'network-only' })
+    const data = await client.query({
+      query: QUERY_EXERCISES,
+      variables: { skip, limit, hot, type, examinationDifficultyId, yearExerciseListId, subjectId, chapterId, sectionId },
+      fetchPolicy: 'network-only'
+    })
     const { exercises } = data.data
     let json = formatExercise(exercises)
     dispatch({
@@ -90,6 +99,87 @@ export const queryExercises = (client, { skip, limit, hot, type, examinationDiff
       type: SUBJECT_EXERCISES_FAIL,
       error: e.message
     })
+  }
+}
+
+const UPDATE_EXERCISE = gql`
+  mutation($exerciseId: ObjID!, $content: String!) {
+    updateExercise(id: $exerciseId, input: { content: $content }) {
+      id
+      content
+      hot
+      num
+      type
+      subject {
+        id
+        name
+      }
+      exerciseImages {
+        id
+        text
+        image
+      }
+      section {
+        id
+        name
+        chapter {
+          id
+          name
+        }
+      }
+      yearExerciseList {
+        id
+        year
+        yearExerciseType {
+          id
+          name
+        }
+      }
+      examinationDifficulty {
+        id
+        name
+      }
+    }
+  }
+`
+
+export const updateExercise = (client, { exerciseId, content }) => async dispatch => {
+  try {
+    let data = await client.mutate({ mutation: UPDATE_EXERCISE, variables: { exerciseId, content } })
+    const { updateExercise } = data.data
+    let json = formatExercise([updateExercise])
+    dispatch({
+      type: SUBJECT_EXERCISES_SUCCESS,
+      data: json
+    })
+    return null
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
+
+const CREATE_EXERCISE_IMAGES = gql`
+  mutation($inputs: [createExerciseImageinput!]!) {
+    createExerciseImages(inputs: $inputs) {
+      id
+    }
+  }
+`
+
+export const createExerciseImages = (client, { inputs }) => async dispatch => {
+  try {
+    let data = await client.mutate({ mutation: CREATE_EXERCISE_IMAGES, variables: { inputs } })
+    const { createExerciseImages } = data.data
+    let json = formatExercise([createExerciseImages])
+    dispatch({
+      type: SUBJECT_EXERCISES_SUCCESS,
+      data: json
+    })
+    return null
+  } catch (e) {
+    console.log(e)
+    return e.message
   }
 }
 
