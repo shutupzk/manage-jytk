@@ -53,6 +53,12 @@ class ExerciseRealListScreen extends Component {
     Router.push('/exercise/detail')
   }
 
+  goToEdit (exerciseId) {
+    const { selectExercise } = this.props
+    selectExercise({ exerciseId })
+    Router.push('/exercise/edit')
+  }
+
   queryYearExerciseLists (yearExerciseTypeId) {
     if (!yearExerciseTypeId) return
     const { client, queryYearExerciseLists } = this.props
@@ -126,9 +132,9 @@ class ExerciseRealListScreen extends Component {
         <li className={'subjectText titleText'} key={4}>
           年份
         </li>
-        <li className={'subjectText titleText'} key={5}>
-          查看
-        </li>
+        <li className={'buttonText titleText'} key={8}>
+        操作
+      </li>
         <style jsx>{`
           .orderTitle {
             color: #797979;
@@ -143,6 +149,10 @@ class ExerciseRealListScreen extends Component {
           .numberText {
             width: 5%;
             text-align: left;
+          }
+          .buttonText {
+            width: 10%;
+            text-align: center;
           }
           .contentText {
             width: 50%;
@@ -172,18 +182,29 @@ class ExerciseRealListScreen extends Component {
         <li className={'subjectText'} key={4}>
           {item.year || '无'}
         </li>
-        <li className={'subjectText'} key={5}>
+        <li className={'buttonText'} key={5}>
           <button
             className='fenyeItem'
             onClick={() => this.goToDetail(item.id)}
           >
             查看
           </button>
+          <button
+            style={{marginLeft: '5px'}}
+            className='fenyeItem'
+            onClick={() => this.goToEdit(item.id)}
+          >
+            编辑
+          </button>
         </li>
         <style jsx>{`
           .numberText {
             width: 5%;
             text-align: left;
+          }
+          .buttonText {
+            width: 10%;
+            text-align: center;
           }
           .contentText {
             width: 50%;
