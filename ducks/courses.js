@@ -147,6 +147,39 @@ export const createCourse = (client, { title, type, content, date, url, teacher,
   }
 }
 
+const UPDATE_COURSE = gql`
+  mutation($id: ObjID!, $hot: Boolean) {
+    updateCourse(id: $id, input: { hot: $hot }) {
+      id
+      title
+      url
+      content
+      hot
+      date
+      teacher
+      abstract
+      createdAt
+      type
+    }
+  }
+`
+
+export const updateCourse = (client, { id, hot }) => async dispatch => {
+  try {
+    let data = await client.mutate({ mutation: UPDATE_COURSE, variables: { id, hot } })
+    const { updateCourse } = data.data
+    let json = { [id]: updateCourse }
+    dispatch({
+      type: COURSE_COURSE_SUCCESS,
+      data: json
+    })
+    return null
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
+
 export const selectCourse = ({ courseId }) => dispatch => {
   dispatch({
     type: COURSE_COURSE_SELECT,

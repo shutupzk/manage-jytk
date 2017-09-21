@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 // import { Router } from '../../../routes'
 // import Router from 'next/router'
 import { Loading, PageCard } from '../../../components'
-import { queryCourses } from '../../../ducks'
+import { queryCourses, updateCourse } from '../../../ducks'
 import { connect } from 'react-redux'
 
 class CourseListScreen extends Component {
@@ -77,9 +77,9 @@ class CourseListScreen extends Component {
         <li className={'subjectText titleText'} key={5}>
           日期
         </li>
-        {/* <li className={'subjectText titleText'} key={7}>
-          查看
-        </li> */}
+        <li className={'subjectText titleText'} key={7}>
+          推荐
+        </li>
         <style jsx>{`
           .orderTitle {
             color: #797979;
@@ -116,8 +116,13 @@ class CourseListScreen extends Component {
     )
   }
 
+  updateCourse (id, hot) {
+    const { client, updateCourse } = this.props
+    updateCourse(client, { id, hot })
+  }
+
   renderRow (item, index) {
-    let {url, type} = item
+    let { url, type } = item
     if (type === 'video') {
       url = url + '?vframe/jpg/offset/0'
       type = '视频'
@@ -141,11 +146,35 @@ class CourseListScreen extends Component {
         <li className={'subjectText'} key={5}>
           {item.date || ''}
         </li>
-        {/* <li className={'subjectText'} key={7}>
-          <button className='fenyeItem' onClick={() => this.goToDetail(item.id)}>
-            查看
-          </button>
-        </li> */}
+        <li className={'subjectText'} key={7}>
+          <article className='checkboxRow'>
+            {item.hot ? (
+              <input
+                style={{ display: 'none' }}
+                onClick={e => this.updateCourse(item.id, false)}
+                checked
+                type='checkbox'
+                id={`showInternet${item.id}`}
+                ref={`${item.id}Ref`}
+              />
+            ) : (
+              <input
+                style={{ display: 'none' }}
+                checked={false}
+                onClick={e => this.updateCourse(item.id, true)}
+                type='checkbox'
+                id={`showInternet${item.id}`}
+                ref={`${item.id}Ref`}
+              />
+            )}
+            <label style={{ top: '8px' }} htmlFor={`showInternet${item.id}`}>
+              开启
+            </label>
+            <label style={{ top: '8px' }} htmlFor={`showInternet${item.id}`}>
+              关闭
+            </label>
+          </article>
+        </li>
         <style jsx>{`
           .numberText {
             width: 5%;
@@ -174,6 +203,61 @@ class CourseListScreen extends Component {
             cursor: pointer;
             border: 1px solid #3ca0ff;
             color: #fff;
+          }
+          .checkboxRow {
+            position: relative;
+            height: 24px;
+            width: 56px;
+            display: inline-block;
+          }
+          .checkboxRow label {
+            color: #b4b4b4;
+            border: 1px solid #d8d8d8;
+            background: #f2f2f2;
+            padding-left: 10px;
+            padding-right: 0;
+            border-radius: 16px;
+            line-height: 0.19rem;
+            text-align: center;
+            width: 0.44rem;
+            font-size: 12px;
+            position: absolute;
+            display: block;
+            top: 0;
+            left: 0;
+          }
+          .checkboxRow label:nth-of-type(1) {
+            color: #3464ca;
+            border: 1px solid #3464ca;
+            padding-right: 10px;
+            padding-left: 0;
+            background: #e4edff;
+            opacity: 0;
+            z-index: 1;
+          }
+          .checkboxRow label:nth-of-type(1):after,
+          .checkboxRow label:nth-of-type(2):before {
+            display: inline-block;
+            content: '';
+            width: 0.14rem;
+            height: 0.14rem;
+            background: #d8d8d8;
+            border-radius: 100%;
+            position: absolute;
+            top: 2px;
+          }
+          .checkboxRow label:nth-of-type(1):after {
+            right: 2px;
+            background: #3464ca;
+          }
+          .checkboxRow label:nth-of-type(2):before {
+            left: 2px;
+          }
+          .checkboxRow input[type='checkbox']:checked + label:nth-of-type(2) {
+            opacity: 0;
+          }
+          .checkboxRow input[type='checkbox']:checked + label:nth-of-type(1) {
+            opacity: 1;
           }
         `}</style>
       </ul>
@@ -232,4 +316,4 @@ function mapStateToProps (state) {
   }
 }
 
-export default connect(mapStateToProps, { queryCourses })(CourseListScreen)
+export default connect(mapStateToProps, { queryCourses, updateCourse })(CourseListScreen)
