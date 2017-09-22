@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 // import Router from 'next/router'
 import { Loading, theme, FilterCard, SelectFilterCard } from '../../../components'
 import { API_SERVER } from '../../../config'
-import { queryExaminationDifficultys, queryYearExerciseTypes } from '../../../ducks'
+import { queryExaminationDifficultys, queryYearExerciseTypes, queryYearExamTypes } from '../../../ducks'
 import { connect } from 'react-redux'
 import request from 'superagent-bluebird-promise'
 import AlertContainer from 'react-alert'
@@ -15,20 +15,22 @@ class ExerciseRealImportScreen extends Component {
       loading: false,
       examinationDifficultyId: null,
       yearExerciseTypeId: null,
+      yearExamTypeId: null,
       year: null
     }
     this.alertOptions = {
       offset: 14,
       position: 'top right',
       theme: 'dark',
-      time: 5000,
+      time: 1000,
       transition: 'scale'
     }
   }
 
   componentWillMount () {
-    const { client, queryExaminationDifficultys } = this.props
+    const { client, queryExaminationDifficultys, queryYearExamTypes } = this.props
     queryExaminationDifficultys(client)
+    queryYearExamTypes(client)
   }
 
   getExaminationdifficultys () {
@@ -51,6 +53,15 @@ class ExerciseRealImportScreen extends Component {
     return array
   }
 
+  getYearExamTypes () {
+    const { yearexamtypes } = this.props
+    let array = []
+    for (let key in yearexamtypes) {
+      array.push({ title: yearexamtypes[key].name, value: key })
+    }
+    return array
+  }
+
   getYears () {
     let year = moment().year()
     let array = []
@@ -62,61 +73,49 @@ class ExerciseRealImportScreen extends Component {
 
   submit () {
     if (!this.files || !this.files.length > 0) return
-    const { examinationDifficultyId, yearExerciseTypeId, year, loading } = this.state
+    const { examinationDifficultyId, yearExerciseTypeId, yearExamTypeId, year, loading } = this.state
     if (!examinationDifficultyId) {
       this.setState({ loading: false })
-      return this.msg.show('请选择考试等级', {
-        time: 2000,
-        type: 'success'
-      })
+      return this.msg.show('请选择考试等级')
     }
     if (!yearExerciseTypeId) {
       this.setState({ loading: false })
-      return this.msg.show('请选择考试类型', {
-        time: 2000,
-        type: 'success'
-      })
+      return this.msg.show('请选择考试类型')
     }
     if (!year) {
       this.setState({ loading: false })
-      return this.msg.show('请选择年份', {
-        time: 2000,
-        type: 'success'
-      })
+      return this.msg.show('请选择年份')
+    }
+    if (!yearExamTypeId) {
+      this.setState({ loading: false })
+      return this.msg.show('请选择子类型')
     }
     if (!loading) {
       this.setState({ loading: true })
       let file = this.files[0]
       console.log(file)
       request
-        .post(`http://${API_SERVER}/uploadReal?examinationDifficultyId=` + examinationDifficultyId + '&year=' + year + '&yearExerciseTypeId=' + yearExerciseTypeId)
+        .post(
+          `http://${API_SERVER}/uploadReal?examinationDifficultyId=` + examinationDifficultyId + '&year=' + year + '&yearExerciseTypeId=' + yearExerciseTypeId + '&yearExamTypeId=' + yearExamTypeId
+        )
         .attach('files', this.files[0])
         .set('Accept', 'application/json')
         .then(res => {
           if (res.statusCode === 200) {
-            console.log(res.text)
-            this.setState({ loading: false, examinationDifficultyId: null, yearExerciseTypeId: null, year: null })
-            console.log('bbbbb')
+            this.setState({ loading: false, examinationDifficultyId: null, yearExerciseTypeId: null, year: null, yearExamTypeId: null })
             this.msg.show(res.text, {
-              time: 4000,
               type: 'success'
             })
           } else {
             console.log('上传失败', res)
-            this.setState({ loading: false, examinationDifficultyId: null, yearExerciseTypeId: null, year: null })
-            this.msg.show('上传失败', {
-              time: 2000,
-              type: 'success'
-            })
+            this.setState({ loading: false, examinationDifficultyId: null, yearExerciseTypeId: null, year: null, yearExamTypeId: null })
+            this.msg.show('上传失败')
           }
         })
         .catch(e => {
           console.log(e)
-          this.setState({ loading: false, examinationDifficultyId: null, yearExerciseTypeId: null, year: null })
-          this.msg.show('上传失败', {
-            time: 2000,
-            type: 'success'
-          })
+          this.setState({ loading: false, examinationDifficultyId: null, yearExerciseTypeId: null, year: null, yearExamTypeId: null })
+          this.msg.show('上传失败')
         })
     }
   }
@@ -131,7 +130,7 @@ class ExerciseRealImportScreen extends Component {
   render () {
     const { client, queryYearExerciseTypes } = this.props
     return (
-      <div style={{ width: '40%', margin: '0 auto' }}>
+      <div style={{ width: '80%', margin: '0 auto' }}>
         <FilterCard>
           <SelectFilterCard
             data={this.getExaminationdifficultys()}
@@ -156,6 +155,14 @@ class ExerciseRealImportScreen extends Component {
             config={{ selectTitle: '选择年份', valueKey: 'value', titleKey: 'title' }}
             changeStatus={year => {
               this.setState({ year })
+            }}
+          />
+          <SelectFilterCard
+            data={this.getYearExamTypes()}
+            status={this.state.status}
+            config={{ selectTitle: '选择子类型', valueKey: 'value', titleKey: 'title' }}
+            changeStatus={yearExamTypeId => {
+              this.setState({ yearExamTypeId })
             }}
           />
         </FilterCard>
@@ -213,8 +220,9 @@ class ExerciseRealImportScreen extends Component {
 function mapStateToProps (state) {
   return {
     examinationdifficultys: state.examinationdifficultys.data,
-    yearexercisetypes: state.yearexercisetypes.data
+    yearexercisetypes: state.yearexercisetypes.data,
+    yearexamtypes: state.yearexamtypes.data
   }
 }
 
-export default connect(mapStateToProps, { queryExaminationDifficultys, queryYearExerciseTypes })(ExerciseRealImportScreen)
+export default connect(mapStateToProps, { queryExaminationDifficultys, queryYearExerciseTypes, queryYearExamTypes })(ExerciseRealImportScreen)

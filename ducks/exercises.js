@@ -31,7 +31,7 @@ export function exercises (state = initState, action = {}) {
 }
 
 const QUERY_EXERCISES = gql`
-  query($skip: Int, $limit: Int, $type: String!, $examinationDifficultyId: ObjID, $yearExerciseListId: ObjID, $subjectId: ObjID, $chapterId: ObjID, $sectionId: ObjID) {
+  query($skip: Int, $limit: Int, $type: String!, $examinationDifficultyId: ObjID, $yearExerciseListId: ObjID, $subjectId: ObjID, $chapterId: ObjID, $sectionId: ObjID, $yearExamTypeId: ObjID) {
     exercises(
       skip: $skip
       limit: $limit
@@ -41,6 +41,7 @@ const QUERY_EXERCISES = gql`
       subjectId: $subjectId
       chapterId: $chapterId
       sectionId: $sectionId
+      yearExamTypeId: $yearExamTypeId
     ) {
       id
       content
@@ -76,15 +77,20 @@ const QUERY_EXERCISES = gql`
         id
         name
       }
+      yearExamType {
+        id
+        name
+      }
     }
   }
 `
 
-export const queryExercises = (client, { skip, limit, hot, type, examinationDifficultyId, yearExerciseListId, subjectId, chapterId, sectionId }) => async dispatch => {
+export const queryExercises = (client, { skip, limit, hot, type, examinationDifficultyId, yearExerciseListId, subjectId, chapterId, sectionId, yearExamTypeId }) => async dispatch => {
+  console.log('yearExamTypeId====', yearExamTypeId)
   try {
     const data = await client.query({
       query: QUERY_EXERCISES,
-      variables: { skip, limit, hot, type, examinationDifficultyId, yearExerciseListId, subjectId, chapterId, sectionId },
+      variables: { skip, limit, hot, type, examinationDifficultyId, yearExerciseListId, subjectId, chapterId, sectionId, yearExamTypeId },
       fetchPolicy: 'network-only'
     })
     const { exercises } = data.data
@@ -136,6 +142,10 @@ const UPDATE_EXERCISE = gql`
         }
       }
       examinationDifficulty {
+        id
+        name
+      }
+      yearExamType {
         id
         name
       }
@@ -191,10 +201,24 @@ export const selectExercise = ({ exerciseId }) => dispatch => {
 }
 
 function formatExercise (exercises) {
+  console.log('exercises ======== ', exercises)
   let json = {}
   for (let doc of exercises) {
     let type = doc.type
-    let yearExerciseListId, yearExerciseTypeId, yearExerciseTypeName, year, examinationDifficultyId, examinationDifficultyName, subjectId, subjectName, sectionId, chapterId, sectionName, chapterName
+    let yearExerciseListId,
+      yearExerciseTypeId,
+      yearExerciseTypeName,
+      year,
+      examinationDifficultyId,
+      examinationDifficultyName,
+      subjectId,
+      subjectName,
+      sectionId,
+      chapterId,
+      sectionName,
+      chapterName,
+      yearExamTypeId,
+      yearExamTypeName
     if (doc.subject) {
       subjectId = doc.subject.id
       subjectName = doc.subject.name
@@ -215,6 +239,11 @@ function formatExercise (exercises) {
       chapterId = doc.section.chapter.id
       chapterName = doc.section.chapter.name
     }
+
+    if (doc.yearExamType) {
+      yearExamTypeId = doc.yearExamType.id
+      yearExamTypeName = doc.yearExamType.name
+    }
     json[doc.id] = Object.assign({}, doc, {
       yearExerciseListId,
       yearExerciseTypeId,
@@ -228,6 +257,8 @@ function formatExercise (exercises) {
       sectionName,
       chapterName,
       subjectName,
+      yearExamTypeId,
+      yearExamTypeName,
       type
     })
   }

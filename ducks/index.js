@@ -15,6 +15,7 @@ import { analysiss, queryAnalysiss } from './analysiss'
 import { yearexercisetypes, queryYearExerciseTypes, selectYearExerciseType } from './yearexercisetypes'
 import { qiniu, getQiniuUpToken, selectImgFiles, changeImgBase64 } from './qiniu'
 import { coursetypes, queryCourseTypes } from './coursetypes'
+import { yearexamtypes, queryYearExamTypes } from './yearexamtypes'
 
 // export reducers by it's keys
 export {
@@ -34,7 +35,8 @@ export {
   analysiss,
   yearexercisetypes,
   qiniu,
-  coursetypes
+  coursetypes,
+  yearexamtypes
 }
 
 // export actions
@@ -79,5 +81,6 @@ export {
   updateExercise,
   createExerciseImages,
   updateAnswer,
-  updateCourse
+  updateCourse,
+  queryYearExamTypes
 }
