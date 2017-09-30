@@ -206,7 +206,6 @@ class ExerciseRealListScreen extends Component {
         <FilterCard>
           <SelectFilterCard
             data={this.getSortWay()}
-            status={this.state.sortWay}
             config={{ selectTitle: '选择排序类型', valueKey: 'value', titleKey: 'title' }}
             changeStatus={status => {
               console.log('status ======== ', status)

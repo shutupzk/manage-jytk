@@ -45,6 +45,7 @@ class UserEditScreen extends Component {
     let array = []
     for (let key in membercharges) {
       const { member, price, months } = membercharges[key]
+      if (!member) continue
       array.push({ title: `${member.name}     ${price}元/${months}月`, value: key })
     }
     return array

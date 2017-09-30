@@ -124,6 +124,7 @@ class AnalysisListScreen extends Component {
     if (adopt === '0') adopt = '待确认'
     if (adopt === '2') adopt = '否'
     if (adopt === '1') adopt = '采纳'
+    if (!item || !item.user) return null
     return (
       <ul className='flex tb-flex listItem' key={item.id}>
         <li className={'numberText'} key={1}>
