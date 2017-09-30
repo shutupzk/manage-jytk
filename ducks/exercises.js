@@ -201,7 +201,6 @@ export const selectExercise = ({ exerciseId }) => dispatch => {
 }
 
 function formatExercise (exercises) {
-  console.log('exercises ======== ', exercises)
   let json = {}
   for (let doc of exercises) {
     let type = doc.type

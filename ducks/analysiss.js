@@ -8,7 +8,6 @@ const SUBJECT_ANALYSISS_SELECT = 'SUBJECT_ANALYSISS_SECTION_SELECT'
 const initState = {
   data: {},
   error: null,
-  skip: 0,
   selectId: null
 }
 
@@ -18,7 +17,6 @@ export function analysiss (state = initState, action = {}) {
     case EXAMINATION_ANALYSISS_SUCCESS:
       return Object.assign({}, state, {
         data: Object.assign({}, state.data, action.data),
-        skip: action.skip,
         error: null
       })
     case SUBJECT_ANALYSISS_FAIL:
@@ -31,34 +29,35 @@ export function analysiss (state = initState, action = {}) {
 }
 
 const QUERY_ANALYSISS = gql`
-  query($exerciseId: ObjID!) {
-    exercise(id: $exerciseId) {
+  {
+    analysiss(isUser: true) {
       id
-      analysiss{
+      content
+      adopt
+      user {
+        id
+        name
+      }
+      exercise {
         id
         content
-        createdAt
-        user{
-          id
-          name
-          phone
-        }
       }
+      createdAt
     }
   }
 `
 
-export const queryAnalysiss = (client, { exerciseId }) => async dispatch => {
+export const queryAnalysiss = client => async dispatch => {
   try {
     const data = await client.query({
       query: QUERY_ANALYSISS,
-      variables: { exerciseId },
+      variables: {},
       fetchPolicy: 'network-only'
     })
-    const { analysiss } = data.data.exercise
+    const { analysiss } = data.data
     let json = {}
     for (let doc of analysiss) {
-      json[doc.id] = Object.assign({}, doc, { exerciseId })
+      json[doc.id] = doc
     }
     dispatch({
       type: SUBJECT_ANALYSISS_SUCCESS,
@@ -70,6 +69,41 @@ export const queryAnalysiss = (client, { exerciseId }) => async dispatch => {
       type: SUBJECT_ANALYSISS_FAIL,
       error: e.message
     })
+  }
+}
+
+const UPDATE_ANALYSISS = gql`
+  mutation($id: ObjID!, $adopt: String!) {
+    updateAnalysis(id: $id, input: { adopt: $adopt }) {
+      id
+      content
+      adopt
+      user {
+        id
+        name
+      }
+      exercise {
+        id
+        content
+      }
+      createdAt
+    }
+  }
+`
+
+export const upadateAnalysis = (client, { id, adopt }) => async dispatch => {
+  try {
+    let data = await client.mutate({ mutation: UPDATE_ANALYSISS, variables: { id, adopt } })
+    const { updateAnalysis } = data.data
+    let json = { [updateAnalysis.id]: updateAnalysis }
+    dispatch({
+      type: SUBJECT_ANALYSISS_SUCCESS,
+      data: json
+    })
+    return null
+  } catch (e) {
+    console.log(e)
+    return e.message
   }
 }
 

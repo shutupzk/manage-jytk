@@ -27,20 +27,28 @@ const MAINFUNCTION = [
     children: [{ title: '基础题库列表', navigateName: '/exercise', color: '#5D75A6' }, { title: '真题题库列表', navigateName: '/exercise/real', color: '#5D75A6' }, { title: '基础题库导入', navigateName: '/exercise/import', color: '#5D75A6' }, { title: '真题题库导入', navigateName: '/exercise/real/import', color: '#5D75A6' }]
   },
   {
-    title: '用户管理',
-    short_name: 'user',
-    navigateName: '/user',
-    children: [
-      {title: '用户列表', navigateName: '/user', color: '#5D75A6'}
-    ]
-  },
-  {
     title: '课程管理',
     short_name: 'course',
     navigateName: '/course',
     children: [
       {title: '课程列表', navigateName: '/course', color: '#5D75A6'},
       {title: '上传课程', navigateName: '/course/import', color: '#5D75A6'}
+    ]
+  },
+  {
+    title: '解析管理',
+    short_name: 'analysis',
+    navigateName: '/analysis',
+    children: [
+      {title: '解析列表', navigateName: '/analysis', color: '#5D75A6'}
+    ]
+  },
+  {
+    title: '用户管理',
+    short_name: 'user',
+    navigateName: '/user',
+    children: [
+      {title: '用户列表', navigateName: '/user', color: '#5D75A6'}
     ]
   }
 ]
