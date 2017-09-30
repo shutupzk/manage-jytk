@@ -122,7 +122,7 @@ class AnalysisListScreen extends Component {
   renderRow (item, index) {
     let adopt = item.adopt || ''
     if (adopt === '0') adopt = '待确认'
-    if (adopt === '-1') adopt = '被否认'
+    if (adopt === '2') adopt = '被否认'
     if (adopt === '1') adopt = '采纳'
     return (
       <ul className='flex tb-flex listItem' key={item.id}>
@@ -145,7 +145,7 @@ class AnalysisListScreen extends Component {
           {adopt}
         </li>
         <li className={'subjectText'} key={6}>
-          <button className='fenyeItemX' onClick={() => this.updateAnalysis(item.id, '-1')}>
+          <button className='fenyeItemX' onClick={() => this.updateAnalysis(item.id, '2')}>
             拒绝
           </button>
           <button style={{ marginLeft: '5px' }} className='fenyeItem' onClick={() => this.updateAnalysis(item.id, '1')}>
