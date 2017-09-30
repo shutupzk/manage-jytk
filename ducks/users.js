@@ -25,7 +25,7 @@ export function users (state = initState, action = {}) {
 }
 
 const QUERY_SUBJECTS = gql`
-  query($skip: Int, $limit: Int, $sort: String ) {
+  query($skip: Int, $limit: Int, $sort: String) {
     users(skip: $skip, limit: $limit, sort: $sort) {
       id
       phone
@@ -34,6 +34,10 @@ const QUERY_SUBJECTS = gql`
       countUserAnswer
       countRightUserAnswer
       name
+      member {
+        id
+        name
+      }
     }
   }
 `
@@ -59,7 +63,43 @@ export const queryUsers = (client, { skip, limit, sort }) => async dispatch => {
   }
 }
 
-export const selectuser = ({ userId }) => dispatch => {
+const QUERY_USER_DETAIL = gql`
+  query($id: ObjID!) {
+    user(id: $id) {
+      id
+      phone
+      score
+      scoreUsed
+      countUserAnswer
+      countRightUserAnswer
+      name
+      member {
+        id
+        name
+      }
+    }
+  }
+`
+
+export const queryUserDetial = (client, { id }) => async dispatch => {
+  try {
+    const data = await client.query({ query: QUERY_USER_DETAIL, variables: { id }, fetchPolicy: 'network-only' })
+    const { user } = data.data
+    let json = { [user.id]: user }
+    dispatch({
+      type: USER_USER_SUCCESS,
+      data: json
+    })
+  } catch (e) {
+    console.log(e.message)
+    dispatch({
+      type: USER_USER_FAIL,
+      error: e.message
+    })
+  }
+}
+
+export const selectUser = ({ userId }) => dispatch => {
   dispatch({
     type: USER_USER_SELECT,
     selectId: userId

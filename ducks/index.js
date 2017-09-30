@@ -1,4 +1,4 @@
-import { users, queryUsers } from './users'
+import { users, queryUsers, selectUser, queryUserDetial } from './users'
 import { prompt, showPrompt, hidePrompt } from './prompt'
 import { subjects, querySubjects, selectSubject, selectSubjectType } from './subjects'
 import { chapters, queryChapters, selectChapter } from './chapters'
@@ -16,6 +16,7 @@ import { yearexercisetypes, queryYearExerciseTypes, selectYearExerciseType } fro
 import { qiniu, getQiniuUpToken, selectImgFiles, changeImgBase64 } from './qiniu'
 import { coursetypes, queryCourseTypes } from './coursetypes'
 import { yearexamtypes, queryYearExamTypes } from './yearexamtypes'
+import { membercharges, queryMemberCharges, giveUserMember, giveUserScore } from './membercharges'
 
 // export reducers by it's keys
 export {
@@ -36,7 +37,8 @@ export {
   yearexercisetypes,
   qiniu,
   coursetypes,
-  yearexamtypes
+  yearexamtypes,
+  membercharges
 }
 
 // export actions
@@ -83,5 +85,10 @@ export {
   updateAnswer,
   updateCourse,
   queryYearExamTypes,
-  upadateAnalysis
+  upadateAnalysis,
+  selectUser,
+  queryMemberCharges,
+  giveUserMember,
+  queryUserDetial,
+  giveUserScore
 }

@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 // import { Router } from '../../../routes'
-// import Router from 'next/router'
+import Router from 'next/router'
 import { Loading, PageCard, FilterCard, SelectFilterCard } from '../../../components'
-import { queryUsers } from '../../../ducks'
+import { queryUsers, selectUser } from '../../../ducks'
 import { connect } from 'react-redux'
 
 class ExerciseRealListScreen extends Component {
@@ -66,6 +66,12 @@ class ExerciseRealListScreen extends Component {
     return array
   }
 
+  goToDetail (userId) {
+    const { selectUser } = this.props
+    selectUser({ userId })
+    Router.push('/user/edit')
+  }
+
   renderTitle () {
     return (
       <ul className='flex tb-flex orderTitle'>
@@ -77,6 +83,9 @@ class ExerciseRealListScreen extends Component {
         </li>
         <li className={'subjectText titleText '} key={21}>
           姓名
+        </li>
+        <li className={'subjectText titleText '} key={22}>
+          会员
         </li>
         <li className={'subjectText titleText'} key={3}>
           积分
@@ -90,9 +99,9 @@ class ExerciseRealListScreen extends Component {
         <li className={'subjectText titleText'} key={6}>
           累计正确数
         </li>
-        {/* <li className={'subjectText titleText'} key={7}>
+        <li className={'subjectText titleText'} key={7}>
           查看
-        </li> */}
+        </li>
         <style jsx>{`
           .orderTitle {
             color: #797979;
@@ -133,6 +142,9 @@ class ExerciseRealListScreen extends Component {
         <li className={'subjectText'} key={21}>
           {item.name || ''}
         </li>
+        <li className={'subjectText'} key={22}>
+          <span style={{ color: 'red' }}>{item.member ? item.member.name : ''}</span>
+        </li>
         <li className={'subjectText'} key={3}>
           {item.score || 0}
         </li>
@@ -145,11 +157,11 @@ class ExerciseRealListScreen extends Component {
         <li className={'subjectText'} key={6}>
           {item.countRightUserAnswer || 0}
         </li>
-        {/* <li className={'subjectText'} key={7}>
+        <li className={'subjectText'} key={7}>
           <button className='fenyeItem' onClick={() => this.goToDetail(item.id)}>
-            查看
+            设置
           </button>
-        </li> */}
+        </li>
         <style jsx>{`
           .numberText {
             width: 5%;
@@ -239,4 +251,4 @@ function mapStateToProps (state) {
   }
 }
 
-export default connect(mapStateToProps, { queryUsers })(ExerciseRealListScreen)
+export default connect(mapStateToProps, { queryUsers, selectUser })(ExerciseRealListScreen)

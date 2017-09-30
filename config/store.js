@@ -22,7 +22,8 @@ import {
   yearexercisetypes,
   qiniu,
   coursetypes,
-  yearexamtypes
+  yearexamtypes,
+  membercharges
 } from '../ducks'
 // 服务地址
 // export const API_SERVER = 'localhost:3000'
@@ -87,7 +88,8 @@ function getReducer (client) {
     yearexercisetypes,
     qiniu,
     coursetypes,
-    yearexamtypes
+    yearexamtypes,
+    membercharges
   })
 }
 
