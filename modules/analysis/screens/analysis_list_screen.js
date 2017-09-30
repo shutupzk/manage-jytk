@@ -122,7 +122,7 @@ class AnalysisListScreen extends Component {
   renderRow (item, index) {
     let adopt = item.adopt || ''
     if (adopt === '0') adopt = '待确认'
-    if (adopt === '2') adopt = '被否认'
+    if (adopt === '2') adopt = '否'
     if (adopt === '1') adopt = '采纳'
     return (
       <ul className='flex tb-flex listItem' key={item.id}>
