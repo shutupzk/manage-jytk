@@ -88,9 +88,9 @@ class CourseImageListScreen extends Component {
         <li className={'titleNameText'} key={21}>
           标题
         </li>
-        <li className={'subjectText'} key={3}>
+        {/* <li className={'subjectText'} key={3}>
           科目
-        </li>
+        </li> */}
         <li className={'contentText titleText'} key={4}>
           摘要
         </li>
@@ -160,7 +160,7 @@ class CourseImageListScreen extends Component {
     }
   }
   renderRow (item, index) {
-    let { url, subject } = item
+    let { url } = item
     url = url + '?imageView2/1/w/180/h/120'
     return (
       <ul className='flex tb-flex listItem' key={item.id}>
@@ -170,9 +170,9 @@ class CourseImageListScreen extends Component {
         <li className={'titleNameText'} key={21}>
           {item.title || ''}
         </li>
-        <li className={'subjectText'} key={3}>
+        {/* <li className={'subjectText'} key={3}>
           {subject ? subject.name : '无'}
-        </li>
+        </li> */}
         <li className={'contentText'} key={4}>
           {item.abstract || ''}
         </li>
