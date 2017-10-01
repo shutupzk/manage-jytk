@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 // import { Router } from '../../../routes'
 // import Router from 'next/router'
-import { Loading, PageCard, FilterCard, SelectFilterCard } from '../../../components'
+import { Loading, PageCard } from '../../../components'
 import { queryCourses, updateCourse, removeCourse, querySubjects } from '../../../ducks'
 import { connect } from 'react-redux'
 import AlertContainer from 'react-alert'
@@ -321,7 +321,7 @@ class CourseImageListScreen extends Component {
     return (
       <div className={'orderRecordsPage'}>
         <AlertContainer ref={a => (this.msg = a)} {...this.alertOptions} />
-        <FilterCard>
+        {/* <FilterCard>
           <SelectFilterCard
             data={this.getSubjects()}
             config={{ selectTitle: '科目', valueKey: 'value', titleKey: 'title' }}
@@ -333,7 +333,7 @@ class CourseImageListScreen extends Component {
               this.queryCourses({ page: 1, subjectId })
             }}
           />
-        </FilterCard>
+        </FilterCard> */}
         {this.renderTitle()}
         {exercises.map((item, index) => {
           return this.renderRow(item, index)

@@ -14,7 +14,9 @@ const url = `http://${API_SERVER}/qiniu/fileUploadToken`
 class CourseImportScreen extends Component {
   constructor (props) {
     super(props)
-    this.state = {}
+    this.state = {
+      showSubject: true
+    }
     this.type = '02'
     this.alertOptions = {
       offset: 14,
@@ -128,7 +130,7 @@ class CourseImportScreen extends Component {
     if (!courseTypeId) {
       return this.msg.show('请选择类型')
     }
-    if (!subjectId) {
+    if (courseTypeId === 'vedio' && !subjectId) {
       return this.msg.show('请选择科目')
     }
     if (type !== courseTypeId) {
@@ -137,7 +139,11 @@ class CourseImportScreen extends Component {
     if (!content) {
       return this.msg.show('请填写内容')
     }
-    let error = await createCourse(client, { title, type, content, date, hot, url, teacher, abstract, subjectId })
+    let ops = { title, type, content, date, hot, url, teacher, abstract }
+    if (courseTypeId === 'vedio') {
+      ops.subjectId = subjectId
+    }
+    let error = await createCourse(client, ops)
     if (error) {
       return this.msg.show('创建失败，请重试')
     } else {
@@ -185,25 +191,32 @@ class CourseImportScreen extends Component {
                 config={{ selectTitle: '课程类型', valueKey: 'value', titleKey: 'title' }}
                 changeStatus={status => {
                   if (status !== 'value') {
-                    this.setState({ courseTypeId: status })
+                    let showSubject = true
+                    if (status === 'image') {
+                      showSubject = false
+                    }
+                    this.setState({ courseTypeId: status, showSubject })
                   }
                 }}
               />
               <span className='clearfix' />
             </li>
-            <li>
-              <span className='left'>科目</span>
-              <SelectFilterCard
-                data={this.getSubjects()}
-                config={{ selectTitle: '选择科目', valueKey: 'value', titleKey: 'title' }}
-                changeStatus={subjectId => {
-                  if (subjectId !== 'value') {
-                    this.setState({ subjectId })
-                  }
-                }}
-              />
-              <span className='clearfix' />
-            </li>
+            {this.state.showSubject ? (
+              <li>
+                <span className='left'>科目</span>
+                <SelectFilterCard
+                  data={this.getSubjects()}
+                  config={{ selectTitle: '选择科目', valueKey: 'value', titleKey: 'title' }}
+                  changeStatus={subjectId => {
+                    if (subjectId !== 'value') {
+                      this.setState({ subjectId })
+                    }
+                  }}
+                />
+                <span className='clearfix' />
+              </li>
+            ) : null}
+
             {/* <li>
               <span className='left'>热门</span>
               <SelectFilterCard

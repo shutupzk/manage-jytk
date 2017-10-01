@@ -141,7 +141,7 @@ export const queryCollectCourses = (client, { skip, limit, userId }) => async di
 }
 
 const CREATE_COURSE = gql`
-  mutation($title: String!, $type: String!, $content: String!, $date: String!, $hot: Boolean, $url: String!, $teacher: String, $abstract: String, $subjectId: ObjID!) {
+  mutation($title: String!, $type: String!, $content: String!, $date: String!, $hot: Boolean, $url: String!, $teacher: String, $abstract: String, $subjectId: ObjID) {
     createCourse(input: { title: $title, type: $type, content: $content, date: $date, hot: $hot, url: $url, teacher: $teacher, abstract: $abstract, subjectId: $subjectId }) {
       id
     }
