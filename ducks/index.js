@@ -5,7 +5,7 @@ import { chapters, queryChapters, selectChapter } from './chapters'
 import { sections, querySections, selectSection } from './sections'
 import { exercises, queryExercises, selectExercise, updateExercise, createExerciseImages } from './exercises'
 import { officialexaminations, queryOfficialexaminations, selectOfficialexamination } from './officialexaminations'
-import { courses, queryCourses, selectCourse, createCourseCollect, queryCollectCourses, createCourse, updateCourse } from './courses'
+import { courses, queryCourses, selectCourse, createCourseCollect, queryCollectCourses, createCourse, updateCourse, removeCourse } from './courses'
 import { examinationtypes, queryExaminationTypes, selectExaminationType } from './examinationtypes'
 import { examinationdifficultys, queryExaminationDifficultys, selectExaminationDifficulty } from './examinationdifficultys'
 import { examinations, queryExaminations, createExamination, selectExamination, submitExamination } from './examinations'
@@ -90,5 +90,6 @@ export {
   queryMemberCharges,
   giveUserMember,
   queryUserDetial,
-  giveUserScore
+  giveUserScore,
+  removeCourse
 }

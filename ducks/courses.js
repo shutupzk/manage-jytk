@@ -3,6 +3,7 @@ import gql from 'graphql-tag'
 const COURSE_COURSE_SUCCESS = 'COURSE_COURSE_SUCCESS'
 const COURSE_COURSE_FAIL = 'COURSE_COURSE_FAIL'
 const COURSE_COURSE_SELECT = 'COURSE_COURSE_SELECT'
+const COURSE_COURSE_DELETE = 'COURSE_COURSE_DELETE'
 
 const initState = {
   data: {},
@@ -18,25 +19,28 @@ export function courses (state = initState, action = {}) {
       return Object.assign({}, state, { error: action.error })
     case COURSE_COURSE_SELECT:
       return Object.assign({}, state, { selectId: action.selectId })
+    case COURSE_COURSE_DELETE:
+      let newstate = Object.assign({}, state.data)
+      delete newstate[action.id]
+      return Object.assign({}, state, { data: newstate, error: null })
     default:
       return state
   }
 }
 
 const COLLECT_COURSE = gql`
-  mutation($userId: ObjID!, $courseId: ObjID!) {
-    createCourseCollect(input: { userId: $userId, courseId: $courseId }) {
+  mutation($userId: ObjID!, $courseId: ObjID!, $subjectId: ObjID!) {
+    createCourseCollect(input: { userId: $userId, courseId: $courseId, subjectId: $subjectId }) {
       id
     }
   }
 `
 
-export const createCourseCollect = async (client, { courseId, userId }) => {
+export const createCourseCollect = async (client, { courseId, userId, subjectId }) => {
   try {
-    await client.mutate({ mutation: COLLECT_COURSE, variables: { courseId, userId } })
+    await client.mutate({ mutation: COLLECT_COURSE, variables: { courseId, userId, subjectId } })
     return null
   } catch (e) {
-    console.log(e.message)
     let error = e.message.replace('GraphQL error: ', '')
     if (error === '请勿重复收藏') {
       return null
@@ -46,8 +50,8 @@ export const createCourseCollect = async (client, { courseId, userId }) => {
 }
 
 const QUERY_COURSES = gql`
-  query($skip: Int, $limit: Int, $hot: Boolean) {
-    courses(skip: $skip, limit: $limit, hot: $hot) {
+  query($skip: Int, $limit: Int, $hot: Boolean, $type: String, $subjectId: ObjID) {
+    courses(skip: $skip, limit: $limit, hot: $hot, type: $type, subjectId: $subjectId) {
       id
       title
       url
@@ -58,13 +62,17 @@ const QUERY_COURSES = gql`
       abstract
       createdAt
       type
+      subject {
+        id
+        name
+      }
     }
   }
 `
 
-export const queryCourses = (client, { skip, limit, hot }) => async dispatch => {
+export const queryCourses = (client, { skip, limit, hot, type, subjectId }) => async dispatch => {
   try {
-    const data = await client.query({ query: QUERY_COURSES, variables: { skip, limit, hot }, fetchPolicy: 'network-only' })
+    const data = await client.query({ query: QUERY_COURSES, variables: { skip, limit, hot, type, subjectId }, fetchPolicy: 'network-only' })
     const { courses } = data.data
     let json = {}
     for (let doc of courses) {
@@ -100,6 +108,10 @@ const QUERY_COLLECT_COURSE = gql`
           abstract
           createdAt
           type
+          subject {
+            id
+            name
+          }
         }
       }
     }
@@ -129,17 +141,17 @@ export const queryCollectCourses = (client, { skip, limit, userId }) => async di
 }
 
 const CREATE_COURSE = gql`
-  mutation($title: String!, $type: String!, $content: String!, $date: String!, $hot: Boolean, $url: String!, $teacher: String, $abstract: String) {
-    createCourse(input: { title: $title, type: $type, content: $content, date: $date, hot: $hot, url: $url, teacher: $teacher, abstract: $abstract }) {
+  mutation($title: String!, $type: String!, $content: String!, $date: String!, $hot: Boolean, $url: String!, $teacher: String, $abstract: String, $subjectId: ObjID!) {
+    createCourse(input: { title: $title, type: $type, content: $content, date: $date, hot: $hot, url: $url, teacher: $teacher, abstract: $abstract, subjectId: $subjectId }) {
       id
     }
   }
 `
 
-export const createCourse = (client, { title, type, content, date, url, teacher, abstract }) => async dispatch => {
+export const createCourse = (client, { title, type, content, date, url, teacher, abstract, subjectId }) => async dispatch => {
   // console.log('hot::::::::', hot)
   try {
-    await client.mutate({ mutation: CREATE_COURSE, variables: { title, type, content, date, url, teacher, abstract } })
+    await client.mutate({ mutation: CREATE_COURSE, variables: { title, type, content, date, url, teacher, abstract, subjectId } })
     return null
   } catch (e) {
     console.log(e.message)
@@ -160,6 +172,10 @@ const UPDATE_COURSE = gql`
       abstract
       createdAt
       type
+      subject {
+        id
+        name
+      }
     }
   }
 `
@@ -176,6 +192,25 @@ export const updateCourse = (client, { id, hot }) => async dispatch => {
     return null
   } catch (e) {
     console.log(e)
+    return e.message
+  }
+}
+
+const REMOVE_COURSE = gql`
+  mutation($id: ObjID!) {
+    removeCourse(id: $id)
+  }
+`
+
+export const removeCourse = (client, { id }) => async dispatch => {
+  try {
+    await client.mutate({ mutation: REMOVE_COURSE, variables: { id } })
+    dispatch({
+      type: COURSE_COURSE_DELETE,
+      id
+    })
+    return null
+  } catch (e) {
     return e.message
   }
 }

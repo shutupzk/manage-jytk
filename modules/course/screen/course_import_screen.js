@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 // import { Router } from '../../../routes'
 // import Router from 'next/router'
 import { theme, SelectFilterCard } from '../../../components'
-import { queryCourseTypes, createCourse } from '../../../ducks'
+import { queryCourseTypes, createCourse, querySubjects } from '../../../ducks'
 import { connect } from 'react-redux'
 import { API_SERVER } from '../../../config'
 import AlertContainer from 'react-alert'
@@ -26,8 +26,9 @@ class CourseImportScreen extends Component {
   }
 
   componentWillMount () {
-    const { client, queryCourseTypes } = this.props
+    const { client, queryCourseTypes, querySubjects } = this.props
     queryCourseTypes(client)
+    querySubjects(client)
   }
 
   async onUpload (files) {
@@ -87,6 +88,15 @@ class CourseImportScreen extends Component {
     return array
   }
 
+  getSubjects () {
+    const { subjects } = this.props
+    let array = []
+    for (let key in subjects) {
+      array.push({ title: subjects[key].name, value: key })
+    }
+    return array
+  }
+
   renderVideoContainer () {
     const { type, image, url } = this.state
     if (!type || !image || !url) return null
@@ -106,7 +116,7 @@ class CourseImportScreen extends Component {
   }
 
   async submit () {
-    const { type, title, courseTypeId, content, hot, url, teacher, abstract } = this.state
+    const { type, title, courseTypeId, content, hot, url, teacher, abstract, subjectId } = this.state
     const { client, createCourse } = this.props
     let date = moment().format('YYYY-MM-DD')
     if (!url) {
@@ -118,13 +128,16 @@ class CourseImportScreen extends Component {
     if (!courseTypeId) {
       return this.msg.show('请选择类型')
     }
+    if (!subjectId) {
+      return this.msg.show('请选择科目')
+    }
     if (type !== courseTypeId) {
       return this.msg.show('文件类型与选择的课程类型不相符')
     }
     if (!content) {
       return this.msg.show('请填写内容')
     }
-    let error = await createCourse(client, { title, type, content, date, hot, url, teacher, abstract })
+    let error = await createCourse(client, { title, type, content, date, hot, url, teacher, abstract, subjectId })
     if (error) {
       return this.msg.show('创建失败，请重试')
     } else {
@@ -137,7 +150,8 @@ class CourseImportScreen extends Component {
         hot: null,
         url: null,
         teacher: null,
-        abstract: null
+        abstract: null,
+        subjectId: null
       })
       return this.msg.show('创建成功', {
         type: 'success'
@@ -168,11 +182,23 @@ class CourseImportScreen extends Component {
               <span className='left'>类型</span>
               <SelectFilterCard
                 data={this.getCouseTyps()}
-                status={this.state.courseTypeId}
                 config={{ selectTitle: '课程类型', valueKey: 'value', titleKey: 'title' }}
                 changeStatus={status => {
                   if (status !== 'value') {
                     this.setState({ courseTypeId: status })
+                  }
+                }}
+              />
+              <span className='clearfix' />
+            </li>
+            <li>
+              <span className='left'>科目</span>
+              <SelectFilterCard
+                data={this.getSubjects()}
+                config={{ selectTitle: '选择科目', valueKey: 'value', titleKey: 'title' }}
+                changeStatus={subjectId => {
+                  if (subjectId !== 'value') {
+                    this.setState({ subjectId })
                   }
                 }}
               />
@@ -284,8 +310,9 @@ class CourseImportScreen extends Component {
 }
 function mapStateToProps (state) {
   return {
-    coursetypes: state.coursetypes.data
+    coursetypes: state.coursetypes.data,
+    subjects: state.subjects.data
   }
 }
 
-export default connect(mapStateToProps, { queryCourseTypes, createCourse })(CourseImportScreen)
+export default connect(mapStateToProps, { queryCourseTypes, createCourse, querySubjects })(CourseImportScreen)

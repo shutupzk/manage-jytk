@@ -31,7 +31,8 @@ const MAINFUNCTION = [
     short_name: 'course',
     navigateName: '/course',
     children: [
-      {title: '课程列表', navigateName: '/course', color: '#5D75A6'},
+      {title: '视频课程', navigateName: '/course', color: '#5D75A6'},
+      {title: '图文课程', navigateName: '/course/image', color: '#5D75A6'},
       {title: '上传课程', navigateName: '/course/import', color: '#5D75A6'}
     ]
   },

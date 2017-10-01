@@ -1,7 +1,9 @@
-import CourseListScreen from './screen/course_list_screen'
+import CourseVedioListScreen from './screen/course_vedio_list_screen'
+import CourseImageListScreen from './screen/course_image_list_screen'
 import CourseImportScreen from './screen/course_import_screen'
 
 export {
-  CourseListScreen,
+  CourseVedioListScreen,
+  CourseImageListScreen,
   CourseImportScreen
 }
