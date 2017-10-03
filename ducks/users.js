@@ -25,8 +25,8 @@ export function users (state = initState, action = {}) {
 }
 
 const QUERY_SUBJECTS = gql`
-  query($skip: Int, $limit: Int, $sort: String) {
-    users(skip: $skip, limit: $limit, sort: $sort) {
+  query($skip: Int, $limit: Int, $sort: String, $keyword: String) {
+    users(skip: $skip, limit: $limit, sort: $sort, keyword: $keyword) {
       id
       phone
       score
@@ -42,9 +42,9 @@ const QUERY_SUBJECTS = gql`
   }
 `
 
-export const queryUsers = (client, { skip, limit, sort }) => async dispatch => {
+export const queryUsers = (client, { skip, limit, sort, keyword }) => async dispatch => {
   try {
-    const data = await client.query({ query: QUERY_SUBJECTS, variables: { skip, limit, sort }, fetchPolicy: 'network-only' })
+    const data = await client.query({ query: QUERY_SUBJECTS, variables: { skip, limit, sort, keyword }, fetchPolicy: 'network-only' })
     const { users } = data.data
     let json = {}
     for (let doc of users) {

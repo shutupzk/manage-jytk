@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 // import { Router } from '../../../routes'
 import Router from 'next/router'
-import { Loading, PageCard, FilterCard, SelectFilterCard } from '../../../components'
+import { Loading, PageCard, FilterCard, SelectFilterCard, KeywordCard } from '../../../components'
 import { queryUsers, selectUser } from '../../../ducks'
 import { connect } from 'react-redux'
 
@@ -19,12 +19,14 @@ class ExerciseRealListScreen extends Component {
     this.queryUsers({})
   }
 
-  queryUsers ({ page, sort }) {
+  queryUsers ({ page, sort, keyword }) {
     page = page || this.state.page
+    sort = sort || this.state.sort
+    keyword = keyword || this.state.keyword
     const skip = (page - 1) * 10
     const limit = 10
     const { client, queryUsers } = this.props
-    queryUsers(client, { skip, limit, sort })
+    queryUsers(client, { skip, limit, sort, keyword })
   }
 
   getSortWay () {
@@ -34,7 +36,7 @@ class ExerciseRealListScreen extends Component {
 
   changeSortWay (sortWay) {
     if (sortWay === '') sortWay = null
-    this.setState({ sortWay, page: 1 })
+    this.setState({ sortWay, page: 1, keyword: null })
     let sort = { _id: -1 }
     if (sortWay !== null) {
       sort = { [sortWay]: -1 }
@@ -45,7 +47,7 @@ class ExerciseRealListScreen extends Component {
 
   getListData () {
     const { users } = this.props
-    const { page } = this.state
+    const { page, keyword } = this.state
     const skip = (page - 1) * 10
     const limit = 10
     let array = []
@@ -57,6 +59,11 @@ class ExerciseRealListScreen extends Component {
     let srotWay = this.state.sortWay || 'id'
     arr = arr.sort((a, b) => b[srotWay] - a[srotWay])
     for (let user of arr) {
+      if (keyword) {
+        let pattern = new RegExp(keyword)
+        const { phone, name } = user
+        if (!pattern.test(phone) && !pattern.test(name)) continue
+      }
       index++
       if (index < skip || index + 1 > skip + limit) {
         continue
@@ -208,8 +215,13 @@ class ExerciseRealListScreen extends Component {
             data={this.getSortWay()}
             config={{ selectTitle: '选择排序类型', valueKey: 'value', titleKey: 'title' }}
             changeStatus={status => {
-              console.log('status ======== ', status)
               this.changeSortWay(status)
+            }}
+          />
+          <KeywordCard
+            config={{ placeholder: '手机号/姓名', keyword: this.state.keyword }}
+            clickfilter={keyword => {
+              this.setState({ keyword: keyword, page: 1 }, () => this.queryUsers({ page: 1, keyword }))
             }}
           />
         </FilterCard>
