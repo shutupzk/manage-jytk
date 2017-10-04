@@ -86,7 +86,6 @@ const QUERY_EXERCISES = gql`
 `
 
 export const queryExercises = (client, { skip, limit, hot, type, examinationDifficultyId, yearExerciseListId, subjectId, chapterId, sectionId, yearExamTypeId }) => async dispatch => {
-  console.log('yearExamTypeId====', yearExamTypeId)
   try {
     const data = await client.query({
       query: QUERY_EXERCISES,

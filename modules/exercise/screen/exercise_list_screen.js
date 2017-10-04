@@ -36,7 +36,12 @@ class ExerciseListScreen extends Component {
 
   changeStatus (key, value) {
     if (value === '') value = null
-    let { subjectId, chapterId, sectionId } = this.state
+    let { examinationDifficultyId, subjectId, chapterId, sectionId } = this.state
+    if (key === 'examinationDifficultyId') {
+      subjectId = null
+      chapterId = null
+      sectionId = null
+    }
     if (key === 'subjectId') {
       chapterId = null
       sectionId = null
@@ -44,7 +49,7 @@ class ExerciseListScreen extends Component {
     if (key === 'chapterId') {
       sectionId = null
     }
-    let obj = Object.assign({}, { subjectId, chapterId, sectionId }, { [key]: value, page: 1 })
+    let obj = Object.assign({}, { examinationDifficultyId, subjectId, chapterId, sectionId }, { [key]: value, page: 1 })
     this.setState(obj)
     this.queryExercises(obj)
   }
