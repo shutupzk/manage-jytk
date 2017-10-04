@@ -94,6 +94,9 @@ class CourseVedioListScreen extends Component {
         <li className={'subjectText titleText'} key={7}>
           推荐
         </li>
+        <li className={'subjectText titleText'} key={71}>
+          免费
+        </li>
         <li className={'subjectText titleText'} key={8}>
           删除
         </li>
@@ -136,6 +139,11 @@ class CourseVedioListScreen extends Component {
   updateCourse (id, hot) {
     const { client, updateCourse } = this.props
     updateCourse(client, { id, hot })
+  }
+
+  updateCourseFree (id, free) {
+    const { client, updateCourse } = this.props
+    updateCourse(client, { id, free })
   }
 
   async deleteCourse (item) {
@@ -184,6 +192,21 @@ class CourseVedioListScreen extends Component {
               开启
             </label>
             <label style={{ top: '8px' }} htmlFor={`showInternet${item.id}`}>
+              关闭
+            </label>
+          </article>
+        </li>
+        <li className={'subjectText'} key={71}>
+          <article className='checkboxRow'>
+            {item.free ? (
+              <input style={{ display: 'none' }} onClick={e => this.updateCourseFree(item.id, false)} checked type='checkbox' id={`free${item.id}`} ref={`${item.id}Ref`} />
+            ) : (
+              <input style={{ display: 'none' }} checked={false} onClick={e => this.updateCourseFree(item.id, true)} type='checkbox' id={`free${item.id}`} ref={`${item.id}Ref`} />
+            )}
+            <label style={{ top: '8px' }} htmlFor={`free${item.id}`}>
+              开启
+            </label>
+            <label style={{ top: '8px' }} htmlFor={`free${item.id}`}>
               关闭
             </label>
           </article>

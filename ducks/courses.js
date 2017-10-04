@@ -62,6 +62,7 @@ const QUERY_COURSES = gql`
       abstract
       createdAt
       type
+      free
       subject {
         id
         name
@@ -106,6 +107,7 @@ const QUERY_COLLECT_COURSE = gql`
           date
           teacher
           abstract
+          free
           createdAt
           type
           subject {
@@ -141,17 +143,16 @@ export const queryCollectCourses = (client, { skip, limit, userId }) => async di
 }
 
 const CREATE_COURSE = gql`
-  mutation($title: String!, $type: String!, $content: String!, $date: String!, $hot: Boolean, $url: String!, $teacher: String, $abstract: String, $subjectId: ObjID) {
-    createCourse(input: { title: $title, type: $type, content: $content, date: $date, hot: $hot, url: $url, teacher: $teacher, abstract: $abstract, subjectId: $subjectId }) {
+  mutation($title: String!, $type: String!, $content: String!, $date: String!, $hot: String, $free: String, $url: String!, $teacher: String, $abstract: String, $subjectId: ObjID) {
+    createCourse(input: { title: $title, type: $type, content: $content, date: $date, hot: $hot, free: $free, url: $url, teacher: $teacher, abstract: $abstract, subjectId: $subjectId }) {
       id
     }
   }
 `
 
-export const createCourse = (client, { title, type, content, date, url, teacher, abstract, subjectId }) => async dispatch => {
-  // console.log('hot::::::::', hot)
+export const createCourse = (client, { title, type, content, date, url, teacher, abstract, subjectId, hot, free }) => async dispatch => {
   try {
-    await client.mutate({ mutation: CREATE_COURSE, variables: { title, type, content, date, url, teacher, abstract, subjectId } })
+    await client.mutate({ mutation: CREATE_COURSE, variables: { title, type, content, date, url, teacher, abstract, subjectId, hot, free } })
     return null
   } catch (e) {
     console.log(e.message)
@@ -160,8 +161,8 @@ export const createCourse = (client, { title, type, content, date, url, teacher,
 }
 
 const UPDATE_COURSE = gql`
-  mutation($id: ObjID!, $hot: Boolean) {
-    updateCourse(id: $id, input: { hot: $hot }) {
+  mutation($id: ObjID!, $hot: Boolean, $free: Boolean) {
+    updateCourse(id: $id, input: { hot: $hot,free: $free }) {
       id
       title
       url
@@ -172,6 +173,7 @@ const UPDATE_COURSE = gql`
       abstract
       createdAt
       type
+      free
       subject {
         id
         name
@@ -180,9 +182,9 @@ const UPDATE_COURSE = gql`
   }
 `
 
-export const updateCourse = (client, { id, hot }) => async dispatch => {
+export const updateCourse = (client, { id, hot, free }) => async dispatch => {
   try {
-    let data = await client.mutate({ mutation: UPDATE_COURSE, variables: { id, hot } })
+    let data = await client.mutate({ mutation: UPDATE_COURSE, variables: { id, hot, free } })
     const { updateCourse } = data.data
     let json = { [id]: updateCourse }
     dispatch({

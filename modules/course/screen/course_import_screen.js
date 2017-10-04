@@ -118,7 +118,7 @@ class CourseImportScreen extends Component {
   }
 
   async submit () {
-    const { type, title, courseTypeId, content, hot, url, teacher, abstract, subjectId } = this.state
+    const { type, title, courseTypeId, content, hot, free, url, teacher, abstract, subjectId } = this.state
     const { client, createCourse } = this.props
     let date = moment().format('YYYY-MM-DD')
     if (!url) {
@@ -139,7 +139,7 @@ class CourseImportScreen extends Component {
     if (!content) {
       return this.msg.show('请填写内容')
     }
-    let ops = { title, type, content, date, hot, url, teacher, abstract }
+    let ops = { title, type, content, date, hot, free, url, teacher, abstract }
     if (courseTypeId === 'vedio') {
       ops.subjectId = subjectId
     }
@@ -217,12 +217,11 @@ class CourseImportScreen extends Component {
               </li>
             ) : null}
 
-            {/* <li>
-              <span className='left'>热门</span>
+            <li>
+              <span className='left'>推荐</span>
               <SelectFilterCard
-                data={[{ title: '是', value: true }, { title: '否', value: false }]}
-                status={this.state.hot}
-                config={{ selectTitle: '标记热门', valueKey: 'value', titleKey: 'title' }}
+                data={[{ title: '是', value: 'true' }, { title: '否', value: 'false' }]}
+                config={{ selectTitle: '标记推荐', valueKey: 'value', titleKey: 'title' }}
                 changeStatus={status => {
                   if (status !== 'value') {
                     this.setState({ hot: status })
@@ -230,7 +229,20 @@ class CourseImportScreen extends Component {
                 }}
               />
               <span className='clearfix' />
-            </li> */}
+            </li>
+            <li>
+              <span className='left'>免费</span>
+              <SelectFilterCard
+                data={[{ title: '是', value: 'true' }, { title: '否', value: 'false' }]}
+                config={{ selectTitle: '标记免费', valueKey: 'value', titleKey: 'title' }}
+                changeStatus={status => {
+                  if (status !== 'value') {
+                    this.setState({ free: status })
+                  }
+                }}
+              />
+              <span className='clearfix' />
+            </li>
             <li>
               <span className='left'>老师</span>
               <input
