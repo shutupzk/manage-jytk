@@ -11,7 +11,7 @@ import { examinationdifficultys, queryExaminationDifficultys, selectExaminationD
 import { examinations, queryExaminations, createExamination, selectExamination, submitExamination } from './examinations'
 import { yearexerciselists, queryYearExerciseLists, selectYearExerciseList } from './yearexerciselists'
 import { answers, queryAnswers, updateAnswer } from './answers'
-import { analysiss, queryAnalysiss, upadateAnalysis } from './analysiss'
+import { analysiss, queryAnalysiss, upadateAnalysis, queryExerciseAnalysiss } from './analysiss'
 import { yearexercisetypes, queryYearExerciseTypes, selectYearExerciseType } from './yearexercisetypes'
 import { qiniu, getQiniuUpToken, selectImgFiles, changeImgBase64 } from './qiniu'
 import { coursetypes, queryCourseTypes } from './coursetypes'
@@ -91,5 +91,6 @@ export {
   giveUserMember,
   queryUserDetial,
   giveUserScore,
-  removeCourse
+  removeCourse,
+  queryExerciseAnalysiss
 }

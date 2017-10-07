@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Router from 'next/router'
 import { Loading, theme } from '../../../components'
 // import { API_SERVER } from '../../../config'
-import { queryExaminationDifficultys, queryAnswers, queryAnalysiss } from '../../../ducks'
+import { queryExaminationDifficultys, queryAnswers, queryExerciseAnalysiss } from '../../../ducks'
 import { connect } from 'react-redux'
 import moment from 'moment'
 // import request from 'superagent-bluebird-promise'
@@ -24,9 +24,9 @@ class ExerciseImportScreen extends Component {
   }
 
   componentWillMount () {
-    const { client, queryAnswers, queryAnalysiss, exerciseId } = this.props
+    const { client, queryAnswers, queryExerciseAnalysiss, exerciseId } = this.props
     queryAnswers(client, { exerciseId })
-    queryAnalysiss(client, { exerciseId })
+    queryExerciseAnalysiss(client, { exerciseId })
   }
 
   loadingView () {
@@ -167,4 +167,4 @@ function mapStateToProps (state) {
   }
 }
 
-export default connect(mapStateToProps, { queryExaminationDifficultys, queryAnswers, queryAnalysiss })(ExerciseImportScreen)
+export default connect(mapStateToProps, { queryExaminationDifficultys, queryAnswers, queryExerciseAnalysiss })(ExerciseImportScreen)

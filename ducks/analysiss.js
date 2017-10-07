@@ -72,6 +72,54 @@ export const queryAnalysiss = client => async dispatch => {
   }
 }
 
+const QUERY_EXERCISE_ANALYSISS = gql`
+  query($exerciseId: ObjID!) {
+    exercise(id: $exerciseId) {
+      id
+      num
+      analysiss {
+        id
+        content
+        adopt
+        user {
+          id
+          name
+        }
+        exercise {
+          id
+          content
+        }
+        createdAt
+      }
+    }
+  }
+`
+
+export const queryExerciseAnalysiss = (client, { exerciseId }) => async dispatch => {
+  try {
+    const data = await client.query({
+      query: QUERY_EXERCISE_ANALYSISS,
+      variables: { exerciseId },
+      fetchPolicy: 'network-only'
+    })
+    const { analysiss } = data.data.exercise
+    let json = {}
+    for (let doc of analysiss) {
+      json[doc.id] = Object.assign({}, doc, { exerciseId })
+    }
+    dispatch({
+      type: SUBJECT_ANALYSISS_SUCCESS,
+      data: json
+    })
+  } catch (e) {
+    console.log(e.message)
+    dispatch({
+      type: SUBJECT_ANALYSISS_FAIL,
+      error: e.message
+    })
+  }
+}
+
 const UPDATE_ANALYSISS = gql`
   mutation($id: ObjID!, $adopt: String!) {
     updateAnalysis(id: $id, input: { adopt: $adopt }) {
