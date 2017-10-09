@@ -143,16 +143,16 @@ export const queryCollectCourses = (client, { skip, limit, userId }) => async di
 }
 
 const CREATE_COURSE = gql`
-  mutation($title: String!, $type: String!, $content: String!, $date: String!, $hot: String, $free: String, $url: String!, $teacher: String, $abstract: String, $subjectId: ObjID) {
-    createCourse(input: { title: $title, type: $type, content: $content, date: $date, hot: $hot, free: $free, url: $url, teacher: $teacher, abstract: $abstract, subjectId: $subjectId }) {
+  mutation($title: String!, $type: String!, $content: String!, $date: String!, $hot: String, $free: String, $url: String!, $teacher: String, $abstract: String, $subjectId: ObjID, $articleUrl: String) {
+    createCourse(input: { title: $title, type: $type, content: $content, date: $date, hot: $hot, free: $free, url: $url, teacher: $teacher, abstract: $abstract, subjectId: $subjectId, articleUrl: $articleUrl }) {
       id
     }
   }
 `
 
-export const createCourse = (client, { title, type, content, date, url, teacher, abstract, subjectId, hot, free }) => async dispatch => {
+export const createCourse = (client, { title, type, content, date, url, teacher, abstract, subjectId, hot, free, articleUrl }) => async dispatch => {
   try {
-    await client.mutate({ mutation: CREATE_COURSE, variables: { title, type, content, date, url, teacher, abstract, subjectId, hot, free } })
+    await client.mutate({ mutation: CREATE_COURSE, variables: { title, type, content, date, url, teacher, abstract, subjectId, hot, free, articleUrl } })
     return null
   } catch (e) {
     console.log(e.message)

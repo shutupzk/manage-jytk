@@ -118,7 +118,7 @@ class CourseImportScreen extends Component {
   }
 
   async submit () {
-    const { type, title, courseTypeId, content, hot, free, url, teacher, abstract, subjectId } = this.state
+    const { type, title, courseTypeId, content, hot, free, url, teacher, abstract, subjectId, articleUrl } = this.state
     const { client, createCourse } = this.props
     let date = moment().format('YYYY-MM-DD')
     if (!url) {
@@ -133,6 +133,9 @@ class CourseImportScreen extends Component {
     if (courseTypeId === 'vedio' && !subjectId) {
       return this.msg.show('请选择科目')
     }
+    if (courseTypeId === 'image' && !articleUrl) {
+      return this.msg.show('请输入链接')
+    }
     if (type !== courseTypeId) {
       return this.msg.show('文件类型与选择的课程类型不相符')
     }
@@ -142,6 +145,8 @@ class CourseImportScreen extends Component {
     let ops = { title, type, content, date, hot, free, url, teacher, abstract }
     if (courseTypeId === 'vedio') {
       ops.subjectId = subjectId
+    } else {
+      ops.articleUrl = articleUrl
     }
     let error = await createCourse(client, ops)
     if (error) {
@@ -216,6 +221,22 @@ class CourseImportScreen extends Component {
                 <span className='clearfix' />
               </li>
             ) : null}
+
+            {this.state.showSubject ? null : (
+              <li>
+                <span className='left'>链接</span>
+                <input
+                  style={{ width: '50%', height: '30px' }}
+                  onChange={e => {
+                    this.setState({ articleUrl: e.target.value })
+                  }}
+                  defaultValue={this.state.articleUrl}
+                  className='left'
+                  type='text'
+                />
+                <span className='clearfix' />
+              </li>
+            )}
 
             <li>
               <span className='left'>推荐</span>
