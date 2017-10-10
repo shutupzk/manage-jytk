@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 // import { Router } from '../../../routes'
 import Router from 'next/router'
-import { Loading, PageCard, FilterCard, SelectFilterCard } from '../../../components'
-import { queryExercises, queryYearExerciseLists, queryExaminationDifficultys, selectExercise, queryYearExerciseTypes, queryYearExamTypes } from '../../../ducks'
+import { Loading, PageCard, FilterCard, SelectFilterCard, KeywordCard } from '../../../components'
+import { queryExercises, queryYearExerciseLists, queryExaminationDifficultys, selectExercise, queryYearExerciseTypes, queryYearExamTypes, removeExercise } from '../../../ducks'
 import { connect } from 'react-redux'
+import AlertContainer from 'react-alert'
 
 class ExerciseRealListScreen extends Component {
   constructor (props) {
@@ -16,6 +17,13 @@ class ExerciseRealListScreen extends Component {
       yearExamTypeId: null
     }
     this.type = '02'
+    this.alertOptions = {
+      offset: 14,
+      position: 'top right',
+      theme: 'dark',
+      time: 2500,
+      transition: 'scale'
+    }
   }
 
   componentWillMount () {
@@ -36,7 +44,7 @@ class ExerciseRealListScreen extends Component {
 
   changeStatus (key, value) {
     if (value === '') value = null
-    let { examinationDifficultyId, yearExerciseTypeId, yearExerciseListId, yearExamTypeId } = this.state
+    let { examinationDifficultyId, yearExerciseTypeId, yearExerciseListId, yearExamTypeId, keyword } = this.state
     if (key === 'examinationDifficultyId') {
       yearExerciseTypeId = null
       yearExerciseListId = null
@@ -49,7 +57,7 @@ class ExerciseRealListScreen extends Component {
     if (key === 'yearExerciseListId') {
       yearExamTypeId = null
     }
-    let obj = Object.assign({}, { examinationDifficultyId, yearExerciseTypeId, yearExerciseListId, yearExamTypeId }, { [key]: value, page: 1 })
+    let obj = Object.assign({}, { examinationDifficultyId, yearExerciseTypeId, yearExerciseListId, yearExamTypeId, keyword }, { [key]: value, page: 1 })
     this.setState(obj)
     this.queryExercises(obj)
   }
@@ -112,9 +120,25 @@ class ExerciseRealListScreen extends Component {
     return array
   }
 
+  async deleteExercise (item) {
+    const { id, content } = item
+    const confirmed = confirm(`确定要删除题目  《${content}》  吗？`)
+    if (confirmed) {
+      const { client, removeExercise } = this.props
+      let error = await removeExercise(client, { id })
+      if (error) {
+        return this.msg.show('删除失败')
+      }
+      this.msg.show('删除成功', {
+        time: 1000,
+        type: 'success'
+      })
+    }
+  }
+
   getListData () {
     let array = []
-    const { page, examinationDifficultyId, yearExerciseTypeId, yearExerciseListId, yearExamTypeId } = this.state
+    const { page, examinationDifficultyId, yearExerciseTypeId, yearExerciseListId, yearExamTypeId, keyword } = this.state
     let { exercises } = this.props
     let skip = (page - 1) * 10
     let count = 0
@@ -125,6 +149,11 @@ class ExerciseRealListScreen extends Component {
       if (yearExerciseTypeId && exercise.yearExerciseTypeId !== yearExerciseTypeId) continue
       if (yearExerciseListId && exercise.yearExerciseListId !== yearExerciseListId) continue
       if (yearExamTypeId && exercise.yearExamTypeId !== yearExamTypeId) continue
+      if (keyword) {
+        let pattern = new RegExp(keyword)
+        const { content } = exercise
+        if (!pattern.test(content)) continue
+      }
       let limit = count - skip
       if (limit > -1 && limit < 10) {
         array.push(Object.assign({}, exercise, { key, index: count }))
@@ -153,8 +182,8 @@ class ExerciseRealListScreen extends Component {
           子类
         </li>
         <li className={'buttonText titleText'} key={8}>
-        操作
-      </li>
+          操作
+        </li>
         <style jsx>{`
           .orderTitle {
             color: #797979;
@@ -206,18 +235,14 @@ class ExerciseRealListScreen extends Component {
           {item.yearExamTypeName || '无'}
         </li>
         <li className={'buttonText'} key={5}>
-          <button
-            className='fenyeItem'
-            onClick={() => this.goToDetail(item.id)}
-          >
+          <button className='fenyeItem' onClick={() => this.goToDetail(item.id)}>
             查看
           </button>
-          <button
-            style={{marginLeft: '5px'}}
-            className='fenyeItem'
-            onClick={() => this.goToEdit(item.id)}
-          >
+          <button style={{ marginLeft: '5px' }} className='fenyeItem' onClick={() => this.goToEdit(item.id)}>
             编辑
+          </button>
+          <button className='fenyeItemX' onClick={() => this.deleteExercise(item)}>
+            删除
           </button>
         </li>
         <style jsx>{`
@@ -236,6 +261,14 @@ class ExerciseRealListScreen extends Component {
           .subjectText {
             width: 15%;
             text-align: center;
+          }
+          .fenyeItemX {
+            background: red;
+            border-radius: 2px;
+            display: inline-block;
+            cursor: pointer;
+            border: 1px solid red;
+            color: #fff;
           }
           .fenyeItem {
             background: #3ca0ff;
@@ -266,6 +299,7 @@ class ExerciseRealListScreen extends Component {
     let exercises = this.getListData()
     return (
       <div className={'orderRecordsPage'}>
+        <AlertContainer ref={a => (this.msg = a)} {...this.alertOptions} />
         <FilterCard>
           <SelectFilterCard
             data={this.getExaminationdifficultys()}
@@ -299,6 +333,13 @@ class ExerciseRealListScreen extends Component {
             config={{ selectTitle: '选择子类型', valueKey: 'value', titleKey: 'title' }}
             changeStatus={status => {
               this.changeStatus('yearExamTypeId', status)
+            }}
+          />
+          <KeywordCard
+            config={{ placeholder: '题目内容', keyword: this.state.keyword }}
+            clickfilter={keyword => {
+              keyword = keyword.trim()
+              this.changeStatus('keyword', keyword)
             }}
           />
         </FilterCard>
@@ -343,4 +384,6 @@ function mapStateToProps (state) {
   }
 }
 
-export default connect(mapStateToProps, { queryExercises, queryYearExerciseLists, queryExaminationDifficultys, selectExercise, queryYearExerciseTypes, queryYearExamTypes })(ExerciseRealListScreen)
+export default connect(mapStateToProps, { queryExercises, queryYearExerciseLists, queryExaminationDifficultys, selectExercise, queryYearExerciseTypes, queryYearExamTypes, removeExercise })(
+  ExerciseRealListScreen
+)

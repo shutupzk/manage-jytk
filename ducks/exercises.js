@@ -4,6 +4,7 @@ const SUBJECT_EXERCISES_SUCCESS = 'SUBJECT_EXERCISES_SUCCESS'
 const EXAMINATION_EXERCISES_SUCCESS = 'EXAMINATION_EXERCISES_SUCCESS'
 const SUBJECT_EXERCISES_FAIL = 'SUBJECT_EXERCISES_FAIL'
 const SUBJECT_EXERCISES_SELECT = 'SUBJECT_EXERCISES_SECTION_SELECT'
+const EXERCISE_EXERCISE_DELETE = 'EXERCISE_EXERCISE_DELETE'
 
 const initState = {
   data: {},
@@ -25,13 +26,28 @@ export function exercises (state = initState, action = {}) {
       return Object.assign({}, state, { error: action.error })
     case SUBJECT_EXERCISES_SELECT:
       return Object.assign({}, state, { selectId: action.selectId })
+    case EXERCISE_EXERCISE_DELETE:
+      let newstate = Object.assign({}, state.data)
+      delete newstate[action.id]
+      return Object.assign({}, state, { data: newstate, error: null })
     default:
       return state
   }
 }
 
 const QUERY_EXERCISES = gql`
-  query($skip: Int, $limit: Int, $type: String!, $examinationDifficultyId: ObjID, $yearExerciseListId: ObjID, $subjectId: ObjID, $chapterId: ObjID, $sectionId: ObjID, $yearExamTypeId: ObjID) {
+  query(
+    $skip: Int
+    $limit: Int
+    $type: String!
+    $examinationDifficultyId: ObjID
+    $yearExerciseListId: ObjID
+    $subjectId: ObjID
+    $chapterId: ObjID
+    $sectionId: ObjID
+    $yearExamTypeId: ObjID
+    $keyword: String
+  ) {
     exercises(
       skip: $skip
       limit: $limit
@@ -42,6 +58,7 @@ const QUERY_EXERCISES = gql`
       chapterId: $chapterId
       sectionId: $sectionId
       yearExamTypeId: $yearExamTypeId
+      keyword: $keyword
     ) {
       id
       content
@@ -85,11 +102,11 @@ const QUERY_EXERCISES = gql`
   }
 `
 
-export const queryExercises = (client, { skip, limit, hot, type, examinationDifficultyId, yearExerciseListId, subjectId, chapterId, sectionId, yearExamTypeId }) => async dispatch => {
+export const queryExercises = (client, { skip, limit, hot, type, examinationDifficultyId, yearExerciseListId, subjectId, chapterId, sectionId, yearExamTypeId, keyword }) => async dispatch => {
   try {
     const data = await client.query({
       query: QUERY_EXERCISES,
-      variables: { skip, limit, hot, type, examinationDifficultyId, yearExerciseListId, subjectId, chapterId, sectionId, yearExamTypeId },
+      variables: { skip, limit, hot, type, examinationDifficultyId, yearExerciseListId, subjectId, chapterId, sectionId, yearExamTypeId, keyword },
       fetchPolicy: 'network-only'
     })
     const { exercises } = data.data
@@ -188,6 +205,25 @@ export const createExerciseImages = (client, { inputs }) => async dispatch => {
     return null
   } catch (e) {
     console.log(e)
+    return e.message
+  }
+}
+
+const REMOVE_EXERCISE = gql`
+  mutation($id: ObjID!) {
+    removeExercise(id: $id)
+  }
+`
+
+export const removeExercise = (client, { id }) => async dispatch => {
+  try {
+    await client.mutate({ mutation: REMOVE_EXERCISE, variables: { id } })
+    dispatch({
+      type: EXERCISE_EXERCISE_DELETE,
+      id
+    })
+    return null
+  } catch (e) {
     return e.message
   }
 }

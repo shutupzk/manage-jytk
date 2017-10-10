@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 // import { Router } from '../../../routes'
 import Router from 'next/router'
-import { Loading, PageCard, FilterCard, SelectFilterCard } from '../../../components'
-import { queryExercises, queryExaminationDifficultys, querySubjects, queryChapters, querySections, selectExercise } from '../../../ducks'
+import { Loading, PageCard, FilterCard, SelectFilterCard, KeywordCard } from '../../../components'
+import { queryExercises, queryExaminationDifficultys, querySubjects, queryChapters, querySections, selectExercise, removeExercise } from '../../../ducks'
 import { connect } from 'react-redux'
+import AlertContainer from 'react-alert'
 
 class ExerciseListScreen extends Component {
   constructor (props) {
@@ -16,6 +17,13 @@ class ExerciseListScreen extends Component {
       sectionId: null
     }
     this.type = '01'
+    this.alertOptions = {
+      offset: 14,
+      position: 'top right',
+      theme: 'dark',
+      time: 2500,
+      transition: 'scale'
+    }
   }
 
   componentWillMount () {
@@ -26,17 +34,17 @@ class ExerciseListScreen extends Component {
   }
 
   queryExercises (ops) {
-    let { examinationDifficultyId, subjectId, chapterId, sectionId } = ops || this.state
+    let { examinationDifficultyId, subjectId, chapterId, sectionId, keyword } = ops || this.state
     const { client, queryExercises } = this.props
     const { page } = this.state
     const skip = (page - 1) * 10
     const limit = 10
-    queryExercises(client, { skip, limit, type: this.type, examinationDifficultyId, subjectId, chapterId, sectionId })
+    queryExercises(client, { skip, limit, type: this.type, examinationDifficultyId, subjectId, chapterId, sectionId, keyword })
   }
 
   changeStatus (key, value) {
     if (value === '') value = null
-    let { examinationDifficultyId, subjectId, chapterId, sectionId } = this.state
+    let { examinationDifficultyId, subjectId, chapterId, sectionId, keyword } = this.state
     if (key === 'examinationDifficultyId') {
       subjectId = null
       chapterId = null
@@ -49,7 +57,7 @@ class ExerciseListScreen extends Component {
     if (key === 'chapterId') {
       sectionId = null
     }
-    let obj = Object.assign({}, { examinationDifficultyId, subjectId, chapterId, sectionId }, { [key]: value, page: 1 })
+    let obj = Object.assign({}, { examinationDifficultyId, subjectId, chapterId, sectionId, keyword }, { [key]: value, page: 1 })
     this.setState(obj)
     this.queryExercises(obj)
   }
@@ -118,9 +126,25 @@ class ExerciseListScreen extends Component {
     Router.push('/exercise/edit')
   }
 
+  async deleteExercise (item) {
+    const { id, content } = item
+    const confirmed = confirm(`确定要删除题目  《${content}》  吗？`)
+    if (confirmed) {
+      const { client, removeExercise } = this.props
+      let error = await removeExercise(client, { id })
+      if (error) {
+        return this.msg.show('删除失败')
+      }
+      this.msg.show('删除成功', {
+        time: 1000,
+        type: 'success'
+      })
+    }
+  }
+
   getListData () {
     let array = []
-    const { page, examinationDifficultyId, subjectId, chapterId, sectionId } = this.state
+    const { page, examinationDifficultyId, subjectId, chapterId, sectionId, keyword } = this.state
     let { exercises } = this.props
     let skip = (page - 1) * 10
     let count = 0
@@ -131,6 +155,11 @@ class ExerciseListScreen extends Component {
       if (subjectId && exercise.subjectId !== subjectId) continue
       if (chapterId && exercise.chapterId !== chapterId) continue
       if (sectionId && exercise.sectionId !== sectionId) continue
+      if (keyword) {
+        let pattern = new RegExp(keyword)
+        const { content } = exercise
+        if (!pattern.test(content)) continue
+      }
       let limit = count - skip
       if (limit > -1 && limit < 10) {
         array.push(Object.assign({}, exercise, { key, index: count }))
@@ -241,6 +270,9 @@ class ExerciseListScreen extends Component {
           >
             编辑
           </button>
+          <button className='fenyeItemX' onClick={() => this.deleteExercise(item)}>
+            删除
+          </button>
         </li>
         <style jsx>{`
           .numberText {
@@ -263,6 +295,14 @@ class ExerciseListScreen extends Component {
             width: 10%;
             text-align: center;
           }
+          .fenyeItemX {
+            background: red;
+            border-radius: 2px;
+            display: inline-block;
+            cursor: pointer;
+            border: 1px solid red;
+            color: #fff;
+          }
           .fenyeItem {
             background: #3ca0ff;
             border-radius: 2px;
@@ -283,6 +323,7 @@ class ExerciseListScreen extends Component {
     let exercises = this.getListData()
     return (
       <div className={'orderRecordsPage'}>
+        <AlertContainer ref={a => (this.msg = a)} {...this.alertOptions} />
         <FilterCard>
           <SelectFilterCard
             data={this.getExaminationdifficultys()}
@@ -315,6 +356,13 @@ class ExerciseListScreen extends Component {
             config={{ selectTitle: '节', valueKey: 'value', titleKey: 'title' }}
             changeStatus={status => {
               this.changeStatus('sectionId', status)
+            }}
+          />
+          <KeywordCard
+            config={{ placeholder: '题目内容', keyword: this.state.keyword }}
+            clickfilter={keyword => {
+              keyword = keyword.trim()
+              this.changeStatus('keyword', keyword)
             }}
           />
         </FilterCard>
@@ -359,4 +407,4 @@ function mapStateToProps (state) {
   }
 }
 
-export default connect(mapStateToProps, { queryExercises, queryExaminationDifficultys, querySubjects, queryChapters, querySections, selectExercise })(ExerciseListScreen)
+export default connect(mapStateToProps, { queryExercises, queryExaminationDifficultys, querySubjects, queryChapters, querySections, selectExercise, removeExercise })(ExerciseListScreen)

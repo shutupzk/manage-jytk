@@ -3,7 +3,7 @@ import { prompt, showPrompt, hidePrompt } from './prompt'
 import { subjects, querySubjects, selectSubject, selectSubjectType } from './subjects'
 import { chapters, queryChapters, selectChapter } from './chapters'
 import { sections, querySections, selectSection } from './sections'
-import { exercises, queryExercises, selectExercise, updateExercise, createExerciseImages } from './exercises'
+import { exercises, queryExercises, selectExercise, updateExercise, createExerciseImages, removeExercise } from './exercises'
 import { officialexaminations, queryOfficialexaminations, selectOfficialexamination } from './officialexaminations'
 import { courses, queryCourses, selectCourse, createCourseCollect, queryCollectCourses, createCourse, updateCourse, removeCourse } from './courses'
 import { examinationtypes, queryExaminationTypes, selectExaminationType } from './examinationtypes'
@@ -92,5 +92,6 @@ export {
   queryUserDetial,
   giveUserScore,
   removeCourse,
-  queryExerciseAnalysiss
+  queryExerciseAnalysiss,
+  removeExercise
 }

@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 // import { Router } from '../../../routes'
 import Router from 'next/router'
-import { Loading, PageCard, FilterCard, SelectFilterCard } from '../../../components'
-import { queryExercises, querySubjects, queryExaminationDifficultys, selectExercise } from '../../../ducks'
+import { Loading, PageCard, FilterCard, SelectFilterCard, KeywordCard } from '../../../components'
+import { queryExercises, querySubjects, queryExaminationDifficultys, selectExercise, removeExercise } from '../../../ducks'
 import { connect } from 'react-redux'
-
+import AlertContainer from 'react-alert'
 class ExerciseHotListScreen extends Component {
   constructor (props) {
     super(props)
@@ -14,6 +14,13 @@ class ExerciseHotListScreen extends Component {
       subjectId: null
     }
     this.type = '03'
+    this.alertOptions = {
+      offset: 14,
+      position: 'top right',
+      theme: 'dark',
+      time: 2500,
+      transition: 'scale'
+    }
   }
 
   componentWillMount () {
@@ -21,6 +28,23 @@ class ExerciseHotListScreen extends Component {
     this.queryExercises({})
     queryExaminationDifficultys(client)
     querySubjects(client)
+  }
+
+
+  async deleteExercise (item) {
+    const { id, content } = item
+    const confirmed = confirm(`确定要删除题目  《${content}》  吗？`)
+    if (confirmed) {
+      const { client, removeExercise } = this.props
+      let error = await removeExercise(client, { id })
+      if (error) {
+        return this.msg.show('删除失败')
+      }
+      this.msg.show('删除成功', {
+        time: 1000,
+        type: 'success'
+      })
+    }
   }
 
   queryExercises (ops) {
@@ -75,7 +99,7 @@ class ExerciseHotListScreen extends Component {
 
   getListData () {
     let array = []
-    const { page, examinationDifficultyId, subjectId } = this.state
+    const { page, examinationDifficultyId, subjectId, keyword } = this.state
     let { exercises } = this.props
     let skip = (page - 1) * 10
     let count = 0
@@ -84,6 +108,11 @@ class ExerciseHotListScreen extends Component {
       if (exercise.type !== this.type) continue
       if (examinationDifficultyId && exercise.examinationDifficultyId !== examinationDifficultyId) continue
       if (subjectId && exercise.subjectId !== subjectId) continue
+      if (keyword) {
+        let pattern = new RegExp(keyword)
+        const { content } = exercise
+        if (!pattern.test(content)) continue
+      }
       let limit = count - skip
       if (limit > -1 && limit < 10) {
         array.push(Object.assign({}, exercise, { key, index: count }))
@@ -172,6 +201,9 @@ class ExerciseHotListScreen extends Component {
           >
             编辑
           </button>
+          <button className='fenyeItemX' onClick={() => this.deleteExercise(item)}>
+            删除
+          </button>
         </li>
         <style jsx>{`
           .numberText {
@@ -198,6 +230,14 @@ class ExerciseHotListScreen extends Component {
             border: 1px solid #3ca0ff;
             color: #fff;
           }
+          .fenyeItemX {
+            background: red;
+            border-radius: 2px;
+            display: inline-block;
+            cursor: pointer;
+            border: 1px solid red;
+            color: #fff;
+          }
         `}</style>
       </ul>
     )
@@ -218,10 +258,10 @@ class ExerciseHotListScreen extends Component {
     let exercises = this.getListData()
     return (
       <div className={'orderRecordsPage'}>
+        <AlertContainer ref={a => (this.msg = a)} {...this.alertOptions} />
         <FilterCard>
           <SelectFilterCard
             data={this.getExaminationdifficultys()}
-            status={this.state.examinationDifficultyId}
             config={{ selectTitle: '考试级别', valueKey: 'value', titleKey: 'title' }}
             changeStatus={status => {
               this.changeStatus('examinationDifficultyId', status)
@@ -229,10 +269,16 @@ class ExerciseHotListScreen extends Component {
           />
           <SelectFilterCard
             data={this.getSubjects()}
-            status={this.state.subjectId}
             config={{ selectTitle: '科目', valueKey: 'value', titleKey: 'title' }}
             changeStatus={status => {
               this.changeStatus('subjectId', status)
+            }}
+          />
+          <KeywordCard
+            config={{ placeholder: '题目内容', keyword: this.state.keyword }}
+            clickfilter={keyword => {
+              keyword = keyword.trim()
+              this.changeStatus('keyword', keyword)
             }}
           />
         </FilterCard>
@@ -275,4 +321,4 @@ function mapStateToProps (state) {
   }
 }
 
-export default connect(mapStateToProps, { queryExercises, querySubjects, queryExaminationDifficultys, selectExercise })(ExerciseHotListScreen)
+export default connect(mapStateToProps, { queryExercises, querySubjects, queryExaminationDifficultys, selectExercise, removeExercise })(ExerciseHotListScreen)
