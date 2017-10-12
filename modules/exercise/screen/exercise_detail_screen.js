@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Router from 'next/router'
 import { Loading, theme } from '../../../components'
 // import { API_SERVER } from '../../../config'
-import { queryExaminationDifficultys, queryAnswers, queryExerciseAnalysiss } from '../../../ducks'
+import { queryExaminationDifficultys, queryAnswers, queryExerciseAnalysiss, selectAnalysis } from '../../../ducks'
 import { connect } from 'react-redux'
 import moment from 'moment'
 // import request from 'superagent-bluebird-promise'
@@ -68,6 +68,7 @@ class ExerciseImportScreen extends Component {
   }
 
   render () {
+    const { selectAnalysis } = this.props
     const exercise = this.getData()
     const { answers, answerKey } = this.getAnswers()
     const analysiss = this.getAnalysiss()
@@ -107,6 +108,15 @@ class ExerciseImportScreen extends Component {
                   发布者：
                   <span style={{ color: '#3ca0ff', fontSize: 18, marginRight: 20 }}>{item.user ? item.user.name : '管理员'}</span>
                   <span style={{ fontSize: 15, marginRight: 20 }}>时间：{moment(item.createdAt).format('YYYY-MM-DD HH:mm')}</span>
+                  <button
+                    onClick={() => {
+                      selectAnalysis({analysisId: item.id})
+                      Router.push('/exercise/eanaly/edit')
+                    }}
+                    style={{ marginLeft: '5%' }}
+                  >
+                    编辑
+                  </button>
                 </p>
                 <p style={{ fontSize: 15 }}>{item.content}</p>
               </div>
@@ -167,4 +177,4 @@ function mapStateToProps (state) {
   }
 }
 
-export default connect(mapStateToProps, { queryExaminationDifficultys, queryAnswers, queryExerciseAnalysiss })(ExerciseImportScreen)
+export default connect(mapStateToProps, { queryExaminationDifficultys, queryAnswers, queryExerciseAnalysiss, selectAnalysis })(ExerciseImportScreen)

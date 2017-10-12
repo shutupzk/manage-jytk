@@ -121,8 +121,8 @@ export const queryExerciseAnalysiss = (client, { exerciseId }) => async dispatch
 }
 
 const UPDATE_ANALYSISS = gql`
-  mutation($id: ObjID!, $adopt: String!) {
-    updateAnalysis(id: $id, input: { adopt: $adopt }) {
+  mutation($id: ObjID!, $adopt: String, $content: String) {
+    updateAnalysis(id: $id, input: { adopt: $adopt, content: $content }) {
       id
       content
       adopt
@@ -139,9 +139,9 @@ const UPDATE_ANALYSISS = gql`
   }
 `
 
-export const upadateAnalysis = (client, { id, adopt }) => async dispatch => {
+export const upadateAnalysis = (client, { id, adopt, content }) => async dispatch => {
   try {
-    let data = await client.mutate({ mutation: UPDATE_ANALYSISS, variables: { id, adopt } })
+    let data = await client.mutate({ mutation: UPDATE_ANALYSISS, variables: { id, adopt, content } })
     const { updateAnalysis } = data.data
     let json = { [updateAnalysis.id]: updateAnalysis }
     dispatch({

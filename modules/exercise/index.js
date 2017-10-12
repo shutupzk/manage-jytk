@@ -6,6 +6,7 @@ import ExerciseHotImportScreen from './screen/exercise_hot_import_screen'
 import ExerciseDetailScreen from './screen/exercise_detail_screen'
 import ExerciseEditScreen from './screen/exercise_edit_screen'
 import ExerciseHotListScreen from './screen/exercise_hot_list_screen'
+import AnalysisEditScreen from './screen/analysis_edit_screen'
 
 export {
   ExerciseListScreen,
@@ -15,5 +16,6 @@ export {
   ExerciseDetailScreen,
   ExerciseEditScreen,
   ExerciseHotListScreen,
-  ExerciseHotImportScreen
+  ExerciseHotImportScreen,
+  AnalysisEditScreen
 }
