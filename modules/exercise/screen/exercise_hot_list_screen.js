@@ -2,16 +2,19 @@ import React, { Component } from 'react'
 // import { Router } from '../../../routes'
 import Router from 'next/router'
 import { Loading, PageCard, FilterCard, SelectFilterCard, KeywordCard } from '../../../components'
-import { queryExercises, querySubjects, queryExaminationDifficultys, selectExercise, removeExercise } from '../../../ducks'
+import { queryExercises, queryExaminationDifficultys, querySubjects, queryChapters, querySections, selectExercise, removeExercise } from '../../../ducks'
 import { connect } from 'react-redux'
 import AlertContainer from 'react-alert'
+
 class ExerciseHotListScreen extends Component {
   constructor (props) {
     super(props)
     this.state = {
       page: 1,
       examinationDifficultyId: null,
-      subjectId: null
+      subjectId: null,
+      chapterId: null,
+      sectionId: null
     }
     this.type = '03'
     this.alertOptions = {
@@ -24,59 +27,51 @@ class ExerciseHotListScreen extends Component {
   }
 
   componentWillMount () {
-    const { client, queryExaminationDifficultys, querySubjects } = this.props
+    const { client, querySubjects, queryExaminationDifficultys } = this.props
     this.queryExercises({})
-    queryExaminationDifficultys(client)
     querySubjects(client)
-  }
-
-
-  async deleteExercise (item) {
-    const { id, content } = item
-    const confirmed = confirm(`确定要删除题目  《${content}》  吗？`)
-    if (confirmed) {
-      const { client, removeExercise } = this.props
-      let error = await removeExercise(client, { id })
-      if (error) {
-        return this.msg.show('删除失败')
-      }
-      this.msg.show('删除成功', {
-        time: 1000,
-        type: 'success'
-      })
-    }
+    queryExaminationDifficultys(client)
   }
 
   queryExercises (ops) {
-    let { examinationDifficultyId, subjectId } = ops || this.state
+    let { examinationDifficultyId, subjectId, chapterId, sectionId, keyword } = ops || this.state
     const { client, queryExercises } = this.props
     const { page } = this.state
     const skip = (page - 1) * 10
     const limit = 10
-    queryExercises(client, { skip, limit, type: this.type, examinationDifficultyId, subjectId })
+    queryExercises(client, { skip, limit, type: this.type, examinationDifficultyId, subjectId, chapterId, sectionId, keyword })
   }
 
   changeStatus (key, value) {
     if (value === '') value = null
-    let { examinationDifficultyId, subjectId } = this.state
+    let { examinationDifficultyId, subjectId, chapterId, sectionId, keyword } = this.state
     if (key === 'examinationDifficultyId') {
       subjectId = null
+      chapterId = null
+      sectionId = null
     }
-    let obj = Object.assign({}, { examinationDifficultyId, subjectId }, { [key]: value, page: 1 })
+    if (key === 'subjectId') {
+      chapterId = null
+      sectionId = null
+    }
+    if (key === 'chapterId') {
+      sectionId = null
+    }
+    let obj = Object.assign({}, { examinationDifficultyId, subjectId, chapterId, sectionId, keyword }, { [key]: value, page: 1 })
     this.setState(obj)
     this.queryExercises(obj)
   }
 
-  goToDetail (exerciseId) {
-    const { selectExercise } = this.props
-    selectExercise({ exerciseId })
-    Router.push('/exercise/detail')
+  queryChapters (subjectId) {
+    if (!subjectId) return
+    const { client, queryChapters } = this.props
+    queryChapters(client, { subjectId })
   }
 
-  goToEdit (exerciseId) {
-    const { selectExercise } = this.props
-    selectExercise({ exerciseId })
-    Router.push('/exercise/edit')
+  querySections (chapterId) {
+    if (!chapterId) return
+    const { client, querySections } = this.props
+    querySections(client, { chapterId })
   }
 
   getExaminationdifficultys () {
@@ -97,9 +92,59 @@ class ExerciseHotListScreen extends Component {
     return array
   }
 
+  getChapters () {
+    const { subjectId } = this.state
+    const { chapters } = this.props
+    let array = []
+    for (let key in chapters) {
+      if (chapters[key].subjectId !== subjectId) continue
+      array.push({ title: chapters[key].name, value: key })
+    }
+    return array
+  }
+
+  getSections () {
+    const { chapterId } = this.state
+    const { sections } = this.props
+    let array = []
+    for (let key in sections) {
+      if (sections[key].chapterId !== chapterId) continue
+      array.push({ title: sections[key].name, value: key })
+    }
+    return array
+  }
+
+  goToDetail (exerciseId) {
+    const { selectExercise } = this.props
+    selectExercise({ exerciseId })
+    Router.push('/exercise/detail')
+  }
+
+  goToEdit (exerciseId) {
+    const { selectExercise } = this.props
+    selectExercise({ exerciseId })
+    Router.push('/exercise/edit')
+  }
+
+  async deleteExercise (item) {
+    const { id, content } = item
+    const confirmed = confirm(`确定要删除题目  《${content}》  吗？`)
+    if (confirmed) {
+      const { client, removeExercise } = this.props
+      let error = await removeExercise(client, { id })
+      if (error) {
+        return this.msg.show('删除失败')
+      }
+      this.msg.show('删除成功', {
+        time: 1000,
+        type: 'success'
+      })
+    }
+  }
+
   getListData () {
     let array = []
-    const { page, examinationDifficultyId, subjectId, keyword } = this.state
+    const { page, examinationDifficultyId, subjectId, chapterId, sectionId, keyword } = this.state
     let { exercises } = this.props
     let skip = (page - 1) * 10
     let count = 0
@@ -108,6 +153,8 @@ class ExerciseHotListScreen extends Component {
       if (exercise.type !== this.type) continue
       if (examinationDifficultyId && exercise.examinationDifficultyId !== examinationDifficultyId) continue
       if (subjectId && exercise.subjectId !== subjectId) continue
+      if (chapterId && exercise.chapterId !== chapterId) continue
+      if (sectionId && exercise.sectionId !== sectionId) continue
       if (keyword) {
         let pattern = new RegExp(keyword)
         const { content } = exercise
@@ -137,9 +184,18 @@ class ExerciseHotListScreen extends Component {
         <li className={'subjectText titleText'} key={4}>
           科目
         </li>
+        <li className={'subjectText titleText'} key={5}>
+          章
+        </li>
+        <li className={'subjectText titleText'} key={6}>
+          节
+        </li>
+        <li className={'hotText titleText'} key={7}>
+          热门
+        </li>
         <li className={'buttonText titleText'} key={8}>
-        操作
-      </li>
+          操作
+        </li>
         <style jsx>{`
           .orderTitle {
             color: #797979;
@@ -155,16 +211,20 @@ class ExerciseHotListScreen extends Component {
             width: 5%;
             text-align: left;
           }
+          .contentText {
+            width: 52%;
+            text-align: left;
+          }
+          .subjectText {
+            width: 11%;
+            text-align: center;
+          }
           .buttonText {
             width: 10%;
             text-align: center;
           }
-          .contentText {
-            width: 50%;
-            text-align: left;
-          }
-          .subjectText {
-            width: 15%;
+          .hotText {
+            width: 5%;
             text-align: center;
           }
         `}</style>
@@ -187,7 +247,16 @@ class ExerciseHotListScreen extends Component {
         <li className={'subjectText'} key={4}>
           {item.subjectName || '无'}
         </li>
-        <li className={'buttonText'} key={5}>
+        <li className={'subjectText'} key={5}>
+          {item.chapterName || '无'}
+        </li>
+        <li className={'subjectText'} key={6}>
+          {item.sectionName || '无'}
+        </li>
+        <li className={'hotText'} key={7}>
+          {item.hot ? '是' : '否'}
+        </li>
+        <li className={'buttonText'} key={8}>
           <button
             className='fenyeItem'
             onClick={() => this.goToDetail(item.id)}
@@ -210,25 +279,21 @@ class ExerciseHotListScreen extends Component {
             width: 5%;
             text-align: left;
           }
-          .buttonText {
-            width: 10%;
-            text-align: center;
-          }
           .contentText {
-            width: 50%;
+            width: 52%;
             text-align: left;
           }
           .subjectText {
-            width: 15%;
+            width: 11%;
             text-align: center;
           }
-          .fenyeItem {
-            background: #3ca0ff;
-            border-radius: 2px;
-            display: inline-block;
-            cursor: pointer;
-            border: 1px solid #3ca0ff;
-            color: #fff;
+          .hotText {
+            width: 5%;
+            text-align: center;
+          }
+          .buttonText {
+            width: 10%;
+            text-align: center;
           }
           .fenyeItemX {
             background: red;
@@ -238,16 +303,16 @@ class ExerciseHotListScreen extends Component {
             border: 1px solid red;
             color: #fff;
           }
+          .fenyeItem {
+            background: #3ca0ff;
+            border-radius: 2px;
+            display: inline-block;
+            cursor: pointer;
+            border: 1px solid #3ca0ff;
+            color: #fff;
+          }
         `}</style>
       </ul>
-    )
-  }
-
-  renderItem (value, key) {
-    return (
-      <li className={'left textoverflow1'} key={key} style={{ width: '30%', marginRight: 10 }}>
-        {value || '无'}
-      </li>
     )
   }
 
@@ -262,7 +327,8 @@ class ExerciseHotListScreen extends Component {
         <FilterCard>
           <SelectFilterCard
             data={this.getExaminationdifficultys()}
-            config={{ selectTitle: '考试级别', valueKey: 'value', titleKey: 'title' }}
+            status={this.state.status}
+            config={{ selectTitle: '考试类型', valueKey: 'value', titleKey: 'title' }}
             changeStatus={status => {
               this.changeStatus('examinationDifficultyId', status)
             }}
@@ -271,7 +337,25 @@ class ExerciseHotListScreen extends Component {
             data={this.getSubjects()}
             config={{ selectTitle: '科目', valueKey: 'value', titleKey: 'title' }}
             changeStatus={status => {
+              this.queryChapters(status)
               this.changeStatus('subjectId', status)
+            }}
+          />
+          <SelectFilterCard
+            data={this.getChapters()}
+            status={this.state.status}
+            config={{ selectTitle: '章', valueKey: 'value', titleKey: 'title' }}
+            changeStatus={status => {
+              this.querySections(status)
+              this.changeStatus('chapterId', status)
+            }}
+          />
+          <SelectFilterCard
+            data={this.getSections()}
+            status={this.state.status}
+            config={{ selectTitle: '节', valueKey: 'value', titleKey: 'title' }}
+            changeStatus={status => {
+              this.changeStatus('sectionId', status)
             }}
           />
           <KeywordCard
@@ -316,9 +400,11 @@ class ExerciseHotListScreen extends Component {
 function mapStateToProps (state) {
   return {
     exercises: state.exercises.data,
-    examinationdifficultys: state.examinationdifficultys.data,
-    subjects: state.subjects.data
+    subjects: state.subjects.data,
+    chapters: state.chapters.data,
+    sections: state.sections.data,
+    examinationdifficultys: state.examinationdifficultys.data
   }
 }
 
-export default connect(mapStateToProps, { queryExercises, querySubjects, queryExaminationDifficultys, selectExercise, removeExercise })(ExerciseHotListScreen)
+export default connect(mapStateToProps, { queryExercises, queryExaminationDifficultys, querySubjects, queryChapters, querySections, selectExercise, removeExercise })(ExerciseHotListScreen)

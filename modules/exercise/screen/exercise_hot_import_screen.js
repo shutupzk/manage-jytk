@@ -3,31 +3,29 @@ import React, { Component } from 'react'
 // import Router from 'next/router'
 import { Loading, theme, FilterCard, SelectFilterCard } from '../../../components'
 import { API_SERVER } from '../../../config'
-import { queryExaminationDifficultys, querySubjects } from '../../../ducks'
+import { queryExaminationDifficultys } from '../../../ducks'
 import { connect } from 'react-redux'
 import request from 'superagent-bluebird-promise'
 import AlertContainer from 'react-alert'
-class ExerciseHotImportScreen extends Component {
+class ExerciseImportScreen extends Component {
   constructor (props) {
     super(props)
     this.state = {
       loading: false,
-      examinationDifficultyId: null,
-      subjectId: null
+      examinationDifficultyId: null
     }
     this.alertOptions = {
       offset: 14,
       position: 'top right',
       theme: 'dark',
-      time: 1000,
+      time: 5000,
       transition: 'scale'
     }
   }
 
   componentWillMount () {
-    const { client, queryExaminationDifficultys, querySubjects } = this.props
+    const { client, queryExaminationDifficultys } = this.props
     queryExaminationDifficultys(client)
-    querySubjects(client)
   }
 
   getExaminationdifficultys () {
@@ -39,52 +37,49 @@ class ExerciseHotImportScreen extends Component {
     return array
   }
 
-  getSubjects () {
-    const { subjects } = this.props
-    let array = []
-    for (let key in subjects) {
-      array.push({ title: subjects[key].name, value: key })
-    }
-    return array
-  }
-
   submit () {
     if (!this.files || !this.files.length > 0) return
-    const { examinationDifficultyId, subjectId, loading } = this.state
+    const { examinationDifficultyId, loading } = this.state
     if (!examinationDifficultyId) {
-      this.setState({ loading: false })
-      return this.msg.show('请选择考试等级')
-    }
-    if (!subjectId) {
-      this.setState({ loading: false })
-      return this.msg.show('请选择科目')
+      this.setState({ loading: false, examinationDifficultyId: null })
+      return this.msg.show('请选择考试等级', {
+        time: 2000,
+        type: 'success'
+      })
     }
     if (!loading) {
       this.setState({ loading: true })
       let file = this.files[0]
       console.log(file)
       request
-        .post(
-          `http://${API_SERVER}/uploadHot?examinationDifficultyId=` + examinationDifficultyId + '&subjectId=' + subjectId
-        )
+        .post(`http://${API_SERVER}/uploadHot?examinationDifficultyId=` + examinationDifficultyId)
         .attach('files', this.files[0])
         .set('Accept', 'application/json')
         .then(res => {
           if (res.statusCode === 200) {
-            this.setState({ loading: false, examinationDifficultyId: null, yearExerciseTypeId: null, year: null, yearExamTypeId: null })
+            console.log(res.text)
+            this.setState({ loading: false, examinationDifficultyId: null })
+            console.log('bbbbb')
             this.msg.show(res.text, {
+              time: 2000,
               type: 'success'
             })
           } else {
             console.log('上传失败', res)
-            this.setState({ loading: false, examinationDifficultyId: null, yearExerciseTypeId: null, year: null, yearExamTypeId: null })
-            this.msg.show('上传失败')
+            this.setState({ loading: false, examinationDifficultyId: null })
+            this.msg.show('上传失败', {
+              time: 2000,
+              type: 'success'
+            })
           }
         })
         .catch(e => {
           console.log(e)
-          this.setState({ loading: false, examinationDifficultyId: null, yearExerciseTypeId: null, year: null, yearExamTypeId: null })
-          this.msg.show('上传失败')
+          this.setState({ loading: false, examinationDifficultyId: null })
+          this.msg.show('上传失败', {
+            time: 2000,
+            type: 'success'
+          })
         })
     }
   }
@@ -98,7 +93,8 @@ class ExerciseHotImportScreen extends Component {
 
   render () {
     return (
-      <div style={{ width: '80%', margin: '0 auto' }}>
+      <div style={{ width: '40%', margin: '0 auto' }}>
+        精品 题库录入
         <FilterCard>
           <SelectFilterCard
             data={this.getExaminationdifficultys()}
@@ -106,13 +102,6 @@ class ExerciseHotImportScreen extends Component {
             config={{ selectTitle: '考试级别', valueKey: 'value', titleKey: 'title' }}
             changeStatus={examinationDifficultyId => {
               this.setState({ examinationDifficultyId })
-            }}
-          />
-          <SelectFilterCard
-            data={this.getSubjects()}
-            config={{ selectTitle: '科目', valueKey: 'value', titleKey: 'title' }}
-            changeStatus={subjectId => {
-              this.setState({ subjectId })
             }}
           />
         </FilterCard>
@@ -169,9 +158,8 @@ class ExerciseHotImportScreen extends Component {
 }
 function mapStateToProps (state) {
   return {
-    examinationdifficultys: state.examinationdifficultys.data,
-    subjects: state.subjects.data
+    examinationdifficultys: state.examinationdifficultys.data
   }
 }
 
-export default connect(mapStateToProps, { queryExaminationDifficultys, querySubjects })(ExerciseHotImportScreen)
+export default connect(mapStateToProps, { queryExaminationDifficultys })(ExerciseImportScreen)
