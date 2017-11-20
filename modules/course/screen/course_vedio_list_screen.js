@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 // import { Router } from '../../../routes'
-// import Router from 'next/router'
+import Router from 'next/router'
 import { Loading, PageCard, FilterCard, SelectFilterCard } from '../../../components'
-import { queryCourses, updateCourse, removeCourse, querySubjects } from '../../../ducks'
+import { queryCourses, updateCourse, removeCourse, querySubjects, selectCourse } from '../../../ducks'
 import { connect } from 'react-redux'
 import AlertContainer from 'react-alert'
 
@@ -161,6 +161,13 @@ class CourseVedioListScreen extends Component {
       })
     }
   }
+
+  goToEdit (courseId) {
+    const { selectCourse } = this.props
+    selectCourse({ courseId })
+    Router.push('/course/edit')
+  }
+
   renderRow (item, index) {
     let { url, subject } = item
     url = url + '?vframe/jpg/offset/0'
@@ -214,6 +221,9 @@ class CourseVedioListScreen extends Component {
         <li className={'subjectText'} key={8}>
           <button className='fenyeItemX' onClick={() => this.deleteCourse(item)}>
             删除
+          </button>
+          <button style={{ marginLeft: '5px' }} className='fenyeItem' onClick={() => this.goToEdit(item.id)}>
+            编辑
           </button>
         </li>
         <style jsx>{`
@@ -380,4 +390,4 @@ function mapStateToProps (state) {
   }
 }
 
-export default connect(mapStateToProps, { queryCourses, updateCourse, querySubjects, removeCourse })(CourseVedioListScreen)
+export default connect(mapStateToProps, { queryCourses, updateCourse, querySubjects, removeCourse, selectCourse })(CourseVedioListScreen)

@@ -161,8 +161,8 @@ export const createCourse = (client, { title, type, content, date, url, teacher,
 }
 
 const UPDATE_COURSE = gql`
-  mutation($id: ObjID!, $hot: Boolean, $free: Boolean) {
-    updateCourse(id: $id, input: { hot: $hot,free: $free }) {
+  mutation($id: ObjID!, $title: String, $url: String, $content: String, $teacher: String, $abstract: String, $hot: Boolean, $free: Boolean, $subjectId: ObjID) {
+    updateCourse(id: $id, input: { title: $title, url: $url, content: $content, teacher: $teacher, abstract: $abstract, hot: $hot,free: $free, subjectId: $subjectId }) {
       id
       title
       url
@@ -182,9 +182,9 @@ const UPDATE_COURSE = gql`
   }
 `
 
-export const updateCourse = (client, { id, hot, free }) => async dispatch => {
+export const updateCourse = (client, { id, title, url, content, teacher, abstract, hot, free, subjectId }) => async dispatch => {
   try {
-    let data = await client.mutate({ mutation: UPDATE_COURSE, variables: { id, hot, free } })
+    let data = await client.mutate({ mutation: UPDATE_COURSE, variables: { id, title, url, content, teacher, abstract, hot, free, subjectId } })
     const { updateCourse } = data.data
     let json = { [id]: updateCourse }
     dispatch({
