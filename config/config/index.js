@@ -54,6 +54,12 @@ const MAINFUNCTION = [
     short_name: 'user',
     navigateName: '/user',
     children: [{ title: '用户列表', navigateName: '/user', color: '#5D75A6' }]
+  },
+  {
+    title: '支付管理',
+    short_name: 'payment',
+    navigateName: '/payment',
+    children: [{ title: '支付列表', navigateName: '/payment', color: '#5D75A6' }]
   }
 ]
 

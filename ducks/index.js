@@ -17,6 +17,7 @@ import { qiniu, getQiniuUpToken, selectImgFiles, changeImgBase64 } from './qiniu
 import { coursetypes, queryCourseTypes } from './coursetypes'
 import { yearexamtypes, queryYearExamTypes } from './yearexamtypes'
 import { membercharges, queryMemberCharges, giveUserMember, giveUserScore } from './membercharges'
+import { payments, queryPayments, selectPayment } from './payments'
 
 // export reducers by it's keys
 export {
@@ -38,7 +39,8 @@ export {
   qiniu,
   coursetypes,
   yearexamtypes,
-  membercharges
+  membercharges,
+  payments
 }
 
 // export actions
@@ -94,5 +96,7 @@ export {
   removeCourse,
   queryExerciseAnalysiss,
   removeExercise,
-  selectAnalysis
+  selectAnalysis,
+  queryPayments,
+  selectPayment
 }
