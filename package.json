@@ -18,6 +18,7 @@
     "bluebird": "^3.5.0",
     "draft-js": "^0.10.1",
     "draftjs-to-html": "^0.7.6",
+    "echarts-for-react": "^2.0.0",
     "express": "^4.15.2",
     "graphql": "^0.9.6",
     "html-to-draftjs": "0.1.0-beta14",

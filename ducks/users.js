@@ -32,6 +32,7 @@ const QUERY_SUBJECTS = gql`
       score
       scoreUsed
       countUserAnswer
+      payFee
       countRightUserAnswer
       name
       member {
@@ -69,6 +70,7 @@ const QUERY_USER_DETAIL = gql`
       id
       phone
       score
+      payFee
       scoreUsed
       countUserAnswer
       countRightUserAnswer

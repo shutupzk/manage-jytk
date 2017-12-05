@@ -30,18 +30,18 @@ class ExerciseRealListScreen extends Component {
   }
 
   getSortWay () {
-    let array = [{ title: '按积分排序', value: 'score' }, { title: '按做题数排序', value: 'countUserAnswer' }]
+    let array = [{ title: '按积分排序', value: 'score' }, { title: '按做题数排序', value: 'countUserAnswer' }, { title: '按付费金额排序', value: 'payFee' }]
     return array
   }
 
   changeSortWay (sortWay) {
     if (sortWay === '') sortWay = null
-    this.setState({ sortWay, page: 1, keyword: null })
     let sort = { _id: -1 }
     if (sortWay !== null) {
       sort = { [sortWay]: -1 }
     }
     sort = JSON.stringify(sort)
+    this.setState({ sortWay, page: 1, keyword: null, sort })
     this.queryUsers({ page: 1, sort })
   }
 
@@ -93,6 +93,9 @@ class ExerciseRealListScreen extends Component {
         </li>
         <li className={'subjectText titleText '} key={22}>
           会员
+        </li>
+        <li className={'subjectText titleText '} key={221}>
+          累计充值
         </li>
         <li className={'subjectText titleText'} key={3}>
           积分
@@ -151,6 +154,9 @@ class ExerciseRealListScreen extends Component {
         </li>
         <li className={'subjectText'} key={22}>
           <span style={{ color: 'red' }}>{item.member ? item.member.name : ''}</span>
+        </li>
+        <li className={'subjectText'} key={123}>
+          {item.payFee} 元
         </li>
         <li className={'subjectText'} key={3}>
           {item.score || 0}

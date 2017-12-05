@@ -59,7 +59,13 @@ const MAINFUNCTION = [
     title: '支付管理',
     short_name: 'payment',
     navigateName: '/payment',
-    children: [{ title: '支付列表', navigateName: '/payment', color: '#5D75A6' }]
+    children: [
+      { title: '支付列表', navigateName: '/payment', color: '#5D75A6' },
+      { title: '年收入列表', navigateName: '/payment/yearlist', color: '#5D75A6' },
+      { title: '年收入折线图', navigateName: '/payment/yearecharts', color: '#5D75A6' },
+      { title: '月收入列表', navigateName: '/payment/monthlist', color: '#5D75A6' },
+      { title: '月收入折线图', navigateName: '/payment/monthecharts', color: '#5D75A6' }
+    ]
   }
 ]
 
@@ -69,56 +75,4 @@ const HOME_PAGE = { url: '/exercise' }
 // 主题颜色
 const MAINCOLOR = '#2A4680'
 
-// 订单管理信息
-const ORDERINFO = {
-  order_list_title: [
-    { title: '产品服务', value: '', style: { width: '30%' }, apiKey: '' },
-    { title: '单价(元)', value: '', style: { width: '10%' }, apiKey: '' },
-    { title: '数量', value: '', style: { width: '10%' }, apiKey: '' },
-    { title: '买家信息', value: '', style: { width: '14%' }, apiKey: '' },
-    { title: '订单状态', value: '', style: { width: '16%', textAlign: 'center' }, apiKey: '' },
-    { title: '支付信息(元)', value: '', style: { width: '20%', textAlign: 'center' }, apiKey: '' }
-  ],
-  order_type: [
-    { title: '待支付', value: '01' },
-    { title: '已取消', value: '02' },
-    { title: '已支付', value: '03', isRefound: true }, // 可退款
-    { title: '执行中', value: '04', isRefound: true }, // 可退款
-    { title: '已过期', value: '05', isRefound: true }, // 可退款
-    { title: '退款申请', value: '06' },
-    { title: '已完成', value: '07', isRefound: true }, // 可退款
-    { title: '过期已退款', value: '08' },
-    { title: '待执行订单已退款', value: '09' },
-    { title: '后台退款', value: '10' }
-    // #01：待支付，02：已取消，03：待执行，04：执行中，05：已过期未退款，
-    // 06：待执行退款申请(买家申请退款，相当于取消订单，钱会直接退回账户，不会走运营人员这一步。 所以和09合并了)，
-    // 07：已完成，08：过期已退款(过期自动退款)，06、09 已退款:待执行订单已退款(买家申请退款)，10：后台退款(高级运营人员退款),
-  ]
-}
-
-const DOCTORINFO = {
-  modal_type_title: [
-    { title: '基本信息', value: 0 },
-    {
-      title: '服务设置',
-      value: 1,
-      section: [
-        { title: '专家图文问诊', priceApiKey: 'imageAndTextPrice', openApiKey: 'imageAndTextOpen' },
-        { title: '快速问诊', priceApiKey: 'quikePrice', openApiKey: 'quikeOpen' },
-        { title: '视频问诊', priceApiKey: 'videoPrice', openApiKey: 'videoOpen' }
-      ]
-    } // 根据modal_type_title 是否有第2个数组， 决定是否有图文问诊
-  ],
-  doctor_info_list_title: [
-    { title: '编号', value: '', style: { width: '8%' }, apiKey: '' },
-    { title: '医生工号', value: '', style: { width: '12%' }, apiKey: 'doctorSn' },
-    { title: '姓名', value: '', style: { width: '10%' }, apiKey: 'doctorName' },
-    { title: '所属机构', value: '', style: { width: '16%' }, apiKey: '' },
-    { title: '专业', value: '', style: { width: '10%' }, apiKey: '' },
-    { title: '互联网诊疗', value: '', style: { width: '16%', textAlign: 'center' }, apiKey: 'showInternet' },
-    { title: '服务开通状态', value: '', style: { width: '16%', textAlign: 'center' }, apiKey: '' },
-    { title: '设置', value: '', style: { width: '8%', textAlign: 'center' }, apiKey: '' }
-  ]
-}
-
-export { server, API_SERVER, initClient, initStore, withData, HOSPITAL_NAME, HOME_PAGE, HOSPITALINFO, MAINCOLOR, PORT, MAINFUNCTION, ORDERINFO, DOCTORINFO }
+export { server, API_SERVER, initClient, initStore, withData, HOSPITAL_NAME, HOME_PAGE, HOSPITALINFO, MAINCOLOR, PORT, MAINFUNCTION }
