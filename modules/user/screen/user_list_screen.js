@@ -109,6 +109,9 @@ class ExerciseRealListScreen extends Component {
         <li className={'subjectText titleText'} key={6}>
           累计正确数
         </li>
+        <li className={'subjectText titleText'} key={68}>
+          观看视频数
+        </li>
         <li className={'subjectText titleText'} key={7}>
           查看
         </li>
@@ -169,6 +172,9 @@ class ExerciseRealListScreen extends Component {
         </li>
         <li className={'subjectText'} key={6}>
           {item.countRightUserAnswer || 0}
+        </li>
+        <li className={'subjectText'} key={65}>
+          {item.userCourseCount || 0}
         </li>
         <li className={'subjectText'} key={7}>
           <button className='fenyeItem' onClick={() => this.goToDetail(item.id)}>

@@ -35,6 +35,7 @@ const QUERY_SUBJECTS = gql`
       payFee
       countRightUserAnswer
       name
+      userCourseCount
       member {
         id
         name
@@ -75,6 +76,7 @@ const QUERY_USER_DETAIL = gql`
       countUserAnswer
       countRightUserAnswer
       name
+      userCourseCount
       member {
         id
         name
