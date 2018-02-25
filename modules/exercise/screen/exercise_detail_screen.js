@@ -99,7 +99,16 @@ class ExerciseImportScreen extends Component {
           </div>
         </div>
         <div style={{ marginTop: 20, marginBottom: 100 }}>
-          <p style={{ backgroundColor: '#f2f2f2', padding: 10, fontSize: 20 }}>解析</p>
+          <p style={{ backgroundColor: '#f2f2f2', padding: 10, fontSize: 20 }}>
+            解析<button
+              onClick={() => {
+                Router.push('/exercise/eanaly/add')
+              }}
+              style={{ marginLeft: '5%' }}
+            >
+              新增
+            </button>
+          </p>
           <div style={{ marginTop: 20, marginBottom: 20, marginLeft: 40, marginRight: 40 }}>
             {analysiss.map((item, index) => (
               <div style={{ marginBottom: 20 }} key={item.id}>
@@ -110,7 +119,7 @@ class ExerciseImportScreen extends Component {
                   <span style={{ fontSize: 15, marginRight: 20 }}>时间：{moment(item.createdAt).format('YYYY-MM-DD HH:mm')}</span>
                   <button
                     onClick={() => {
-                      selectAnalysis({analysisId: item.id})
+                      selectAnalysis({ analysisId: item.id })
                       Router.push('/exercise/eanaly/edit')
                     }}
                     style={{ marginLeft: '5%' }}

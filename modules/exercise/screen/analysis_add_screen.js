@@ -2,10 +2,10 @@ import React, { Component } from 'react'
 // import { Router } from '../../../routes'
 import Router from 'next/router'
 import { Loading, theme } from '../../../components'
-import { upadateAnalysis } from '../../../ducks'
+import { createAnalysis } from '../../../ducks'
 import { connect } from 'react-redux'
 import AlertContainer from 'react-alert'
-class AnalysisEditScreen extends Component {
+class AnalysisAddScreen extends Component {
   constructor (props) {
     super(props)
     let content
@@ -30,10 +30,10 @@ class AnalysisEditScreen extends Component {
 
   async submit () {
     const { content } = this.state
-    const { analysisId, client, upadateAnalysis } = this.props
+    const { client, createAnalysis, exerciseId } = this.props
     try {
       if (content) {
-        await upadateAnalysis(client, { id: analysisId, content })
+        await createAnalysis(client, { exerciseId, content })
         this.msg.show('修改成功', {
           time: 1000,
           type: 'success'
@@ -58,10 +58,6 @@ class AnalysisEditScreen extends Component {
   }
 
   render () {
-    const analysis = this.getData()
-    if (!analysis) {
-      return <div />
-    }
     return (
       <div>
         <AlertContainer ref={a => (this.msg = a)} {...this.alertOptions} />
@@ -74,7 +70,6 @@ class AnalysisEditScreen extends Component {
                   onChange={e => {
                     this.setState({ content: e.target.value })
                   }}
-                  defaultValue={analysis.content}
                 />
                 <span className='clearfix' />
               </li>
@@ -136,4 +131,4 @@ function mapStateToProps (state) {
   }
 }
 
-export default connect(mapStateToProps, { upadateAnalysis })(AnalysisEditScreen)
+export default connect(mapStateToProps, { createAnalysis })(AnalysisAddScreen)

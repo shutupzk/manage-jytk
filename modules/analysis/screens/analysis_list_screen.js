@@ -20,6 +20,7 @@ class AnalysisListScreen extends Component {
 
   queryAnalysiss ({ page }) {
     page = page || this.state.page
+    console.log(page)
     const skip = (page - 1) * 10
     const limit = 10
     const { client, queryAnalysiss } = this.props
@@ -287,7 +288,7 @@ class AnalysisListScreen extends Component {
                 page: curPage
               },
               () => {
-                this.queryUsers({})
+                this.queryAnalysiss({})
               }
             )
           }}

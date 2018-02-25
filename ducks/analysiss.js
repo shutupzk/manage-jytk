@@ -29,8 +29,8 @@ export function analysiss (state = initState, action = {}) {
 }
 
 const QUERY_ANALYSISS = gql`
-  {
-    analysiss(isUser: true) {
+  query($skip: Int, $limit: Int) {
+    analysiss(isUser: true, skip: $skip, limit: $limit) {
       id
       content
       adopt
@@ -47,11 +47,11 @@ const QUERY_ANALYSISS = gql`
   }
 `
 
-export const queryAnalysiss = client => async dispatch => {
+export const queryAnalysiss = (client, { skip, limit }) => async dispatch => {
   try {
     const data = await client.query({
       query: QUERY_ANALYSISS,
-      variables: {},
+      variables: { skip, limit },
       fetchPolicy: 'network-only'
     })
     const { analysiss } = data.data
@@ -144,6 +144,42 @@ export const upadateAnalysis = (client, { id, adopt, content }) => async dispatc
     let data = await client.mutate({ mutation: UPDATE_ANALYSISS, variables: { id, adopt, content } })
     const { updateAnalysis } = data.data
     let json = { [updateAnalysis.id]: updateAnalysis }
+    dispatch({
+      type: SUBJECT_ANALYSISS_SUCCESS,
+      data: json
+    })
+    return null
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
+
+const CREATE_ANALYSISS = gql`
+  mutation ($content: String!, $exerciseId: ObjID!) {
+  createAnalysis(input: {content: $content, exerciseId: $exerciseId, adopt: "admin"}) {
+    id
+    content
+    adopt
+    user {
+      id
+      name
+    }
+    exercise {
+      id
+      content
+    }
+    createdAt
+  }
+}
+`
+
+export const createAnalysis = (client, { exerciseId, content }) => async dispatch => {
+  try {
+    let data = await client.mutate({ mutation: CREATE_ANALYSISS, variables: { exerciseId, content } })
+    console.log('data ======= ', data)
+    const { createAnalysis } = data.data
+    let json = { [createAnalysis.id]: createAnalysis }
     dispatch({
       type: SUBJECT_ANALYSISS_SUCCESS,
       data: json
